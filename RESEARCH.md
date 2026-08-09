@@ -1,6 +1,6 @@
 # Multi-District Tool — Research Summary & Restart Point
 
-*Last updated: 2026-08-08. Full report artifact: <https://claude.ai/code/artifact/67646a17-97b6-4587-99a8-dd7711499267>*
+*Last updated: 2026-08-08 (post-Phase 1). Full report artifact: <https://claude.ai/code/artifact/67646a17-97b6-4587-99a8-dd7711499267>. Build workflow: `BUILDING.md`. Step-by-step plan & status: `CLAUDE_IMPL_PLAN.md` (Phases 0–1 ✅, M1 go/no-go PASSED).*
 
 ## What this project is
 
@@ -46,10 +46,27 @@ Rendering (namespace `Game.Rendering` / `Game.Prefabs`):
 2. Cloned district prefabs per type (each with own `AreaColorData`) — vanilla-integrated but per-prefab color; needs regression testing against single-prefab assumptions.
 3. Per-entity `Game.Objects.Color` component — most elegant if districts respect it; **unverified**, infoview-gated.
 
-## Prototype sequence (next steps)
+## Verified findings (Phases 0–1, tested in-game 2026-08-08)
 
-1. **Buffer probe:** minimal mod writes a district into a service building's `ServiceDistrict` buffer; confirm vanilla UI + dispatch reflect it.
-2. Group registry (in-memory) + expansion; verify multi-district service works; then persistence.
+The design's load-bearing assumptions are now **empirically confirmed**, not just inferred from decompiled docs:
+
+1. **`ServiceDistrict` buffer writes work end-to-end.** A managed-code `buffer.Add(new ServiceDistrict(district))` on a selected building (tested: Landfill, Small Medical Clinic) is accepted, appears in the vanilla building panel, and reads back correctly. No `Updated` component or other invalidation was needed.
+2. **Assignments survive save/reload with entity remapping.** After reload, *every* entity ID in the city changed ("Cypress Forest" `Entity(173566:1)` → `Entity(197032:3)`; the Landfill `189956:1` → `203783:3`), yet the written buffer still pointed at the right district. Confirms both (a) the game's serializer remaps entity refs in vanilla buffers, and (b) the plan's rule: **never persist raw entity IDs outside the game's serialization** (e.g., in settings JSON) — they're meaningless after one reload.
+3. **Service buildings carry the `ServiceDistrict` buffer even when empty** (0 entries = "serves whole city") — no need to `AddBuffer`, just get and append.
+4. **Useful APIs that compile and work against the shipped `Game.dll`:**
+   - `SelectedInfoUISystem.selectedEntity` for the currently selected entity — but **Escape clears the selection** (a probe triggered from the options menu sees nothing; cache the last selection or use hotkeys).
+   - Mod hotkeys: `[SettingsUIKeyboardBinding(BindingKeyboard.X, actionName, ctrl:, shift:)]` on a `ProxyBinding` setting property + `ModSetting.RegisterKeyBindings()` + `setting.GetAction(name)` → `ProxyAction` with `shouldBeEnabled = true` and `WasPerformedThisFrame()` polled from a system.
+   - `NameSystem.GetRenderedLabelName(entity)` returns proper display names for districts and buildings.
+   - Gotcha: `EntityManager.TryGetComponent` does **not** exist in the game's Unity.Entities version — use `HasComponent<T>` + `GetComponentData<T>`.
+5. **The mod toolchain Burst-compiles the mod assembly** (win/mac/linux) — our own jobs can use Burst. The design constraint remains only that *vanilla* Burst jobs can't be Harmony-patched.
+6. **No C# hot reload exists** (net48/Mono, assemblies load once at startup; the deployed DLL is locked while the game runs, so builds fail at the deploy step mid-session). UI (cohtml/React) *does* hot-reload with `--uiDeveloperMode`; `--developerMode`'s Scene Explorer inspects live entities/components with zero rebuilds. Full workflow in `BUILDING.md`.
+
+Still unobserved (low risk, vanilla feature): simulation-side dispatch actually restricting itself to the assigned district — watch the Landfill's trucks in a longer session.
+
+## Prototype sequence
+
+1. ~~**Buffer probe:** write a district into a service building's `ServiceDistrict` buffer; confirm vanilla UI reflects it and it survives save/reload.~~ ✅ Done — see Verified findings; probe code lives in `ProbeSystem.cs` (hotkeys Ctrl+Shift+D dump / Ctrl+Shift+W write).
+2. Group registry (in-memory) + expansion; verify multi-district service works; then persistence via the game's ECS serialization (finding #2 makes the "why" concrete).
 3. Overlay rendering of one district polygon in a custom color; run the `Objects.Color` experiment.
 4. UI: group manager panel + typed picker (cohtml/React UI modding; managed C# bindings — filterable/patchable, unlike Burst).
 5. Sync & safety: district delete/repaint handling, mod-removed behavior (written `ServiceDistrict` buffers are vanilla data — degrade gracefully), save/load.

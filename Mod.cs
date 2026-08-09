@@ -9,6 +9,7 @@ namespace multi_district_tool
     public class Mod : IMod
     {
         public static ILog log = LogManager.GetLogger($"{nameof(multi_district_tool)}.{nameof(Mod)}").SetShowsErrorsInUI(false);
+        public static Setting Settings { get; private set; }
         private Setting m_Setting;
 
         public void OnLoad(UpdateSystem updateSystem)
@@ -20,10 +21,14 @@ namespace multi_district_tool
 
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
+            m_Setting.RegisterKeyBindings();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
 
 
             AssetDatabase.global.LoadSettings(nameof(multi_district_tool), m_Setting, new Setting(this));
+            Settings = m_Setting;
+
+            updateSystem.UpdateAt<ProbeSystem>(SystemUpdatePhase.ToolUpdate);
         }
 
         public void OnDispose()

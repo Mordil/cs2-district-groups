@@ -1,5 +1,7 @@
 # Multi-District Tool — Implementation Plan
 
+> **Status (2026-08-08):** Phase 0 ✅ and Phase 1 ✅ complete — **M1 go/no-go PASSED.** The write probe added districts to a Landfill's and a Small Medical Clinic's `ServiceDistrict` buffers; the vanilla panel showed them and the assignment **survived save/reload with entity IDs remapped correctly** (log evidence: `Cypress Forest` was `Entity(173566:1)` pre-reload, `Entity(197032:3)` post-reload, and the buffer followed). This also empirically confirms Step 2.3's warning: raw entity IDs are NOT stable across save/load. Probes live in `ProbeSystem.cs` (hotkeys Ctrl+Shift+D / Ctrl+Shift+W). Next: Phase 2.
+
 Design context and engine research: see `RESEARCH.md`. This plan turns the settled "district groups" design into discrete, verifiable steps. Current state: the repo is the untouched official CS2 mod template (`Mod.cs`, `Setting.cs`, csproj wired to the `CSII_TOOLPATH` modding toolchain), C#-only — no UI module yet.
 
 Each step has a **Done when** gate. Do the steps in order; later steps assume earlier ones.
