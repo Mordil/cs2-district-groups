@@ -73,4 +73,11 @@
         <None Include="$(ModTargetsFile)" Link="Properties\Mod.targets"/>
     </ItemGroup>
 
+    <!--The deploy step wipes the Mods folder, deleting the UI bundle webpack put
+        there - so rebuild the UI after every deploy. UI-only iteration can still
+        use 'npm run dev' in UI/ for hot reload without touching the C# build.-->
+    <Target Name="BuildUIModule" AfterTargets="DeployWIP">
+        <Exec Command="&quot;$(MSBuildProjectDirectory)\UI\build-ui.bat&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\UI"/>
+    </Target>
+
 </Project>

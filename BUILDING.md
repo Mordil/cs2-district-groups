@@ -63,6 +63,15 @@ Mod assemblies are net48/Mono — they load once at game startup and cannot be u
 - **Batch experiments per restart:** keep probe/experiment code behind runtime triggers (settings buttons, hotkeys) and parameterize them, so one build answers several questions.
 - **Dedicated test save:** a minimal city with a few painted districts and one police station/school as the first save in the load menu.
 
+## UI module (added in Phase 5)
+
+The `UI/` folder is a webpack/React/TypeScript project (structure cloned from yenyang's BetterBulldozer, i.e. the official `create-csii-ui-mod` template). It bundles to `multi-district-tool.mjs`, which the game auto-loads from the mod's deploy folder. React and the `cs2/*` modules are game-provided externals; type definitions live in `UI/types/`.
+
+- **`dotnet build` does everything**: an `AfterTargets="DeployWIP"` target runs `UI/build-ui.bat` after the C# deploy (which wipes the folder), so the `.mjs` is always restored. No separate step needed.
+- **UI-only iteration with hot reload:** run `UI/build-ui.bat` once to verify, or for watch mode run (from `UI/`): `cmd.exe /c "set PATH=C:\PROGRA~1\nodejs;%PATH%&& C:\PROGRA~1\nodejs\npm.cmd run dev"`. With the game launched with `--uiDeveloperMode`, saved changes rebuild the `.mjs` in place and the game picks them up live — no restart. The cohtml debugger is at http://localhost:9444.
+- **Node quirks on this machine:** Node lives at `C:\Program Files\nodejs` but is NOT on the PATH that WSL's `cmd.exe` interop sees — always use the short path `C:\PROGRA~1\nodejs\npm.cmd` and prepend `C:\PROGRA~1\nodejs` to PATH (npm child processes spawn bare `node`). `UI/build-ui.bat` does this internally.
+- Binding contract: the binding group string in `MultiDistrictUISystem.kBindingGroup` must equal the `id` in `UI/mod.json` (`multi-district-tool`).
+
 ## Troubleshooting
 
 - **Build fails at "Copy output to deploy directory"** → the game is running; close it and rebuild.
