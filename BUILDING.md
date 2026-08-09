@@ -53,6 +53,16 @@ cd "/mnt/c/Users/Nathan/Documents/Unity Projects/multi-district-tool" && cmd.exe
    ```
 4. The options screen should list "Multi-District Tool".
 
+## Iteration tips (no C# hot reload exists)
+
+Mod assemblies are net48/Mono — they load once at game startup and cannot be unloaded. Every C# change requires: close game → build → relaunch. To make that loop cheaper:
+
+- **Steam launch options:** `--developerMode --uiDeveloperMode`
+  - `--developerMode`: Tab/Home opens the in-game developer UI. Its **Scene Explorer inspects live entities and components** — e.g., check a building's `ServiceDistrict` buffer or a district's components with zero code/rebuild.
+  - `--uiDeveloperMode`: live-reloads mod UI (cohtml/React) on change — the Phase 5 UI work iterates without game restarts; only C# binding changes need a restart.
+- **Batch experiments per restart:** keep probe/experiment code behind runtime triggers (settings buttons, hotkeys) and parameterize them, so one build answers several questions.
+- **Dedicated test save:** a minimal city with a few painted districts and one police station/school as the first save in the load menu.
+
 ## Troubleshooting
 
 - **Build fails at "Copy output to deploy directory"** → the game is running; close it and rebuild.
