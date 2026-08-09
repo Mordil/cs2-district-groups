@@ -30,6 +30,7 @@ namespace multi_district_tool
 
             updateSystem.UpdateAt<ProbeSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictGroupSyncSystem>(SystemUpdatePhase.Modification5);
+            updateSystem.UpdateAt<DistrictGroupOverlaySystem>(SystemUpdatePhase.ToolUpdate);
         }
 
         public void OnDispose()

@@ -18,6 +18,7 @@ namespace multi_district_tool
         public const string kWriteActionName = "WriteProbeAction";
         public const string kGroupTestActionName = "GroupTestAction";
         public const string kUnassignActionName = "UnassignGroupAction";
+        public const string kOverlayToggleActionName = "OverlayToggleAction";
 
         public Setting(IMod mod) : base(mod)
         {
@@ -51,6 +52,10 @@ namespace multi_district_tool
         [SettingsUIKeyboardBinding(BindingKeyboard.U, kUnassignActionName, ctrl: true, shift: true)]
         [SettingsUISection(kSection, kBindingGroup)]
         public ProxyBinding UnassignGroupBinding { get; set; }
+
+        [SettingsUIKeyboardBinding(BindingKeyboard.O, kOverlayToggleActionName, ctrl: true, shift: true)]
+        [SettingsUISection(kSection, kBindingGroup)]
+        public ProxyBinding OverlayToggleBinding { get; set; }
     }
 
     public class LocaleEN : IDictionarySource
@@ -89,6 +94,9 @@ namespace multi_district_tool
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.UnassignGroupBinding)), "Unassign group from building (in-game)" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.UnassignGroupBinding)), "Hotkey: remove the group assignment from the selected building (serves the whole city again). Default Ctrl+Shift+U." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayToggleBinding)), "Toggle group overlay (in-game)" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayToggleBinding)), "Hotkey: show/hide colored district-group boundaries on the map. Default Ctrl+Shift+O." },
 
                 { m_Setting.GetBindingMapLocaleID(), "Multi-District Tool" },
             };
