@@ -1,0 +1,9 @@
+
+.claude/settings.local.json
+
+.idea/
+
+bin/
+obj/
+
+Library/ilpp.pid
