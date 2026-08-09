@@ -105,6 +105,20 @@ namespace multi_district_tool
             EntityManager.DestroyEntity(group);
         }
 
+        public void RenameGroup(Entity group, string name)
+        {
+            DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
+            data.m_Name = name;
+            EntityManager.SetComponentData(group, data);
+        }
+
+        public void SetGroupType(Entity group, GroupServiceType type)
+        {
+            DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
+            data.m_Type = type;
+            EntityManager.SetComponentData(group, data);
+        }
+
         public bool AddMember(Entity group, Entity district)
         {
             DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group);

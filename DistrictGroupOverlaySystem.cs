@@ -44,6 +44,12 @@ namespace multi_district_tool
         private ProxyAction m_ToggleAction;
         private bool m_Visible;
 
+        // The UI panel drives visibility too (panel open = overlay on).
+        public void SetVisible(bool visible)
+        {
+            m_Visible = visible;
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
