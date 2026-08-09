@@ -16,6 +16,8 @@ namespace multi_district_tool
 
         public const string kDumpActionName = "DumpDistrictsAction";
         public const string kWriteActionName = "WriteProbeAction";
+        public const string kGroupTestActionName = "GroupTestAction";
+        public const string kUnassignActionName = "UnassignGroupAction";
 
         public Setting(IMod mod) : base(mod)
         {
@@ -41,6 +43,14 @@ namespace multi_district_tool
         [SettingsUIKeyboardBinding(BindingKeyboard.W, kWriteActionName, ctrl: true, shift: true)]
         [SettingsUISection(kSection, kBindingGroup)]
         public ProxyBinding WriteProbeBinding { get; set; }
+
+        [SettingsUIKeyboardBinding(BindingKeyboard.G, kGroupTestActionName, ctrl: true, shift: true)]
+        [SettingsUISection(kSection, kBindingGroup)]
+        public ProxyBinding GroupTestBinding { get; set; }
+
+        [SettingsUIKeyboardBinding(BindingKeyboard.U, kUnassignActionName, ctrl: true, shift: true)]
+        [SettingsUISection(kSection, kBindingGroup)]
+        public ProxyBinding UnassignGroupBinding { get; set; }
     }
 
     public class LocaleEN : IDictionarySource
@@ -73,6 +83,12 @@ namespace multi_district_tool
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.WriteProbeBinding)), "Add district to selected building (in-game)" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.WriteProbeBinding)), "Hotkey: add the first unserved district to the selected service building. Default Ctrl+Shift+W." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.GroupTestBinding)), "Create test group + assign (in-game)" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.GroupTestBinding)), "Hotkey: create 'Test Group' with the first two districts and assign it to the selected service building. Default Ctrl+Shift+G." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.UnassignGroupBinding)), "Unassign group from building (in-game)" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.UnassignGroupBinding)), "Hotkey: remove the group assignment from the selected building (serves the whole city again). Default Ctrl+Shift+U." },
 
                 { m_Setting.GetBindingMapLocaleID(), "Multi-District Tool" },
             };
