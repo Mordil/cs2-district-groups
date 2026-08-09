@@ -188,7 +188,16 @@ namespace multi_district_tool
             serviceDistricts.Clear();
             foreach (DistrictGroupMember member in members)
             {
-                serviceDistricts.Add(new ServiceDistrict(member.m_District));
+                // Backstop: membership pruning happens in DistrictGroupSyncSystem
+                // and on load, but a dead district must never reach a vanilla buffer.
+                Entity district = member.m_District;
+                if (!EntityManager.Exists(district)
+                    || !EntityManager.HasComponent<District>(district)
+                    || EntityManager.HasComponent<Game.Common.Deleted>(district))
+                {
+                    continue;
+                }
+                serviceDistricts.Add(new ServiceDistrict(district));
             }
         }
 

@@ -29,6 +29,7 @@ namespace multi_district_tool
             Settings = m_Setting;
 
             updateSystem.UpdateAt<ProbeSystem>(SystemUpdatePhase.ToolUpdate);
+            updateSystem.UpdateAt<DistrictGroupSyncSystem>(SystemUpdatePhase.Modification5);
         }
 
         public void OnDispose()
