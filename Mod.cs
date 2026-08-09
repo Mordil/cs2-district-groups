@@ -32,6 +32,7 @@ namespace multi_district_tool
             updateSystem.UpdateAt<DistrictGroupSyncSystem>(SystemUpdatePhase.Modification5);
             updateSystem.UpdateAt<DistrictGroupOverlaySystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<MultiDistrictUISystem>(SystemUpdatePhase.UIUpdate);
+            updateSystem.UpdateAt<DistrictGroupSection>(SystemUpdatePhase.UIUpdate);
         }
 
         public void OnDispose()

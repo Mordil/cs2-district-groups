@@ -18,6 +18,9 @@ namespace multi_district_tool
         private EntityQuery m_GroupQuery;
         private EntityQuery m_AssignmentQuery;
 
+        // Bumped on every group/assignment mutation so UI systems can refresh.
+        public int Version { get; private set; }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -90,6 +93,7 @@ namespace multi_district_tool
             Entity group = EntityManager.CreateEntity();
             EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type });
             EntityManager.AddBuffer<DistrictGroupMember>(group);
+            Version++;
             Mod.log.Info($"Created group {group} \"{name}\" ({type})");
             return group;
         }
@@ -103,6 +107,7 @@ namespace multi_district_tool
             }
             Mod.log.Info($"Deleting group {group} \"{GetGroupName(group)}\" ({buildings.Length} building(s) unassigned)");
             EntityManager.DestroyEntity(group);
+            Version++;
         }
 
         public void RenameGroup(Entity group, string name)
@@ -110,6 +115,7 @@ namespace multi_district_tool
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Name = name;
             EntityManager.SetComponentData(group, data);
+            Version++;
         }
 
         public void SetGroupType(Entity group, GroupServiceType type)
@@ -117,6 +123,7 @@ namespace multi_district_tool
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Type = type;
             EntityManager.SetComponentData(group, data);
+            Version++;
         }
 
         public bool AddMember(Entity group, Entity district)
@@ -131,6 +138,7 @@ namespace multi_district_tool
             }
             members.Add(new DistrictGroupMember(district));
             ReexpandGroup(group);
+            Version++;
             return true;
         }
 
@@ -143,6 +151,7 @@ namespace multi_district_tool
                 {
                     members.RemoveAt(i);
                     ReexpandGroup(group);
+                    Version++;
                     return true;
                 }
             }
@@ -167,6 +176,7 @@ namespace multi_district_tool
                 EntityManager.AddComponentData(building, new DistrictGroupAssignment(group));
             }
             ExpandToBuilding(building, group);
+            Version++;
             Mod.log.Info($"Assigned group \"{GetGroupName(group)}\" to {building}.");
             return true;
         }
@@ -182,6 +192,7 @@ namespace multi_district_tool
             {
                 EntityManager.GetBuffer<ServiceDistrict>(building).Clear();
             }
+            Version++;
             Mod.log.Info($"Unassigned group from {building}; it serves the whole city again.");
             return true;
         }
