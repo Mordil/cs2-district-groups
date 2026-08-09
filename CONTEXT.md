@@ -16,7 +16,7 @@ Companion to `RESEARCH.md` (engine facts & findings), `CLAUDE_IMPL_PLAN.md` (pla
 - **Probe quirk:** `Ctrl+Shift+G` adds "the first two districts" by entity-query order, which changes between sessions — that's why Test Group accumulated 4 members over several presses. Dedupe prevents further growth. Not a bug; just don't be surprised reading dumps.
 - The Phase 1 write probe (`Ctrl+Shift+W`) still exists alongside the group probes; it appends a single raw district to the selected building's buffer, bypassing groups.
 
-## Current code map (all in repo root)
+## Current code map (C# in `src/Code/`, UI project in `src/UI/`)
 
 | File | Contents |
 |---|---|

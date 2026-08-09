@@ -77,7 +77,7 @@
         there - so rebuild the UI after every deploy. UI-only iteration can still
         use 'npm run dev' in UI/ for hot reload without touching the C# build.-->
     <Target Name="BuildUIModule" AfterTargets="DeployWIP">
-        <Exec Command="&quot;$(MSBuildProjectDirectory)\UI\build-ui.bat&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\UI"/>
+        <Exec Command="&quot;$(MSBuildProjectDirectory)\src\UI\build-ui.bat&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\src\UI"/>
     </Target>
 
 </Project>
