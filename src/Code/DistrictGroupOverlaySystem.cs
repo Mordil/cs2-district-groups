@@ -10,7 +10,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     // Phase 4: draws each group's member-district boundaries in a distinct color
     // through the game's OverlayRenderSystem. Boundary segments are subdivided

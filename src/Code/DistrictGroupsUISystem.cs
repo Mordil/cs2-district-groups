@@ -6,13 +6,13 @@ using Game.UI;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     // Phase 5: C# side of the UI bindings. Binding group is the mod id from
     // UI/mod.json — keep the two in sync.
-    public partial class MultiDistrictUISystem : UISystemBase
+    public partial class DistrictGroupsUISystem : UISystemBase
     {
-        public const string kBindingGroup = "multi-district-tool";
+        public const string kBindingGroup = "district-groups";
 
         private DistrictGroupSystem m_GroupSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;

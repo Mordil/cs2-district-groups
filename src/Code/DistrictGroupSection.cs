@@ -5,12 +5,12 @@ using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     // Phase 5.3: a section on the vanilla selected-building info panel. Visible
     // for buildings that can serve districts; shows the assigned group and offers
     // type-filtered candidates. The JS side keys off this type's FULL NAME
-    // ("multi_district_tool.DistrictGroupSection") — renaming breaks the UI.
+    // ("DistrictGroups.DistrictGroupSection") — renaming breaks the UI.
     public partial class DistrictGroupSection : InfoSectionBase
     {
         protected override string group => "DistrictGroupSection";
@@ -28,8 +28,8 @@ namespace multi_district_tool
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_InfoUISystem.AddMiddleSection(this);
 
-            AddBinding(new TriggerBinding<Entity>(MultiDistrictUISystem.kBindingGroup, "assignGroup", OnAssignGroup));
-            AddBinding(new TriggerBinding(MultiDistrictUISystem.kBindingGroup, "unassignGroup", OnUnassignGroup));
+            AddBinding(new TriggerBinding<Entity>(DistrictGroupsUISystem.kBindingGroup, "assignGroup", OnAssignGroup));
+            AddBinding(new TriggerBinding(DistrictGroupsUISystem.kBindingGroup, "unassignGroup", OnUnassignGroup));
         }
 
         private void OnAssignGroup(Entity group)

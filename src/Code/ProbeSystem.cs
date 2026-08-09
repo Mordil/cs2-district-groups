@@ -9,7 +9,7 @@ using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     // Phase 1 probe (see CLAUDE_IMPL_PLAN.md): on-demand experiments triggered
     // from the options screen. Step 1.2 dumps district/selection state; step 1.3

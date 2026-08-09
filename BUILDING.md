@@ -10,7 +10,7 @@ How to rebuild and redeploy this mod from this machine. Verified working 2026-08
 | Project dir (WSL) | `/mnt/c/Users/Nathan/Documents/Unity Projects/multi-district-tool` |
 | CS2 modding toolchain (`CSII_TOOLPATH`) | `C:\Users\Nathan\AppData\LocalLow\Colossal Order\Cities Skylines II\.cache\Modding` |
 | Game managed assemblies (`CSII_MANAGEDPATH`) | `G:\SteamLibrary\steamapps\common\Cities Skylines II\Cities2_Data\Managed` (contains `Game.dll`) |
-| Deploy target (automatic) | `C:\Users\Nathan\AppData\LocalLow\Colossal Order\Cities Skylines II\Mods\multi-district-tool` |
+| Deploy target (automatic) | `C:\Users\Nathan\AppData\LocalLow\Colossal Order\Cities Skylines II\Mods\district-groups` |
 | Game logs | `C:\Users\Nathan\AppData\LocalLow\Colossal Order\Cities Skylines II\Logs\` |
 
 `CSII_TOOLPATH` and `CSII_MANAGEDPATH` are **Windows user environment variables**. Linux processes in WSL do not see them, and the csproj/Mod.props read them via `EnvironmentVariableTarget.User` — so the build must run through a **Windows** process.
@@ -26,7 +26,7 @@ cd "/mnt/c/Users/Nathan/Documents/Unity Projects/multi-district-tool" && cmd.exe
 - Do **not** use a Linux `dotnet` (it can't resolve the toolchain env vars). `cmd.exe /c "dotnet build"` uses Windows dotnet (`C:\Program Files\dotnet\dotnet.exe`) with the user env vars present.
 - A successful build takes ~10–60 s (first build runs Unity IL post-processing + Burst compilation for win/mac/linux) and ends with:
   ```
-  Copy output to deploy directory C:\Users\Nathan\AppData\LocalLow\...\Mods\multi-district-tool
+  Copy output to deploy directory C:\Users\Nathan\AppData\LocalLow\...\Mods\district-groups
   Build succeeded.
   ```
 - Release build: `cmd.exe /c "dotnet build -c Release"`.
@@ -41,17 +41,17 @@ cd "/mnt/c/Users/Nathan/Documents/Unity Projects/multi-district-tool" && cmd.exe
 ## Verifying a deployed build
 
 1. Start CS2, reach the main menu (or load a city).
-2. Check the mod's own log (logger is named `multi_district_tool.Mod`):
+2. Check the mod's own log (logger is named `DistrictGroups.Mod`):
    ```bash
-   tail "/mnt/c/Users/Nathan/AppData/LocalLow/Colossal Order/Cities Skylines II/Logs/multi_district_tool.Mod.log"
+   tail "/mnt/c/Users/Nathan/AppData/LocalLow/Colossal Order/Cities Skylines II/Logs/DistrictGroups.Mod.log"
    ```
    A healthy load shows `OnLoad` and the mod asset path.
 3. Cross-check `Logs/Modding.log` for the assembly + Burst library load lines:
    ```
-   Loaded additional Burst code ...multi-district-tool_win_x86_64.dll
-   Loaded multi-district-tool, Version=1.0.0.0 ...
+   Loaded additional Burst code ...district-groups_win_x86_64.dll
+   Loaded district-groups, Version=0.1.0.0 ...
    ```
-4. The options screen should list "Multi-District Tool".
+4. The options screen should list "District Groups".
 
 ## Iteration tips (no C# hot reload exists)
 
@@ -65,12 +65,13 @@ Mod assemblies are net48/Mono — they load once at game startup and cannot be u
 
 ## UI module (added in Phase 5)
 
-The `src/UI/` folder is a webpack/React/TypeScript project (structure cloned from yenyang's BetterBulldozer, i.e. the official `create-csii-ui-mod` template). It bundles to `multi-district-tool.mjs`, which the game auto-loads from the mod's deploy folder. React and the `cs2/*` modules are game-provided externals; type definitions live in `src/UI/types/`.
+The `src/UI/` folder is a webpack/React/TypeScript project (structure cloned from yenyang's BetterBulldozer, i.e. the official `create-csii-ui-mod` template). It bundles to `district-groups.mjs`, which the game auto-loads from the mod's deploy folder. React and the `cs2/*` modules are game-provided externals; type definitions live in `src/UI/types/`.
 
 - **`dotnet build` does everything**: an `AfterTargets="DeployWIP"` target runs `src/UI/build-ui.bat` after the C# deploy (which wipes the folder), so the `.mjs` is always restored. No separate step needed.
 - **UI-only iteration with hot reload:** run `src/UI/build-ui.bat` once to verify, or for watch mode run (from `src/UI/`): `cmd.exe /c "set PATH=C:\PROGRA~1\nodejs;%PATH%&& C:\PROGRA~1\nodejs\npm.cmd run dev"`. With the game launched with `--uiDeveloperMode`, saved changes rebuild the `.mjs` in place and the game picks them up live — no restart. The cohtml debugger is at http://localhost:9444.
 - **Node quirks on this machine:** Node lives at `C:\Program Files\nodejs` but is NOT on the PATH that WSL's `cmd.exe` interop sees — always use the short path `C:\PROGRA~1\nodejs\npm.cmd` and prepend `C:\PROGRA~1\nodejs` to PATH (npm child processes spawn bare `node`). `src/UI/build-ui.bat` does this internally.
-- Binding contract: the binding group string in `MultiDistrictUISystem.kBindingGroup` must equal the `id` in `src/UI/mod.json` (`multi-district-tool`).
+- Binding contract: the binding group string in `DistrictGroupsUISystem.kBindingGroup` must equal the `id` in `src/UI/mod.json` (`district-groups`). That `id` must *also* equal the assembly name (the `.csproj` filename), because `webpack.config.js` writes the bundle to `Mods\<mod.id>` while `Mod.targets` deploys the DLL to `Mods\<assembly name>` — if they diverge, the UI silently never loads.
+- Info-panel contract: the `componentList` key in `src/UI/src/mods/districtGroupSection.tsx` must equal the full C# type name `DistrictGroups.DistrictGroupSection`.
 
 ## Troubleshooting
 
@@ -83,4 +84,4 @@ The `src/UI/` folder is a webpack/React/TypeScript project (structure cloned fro
 
 - The toolchain Burst-compiles the mod assembly (win/mac/linux) — our own jobs *can* use Burst. The design constraint from `RESEARCH.md` is only that vanilla Burst jobs can't be Harmony-patched.
 - Decompiler access: the csproj references resolve against `CSII_MANAGEDPATH`, so in Rider, Ctrl+Click any `Game.*` type to decompile the shipped assembly (authoritative over the ps1ke guide, which may lag patches).
-- `ProbeSystem.cs` exists in the repo but is **not registered** in `Mod.OnLoad` — it's dormant Phase 1 scaffolding and compiles into the DLL without running.
+- `ProbeSystem.cs` **is** registered in `Mod.OnLoad` (at `SystemUpdatePhase.ToolUpdate`) and its dev hotkeys are live. Stripping it — along with the probe buttons and hotkeys in `Setting.cs` — is Phase 6 work before publishing.

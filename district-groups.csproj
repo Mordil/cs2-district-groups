@@ -3,6 +3,9 @@
     <PropertyGroup>
         <Configurations>Debug;Release</Configurations>
 
+        <!--Keep in step with ModVersion in PublishConfiguration.xml and version in src/UI/mod.json-->
+        <Version>0.1.0</Version>
+
         <!--The file where mod information which is required for publishing mod on PDX mods are stored-->
         <PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
     </PropertyGroup>

@@ -4,7 +4,7 @@ using Game.Areas;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     // Phase 2 registry (see CLAUDE_IMPL_PLAN.md): owns district-group entities and
     // expands group membership into the vanilla ServiceDistrict buffers of assigned

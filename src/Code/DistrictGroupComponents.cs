@@ -2,7 +2,7 @@ using Colossal.Serialization.Entities;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     public enum GroupServiceType : byte
     {

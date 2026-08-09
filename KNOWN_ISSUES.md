@@ -6,7 +6,7 @@ User-facing behaviors to document on the mod page / README. Verified in-game 202
 
 District **groups** (names, types, member lists, building assignments) are stored inside your save file using the game's own mod-data mechanism. What happens without the mod installed:
 
-- **Loading a save without the mod is safe and fully reversible.** The game logs that it skipped the mod's data (`Not serializable type: multi_district_tool.*` in `Player.log`) and everything else loads normally. If you reinstall the mod and load that same save file again, all groups come back intact.
+- **Loading a save without the mod is safe and fully reversible.** The game logs that it skipped the mod's data (`Not serializable type: DistrictGroups.*` in `Player.log`) and everything else loads normally. If you reinstall the mod and load that same save file again, all groups come back intact.
 - **Saving without the mod permanently strips the group data from that save file.** The skipped data no longer exists in memory, so it can't be written back. Reinstalling the mod later will show no groups in that save. There is no recovery.
 - **Service assignments themselves always survive.** The districts a building serves are written into the game's own vanilla data (the same "districts served" list you can edit by hand), so buildings keep serving their assigned districts even with the mod gone forever — only the group definitions (the reusable named sets) are lost.
 

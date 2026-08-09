@@ -29,7 +29,7 @@ Companion to `RESEARCH.md` (engine facts & findings), `CLAUDE_IMPL_PLAN.md` (pla
 ## Working conventions from this session
 
 - The user drives phase progression — finish the requested phase, report, and wait; don't start the next phase unprompted.
-- Validation loop: code + build + deploy happen here; the user runs the game and says "check the logs"; verification is done by reading `multi_district_tool.Mod.log` (and `Player.log` / `SceneFlow.log` for load-time behavior).
+- Validation loop: code + build + deploy happen here; the user runs the game and says "check the logs"; verification is done by reading `DistrictGroups.Mod.log` (and `Player.log` / `SceneFlow.log` for load-time behavior).
 - Acceptance bar: mod data correct in logs + vanilla UI reflecting it. Simulation behavior is assumed correct and is not verified (user decision — don't suggest it).
 - The feasibility report artifact (linked in `RESEARCH.md`) reflects the pre-implementation study; repo docs carry the living state.
 

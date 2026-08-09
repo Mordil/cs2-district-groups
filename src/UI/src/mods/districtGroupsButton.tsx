@@ -5,7 +5,7 @@ const groupCount$ = bindValue<number>(mod.id, "groupCount");
 
 // Phase 5.1 round-trip probe: shows a live value from C# and fires a trigger
 // back into C# on click (logged in the mod log).
-export const MultiDistrictButton = () => {
+export const DistrictGroupsButton = () => {
     const groupCount = useValue(groupCount$);
     return (
         <button

@@ -5,9 +5,9 @@ using Game.Modding;
 using Game.Settings;
 using System.Collections.Generic;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
-    [FileLocation(nameof(multi_district_tool))]
+    [FileLocation(nameof(DistrictGroups))]
     public class Setting : ModSetting
     {
         public const string kSection = "Main";
@@ -71,7 +71,7 @@ namespace multi_district_tool
         {
             return new Dictionary<string, string>
             {
-                { m_Setting.GetSettingsLocaleID(), "Multi-District Tool" },
+                { m_Setting.GetSettingsLocaleID(), "District Groups" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Main" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kGeneralGroup), "General" },
 
@@ -98,7 +98,7 @@ namespace multi_district_tool
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayToggleBinding)), "Toggle group overlay (in-game)" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayToggleBinding)), "Hotkey: show/hide colored district-group boundaries on the map. Default Ctrl+Shift+O." },
 
-                { m_Setting.GetBindingMapLocaleID(), "Multi-District Tool" },
+                { m_Setting.GetBindingMapLocaleID(), "District Groups" },
             };
         }
 

@@ -5,7 +5,7 @@ using Game.Tools;
 using Unity.Collections;
 using Unity.Entities;
 
-namespace multi_district_tool
+namespace DistrictGroups
 {
     // Phase 3: live sync. When a district is deleted during play, prune it from
     // all groups and re-expand affected buildings. (Vanilla's ServiceDistrictSystem

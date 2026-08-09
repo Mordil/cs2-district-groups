@@ -101,6 +101,6 @@ const Section = (props: any) => {
 // Middleware for the vanilla selected-info panel: the key must be the FULL C#
 // type name of the InfoSectionBase system that writes this section's data.
 export const DistrictGroupSectionComponent = (componentList: any): any => {
-    componentList["multi_district_tool.DistrictGroupSection"] = (props: any) => <Section {...props} />;
+    componentList["DistrictGroups.DistrictGroupSection"] = (props: any) => <Section {...props} />;
     return componentList;
 };
