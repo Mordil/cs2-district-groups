@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Reflection;
 using Colossal.UI.Binding;
 using Game.Areas;
 using Game.Prefabs;
@@ -21,15 +23,42 @@ namespace DistrictGroups
         private GroupServiceType m_BuildingType;
         private int m_LastSeenVersion = -1;
 
+        // SelectedInfoUISystem only exposes append (AddMiddleSection); vanilla
+        // sections are registered in a fixed order via a private list, so
+        // placing ours immediately before DistrictsSection ("Operating
+        // Districts") needs a direct Insert into that list via reflection.
+        private static readonly FieldInfo kMiddleSectionsField =
+            typeof(SelectedInfoUISystem).GetField("m_MiddleSections", BindingFlags.NonPublic | BindingFlags.Instance);
+
         protected override void OnCreate()
         {
             base.OnCreate();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
-            m_InfoUISystem.AddMiddleSection(this);
+            InsertBeforeDistrictsSection();
 
             AddBinding(new TriggerBinding<Entity>(DistrictGroupsUISystem.kBindingGroup, "assignGroup", OnAssignGroup));
             AddBinding(new TriggerBinding(DistrictGroupsUISystem.kBindingGroup, "unassignGroup", OnUnassignGroup));
+        }
+
+        private void InsertBeforeDistrictsSection()
+        {
+            // By the time m_InfoUISystem exists, SelectedInfoUISystem.OnCreate
+            // has already run AddSections(), so DistrictsSection is already in
+            // the list — GetOrCreateSystemManaged only creates it if it somehow
+            // isn't (defensive; shouldn't happen for a vanilla section).
+            DistrictsSection districtsSection = World.GetOrCreateSystemManaged<DistrictsSection>();
+            if (kMiddleSectionsField?.GetValue(m_InfoUISystem) is List<ISectionSource> sections)
+            {
+                int index = sections.IndexOf(districtsSection);
+                if (index >= 0)
+                {
+                    sections.Insert(index, this);
+                    return;
+                }
+            }
+            Mod.log.Info("Could not locate DistrictsSection in the info panel; falling back to appending our section.");
+            m_InfoUISystem.AddMiddleSection(this);
         }
 
         private void OnAssignGroup(Entity group)

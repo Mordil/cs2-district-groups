@@ -1,9 +1,12 @@
+using System.Reflection;
 using Colossal.Mathematics;
 using Game;
+using Game.Areas;
 using Game.Common;
 using Game.Input;
 using Game.Rendering;
 using Game.Simulation;
+using Game.Tools;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -37,9 +40,16 @@ namespace DistrictGroups
         private const float kOutlineWidth = 5f;
         private const float kSegmentStep = 12f;
 
+        // requireAreas has a protected setter; setting it on the default tool
+        // makes the game render all districts exactly like the vanilla Areas
+        // tool does (fills, borders, labels) — no drawing on our side.
+        private static readonly PropertyInfo kRequireAreasProperty =
+            typeof(ToolBaseSystem).GetProperty(nameof(ToolBaseSystem.requireAreas));
+
         private OverlayRenderSystem m_OverlayRenderSystem;
         private TerrainSystem m_TerrainSystem;
         private WaterSystem m_WaterSystem;
+        private DefaultToolSystem m_DefaultToolSystem;
         private EntityQuery m_GroupQuery;
         private ProxyAction m_ToggleAction;
         private bool m_Visible;
@@ -47,7 +57,14 @@ namespace DistrictGroups
         // The UI panel drives visibility too (panel open = overlay on).
         public void SetVisible(bool visible)
         {
+            if (m_Visible == visible)
+            {
+                return;
+            }
             m_Visible = visible;
+            Mod.log.Info($"Group overlay {(m_Visible ? "ON" : "OFF")}");
+            kRequireAreasProperty?.SetValue(m_DefaultToolSystem,
+                visible ? AreaTypeMask.Districts : AreaTypeMask.None);
         }
 
         protected override void OnCreate()
@@ -56,6 +73,7 @@ namespace DistrictGroups
             m_OverlayRenderSystem = World.GetOrCreateSystemManaged<OverlayRenderSystem>();
             m_TerrainSystem = World.GetOrCreateSystemManaged<TerrainSystem>();
             m_WaterSystem = World.GetOrCreateSystemManaged<WaterSystem>();
+            m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_ToggleAction = Mod.Settings?.GetAction(Setting.kOverlayToggleActionName);
             if (m_ToggleAction != null) m_ToggleAction.shouldBeEnabled = true;
@@ -65,8 +83,7 @@ namespace DistrictGroups
         {
             if (m_ToggleAction?.WasPerformedThisFrame() ?? false)
             {
-                m_Visible = !m_Visible;
-                Mod.log.Info($"Group overlay {(m_Visible ? "ON" : "OFF")}");
+                SetVisible(!m_Visible);
             }
             if (!m_Visible || m_GroupQuery.IsEmptyIgnoreFilter)
             {
