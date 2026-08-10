@@ -8,7 +8,7 @@ namespace DistrictGroups
 {
     public class Mod : IMod
     {
-        public static ILog log = LogManager.GetLogger($"{nameof(DistrictGroups)}.{nameof(Mod)}").SetShowsErrorsInUI(false);
+        public static ILog log = LogManager.GetLogger($"{nameof(DistrictGroups)}").SetShowsErrorsInUI(false);
         public static Setting Settings { get; private set; }
         private Setting m_Setting;
 
