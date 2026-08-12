@@ -429,16 +429,19 @@ export const GroupManager = () => {
     // type filters down to just that type, still in creation order.
     const displayedGroups = filterType === kAllTypes ? groups : groups.filter((g) => g.type === filterType);
 
-    const togglePanel = () => {
-        const next = !open;
-        setOpen(next);
-        trigger(mod.id, "setOverlay", next);
-        if (next) {
-            setContentMounted(true);
-        } else {
-            window.setTimeout(() => setContentMounted(false), kFadeDurationMs);
-        }
+    const openPanel = () => {
+        setOpen(true);
+        trigger(mod.id, "setOverlay", true);
+        setContentMounted(true);
     };
+
+    const closePanel = () => {
+        setOpen(false);
+        trigger(mod.id, "setOverlay", false);
+        window.setTimeout(() => setContentMounted(false), kFadeDurationMs);
+    };
+
+    const togglePanel = () => (open ? closePanel() : openPanel());
 
     const onFilterChange = (type: number) => {
         setFilterType(type);
