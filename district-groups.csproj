@@ -4,7 +4,7 @@
         <Configurations>Debug;Release</Configurations>
 
         <!--Keep in step with ModVersion in PublishConfiguration.xml and version in src/UI/mod.json-->
-        <Version>0.1.0</Version>
+        <Version>0.2.0</Version>
 
         <!--The file where mod information which is required for publishing mod on PDX mods are stored-->
         <PublishConfigurationPath>Properties\PublishConfiguration.xml</PublishConfigurationPath>
@@ -81,6 +81,18 @@
         use 'npm run dev' in UI/ for hot reload without touching the C# build.-->
     <Target Name="BuildUIModule" AfterTargets="DeployWIP">
         <Exec Command="&quot;$(MSBuildProjectDirectory)\src\UI\build-ui.bat&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\src\UI"/>
+    </Target>
+
+    <!--Custom SVG icons served to the UI over coui://districtgroups/ (the host is
+        registered in Mod.OnLoad). The deploy step wipes the Mods folder, so - like
+        the UI bundle above - these have to be re-copied after every deploy. Pattern
+        is the one documented in the toolchain's Mod.targets header.-->
+    <Target Name="DeployIcons" AfterTargets="DeployWIP">
+        <ItemGroup>
+            <IconFilesToDeploy Include="$(MSBuildProjectDirectory)\Icons\**\*.svg"/>
+        </ItemGroup>
+        <Copy SourceFiles="@(IconFilesToDeploy)"
+              DestinationFiles="@(IconFilesToDeploy->'$(DeployDir)\Icons\%(RecursiveDir)%(Filename)%(Extension)')"/>
     </Target>
 
 </Project>

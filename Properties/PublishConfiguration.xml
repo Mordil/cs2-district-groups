@@ -4,34 +4,75 @@
 	<!--Name of the mod to display to players-->
 	<DisplayName Value="District Groups" />
 	<!--Short description of the mod-->
-	<ShortDescription Value="This is a short description" />
+	<ShortDescription Value="Put your districts into groups, then assign a whole group to a service building at once." />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
-	<!--LongDescription Value="This is a long description" /-->
+	<!--NOTE: same rule as ChangeLog below - a Value attribute would win over this
+	    element's body even when empty, so keep the attribute form deleted.-->
 	<LongDescription>
-This is a long description
+**This mod is in alpha.** It is still early, and it will keep changing. When you
+update to a new version, your groups may be lost. If that happens, you have to
+make them again. Your buildings will keep serving the districts they already
+have.
+
+In the base game you pick which districts a service building serves. You do this
+for every building, one at a time. If you paint a new district or change your
+mind, you have to edit every building again.
+
+District Groups makes this easier.
+
+**How to use it**
+
+1. Open the District Groups panel.
+2. Make a group. Give it a name and pick a service type, like fire or garbage.
+3. Add districts to the group.
+4. Select a service building. In its info panel, pick a group.
+
+The building now serves every district in that group. Later, when you add or
+remove a district, every building that uses the group updates by itself.
+
+**Good to know**
+
+- One district can be in many groups.
+- A building only sees groups that match its own service type.
+- This mod does not change how the game works. It only fills in the
+  "districts served" list for you.
+- While a building uses a group, the mod controls its district list. If you
+  edit that list by hand, your change will be replaced.
+
+**If you remove the mod**
+
+Your buildings keep serving their districts. Only the groups are lost. Loading a
+save without the mod is safe. But if you save the game while the mod is removed,
+the groups are gone for good.
 	</LongDescription>
 	<!--Thumbnail-->
 	<Thumbnail Value="Properties/Thumbnail.alpha.png" />
 	<!--Screenshot, can be set multiple times-->
 	<Screenshot Value="Properties/ProjectBanner.png" />
+	<Screenshot Value="Properties/Screenshots/Preview1.png" />
+	<Screenshot Value="Properties/Screenshots/Preview2.png" />
 	<!--Tag, can be set multiple times-->
-	<Tag Value="" />
+	<Tag Value="Areas" />
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="0.1.0" />
+	<ModVersion Value="0.2.0" />
 	<!--Recommended version of the base game to use the mod-->
-	<GameVersion Value="1.0.*" />
+	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
 	<Dependency Id="74417" DisplayName="Unified Icon Library" Version="1.0.13" />
 	<!--Required DLC, can be set multiple times. Supported values are "Landmark Buildings", "San Fransisco Set", "Beach Properties", "Urban Promenades", "Modern Architecture"-->
 	<RequiredDLC Value="" />
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<ChangeLog Value="" />
-	<!--<ChangeLog>
-	</ChangeLog>-->
+	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
+	    so keep the attribute form deleted while using multi-line notes below.-->
+	<ChangeLog>
+- Overhaul of the UI and UX
+- Added list filtering by type
+- Moved the group assignment section in the info panel to be near the operating districts
+	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
-	<ExternalLink Type="" Url="" />
+	<ExternalLink Type="github" Url="https://github.com/Mordil/cs2-district-groups" />
 	<!--Supported values Public, Private, Unlisted-->
-	<AccessLevel Value="Unlisted" />
+	<AccessLevel Value="Public" />
 </Publish>
