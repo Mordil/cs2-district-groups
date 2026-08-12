@@ -12,3 +12,11 @@ The mod adds no new simulation mechanics. Groups expand into the game's own `Ser
 - **Overlay** — member districts are outlined per group in distinct colors while the mod panel is open.
 
 Documentation: [`BUILDING.md`](BUILDING.md) (local build & deploy), [`RESEARCH.md`](RESEARCH.md) (engine findings and why the design is what it is), [`CLAUDE_IMPL_PLAN.md`](CLAUDE_IMPL_PLAN.md) (phase plan & status), [`KNOWN_ISSUES.md`](KNOWN_ISSUES.md) (user-facing limitations).
+
+## License
+
+[MIT](LICENSE) — © 2026 Mordil.
+
+Icons under `Icons/` are original to this project.
+
+[Unified Icon Library](https://mods.paradoxplaza.com/mods/74417) images and Cities: Skylines II game assets are property of the original authors and not covered by this license.
