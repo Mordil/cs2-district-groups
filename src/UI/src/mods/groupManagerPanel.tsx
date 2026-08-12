@@ -412,7 +412,10 @@ export const GroupManager = () => {
     };
 
     const onCreateGroup = () => {
-        trigger(mod.id, "createGroup", `New Group ${nextGroupNumber}`, 0);
+        // "All Groups" (kAllTypes) has no real type to inherit, so new
+        // groups created under that filter default to Generic.
+        const newGroupType = filterType === kAllTypes ? 0 : filterType;
+        trigger(mod.id, "createGroup", `New Group ${nextGroupNumber}`, newGroupType);
         setNextGroupNumber((n) => n + 1);
     };
 
