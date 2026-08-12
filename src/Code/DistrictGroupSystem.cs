@@ -49,8 +49,12 @@ namespace DistrictGroups
         }
 
         // Safety net for saves that already contain corrupted groups: drop member
-        // entries whose district no longer exists, then delete groups left with no
-        // members and no assigned buildings.
+        // entries whose district no longer exists. Does NOT delete groups just for
+        // being empty/unassigned — a freshly created group is legitimately both
+        // until the user populates it, and that's not this method's call to make.
+        // (Ghost entities left over from a *previous* session are a different
+        // problem, already fully handled by OnGamePreload's purge above, which
+        // runs before this save's own data is even deserialized.)
         protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
         {
             base.OnGameLoadingComplete(purpose, mode);
@@ -77,13 +81,6 @@ namespace DistrictGroups
                 {
                     Mod.log.Info($"Load cleanup: pruned {pruned} dangling member(s) from group \"{GetGroupName(group)}\".");
                     ReexpandGroup(group);
-                }
-
-                using NativeArray<Entity> assigned = GetAssignedBuildings(group, Allocator.Temp);
-                if (members.Length == 0 && assigned.Length == 0)
-                {
-                    Mod.log.Info($"Load cleanup: deleting empty, unassigned group \"{GetGroupName(group)}\" {group}.");
-                    EntityManager.DestroyEntity(group);
                 }
             }
         }
