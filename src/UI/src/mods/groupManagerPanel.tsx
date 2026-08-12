@@ -1,6 +1,6 @@
 import { bindValue, trigger, useValue } from "cs2/api";
 import { getModule } from "cs2/modding";
-import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Tooltip } from "cs2/ui";
+import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Scrollable, Tooltip } from "cs2/ui";
 import { useState } from "react";
 import mod from "../../mod.json";
 import { UilIcon } from "mods/uilIcons";
@@ -63,6 +63,9 @@ const styles = {
         borderRadius: "4rem",
         margin: "4rem",
     } as const,
+    // Outer shell just clips the header/body blocks to the rounded corners;
+    // the two children carry their own backgrounds (vanilla info-panel style:
+    // dark title bar over a lighter gray body).
     panel: {
         position: "absolute",
         top: "60rem",
@@ -72,16 +75,29 @@ const styles = {
         display: "flex",
         flexDirection: "column",
         pointerEvents: "auto",
-        background: "rgba(24, 33, 51, 0.95)",
         color: "white",
         borderRadius: "6rem",
-        padding: "10rem",
         fontSize: "14rem",
+        overflow: "hidden",
+    } as const,
+    panelHeader: {
+        background: "rgba(24, 33, 51, 0.95)",
+        padding: "10rem 10rem 10rem",
+    } as const,
+    panelBody: {
+        background: "rgba(42, 56, 84, 0.88)",
+        // Less right padding than the other sides: Scrollable reserves its
+        // own space for the track, so the full 10rem on top of that left a
+        // dead gap between the scrollbar and the panel edge.
+        padding: "8rem 0rem 10rem 10rem",
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+        minHeight: 0,
     } as const,
     listArea: {
         flex: 1,
         minHeight: 0,
-        overflowY: "auto",
     } as const,
     // Roughly five member rows tall; longer lists scroll internally.
     memberList: {
@@ -115,10 +131,9 @@ const styles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: "6rem",
     } as const,
     header: {
-        fontWeight: "bold",
+        color: "rgb(75, 195, 241)",
         fontSize: "16rem",
         textTransform: "uppercase",
         letterSpacing: "1rem",
@@ -348,36 +363,40 @@ export const GroupManager = () => {
             </button>
             {open && (
                 <div style={styles.panel}>
-                    <div style={styles.headerRow}>
-                        <div style={styles.header}>District Groups</div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                            <Tooltip tooltip="Adds a new generic group with no member districts.">
-                                <button
-                                    className={css.newGroupButton}
-                                    style={styles.newGroupButton}
-                                    onClick={onCreateGroup}
-                                >
-                                    New Group
-                                </button>
-                            </Tooltip>
-                            <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+                    <div style={styles.panelHeader}>
+                        <div style={styles.headerRow}>
+                            <div style={styles.header}>District Groups</div>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <Tooltip tooltip="Adds a new generic group with no member districts.">
+                                    <button
+                                        className={css.newGroupButton}
+                                        style={styles.newGroupButton}
+                                        onClick={onCreateGroup}
+                                    >
+                                        New Group
+                                    </button>
+                                </Tooltip>
+                                <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+                            </div>
                         </div>
                     </div>
 
-                    <div style={styles.listArea}>
-                        {groups.length === 0 && (
-                            <div style={styles.subtle}>No groups yet. Create one above.</div>
-                        )}
-                        {groups.length > 0 && displayedGroups.length === 0 && (
-                            <div style={styles.subtle}>No groups match this filter.</div>
-                        )}
-                        {displayedGroups.map((group) => (
-                            <GroupCard
-                                key={`${group.entity.index}:${group.entity.version}`}
-                                group={group}
-                                districts={districts}
-                            />
-                        ))}
+                    <div style={styles.panelBody}>
+                        <Scrollable vertical={true} trackVisibility="always" style={styles.listArea}>
+                            {groups.length === 0 && (
+                                <div style={styles.subtle}>No groups yet. Create one above.</div>
+                            )}
+                            {groups.length > 0 && displayedGroups.length === 0 && (
+                                <div style={styles.subtle}>No groups match this filter.</div>
+                            )}
+                            {displayedGroups.map((group) => (
+                                <GroupCard
+                                    key={`${group.entity.index}:${group.entity.version}`}
+                                    group={group}
+                                    districts={districts}
+                                />
+                            ))}
+                        </Scrollable>
                     </div>
                 </div>
             )}
