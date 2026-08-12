@@ -1,10 +1,11 @@
 import { bindValue, trigger, useValue } from "cs2/api";
 import { getModule } from "cs2/modding";
-import { Dropdown, DropdownToggle } from "cs2/ui";
+import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Tooltip } from "cs2/ui";
 import { useState } from "react";
 import mod from "../../mod.json";
 import { UilIcon } from "mods/uilIcons";
 import css from "./groupManagerPanel.module.scss";
+import selectorCss from "./selectorToggle.module.scss";
 
 // Vanilla dropdown internals (Recolor's pattern): the item component and the
 // editor theme aren't exported by cs2/ui, so pull them from the module registry.
@@ -44,8 +45,12 @@ export const kTypeLabels = [
     "Welfare",
 ];
 
+const kAllTypes = -1;
+const kFilterLabels = ["All Groups", ...kTypeLabels];
+
 const groups$ = bindValue<Group[]>(mod.id, "groups", []);
 const districts$ = bindValue<NamedEntity[]>(mod.id, "districts", []);
+const markdownRenderer = new MarkdownRenderer();
 
 const sameEntity = (a: Entity, b: Entity) => a.index === b.index && a.version === b.version;
 
@@ -106,10 +111,15 @@ const styles = {
         border: "1rem solid rgba(255,255,255,0.3)",
         flex: 1,
     } as const,
+    headerRow: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: "6rem",
+    } as const,
     header: {
         fontWeight: "bold",
         fontSize: "16rem",
-        marginBottom: "6rem",
         textTransform: "uppercase",
         letterSpacing: "1rem",
     } as const,
@@ -150,10 +160,63 @@ const TypePicker = (props: { value: number; onChange: (type: number) => void }) 
             </DropdownItem>
         ))}
     >
-        <DropdownToggle disabled={false} style={{ backgroundColor: "rgba(93, 102, 116, 0.9)" }}>
+        <DropdownToggle
+            disabled={false}
+            openIconComponent={<></>}
+            closeIconComponent={<></>}
+            className={selectorCss.selectorToggle}
+        >
             <div>{kTypeLabels[props.value] ?? "?"}</div>
         </DropdownToggle>
     </Dropdown>
+);
+
+const filterTooltip = (
+    <FormattedParagraphs
+        renderer={markdownRenderer}
+        text={[
+            "Filter the list of groups by their **type**.",
+            "If **All Groups** is selected, then all groups will be listed."
+        ]}
+    />
+)
+// -1 ("All Types") plus every real type. Distinct from TypePicker (which only
+// offers real types, for assigning a group's own type).
+const TypeFilterPicker = (props: { value: number; onChange: (type: number) => void }) => (
+    <Tooltip tooltip={filterTooltip}>
+        <Dropdown
+            theme={dropdownTheme}
+            content={kFilterLabels.map((label, i) => {
+                const value = i - 1;
+                return (
+                    <DropdownItem
+                        key={value}
+                        value={value}
+                        className={dropdownTheme.dropdownItem}
+                        selected={value === props.value}
+                        closeOnSelect={true}
+                        onChange={() => props.onChange(value)}
+                    >
+                        <div>{label}</div>
+                    </DropdownItem>
+                );
+            })}
+        >
+            <DropdownToggle
+                disabled={false}
+                openIconComponent={<></>}
+                closeIconComponent={<></>}
+                className={selectorCss.selectorToggle}
+            >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <UilIcon name="FunnelFilter" size="12rem" />
+                    <span style={{ marginLeft: "5rem" }}>
+                        {props.value === kAllTypes ? "All Groups" : kTypeLabels[props.value] ?? "?"}
+                    </span>
+                </div>
+            </DropdownToggle>
+        </Dropdown>
+    </Tooltip>
 );
 
 const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
@@ -254,13 +317,23 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
 
 export const GroupManager = () => {
     const [open, setOpen] = useState(false);
+    const [filterType, setFilterType] = useState(kAllTypes);
     const groups = useValue(groups$);
     const districts = useValue(districts$);
+
+    // "All Types" keeps creation order (the binding's own order); a specific
+    // type filters down to just that type, still in creation order.
+    const displayedGroups = filterType === kAllTypes ? groups : groups.filter((g) => g.type === filterType);
 
     const togglePanel = () => {
         const next = !open;
         setOpen(next);
         trigger(mod.id, "setOverlay", next);
+    };
+
+    const onFilterChange = (type: number) => {
+        setFilterType(type);
+        trigger(mod.id, "setOverlayFilter", type);
     };
 
     return (
@@ -270,13 +343,19 @@ export const GroupManager = () => {
             </button>
             {open && (
                 <div style={styles.panel}>
-                    <div style={styles.header}>District Groups</div>
+                    <div style={styles.headerRow}>
+                        <div style={styles.header}>District Groups</div>
+                        <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+                    </div>
 
                     <div style={styles.listArea}>
                         {groups.length === 0 && (
                             <div style={styles.subtle}>No groups yet. Create one below.</div>
                         )}
-                        {groups.map((group) => (
+                        {groups.length > 0 && displayedGroups.length === 0 && (
+                            <div style={styles.subtle}>No groups match this filter.</div>
+                        )}
+                        {displayedGroups.map((group) => (
                             <GroupCard
                                 key={`${group.entity.index}:${group.entity.version}`}
                                 group={group}

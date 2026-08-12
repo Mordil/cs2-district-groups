@@ -3,7 +3,7 @@ import { getModule } from "cs2/modding";
 import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer } from "cs2/ui";
 import mod from "../../mod.json";
 import { kTypeLabels } from "mods/groupManagerPanel";
-import css from "./districtGroupSection.module.scss";
+import selectorCss from "./selectorToggle.module.scss";
 
 interface Entity {
     index: number;
@@ -103,9 +103,9 @@ const Section = (props: any) => {
                             disabled={false}
                             openIconComponent={<></>}
                             closeIconComponent={<></>}
-                            className={css.groupToggle}
+                            className={selectorCss.selectorToggle}
                         >
-                            <div style={{ color: "white" }}>{hasAssignment ? assignedGroupName : "Unassigned"}</div>
+                            <div>{hasAssignment ? assignedGroupName : "Unassigned"}</div>
                         </DropdownToggle>
                     </Dropdown>
                 }

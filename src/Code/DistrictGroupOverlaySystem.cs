@@ -54,6 +54,10 @@ namespace DistrictGroups
         private ProxyAction m_ToggleAction;
         private bool m_Visible;
 
+        // -1 ("All Groups" in the panel) draws every group; otherwise only
+        // groups of that type are drawn, mirroring the panel's own filtered list.
+        private int m_TypeFilter = -1;
+
         // The UI panel drives visibility too (panel open = overlay on).
         public void SetVisible(bool visible)
         {
@@ -65,6 +69,11 @@ namespace DistrictGroups
             Mod.log.Info($"Group overlay {(m_Visible ? "ON" : "OFF")}");
             kRequireAreasProperty?.SetValue(m_DefaultToolSystem,
                 visible ? AreaTypeMask.Districts : AreaTypeMask.None);
+        }
+
+        public void SetTypeFilter(int type)
+        {
+            m_TypeFilter = type;
         }
 
         protected override void OnCreate()
@@ -97,6 +106,12 @@ namespace DistrictGroups
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
             for (int i = 0; i < groups.Length; i++)
             {
+                if (m_TypeFilter >= 0
+                    && (int)EntityManager.GetComponentData<DistrictGroupData>(groups[i]).m_Type != m_TypeFilter)
+                {
+                    continue;
+                }
+
                 Color color = kPalette[i % kPalette.Length];
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
                 foreach (DistrictGroupMember member in members)

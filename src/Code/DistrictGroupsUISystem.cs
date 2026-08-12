@@ -49,6 +49,8 @@ namespace DistrictGroups
                 (group, district) => m_GroupSystem.RemoveMember(group, district)));
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setOverlay",
                 visible => m_OverlaySystem.SetVisible(visible)));
+            AddBinding(new TriggerBinding<int>(kBindingGroup, "setOverlayFilter",
+                type => m_OverlaySystem.SetTypeFilter(type)));
         }
 
         private void WriteGroups(IJsonWriter writer)

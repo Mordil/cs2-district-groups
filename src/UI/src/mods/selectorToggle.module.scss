@@ -1,0 +1,19 @@
+// Shared look for every group/type selector dropdown toggle (the filter
+// picker, per-group type picker, and the building info panel's group
+// assignment dropdown) — a lighter gray at rest, darkening to the "active"
+// gray on hover.
+// !important on both rules: this class is used from two different files
+// (groupManagerPanel.tsx and districtGroupSection.tsx), each pulling in the
+// vanilla editor-dropdown theme too — depending on webpack's chunk/CSS
+// ordering, the vanilla toggle's own :hover rule can end up declared after
+// ours and win the specificity tie in one context but not the other.
+.selectorToggle {
+    background: rgba(120, 130, 145, 0.5) !important;
+    color: white !important;
+    border-radius: 3rem;
+    padding: 2rem 10rem;
+}
+
+.selectorToggle:hover {
+    background: rgba(93, 102, 116, 0.9) !important;
+}
