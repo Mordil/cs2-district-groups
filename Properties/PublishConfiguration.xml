@@ -9,16 +9,16 @@
 	<!--NOTE: same rule as ChangeLog below - a Value attribute would win over this
 	    element's body even when empty, so keep the attribute form deleted.-->
 	<LongDescription>
-**This mod is in alpha.** It is still early, and it will keep changing. When you
-update to a new version, your groups may be lost. If that happens, you have to
-make them again. Your buildings will keep serving the districts they already
-have.
-
 In the base game you pick which districts a service building serves. You do this
 for every building, one at a time. If you paint a new district or change your
 mind, you have to edit every building again.
 
 District Groups makes this easier.
+
+**This mod is in alpha.** It is still early, and it will keep changing. When you
+update to a new version, your groups may be lost. If that happens, you have to
+make them again. Your buildings will keep serving the districts they already
+have.
 
 **How to use it**
 
@@ -51,6 +51,9 @@ the groups are gone for good.
 	<Screenshot Value="Properties/ProjectBanner.png" />
 	<Screenshot Value="Properties/Screenshots/Preview1.png" />
 	<Screenshot Value="Properties/Screenshots/Preview2.png" />
+	<Screenshot Value="Properties/Screenshots/Preview3.png" />
+	<Screenshot Value="Properties/Screenshots/Preview4.png" />
+	<Screenshot Value="Properties/Screenshots/Preview5.png" />
 	<!--Tag, can be set multiple times. The server validates against a fixed list and
 	    rejects anything else; the UI label "Areas" is the tag id "UIAreas". Other likely
 	    ids: Code Mod (seeded by the publisher), Map, Savegame, Prefab, Themes,
@@ -59,7 +62,7 @@ the groups are gone for good.
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
-	<ModVersion Value="0.2.0" />
+	<ModVersion Value="0.3.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -70,9 +73,12 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Overhaul of the UI and UX
-- Added list filtering by type
-- Moved the group assignment section in the info panel to be near the operating districts
+- Added confirmation dialog when deleting groups that are in-use
+- Added Settings option to control the width of group overlay border
+- Removed debug and development Settings options and keybindings
+- Overhaul the group district selection UI/UX
+- Fixed empty groups being deleted when you load the save file
+- Fixed the filter selector tooltip in the panel no longer appearing once you've changed the filter
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/Mordil/cs2-district-groups" />
