@@ -7,7 +7,7 @@ How to rebuild and redeploy this mod from this machine. Verified working 2026-08
 | Thing | Value |
 |---|---|
 | Dev shell | WSL2 (Linux), project on the Windows filesystem |
-| Project dir (WSL) | `/mnt/c/Users/Nathan/Documents/Unity Projects/multi-district-tool` |
+| Project dir (WSL) | `/mnt/c/Users/Nathan/Documents/Unity Projects/district-groups` |
 | CS2 modding toolchain (`CSII_TOOLPATH`) | `C:\Users\Nathan\AppData\LocalLow\Colossal Order\Cities Skylines II\.cache\Modding` |
 | Game managed assemblies (`CSII_MANAGEDPATH`) | `G:\SteamLibrary\steamapps\common\Cities Skylines II\Cities2_Data\Managed` (contains `Game.dll`) |
 | Deploy target (automatic) | `C:\Users\Nathan\AppData\LocalLow\Colossal Order\Cities Skylines II\Mods\district-groups` |
@@ -20,7 +20,7 @@ How to rebuild and redeploy this mod from this machine. Verified working 2026-08
 From WSL, in the project directory:
 
 ```bash
-cd "/mnt/c/Users/Nathan/Documents/Unity Projects/multi-district-tool" && cmd.exe /c "dotnet build"
+cd "/mnt/c/Users/Nathan/Documents/Unity Projects/district-groups" && cmd.exe /c "dotnet build"
 ```
 
 - Do **not** use a Linux `dotnet` (it can't resolve the toolchain env vars). `cmd.exe /c "dotnet build"` uses Windows dotnet (`C:\Program Files\dotnet\dotnet.exe`) with the user env vars present.
