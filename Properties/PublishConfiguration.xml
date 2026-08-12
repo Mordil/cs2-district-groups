@@ -51,16 +51,16 @@ the groups are gone for good.
 	<Screenshot Value="Properties/ProjectBanner.png" />
 	<Screenshot Value="Properties/Screenshots/Preview1.png" />
 	<Screenshot Value="Properties/Screenshots/Preview2.png" />
-	<Screenshot Value="Properties/Screenshots/Preview3.png" />
-	<Screenshot Value="Properties/Screenshots/Preview4.png" />
-	<Screenshot Value="Properties/Screenshots/Preview5.png" />
+	<Screenshot Value="Properties/Screenshots/Preview3.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview4.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview5.jpg" />
 	<!--Tag, can be set multiple times. The server validates against a fixed list and
 	    rejects anything else; the UI label "Areas" is the tag id "UIAreas". Other likely
 	    ids: Code Mod (seeded by the publisher), Map, Savegame, Prefab, Themes,
 	    UI-Categories. A wrong value fails the upload with the full list in the error.-->
 	<Tag Value="UIAreas" />
 	<!--Link to the forum post where the mod can be discussed-->
-	<ForumLink Value="" />
+	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 	<!--Version of the mod-->
 	<ModVersion Value="0.3.0" />
 	<!--Recommended version of the base game to use the mod-->
