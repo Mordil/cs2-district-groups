@@ -36,7 +36,6 @@ namespace DistrictGroups
             new Color(0.55f, 0.60f, 0.65f, 1f), // slate
         };
 
-        private const float kOutlineWidth = 10f;
         private const float kSegmentStep = 12f;
 
         // requireAreas has a protected setter; setting it on the default tool
@@ -132,6 +131,7 @@ namespace DistrictGroups
                 return;
             }
 
+            float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
             TerrainHeightData terrainHeight = m_TerrainSystem.GetHeightData();
             var waterSurface = m_WaterSystem.GetSurfaceData(out JobHandle _);
 
@@ -171,7 +171,7 @@ namespace DistrictGroups
                         {
                             float3 point = math.lerp(a, b, (float)s / steps);
                             point.y = WaterUtils.SampleHeight(ref waterSurface, ref terrainHeight, point);
-                            buffer.DrawLine(color, new Line3.Segment(previous, point), kOutlineWidth);
+                            buffer.DrawLine(color, new Line3.Segment(previous, point), outlineWidth);
                             previous = point;
                         }
                     }
