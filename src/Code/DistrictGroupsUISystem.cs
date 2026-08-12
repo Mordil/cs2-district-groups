@@ -17,6 +17,7 @@ namespace DistrictGroups
 
         private DistrictGroupSystem m_GroupSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;
+        private DistrictGroupSelectionSystem m_SelectionSystem;
         private NameSystem m_NameSystem;
         private SelectedInfoUISystem m_SelectedInfoUISystem;
         private EntityQuery m_GroupQuery;
@@ -32,6 +33,7 @@ namespace DistrictGroups
             base.OnCreate();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_OverlaySystem = World.GetOrCreateSystemManaged<DistrictGroupOverlaySystem>();
+            m_SelectionSystem = World.GetOrCreateSystemManaged<DistrictGroupSelectionSystem>();
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
             m_SelectedInfoUISystem = World.GetOrCreateSystemManaged<SelectedInfoUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
@@ -44,6 +46,8 @@ namespace DistrictGroups
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "districts", WriteDistricts));
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "areasVisible",
                 () => m_OverlaySystem.AreasVisible));
+            AddUpdateBinding(new RawValueBinding(kBindingGroup, "selectingGroup",
+                writer => WriteEntity(writer, m_SelectionSystem.SelectingGroup)));
 
             AddBinding(new TriggerBinding<string, int>(kBindingGroup, "createGroup",
                 (name, type) => m_GroupSystem.CreateGroup(name, (GroupServiceType)type)));
@@ -62,6 +66,8 @@ namespace DistrictGroups
                 type => m_OverlaySystem.SetTypeFilter(type)));
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setAreasVisible",
                 visible => m_OverlaySystem.SetAreasVisible(visible)));
+            AddBinding(new TriggerBinding<Entity>(kBindingGroup, "toggleDistrictSelection",
+                group => m_SelectionSystem.ToggleSelection(group)));
         }
 
         // "setOverlay" fires exactly at our panel's open/close, so it doubles

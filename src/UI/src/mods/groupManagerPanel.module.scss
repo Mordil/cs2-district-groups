@@ -73,6 +73,28 @@ $rowControlHeight: 22rem;
     justify-content: center;
 }
 
+// Per-district remove button: no background of its own, a plain gray
+// trashcan icon (opacity dims the icon's default white to a neutral gray
+// against the panel's dark background — <img> icons don't take a CSS
+// `color`, so filter/opacity is the only way to retint them).
+.memberDeleteButton {
+    background: transparent;
+    border-radius: 3rem;
+    padding: 2rem 8rem;
+    margin: 2rem 2rem;
+    height: $rowControlHeight;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.55;
+}
+
+.memberDeleteButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0.85;
+}
+
 // Icon-only square button matching the vanilla toolbar's own tool icons
 // (same size/blue/rounding as the neighboring diamond/cone/paintbrush buttons).
 .panelToggleButton {
@@ -87,5 +109,34 @@ $rowControlHeight: 22rem;
 }
 
 .panelToggleButton:hover {
+    background: rgb(122, 211, 245);
+}
+
+// Full-width row button matching vanilla's "Select operating districts"
+// button on service buildings (dark rounded row, icon + label, centered).
+.selectDistrictsButton {
+    width: 100%;
+    height: 32rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4rem;
+    color: white;
+    margin: 4rem 0;
+}
+
+.selectDistrictsButton:hover {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+// Active state (selection mode is on for this group): same blue as the
+// panel toggle button, matching vanilla's own active-tool button styling.
+.selectDistrictsButtonActive {
+    background: rgb(75, 195, 241);
+}
+
+.selectDistrictsButtonActive:hover {
     background: rgb(122, 211, 245);
 }

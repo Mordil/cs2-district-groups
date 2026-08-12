@@ -4,7 +4,7 @@ import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Scroll
 import { CSSProperties, useEffect, useState } from "react";
 import mod from "../../mod.json";
 import { UilIcon } from "mods/uilIcons";
-import { ModIcon } from "mods/modIcons";
+import { GameIcon, ModIcon } from "mods/modIcons";
 import css from "./groupManagerPanel.module.scss";
 import selectorCss from "./selectorToggle.module.scss";
 
@@ -52,10 +52,18 @@ const kFilterLabels = ["All Groups", ...kTypeLabels];
 const groups$ = bindValue<Group[]>(mod.id, "groups", []);
 const districts$ = bindValue<NamedEntity[]>(mod.id, "districts", []);
 const areasVisible$ = bindValue<boolean>(mod.id, "areasVisible", false);
+const selectingGroup$ = bindValue<Entity>(mod.id, "selectingGroup", { index: 0, version: 0 });
 const markdownRenderer = new MarkdownRenderer();
 
 const sameEntity = (a: Entity, b: Entity) => a.index === b.index && a.version === b.version;
 
+// Colors come from the game's own CSS custom properties (declared on :root in
+// GameUI's index.css) rather than literals. That is how the game themes itself:
+// the legacy interface styles reskin by overriding these same properties, e.g.
+// `.style--bright-blue { --panelColorNormal: rgba(142,174,216,...) }`. Using the
+// variables means the panel follows the active style - new UI or legacy, in any
+// of its three themes - with no need to read useLegacyInterface at all. Same
+// approach RoadBuilder takes by borrowing vanilla's SCSS modules.
 const styles = {
     // Outer shell just clips the header/body blocks to the rounded corners;
     // the two children carry their own backgrounds (vanilla info-panel style:
@@ -110,11 +118,10 @@ const styles = {
         marginTop: "8rem",
         marginBottom: "8rem",
     } as const,
-    // Roughly five member rows tall; longer lists scroll internally.
-    memberList: {
-        maxHeight: "140rem",
-        overflowY: "auto",
-    } as const,
+    // No internal scroll/cap: an expanded group grows to fit its full member
+    // list, however long, so nothing is ever cut off. The panel's own outer
+    // Scrollable handles scrolling once the whole list overflows the panel.
+    memberList: {} as const,
     row: { display: "flex", alignItems: "center", margin: "3rem 0" } as const,
     smallButton: {
         background: "rgba(255,255,255,0.15)",
@@ -150,13 +157,25 @@ const styles = {
     subtle: { color: "rgba(255,255,255,0.6)" } as const,
     groupCard: {
         // A dark overlay reads as a recessed card against panelBody's
-        // medium-blue background; the earlier light tint barely showed up.
+        // background whatever colour the active style gives it; a black alpha
+        // wash is theme-neutral in a way a fixed tint would not be.
         background: "rgba(0,0,0,0.25)",
-        borderRadius: "4rem",
+        borderRadius: "var(--panelRadius)",
         padding: "6rem",
         margin: "3rem 0",
     } as const,
 };
+
+const typePickerTooltip = (
+    <FormattedParagraphs
+        renderer={markdownRenderer}
+        text={[
+            "Change the **type** of the group.",
+            "**Generic** groups can be assigned to any service building.",
+            "All other types are only available to matching service buildings."
+        ]}
+    />
+);
 
 // The game's own Dropdown anchors its menu as a popup, so it overlays the
 // panel instead of being clipped by the scroll container.
@@ -165,7 +184,7 @@ const TypePicker = (props: { value: number; onChange: (type: number) => void; st
     // dropdown appears to desync the surrounding Tooltip's hover wiring for
     // the existing instance (same Dropdown mount-lifecycle fragility already
     // seen elsewhere this session) — a fresh mount sidesteps it entirely.
-    <Tooltip key={props.value} tooltip="Change the type of the group.">
+    <Tooltip key={props.value} tooltip={typePickerTooltip}>
         <Dropdown
             theme={dropdownTheme}
             content={kTypeLabels.map((label, i) => (
@@ -287,11 +306,13 @@ const Checkbox = (props: { checked: boolean; onChange: (checked: boolean) => voi
     </div>
 );
 
-const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
-    const { group, districts } = props;
+const GroupCard = (props: { group: Group }) => {
+    const { group } = props;
     const [expanded, setExpanded] = useState(false);
     const [nameDraft, setNameDraft] = useState(group.name);
     const [nameFocused, setNameFocused] = useState(false);
+    const selectingGroup = useValue(selectingGroup$);
+    const selectingThisGroup = sameEntity(selectingGroup, group.entity);
 
     // Stay in sync with external changes (e.g. our own rename echoing back
     // through the binding) — but never while the user is actively typing,
@@ -311,10 +332,6 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
             trigger(mod.id, "renameGroup", group.entity, trimmed);
         }
     };
-
-    const candidates = districts.filter(
-        (d) => !group.members.some((m) => sameEntity(m.entity, d.entity))
-    );
 
     return (
         <div style={styles.groupCard}>
@@ -346,7 +363,7 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
                         style={styles.dangerButton}
                         onClick={() => trigger(mod.id, "deleteGroup", group.entity)}
                     >
-                        <UilIcon name="Trash" />
+                        <UilIcon name="Trash" size="20rem"/>
                     </button>
                 </Tooltip>
             </div>
@@ -356,46 +373,26 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
                     <div style={styles.memberList}>
                         {group.members.map((member) => (
                             <div style={styles.row} key={`${member.entity.index}:${member.entity.version}`}>
-                                <div style={{ flex: 1, paddingLeft: "8rem" }}>{member.name}</div>
-                                <button
-                                    className={css.dangerButton}
-                                    style={styles.dangerButton}
-                                    onClick={() => trigger(mod.id, "removeMember", group.entity, member.entity)}
-                                >
-                                    <UilIcon name="Minus" height="16rem" width="8rem"/>
-                                </button>
+                                <div style={{ flex: 1, paddingLeft: "40rem" }}>{member.name}</div>
+                                <Tooltip tooltip="Remove the district from the group.">
+                                    <button
+                                        className={css.memberDeleteButton}
+                                        onClick={() => trigger(mod.id, "removeMember", group.entity, member.entity)}
+                                    >
+                                        <UilIcon name="Trash" size="20rem" />
+                                    </button>
+                                </Tooltip>
                             </div>
                         ))}
                     </div>
 
-                    {candidates.length > 0 && (
-                        <div style={{ ...styles.row, justifyContent: "flex-end" }}>
-                            <Dropdown
-                                theme={dropdownTheme}
-                                content={candidates.map((d) => (
-                                    <DropdownItem
-                                        key={`${d.entity.index}:${d.entity.version}`}
-                                        value={d.entity}
-                                        className={dropdownTheme.dropdownItem}
-                                        closeOnSelect={true}
-                                        onChange={() => trigger(mod.id, "addMember", group.entity, d.entity)}
-                                    >
-                                        <div>{d.name}</div>
-                                    </DropdownItem>
-                                ))}
-                            >
-                                <DropdownToggle
-                                    disabled={false}
-                                    style={{ backgroundColor: "rgba(46, 125, 50, 0.9)" }}
-                                >
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <UilIcon name="Plus" size="12rem" />
-                                        <span style={{ marginLeft: "5rem" }}>Add District</span>
-                                    </div>
-                                </DropdownToggle>
-                            </Dropdown>
-                        </div>
-                    )}
+                    <button
+                        className={`${css.selectDistrictsButton} ${selectingThisGroup ? css.selectDistrictsButtonActive : ""}`}
+                        onClick={() => trigger(mod.id, "toggleDistrictSelection", group.entity)}
+                    >
+                        <GameIcon name="Districts" size="16rem" />
+                        <span style={{ marginLeft: "6rem" }}>Select Districts</span>
+                    </button>
                 </>
             )}
         </div>
@@ -420,7 +417,6 @@ export const GroupManager = () => {
     // deletions, so the Nth click always suggests "New Group N".
     const [nextGroupNumber, setNextGroupNumber] = useState(1);
     const groups = useValue(groups$);
-    const districts = useValue(districts$);
     const areasVisible = useValue(areasVisible$);
 
     // "All Types" keeps creation order (the binding's own order); a specific
@@ -525,7 +521,6 @@ export const GroupManager = () => {
                                     <GroupCard
                                         key={`${group.entity.index}:${group.entity.version}`}
                                         group={group}
-                                        districts={districts}
                                     />
                                 ))}
                             </Scrollable>
