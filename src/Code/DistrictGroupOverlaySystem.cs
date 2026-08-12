@@ -37,7 +37,7 @@ namespace DistrictGroups
             new Color(0.55f, 0.60f, 0.65f, 1f), // slate
         };
 
-        private const float kOutlineWidth = 5f;
+        private const float kOutlineWidth = 10f;
         private const float kSegmentStep = 12f;
 
         // requireAreas has a protected setter; setting it on the default tool
