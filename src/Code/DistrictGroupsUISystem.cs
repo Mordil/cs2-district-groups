@@ -3,6 +3,7 @@ using Game.Areas;
 using Game.Common;
 using Game.Tools;
 using Game.UI;
+using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -17,8 +18,14 @@ namespace DistrictGroups
         private DistrictGroupSystem m_GroupSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;
         private NameSystem m_NameSystem;
+        private SelectedInfoUISystem m_SelectedInfoUISystem;
         private EntityQuery m_GroupQuery;
         private EntityQuery m_DistrictQuery;
+
+        // Remembers whatever the vanilla info panel was showing (if anything)
+        // at the moment our panel opened, so closing our panel restores it —
+        // the two panels share the same screen corner and shouldn't compete.
+        private Entity m_SavedSelection = Entity.Null;
 
         protected override void OnCreate()
         {
@@ -26,6 +33,7 @@ namespace DistrictGroups
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_OverlaySystem = World.GetOrCreateSystemManaged<DistrictGroupOverlaySystem>();
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
+            m_SelectedInfoUISystem = World.GetOrCreateSystemManaged<SelectedInfoUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_DistrictQuery = GetEntityQuery(
                 ComponentType.ReadOnly<District>(),
@@ -34,6 +42,8 @@ namespace DistrictGroups
 
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "groups", WriteGroups));
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "districts", WriteDistricts));
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "areasVisible",
+                () => m_OverlaySystem.AreasVisible));
 
             AddBinding(new TriggerBinding<string, int>(kBindingGroup, "createGroup",
                 (name, type) => m_GroupSystem.CreateGroup(name, (GroupServiceType)type)));
@@ -47,10 +57,35 @@ namespace DistrictGroups
                 (group, district) => m_GroupSystem.AddMember(group, district)));
             AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "removeMember",
                 (group, district) => m_GroupSystem.RemoveMember(group, district)));
-            AddBinding(new TriggerBinding<bool>(kBindingGroup, "setOverlay",
-                visible => m_OverlaySystem.SetVisible(visible)));
+            AddBinding(new TriggerBinding<bool>(kBindingGroup, "setOverlay", OnPanelOpenChanged));
             AddBinding(new TriggerBinding<int>(kBindingGroup, "setOverlayFilter",
                 type => m_OverlaySystem.SetTypeFilter(type)));
+            AddBinding(new TriggerBinding<bool>(kBindingGroup, "setAreasVisible",
+                visible => m_OverlaySystem.SetAreasVisible(visible)));
+        }
+
+        // "setOverlay" fires exactly at our panel's open/close, so it doubles
+        // as the signal for closing/restoring the vanilla selected-info panel.
+        private void OnPanelOpenChanged(bool open)
+        {
+            m_OverlaySystem.SetVisible(open);
+
+            if (open)
+            {
+                m_SavedSelection = m_SelectedInfoUISystem.selectedEntity;
+                if (m_SavedSelection != Entity.Null)
+                {
+                    m_SelectedInfoUISystem.SetSelection(Entity.Null);
+                }
+            }
+            else
+            {
+                if (m_SavedSelection != Entity.Null && EntityManager.Exists(m_SavedSelection))
+                {
+                    m_SelectedInfoUISystem.SetSelection(m_SavedSelection);
+                }
+                m_SavedSelection = Entity.Null;
+            }
         }
 
         private void WriteGroups(IJsonWriter writer)

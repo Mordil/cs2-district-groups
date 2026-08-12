@@ -27,6 +27,23 @@ namespace DistrictGroups
 
         public override void SetDefaults()
         {
+            m_DisplayDistrictAreas = false;
+        }
+
+        private bool m_DisplayDistrictAreas;
+
+        // Persisted (not shown in the options UI — controlled by the panel's own
+        // checkbox instead). The setter saves immediately so the choice survives
+        // a session even if the game isn't closed cleanly.
+        [SettingsUIHidden]
+        public bool DisplayDistrictAreas
+        {
+            get => m_DisplayDistrictAreas;
+            set
+            {
+                m_DisplayDistrictAreas = value;
+                ApplyAndSave();
+            }
         }
 
         [SettingsUIButton]

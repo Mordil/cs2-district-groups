@@ -50,6 +50,7 @@ const kFilterLabels = ["All Groups", ...kTypeLabels];
 
 const groups$ = bindValue<Group[]>(mod.id, "groups", []);
 const districts$ = bindValue<NamedEntity[]>(mod.id, "districts", []);
+const areasVisible$ = bindValue<boolean>(mod.id, "areasVisible", false);
 const markdownRenderer = new MarkdownRenderer();
 
 const sameEntity = (a: Entity, b: Entity) => a.index === b.index && a.version === b.version;
@@ -74,11 +75,11 @@ const styles = {
         maxHeight: "600rem",
         display: "flex",
         flexDirection: "column",
-        pointerEvents: "auto",
         color: "white",
         borderRadius: "6rem",
         fontSize: "14rem",
         overflow: "hidden",
+        transition: "opacity .15s ease",
     } as const,
     panelHeader: {
         background: "rgba(24, 33, 51, 0.95)",
@@ -98,6 +99,31 @@ const styles = {
     listArea: {
         flex: 1,
         minHeight: 0,
+    } as const,
+    // Non-scrollable — sits above the group list, inside panelBody.
+    areasToggleRow: {
+        display: "flex",
+        alignItems: "center",
+        cursor: "pointer",
+        paddingTop: "10rem",
+        paddingRight: "10rem",
+        paddingBottom: "16rem",
+    } as const,
+    checkboxBox: {
+        width: "14rem",
+        height: "14rem",
+        borderRadius: "2rem",
+        border: "1rem solid rgba(255,255,255,0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: "6rem",
+    } as const,
+    divider: {
+        height: "1rem",
+        background: "rgba(255,255,255,0.15)",
+        marginRight: "10rem",
+        marginBottom: "8rem",
     } as const,
     // Roughly five member rows tall; longer lists scroll internally.
     memberList: {
@@ -231,6 +257,23 @@ const TypeFilterPicker = (props: { value: number; onChange: (type: number) => vo
     </Tooltip>
 );
 
+// Self-built rather than a vanilla component: cs2/ui has no exported
+// Checkbox, and native <input type="checkbox"> rendering in cohtml is
+// unverified — this reuses the same UilIcon pattern as the rest of the panel.
+const Checkbox = (props: { checked: boolean; onChange: (checked: boolean) => void; label: string }) => (
+    <div style={styles.areasToggleRow} onClick={() => props.onChange(!props.checked)}>
+        <div
+            style={{
+                ...styles.checkboxBox,
+                background: props.checked ? "rgba(75, 195, 241, 0.9)" : "rgba(255,255,255,0.08)",
+            }}
+        >
+            {props.checked && <UilIcon name="Checkmark" size="10rem" />}
+        </div>
+        <span>{props.label}</span>
+    </div>
+);
+
 const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
     const { group, districts } = props;
     const [renaming, setRenaming] = useState(false);
@@ -327,14 +370,26 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
     );
 };
 
+// Matches styles.panel's transition duration below.
+const kFadeDurationMs = 150;
+
 export const GroupManager = () => {
     const [open, setOpen] = useState(false);
+    // The panel wrapper stays permanently mounted for the fade transition, but
+    // its interactive content (Dropdown/Tooltip in particular) is unmounted
+    // after the fade-out completes and freshly remounted on every open. This
+    // avoids Dropdown/Tooltip ever initializing their hover wiring while an
+    // ancestor is opacity:0/pointer-events:none — the state that broke the
+    // filter's tooltip when the content stayed mounted through the very
+    // first (hidden) render.
+    const [contentMounted, setContentMounted] = useState(false);
     const [filterType, setFilterType] = useState(kAllTypes);
     // Increments with every "New Group" click this session, regardless of
     // deletions, so the Nth click always suggests "New Group N".
     const [nextGroupNumber, setNextGroupNumber] = useState(1);
     const groups = useValue(groups$);
     const districts = useValue(districts$);
+    const areasVisible = useValue(areasVisible$);
 
     // "All Types" keeps creation order (the binding's own order); a specific
     // type filters down to just that type, still in creation order.
@@ -344,6 +399,11 @@ export const GroupManager = () => {
         const next = !open;
         setOpen(next);
         trigger(mod.id, "setOverlay", next);
+        if (next) {
+            setContentMounted(true);
+        } else {
+            window.setTimeout(() => setContentMounted(false), kFadeDurationMs);
+        }
     };
 
     const onFilterChange = (type: number) => {
@@ -356,50 +416,73 @@ export const GroupManager = () => {
         setNextGroupNumber((n) => n + 1);
     };
 
+    const onAreasVisibleChange = (checked: boolean) => {
+        trigger(mod.id, "setAreasVisible", checked);
+    };
+
     return (
         <>
             <button style={styles.button} onClick={togglePanel}>
                 Districts ({groups.length})
             </button>
-            {open && (
-                <div style={styles.panel}>
-                    <div style={styles.panelHeader}>
-                        <div style={styles.headerRow}>
-                            <div style={styles.header}>District Groups</div>
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <Tooltip tooltip="Adds a new generic group with no member districts.">
-                                    <button
-                                        className={css.newGroupButton}
-                                        style={styles.newGroupButton}
-                                        onClick={onCreateGroup}
-                                    >
-                                        New Group
-                                    </button>
-                                </Tooltip>
-                                <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+            {/* The wrapper stays permanently mounted so opacity is a real CSS
+                transition; the content inside mounts/unmounts around it (see
+                contentMounted above) so Dropdown/Tooltip get a fresh mount
+                every time the panel opens. */}
+            <div
+                style={{
+                    ...styles.panel,
+                    opacity: open ? 1 : 0,
+                    pointerEvents: open ? "auto" : "none",
+                }}
+            >
+                {contentMounted && (
+                    <>
+                        <div style={styles.panelHeader}>
+                            <div style={styles.headerRow}>
+                                <div style={styles.header}>District Groups</div>
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <Tooltip tooltip="Adds a new generic group with no member districts.">
+                                        <button
+                                            className={css.newGroupButton}
+                                            style={styles.newGroupButton}
+                                            onClick={onCreateGroup}
+                                        >
+                                            New Group
+                                        </button>
+                                    </Tooltip>
+                                    <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div style={styles.panelBody}>
-                        <Scrollable vertical={true} trackVisibility="always" style={styles.listArea}>
-                            {groups.length === 0 && (
-                                <div style={styles.subtle}>No groups yet. Create one above.</div>
-                            )}
-                            {groups.length > 0 && displayedGroups.length === 0 && (
-                                <div style={styles.subtle}>No groups match this filter.</div>
-                            )}
-                            {displayedGroups.map((group) => (
-                                <GroupCard
-                                    key={`${group.entity.index}:${group.entity.version}`}
-                                    group={group}
-                                    districts={districts}
-                                />
-                            ))}
-                        </Scrollable>
-                    </div>
-                </div>
-            )}
+                        <div style={styles.panelBody}>
+                            <Checkbox
+                                checked={areasVisible}
+                                onChange={onAreasVisibleChange}
+                                label="Display District areas"
+                            />
+                            <div style={styles.divider} />
+
+                            <Scrollable vertical={true} trackVisibility="always" style={styles.listArea}>
+                                {groups.length === 0 && (
+                                    <div style={styles.subtle}>No groups yet. Create one above.</div>
+                                )}
+                                {groups.length > 0 && displayedGroups.length === 0 && (
+                                    <div style={styles.subtle}>No groups match this filter.</div>
+                                )}
+                                {displayedGroups.map((group) => (
+                                    <GroupCard
+                                        key={`${group.entity.index}:${group.entity.version}`}
+                                        group={group}
+                                        districts={districts}
+                                    />
+                                ))}
+                            </Scrollable>
+                        </div>
+                    </>
+                )}
+            </div>
         </>
     );
 };

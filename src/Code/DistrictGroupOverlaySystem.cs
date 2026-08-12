@@ -54,6 +54,15 @@ namespace DistrictGroups
         private ProxyAction m_ToggleAction;
         private bool m_Visible;
 
+        // The panel's own "Display District areas" checkbox preference,
+        // persisted across sessions via Mod.Settings (defaults to off the
+        // first time). This is just the remembered preference — actual vanilla
+        // area rendering (fills/borders/labels for every district) only ever
+        // happens while the panel is also open (m_Visible); closing the panel
+        // always hides areas regardless of this checkbox's state.
+        private bool m_AreasVisible;
+        public bool AreasVisible => m_AreasVisible;
+
         // -1 ("All Groups" in the panel) draws every group; otherwise only
         // groups of that type are drawn, mirroring the panel's own filtered list.
         private int m_TypeFilter = -1;
@@ -67,8 +76,32 @@ namespace DistrictGroups
             }
             m_Visible = visible;
             Mod.log.Info($"Group overlay {(m_Visible ? "ON" : "OFF")}");
+            ApplyAreasVisibility();
+        }
+
+        public void SetAreasVisible(bool visible)
+        {
+            if (m_AreasVisible == visible)
+            {
+                return;
+            }
+            m_AreasVisible = visible;
+            Mod.log.Info($"Display District areas checkbox {(m_AreasVisible ? "ON" : "OFF")}");
+            if (Mod.Settings != null)
+            {
+                Mod.Settings.DisplayDistrictAreas = visible;
+            }
+            ApplyAreasVisibility();
+        }
+
+        // Vanilla area rendering requires both: the checkbox preference AND
+        // the panel being open. Closing the panel hides areas unconditionally
+        // without touching (or forgetting) the checkbox's own state.
+        private void ApplyAreasVisibility()
+        {
+            bool shouldShow = m_Visible && m_AreasVisible;
             kRequireAreasProperty?.SetValue(m_DefaultToolSystem,
-                visible ? AreaTypeMask.Districts : AreaTypeMask.None);
+                shouldShow ? AreaTypeMask.Districts : AreaTypeMask.None);
         }
 
         public void SetTypeFilter(int type)
@@ -86,6 +119,14 @@ namespace DistrictGroups
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_ToggleAction = Mod.Settings?.GetAction(Setting.kOverlayToggleActionName);
             if (m_ToggleAction != null) m_ToggleAction.shouldBeEnabled = true;
+
+            // Read the persisted checkbox state directly (not via
+            // SetAreasVisible) so loading a session doesn't immediately
+            // rewrite the setting it just read. m_Visible starts false (panel
+            // closed), so ApplyAreasVisibility correctly keeps areas hidden
+            // at startup regardless of the remembered checkbox preference.
+            m_AreasVisible = Mod.Settings?.DisplayDistrictAreas ?? false;
+            ApplyAreasVisibility();
         }
 
         protected override void OnUpdate()
