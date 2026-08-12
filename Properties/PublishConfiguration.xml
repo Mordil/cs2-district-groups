@@ -51,8 +51,11 @@ the groups are gone for good.
 	<Screenshot Value="Properties/ProjectBanner.png" />
 	<Screenshot Value="Properties/Screenshots/Preview1.png" />
 	<Screenshot Value="Properties/Screenshots/Preview2.png" />
-	<!--Tag, can be set multiple times-->
-	<Tag Value="Areas" />
+	<!--Tag, can be set multiple times. The server validates against a fixed list and
+	    rejects anything else; the UI label "Areas" is the tag id "UIAreas". Other likely
+	    ids: Code Mod (seeded by the publisher), Map, Savegame, Prefab, Themes,
+	    UI-Categories. A wrong value fails the upload with the full list in the error.-->
+	<Tag Value="UIAreas" />
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="" />
 	<!--Version of the mod-->
