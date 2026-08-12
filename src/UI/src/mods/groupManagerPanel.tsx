@@ -104,25 +104,17 @@ const styles = {
     areasToggleRow: {
         display: "flex",
         alignItems: "center",
+        justifyContent: "flex-end",
         cursor: "pointer",
-        paddingTop: "10rem",
+        paddingTop: "8rem",
         paddingRight: "10rem",
-        paddingBottom: "16rem",
-    } as const,
-    checkboxBox: {
-        width: "14rem",
-        height: "14rem",
-        borderRadius: "2rem",
-        border: "1rem solid rgba(255,255,255,0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        marginRight: "6rem",
+        paddingBottom: "8rem",
     } as const,
     divider: {
         height: "1rem",
         background: "rgba(255,255,255,0.15)",
         marginRight: "10rem",
+        marginTop: "8rem",
         marginBottom: "8rem",
     } as const,
     // Roughly five member rows tall; longer lists scroll internally.
@@ -257,20 +249,31 @@ const TypeFilterPicker = (props: { value: number; onChange: (type: number) => vo
     </Tooltip>
 );
 
-// Self-built rather than a vanilla component: cs2/ui has no exported
-// Checkbox, and native <input type="checkbox"> rendering in cohtml is
-// unverified — this reuses the same UilIcon pattern as the rest of the panel.
+// The real vanilla checkbox (used for infoview color-toggle rows, e.g. the
+// "Object color"/"Network color" checkboxes on the Fire & Rescue panel) —
+// not exported from cs2/ui, so pulled from the module registry like the
+// dropdown internals above. Path confirmed via rcav8tr/CS2Mod-BuildingUse,
+// an open-source mod that adds its own infoview rows the same way.
+const checkboxClasses: any = getModule(
+    "game-ui/common/input/toggle/checkbox/checkbox.module.scss",
+    "classes"
+);
+
 const Checkbox = (props: { checked: boolean; onChange: (checked: boolean) => void; label: string }) => (
     <div style={styles.areasToggleRow} onClick={() => props.onChange(!props.checked)}>
+        <span style={{ marginRight: "6rem" }}>{props.label}</span>
+        {/* Size comes from the vanilla checkbox.module.scss class, not us —
+            scale transform shrinks it without needing to know/override the
+            underlying pixel size. grayscale sidesteps needing to know which
+            internal CSS variable drives its accent color — desaturates
+            whatever that resolves to, landing on a neutral gray instead of
+            the (likely theme-accent) blue it renders by default. */}
         <div
-            style={{
-                ...styles.checkboxBox,
-                background: props.checked ? "rgba(75, 195, 241, 0.9)" : "rgba(255,255,255,0.08)",
-            }}
+            className={`${checkboxClasses.toggle} ${props.checked ? "checked" : "unchecked"}`}
+            style={{ transform: "scale(0.75)", filter: "grayscale(1)" }}
         >
-            {props.checked && <UilIcon name="Checkmark" size="10rem" />}
+            <div className={`${checkboxClasses.checkmark} ${props.checked ? "checked" : ""}`} />
         </div>
-        <span>{props.label}</span>
     </div>
 );
 
@@ -460,14 +463,11 @@ export const GroupManager = () => {
                         </div>
 
                         <div style={styles.panelBody}>
-                            <Checkbox
-                                checked={areasVisible}
-                                onChange={onAreasVisibleChange}
-                                label="Display District areas"
-                            />
-                            <div style={styles.divider} />
-
-                            <Scrollable vertical={true} trackVisibility="always" style={styles.listArea}>
+                            <Scrollable
+                                vertical={true}
+                                trackVisibility={displayedGroups.length > 0 ? "always" : "scrollable"}
+                                style={styles.listArea}
+                            >
                                 {groups.length === 0 && (
                                     <div style={styles.subtle}>No groups yet. Create one above.</div>
                                 )}
@@ -482,6 +482,13 @@ export const GroupManager = () => {
                                     />
                                 ))}
                             </Scrollable>
+
+                            <div style={styles.divider} />
+                            <Checkbox
+                                checked={areasVisible}
+                                onChange={onAreasVisibleChange}
+                                label="Display District areas"
+                            />
                         </div>
                     </>
                 )}
