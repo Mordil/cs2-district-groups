@@ -109,6 +109,11 @@ namespace DistrictGroups
                 writer.Write(data.m_Name.ToString());
                 writer.PropertyName("type");
                 writer.Write((int)data.m_Type);
+                writer.PropertyName("assignedBuildingCount");
+                using (NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp))
+                {
+                    writer.Write(assignedBuildings.Length);
+                }
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)

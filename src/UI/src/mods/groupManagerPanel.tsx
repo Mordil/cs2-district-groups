@@ -1,7 +1,7 @@
 import { bindValue, trigger, useValue } from "cs2/api";
 import { getModule } from "cs2/modding";
-import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Scrollable, Tooltip } from "cs2/ui";
-import { CSSProperties, useEffect, useState } from "react";
+import { ConfirmationDialog, DialogStack, Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Scrollable, Tooltip } from "cs2/ui";
+import { CSSProperties, useContext, useEffect, useState } from "react";
 import mod from "../../mod.json";
 import { UilIcon } from "mods/uilIcons";
 import { GameIcon, ModIcon } from "mods/modIcons";
@@ -27,6 +27,7 @@ interface Group {
     entity: Entity;
     name: string;
     type: number;
+    assignedBuildingCount: number;
     members: NamedEntity[];
 }
 
@@ -313,6 +314,38 @@ const GroupCard = (props: { group: Group }) => {
     const [nameFocused, setNameFocused] = useState(false);
     const selectingGroup = useValue(selectingGroup$);
     const selectingThisGroup = sameEntity(selectingGroup, group.entity);
+    const dialogStack = useContext(DialogStack);
+
+    // Deleting an unassigned group is a no-op consequence-wise; deleting one
+    // that's actively managing a building's operating districts is not, so
+    // that case alone gets a confirmation stop.
+    const handleDeleteGroup = () => {
+        if (group.assignedBuildingCount === 0) {
+            trigger(mod.id, "deleteGroup", group.entity);
+            return;
+        }
+        // ConfirmationDialog's `message` renders as plain text, not markdown/JSX
+        // (a FormattedParagraphs element here showed up as raw "[vT/]" -
+        // presumably the widget stringifies whatever it's given). `multiline`
+        // is what actually lets a literal "\n" break onto a second line.
+        const deleteGroupMessage =
+            `"${group.name}" is assigned to ${group.assignedBuildingCount} service building(s).\n` +
+            `Assigned service building(s) will serve the whole city again.`;
+        dialogStack.showDialog(
+            <ConfirmationDialog
+                title="Delete District Group?"
+                message={deleteGroupMessage}
+                multiline={true}
+                confirm="Keep group"
+                cancel="Delete group"
+                onConfirm={() => dialogStack.closeAll()}
+                onCancel={() => {
+                    trigger(mod.id, "deleteGroup", group.entity)
+                    dialogStack.closeAll()
+                }}
+            />
+        );
+    };
 
     // Stay in sync with external changes (e.g. our own rename echoing back
     // through the binding) — but never while the user is actively typing,
@@ -361,7 +394,7 @@ const GroupCard = (props: { group: Group }) => {
                     <button
                         className={`${css.headerDeleteButton} ${css.dangerButton}`}
                         style={styles.dangerButton}
-                        onClick={() => trigger(mod.id, "deleteGroup", group.entity)}
+                        onClick={handleDeleteGroup}
                     >
                         <UilIcon name="Trash" size="20rem"/>
                     </button>
