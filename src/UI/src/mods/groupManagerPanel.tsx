@@ -67,7 +67,7 @@ const styles = {
         position: "absolute",
         top: "60rem",
         left: "10rem",
-        width: "340rem",
+        width: "425rem",
         maxHeight: "600rem",
         display: "flex",
         flexDirection: "column",
@@ -123,15 +123,12 @@ const styles = {
         textTransform: "uppercase",
         letterSpacing: "1rem",
     } as const,
-    footerButton: {
-        width: "100%",
-        background: "rgba(46, 125, 50, 0.9)",
+    newGroupButton: {
         color: "white",
-        borderRadius: "4rem",
-        padding: "8rem 0",
-        marginTop: "8rem",
+        borderRadius: "3rem",
+        padding: "2rem 10rem",
+        marginRight: "6rem",
         fontWeight: "bold",
-        textAlign: "center",
     } as const,
     subtle: { color: "rgba(255,255,255,0.6)" } as const,
     groupCard: {
@@ -318,6 +315,9 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
 export const GroupManager = () => {
     const [open, setOpen] = useState(false);
     const [filterType, setFilterType] = useState(kAllTypes);
+    // Increments with every "New Group" click this session, regardless of
+    // deletions, so the Nth click always suggests "New Group N".
+    const [nextGroupNumber, setNextGroupNumber] = useState(1);
     const groups = useValue(groups$);
     const districts = useValue(districts$);
 
@@ -336,6 +336,11 @@ export const GroupManager = () => {
         trigger(mod.id, "setOverlayFilter", type);
     };
 
+    const onCreateGroup = () => {
+        trigger(mod.id, "createGroup", `New Group ${nextGroupNumber}`, 0);
+        setNextGroupNumber((n) => n + 1);
+    };
+
     return (
         <>
             <button style={styles.button} onClick={togglePanel}>
@@ -345,12 +350,23 @@ export const GroupManager = () => {
                 <div style={styles.panel}>
                     <div style={styles.headerRow}>
                         <div style={styles.header}>District Groups</div>
-                        <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <Tooltip tooltip="Adds a new generic group with no member districts.">
+                                <button
+                                    className={css.newGroupButton}
+                                    style={styles.newGroupButton}
+                                    onClick={onCreateGroup}
+                                >
+                                    New Group
+                                </button>
+                            </Tooltip>
+                            <TypeFilterPicker value={filterType} onChange={onFilterChange} />
+                        </div>
                     </div>
 
                     <div style={styles.listArea}>
                         {groups.length === 0 && (
-                            <div style={styles.subtle}>No groups yet. Create one below.</div>
+                            <div style={styles.subtle}>No groups yet. Create one above.</div>
                         )}
                         {groups.length > 0 && displayedGroups.length === 0 && (
                             <div style={styles.subtle}>No groups match this filter.</div>
@@ -363,13 +379,6 @@ export const GroupManager = () => {
                             />
                         ))}
                     </div>
-
-                    <button
-                        style={styles.footerButton}
-                        onClick={() => trigger(mod.id, "createGroup", "New Group", 0)}
-                    >
-                        Add District
-                    </button>
                 </div>
             )}
         </>
