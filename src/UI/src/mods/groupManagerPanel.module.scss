@@ -1,9 +1,19 @@
+// Shared row-control height: the type selector's actual height comes partly
+// from the vanilla DropdownToggle theme, so matching padding alone across a
+// native button/input/vanilla-toggle mix isn't reliable — set explicitly.
+$rowControlHeight: 22rem;
+
 .expandButton {
     background: transparent;
     color: white;
     border-radius: 3rem;
     padding: 2rem 8rem;
     margin: 2rem 2rem;
+    height: $rowControlHeight;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .expandButton:hover {
@@ -16,4 +26,49 @@
 
 .newGroupButton:hover {
     background: rgba(58, 155, 62, 0.9);
+}
+
+.dangerButton {
+    background: rgba(160, 40, 40, 0.8);
+}
+
+.dangerButton:hover {
+    background: rgba(190, 55, 55, 0.9);
+}
+
+// Looks like plain text until clicked — matches the vanilla title field used
+// for renaming buildings/districts/roads in the info panel.
+.nameInput {
+    background: transparent;
+    border: 1rem solid transparent;
+    border-radius: 3rem;
+    padding: 1rem 4rem;
+    margin-left: -4rem;
+    color: white;
+    font-weight: bold;
+    flex: 1;
+    min-width: 0;
+    height: $rowControlHeight;
+    box-sizing: border-box;
+}
+
+.nameInput:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nameInput:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.4);
+    outline: none;
+}
+
+// Sizing only — colors still come from styles.dangerButton. Scoped
+// separately from that shared style so the member-list remove buttons
+// (which also use styles.dangerButton) keep their smaller size.
+.headerDeleteButton {
+    height: $rowControlHeight;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

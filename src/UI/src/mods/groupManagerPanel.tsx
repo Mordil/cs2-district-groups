@@ -1,7 +1,7 @@
 import { bindValue, trigger, useValue } from "cs2/api";
 import { getModule } from "cs2/modding";
 import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Scrollable, Tooltip } from "cs2/ui";
-import { useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import mod from "../../mod.json";
 import { UilIcon } from "mods/uilIcons";
 import css from "./groupManagerPanel.module.scss";
@@ -131,19 +131,10 @@ const styles = {
         margin: "2rem 2rem",
     } as const,
     dangerButton: {
-        background: "rgba(160,40,40,0.8)",
         color: "white",
         borderRadius: "3rem",
         padding: "2rem 8rem",
         margin: "2rem 2rem",
-    } as const,
-    input: {
-        background: "rgba(255,255,255,0.1)",
-        color: "white",
-        borderRadius: "3rem",
-        padding: "3rem 6rem",
-        border: "1rem solid rgba(255,255,255,0.3)",
-        flex: 1,
     } as const,
     headerRow: {
         display: "flex",
@@ -165,40 +156,61 @@ const styles = {
     } as const,
     subtle: { color: "rgba(255,255,255,0.6)" } as const,
     groupCard: {
-        background: "rgba(255,255,255,0.07)",
+        // A dark overlay reads as a recessed card against panelBody's
+        // medium-blue background; the earlier light tint barely showed up.
+        background: "rgba(0,0,0,0.25)",
         borderRadius: "4rem",
         padding: "6rem",
-        margin: "6rem 0",
+        margin: "3rem 0",
     } as const,
 };
 
 // The game's own Dropdown anchors its menu as a popup, so it overlays the
 // panel instead of being clipped by the scroll container.
-const TypePicker = (props: { value: number; onChange: (type: number) => void }) => (
-    <Dropdown
-        theme={dropdownTheme}
-        content={kTypeLabels.map((label, i) => (
-            <DropdownItem
-                key={i}
-                value={i}
-                className={dropdownTheme.dropdownItem}
-                selected={i === props.value}
-                closeOnSelect={true}
-                onChange={() => props.onChange(i)}
-            >
-                <div>{label}</div>
-            </DropdownItem>
-        ))}
-    >
-        <DropdownToggle
-            disabled={false}
-            openIconComponent={<></>}
-            closeIconComponent={<></>}
-            className={selectorCss.selectorToggle}
+const TypePicker = (props: { value: number; onChange: (type: number) => void; style?: CSSProperties }) => (
+    <Tooltip tooltip="Change the type of the group.">
+        <Dropdown
+            theme={dropdownTheme}
+            content={kTypeLabels.map((label, i) => (
+                <DropdownItem
+                    key={i}
+                    value={i}
+                    className={dropdownTheme.dropdownItem}
+                    selected={i === props.value}
+                    closeOnSelect={true}
+                    onChange={() => props.onChange(i)}
+                >
+                    <div>{label}</div>
+                </DropdownItem>
+            ))}
         >
-            <div>{kTypeLabels[props.value] ?? "?"}</div>
-        </DropdownToggle>
-    </Dropdown>
+            <DropdownToggle
+                disabled={false}
+                openIconComponent={<></>}
+                closeIconComponent={<></>}
+                className={selectorCss.selectorToggle}
+                style={{
+                    height: "22rem",
+                    boxSizing: "border-box",
+                    display: "flex",
+                    alignItems: "center",
+                    ...props.style,
+                }}
+            >
+                <div>{kTypeLabels[props.value] ?? "?"}</div>
+            </DropdownToggle>
+        </Dropdown>
+    </Tooltip>
+);
+
+const deleteGroupTooltip = (
+    <FormattedParagraphs
+        renderer={markdownRenderer}
+        text={[
+            "Permanently delete the group.",
+            "Assigned buildings will lose their **operating districts**."
+        ]}
+    />
 );
 
 const filterTooltip = (
@@ -279,9 +291,28 @@ const Checkbox = (props: { checked: boolean; onChange: (checked: boolean) => voi
 
 const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
     const { group, districts } = props;
-    const [renaming, setRenaming] = useState(false);
-    const [nameDraft, setNameDraft] = useState(group.name);
     const [expanded, setExpanded] = useState(false);
+    const [nameDraft, setNameDraft] = useState(group.name);
+    const [nameFocused, setNameFocused] = useState(false);
+
+    // Stay in sync with external changes (e.g. our own rename echoing back
+    // through the binding) — but never while the user is actively typing,
+    // or every binding refresh would clobber in-progress edits.
+    useEffect(() => {
+        if (!nameFocused) {
+            setNameDraft(group.name);
+        }
+    }, [group.name, nameFocused]);
+
+    const commitName = () => {
+        setNameFocused(false);
+        const trimmed = nameDraft.trim();
+        if (trimmed.length === 0) {
+            setNameDraft(group.name);
+        } else if (trimmed !== group.name) {
+            trigger(mod.id, "renameGroup", group.entity, trimmed);
+        }
+    };
 
     const candidates = districts.filter(
         (d) => !group.members.some((m) => sameEntity(m.entity, d.entity))
@@ -293,34 +324,33 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
                 <button className={css.expandButton} onClick={() => setExpanded(!expanded)}>
                     <UilIcon name={expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke"} size="12rem" />
                 </button>
-                {renaming ? (
-                    <input
-                        style={styles.input}
-                        value={nameDraft}
-                        onChange={(e) => setNameDraft((e.target as HTMLInputElement).value)}
-                    />
-                ) : (
-                    <div style={{ flex: 1, fontWeight: "bold" }}>{group.name}</div>
-                )}
-                <TypePicker value={group.type} onChange={(t) => trigger(mod.id, "setGroupType", group.entity, t)} />
-                {renaming ? (
+                <input
+                    className={css.nameInput}
+                    style={{ marginRight: "4rem" }}
+                    value={nameDraft}
+                    onFocus={() => setNameFocused(true)}
+                    onChange={(e) => setNameDraft((e.target as HTMLInputElement).value)}
+                    onBlur={commitName}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            (e.target as HTMLInputElement).blur();
+                        }
+                    }}
+                />
+                <TypePicker
+                    value={group.type}
+                    onChange={(t) => trigger(mod.id, "setGroupType", group.entity, t)}
+                    style={{ marginRight: "4rem" }}
+                />
+                <Tooltip tooltip={deleteGroupTooltip}>
                     <button
-                        style={styles.smallButton}
-                        onClick={() => {
-                            trigger(mod.id, "renameGroup", group.entity, nameDraft);
-                            setRenaming(false);
-                        }}
+                        className={`${css.headerDeleteButton} ${css.dangerButton}`}
+                        style={styles.dangerButton}
+                        onClick={() => trigger(mod.id, "deleteGroup", group.entity)}
                     >
-                        <UilIcon name="Checkmark" />
+                        <UilIcon name="Trash" />
                     </button>
-                ) : (
-                    <button style={styles.smallButton} onClick={() => { setNameDraft(group.name); setRenaming(true); }}>
-                        <UilIcon name="Pencil" />
-                    </button>
-                )}
-                <button style={styles.dangerButton} onClick={() => trigger(mod.id, "deleteGroup", group.entity)}>
-                    <UilIcon name="Trash" />
-                </button>
+                </Tooltip>
             </div>
 
             {expanded && (
@@ -330,6 +360,7 @@ const GroupCard = (props: { group: Group; districts: NamedEntity[] }) => {
                             <div style={styles.row} key={`${member.entity.index}:${member.entity.version}`}>
                                 <div style={{ flex: 1, paddingLeft: "8rem" }}>{member.name}</div>
                                 <button
+                                    className={css.dangerButton}
                                     style={styles.dangerButton}
                                     onClick={() => trigger(mod.id, "removeMember", group.entity, member.entity)}
                                 >
@@ -448,7 +479,7 @@ export const GroupManager = () => {
                             <div style={styles.headerRow}>
                                 <div style={styles.header}>District Groups</div>
                                 <div style={{ display: "flex", alignItems: "center" }}>
-                                    <Tooltip tooltip="Adds a new generic group with no member districts.">
+                                    <Tooltip tooltip="Adds a new group with no member districts.">
                                         <button
                                             className={css.newGroupButton}
                                             style={styles.newGroupButton}
