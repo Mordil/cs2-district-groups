@@ -161,7 +161,11 @@ const styles = {
 // The game's own Dropdown anchors its menu as a popup, so it overlays the
 // panel instead of being clipped by the scroll container.
 const TypePicker = (props: { value: number; onChange: (type: number) => void; style?: CSSProperties }) => (
-    <Tooltip tooltip="Change the type of the group.">
+    // key forces a full remount on every selection: closeOnSelect closing the
+    // dropdown appears to desync the surrounding Tooltip's hover wiring for
+    // the existing instance (same Dropdown mount-lifecycle fragility already
+    // seen elsewhere this session) — a fresh mount sidesteps it entirely.
+    <Tooltip key={props.value} tooltip="Change the type of the group.">
         <Dropdown
             theme={dropdownTheme}
             content={kTypeLabels.map((label, i) => (
@@ -218,7 +222,8 @@ const filterTooltip = (
 // -1 ("All Types") plus every real type. Distinct from TypePicker (which only
 // offers real types, for assigning a group's own type).
 const TypeFilterPicker = (props: { value: number; onChange: (type: number) => void }) => (
-    <Tooltip tooltip={filterTooltip}>
+    // See TypePicker's identical key comment above — same fix, same reason.
+    <Tooltip key={props.value} tooltip={filterTooltip}>
         <Dropdown
             theme={dropdownTheme}
             content={kFilterLabels.map((label, i) => {
