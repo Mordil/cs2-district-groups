@@ -74,7 +74,7 @@ const styles = {
         top: "60rem",
         left: "10rem",
         width: "490rem",
-        maxHeight: "600rem",
+        height: "80vh",
         display: "flex",
         flexDirection: "column",
         color: "white",
