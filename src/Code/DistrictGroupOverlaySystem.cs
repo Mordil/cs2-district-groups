@@ -3,7 +3,6 @@ using Colossal.Mathematics;
 using Game;
 using Game.Areas;
 using Game.Common;
-using Game.Input;
 using Game.Rendering;
 using Game.Simulation;
 using Game.Tools;
@@ -51,7 +50,6 @@ namespace DistrictGroups
         private WaterSystem m_WaterSystem;
         private DefaultToolSystem m_DefaultToolSystem;
         private EntityQuery m_GroupQuery;
-        private ProxyAction m_ToggleAction;
         private bool m_Visible;
 
         // The panel's own "Display District areas" checkbox preference,
@@ -117,8 +115,6 @@ namespace DistrictGroups
             m_WaterSystem = World.GetOrCreateSystemManaged<WaterSystem>();
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
-            m_ToggleAction = Mod.Settings?.GetAction(Setting.kOverlayToggleActionName);
-            if (m_ToggleAction != null) m_ToggleAction.shouldBeEnabled = true;
 
             // Read the persisted checkbox state directly (not via
             // SetAreasVisible) so loading a session doesn't immediately
@@ -131,10 +127,6 @@ namespace DistrictGroups
 
         protected override void OnUpdate()
         {
-            if (m_ToggleAction?.WasPerformedThisFrame() ?? false)
-            {
-                SetVisible(!m_Visible);
-            }
             if (!m_Visible || m_GroupQuery.IsEmptyIgnoreFilter)
             {
                 return;

@@ -36,14 +36,12 @@ namespace DistrictGroups
 
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
-            m_Setting.RegisterKeyBindings();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
 
 
             AssetDatabase.global.LoadSettings(nameof(DistrictGroups), m_Setting, new Setting(this));
             Settings = m_Setting;
 
-            updateSystem.UpdateAt<ProbeSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictGroupSyncSystem>(SystemUpdatePhase.Modification5);
             updateSystem.UpdateAt<DistrictGroupOverlaySystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictGroupSelectionSystem>(SystemUpdatePhase.ToolUpdate);
