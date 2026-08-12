@@ -1,6 +1,6 @@
 # Known Issues & Limitations
 
-User-facing behaviors to document on the mod page / README. Verified in-game 2026-08-08.
+User-facing behaviors to document on the mod page / README.
 
 ## Uninstalling the mod: group data is lost on the first save without it
 
@@ -11,10 +11,6 @@ District **groups** (names, types, member lists, building assignments) are store
 - **Service assignments themselves always survive.** The districts a building serves are written into the game's own vanilla data (the same "districts served" list you can edit by hand), so buildings keep serving their assigned districts even with the mod gone forever — only the group definitions (the reusable named sets) are lost.
 
 **User guidance:** if you want to try removing the mod, keep a backup save from before the removal — or simply don't save while the mod is uninstalled.
-
-## Vanilla building panel shows districts, not group names
-
-The building info panel lists the individual districts a building serves (vanilla UI); it does not show which group produced that list. The group name is visible via the mod's own UI (planned — see CLAUDE_IMPL_PLAN.md Phase 5).
 
 ## Group assignment is exclusive (v1)
 
