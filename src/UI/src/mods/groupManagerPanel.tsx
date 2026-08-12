@@ -71,7 +71,7 @@ const styles = {
         position: "absolute",
         top: "60rem",
         left: "10rem",
-        width: "425rem",
+        width: "490rem",
         maxHeight: "600rem",
         display: "flex",
         flexDirection: "column",
