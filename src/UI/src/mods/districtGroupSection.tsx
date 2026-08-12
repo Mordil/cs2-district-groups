@@ -84,7 +84,7 @@ const Section = (props: any) => {
                                 closeOnSelect={true}
                                 onChange={() => trigger(mod.id, "unassignGroup")}
                             >
-                                <div>None</div>
+                                <div>None (Unassign)</div>
                             </DropdownItem>,
                             ...candidates.map((candidate) => (
                                 <DropdownItem
