@@ -3,12 +3,20 @@ using Game;
 using Game.Modding;
 using Game.SceneFlow;
 using Colossal.IO.AssetDatabase;
+using Colossal.UI;
+using System.IO;
 
 namespace DistrictGroups
 {
     public class Mod : IMod
     {
         public static ILog log = LogManager.GetLogger($"{nameof(DistrictGroups)}").SetShowsErrorsInUI(false);
+
+        // The mod's own coui:// host, serving Icons/*.svg to the UI as
+        // coui://districtgroups/<Name>.svg. Same pattern Unified Icon Library uses
+        // for coui://uil/. Keep in sync with kIconHost in src/UI/src/mods/modIcons.tsx.
+        public const string kIconHost = "districtgroups";
+
         public static Setting Settings { get; private set; }
         private Setting m_Setting;
 
@@ -17,7 +25,14 @@ namespace DistrictGroups
             log.Info(nameof(OnLoad));
 
             if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
+            {
                 log.Info($"Current mod asset at {asset.path}");
+                RegisterIconHost(asset.path);
+            }
+            else
+            {
+                log.Warn("Could not resolve the mod asset - custom icons will not load.");
+            }
 
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
@@ -35,9 +50,29 @@ namespace DistrictGroups
             updateSystem.UpdateAt<DistrictGroupSection>(SystemUpdatePhase.UIUpdate);
         }
 
+        // The Icons folder sits next to the deployed DLL - the csproj's DeployIcons
+        // target re-copies it after every deploy, since the deploy step wipes the
+        // mod folder. Missing folder is not fatal: the UI just renders no image.
+        private static void RegisterIconHost(string assetPath)
+        {
+            string modDir = Path.GetDirectoryName(assetPath);
+            if (string.IsNullOrEmpty(modDir))
+            {
+                log.Warn($"Could not resolve the mod directory from '{assetPath}' - custom icons will not load.");
+                return;
+            }
+
+            string iconDir = modDir + "/Icons/";
+            UIManager.defaultUISystem.AddHostLocation(kIconHost, iconDir, shouldWatch: true, priority: 0);
+            log.Info($"Registered icon host coui://{kIconHost}/ -> {iconDir} (exists: {Directory.Exists(iconDir)})");
+        }
+
         public void OnDispose()
         {
             log.Info(nameof(OnDispose));
+
+            UIManager.defaultUISystem?.RemoveHostLocation(kIconHost);
+
             if (m_Setting != null)
             {
                 m_Setting.UnregisterInOptionsUI();

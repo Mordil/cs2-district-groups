@@ -4,6 +4,7 @@ import { Dropdown, DropdownToggle, FormattedParagraphs, MarkdownRenderer, Scroll
 import { CSSProperties, useEffect, useState } from "react";
 import mod from "../../mod.json";
 import { UilIcon } from "mods/uilIcons";
+import { ModIcon } from "mods/modIcons";
 import css from "./groupManagerPanel.module.scss";
 import selectorCss from "./selectorToggle.module.scss";
 
@@ -56,14 +57,6 @@ const markdownRenderer = new MarkdownRenderer();
 const sameEntity = (a: Entity, b: Entity) => a.index === b.index && a.version === b.version;
 
 const styles = {
-    button: {
-        pointerEvents: "auto",
-        background: "rgba(24, 33, 51, 0.85)",
-        color: "white",
-        padding: "6rem 12rem",
-        borderRadius: "4rem",
-        margin: "4rem",
-    } as const,
     // Outer shell just clips the header/body blocks to the rounded corners;
     // the two children carry their own backgrounds (vanilla info-panel style:
     // dark title bar over a lighter gray body).
@@ -460,11 +453,26 @@ export const GroupManager = () => {
         trigger(mod.id, "setAreasVisible", checked);
     };
 
+    // Built per-render (not a module-level constant like the other tooltips)
+    // since it needs the live group count.
+    const panelToggleTooltip = (
+        <FormattedParagraphs
+            renderer={markdownRenderer}
+            text={[
+                "**DISTRICT GROUPS**",
+                "Create groups of districts to assign to service buildings for self-managing of **operating districts**.",
+                `Existing groups: ${groups.length}`,
+            ]}
+        />
+    );
+
     return (
         <>
-            <button style={styles.button} onClick={togglePanel}>
-                Districts ({groups.length})
-            </button>
+            <Tooltip tooltip={panelToggleTooltip}>
+                <button className={css.panelToggleButton} onClick={togglePanel}>
+                    <ModIcon name="DistrictGroupRing" size="28rem" />
+                </button>
+            </Tooltip>
             {/* The wrapper stays permanently mounted so opacity is a real CSS
                 transition; the content inside mounts/unmounts around it (see
                 contentMounted above) so Dropdown/Tooltip get a fresh mount

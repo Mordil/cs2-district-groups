@@ -72,3 +72,20 @@ $rowControlHeight: 22rem;
     align-items: center;
     justify-content: center;
 }
+
+// Icon-only square button matching the vanilla toolbar's own tool icons
+// (same size/blue/rounding as the neighboring diamond/cone/paintbrush buttons).
+.panelToggleButton {
+    pointer-events: auto;
+    width: 40rem;
+    height: 40rem;
+    background: rgb(75, 195, 241);
+    border-radius: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panelToggleButton:hover {
+    background: rgb(122, 211, 245);
+}
