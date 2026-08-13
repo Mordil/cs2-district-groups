@@ -1,0 +1,15 @@
+export const kTypeLabels = [
+    "Generic",
+    "Police",
+    "Fire",
+    "Healthcare",
+    "Deathcare",
+    "Garbage",
+    "Elementary School",
+    "High School",
+    "College",
+    "University",
+    "Post",
+    "Parks",
+    "Welfare",
+]

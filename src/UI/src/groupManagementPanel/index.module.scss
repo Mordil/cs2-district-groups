@@ -1,6 +1,3 @@
-// Shared row-control height: the type selector's actual height comes partly
-// from the vanilla DropdownToggle theme, so matching padding alone across a
-// native button/input/vanilla-toggle mix isn't reliable — set explicitly.
 $rowControlHeight: 22rem;
 
 .expandButton {
@@ -36,8 +33,6 @@ $rowControlHeight: 22rem;
     background: rgba(190, 55, 55, 0.9);
 }
 
-// Looks like plain text until clicked — matches the vanilla title field used
-// for renaming buildings/districts/roads in the info panel.
 .nameInput {
     background: transparent;
     border: 1rem solid transparent;
@@ -62,9 +57,6 @@ $rowControlHeight: 22rem;
     outline: none;
 }
 
-// Sizing only — colors still come from styles.dangerButton. Scoped
-// separately from that shared style so the member-list remove buttons
-// (which also use styles.dangerButton) keep their smaller size.
 .headerDeleteButton {
     height: $rowControlHeight;
     box-sizing: border-box;
@@ -73,10 +65,6 @@ $rowControlHeight: 22rem;
     justify-content: center;
 }
 
-// Per-district remove button: no background of its own, a plain gray
-// trashcan icon (opacity dims the icon's default white to a neutral gray
-// against the panel's dark background — <img> icons don't take a CSS
-// `color`, so filter/opacity is the only way to retint them).
 .memberDeleteButton {
     background: transparent;
     border-radius: 3rem;
@@ -95,25 +83,6 @@ $rowControlHeight: 22rem;
     opacity: 0.85;
 }
 
-// Icon-only square button matching the vanilla toolbar's own tool icons
-// (same size/blue/rounding as the neighboring diamond/cone/paintbrush buttons).
-.panelToggleButton {
-    pointer-events: auto;
-    width: 40rem;
-    height: 40rem;
-    background: rgb(75, 195, 241);
-    border-radius: 6rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.panelToggleButton:hover {
-    background: rgb(122, 211, 245);
-}
-
-// Full-width row button matching vanilla's "Select operating districts"
-// button on service buildings (dark rounded row, icon + label, centered).
 .selectDistrictsButton {
     width: 100%;
     height: 32rem;
@@ -131,8 +100,6 @@ $rowControlHeight: 22rem;
     background: rgba(0, 0, 0, 0.55);
 }
 
-// Active state (selection mode is on for this group): same blue as the
-// panel toggle button, matching vanilla's own active-tool button styling.
 .selectDistrictsButtonActive {
     background: rgb(75, 195, 241);
 }
