@@ -1,4 +1,4 @@
-﻿<Publish>
+<Publish>
 	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
 	<ModId Value="154658" />
 	<!--Name of the mod to display to players-->
@@ -15,7 +15,10 @@ mind, you have to edit every building again.
 
 District Groups makes this easier.
 
-**This mod is in beta.** The core functionality is completed, but things still may be buggy or confusing. Please leave feedback wherever possible so it can be addressed.
+**This mod is in alpha.** It is still early, and it will keep changing. When you
+update to a new version, your groups may be lost. If that happens, you have to
+make them again. Your buildings will keep serving the districts they already
+have.
 
 **How to use it**
 
@@ -43,7 +46,7 @@ save without the mod is safe. But if you save the game while the mod is removed,
 the groups are gone for good.
 	</LongDescription>
 	<!--Thumbnail-->
-	<Thumbnail Value="Properties/Thumbnail.beta.png" />
+	<Thumbnail Value="Properties/Thumbnail.alpha.png" />
 	<!--Screenshot, can be set multiple times-->
 	<Screenshot Value="Properties/ProjectBanner.png" />
 	<Screenshot Value="Properties/Screenshots/Preview1.png" />
