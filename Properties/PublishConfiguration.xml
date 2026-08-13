@@ -15,10 +15,7 @@ mind, you have to edit every building again.
 
 District Groups makes this easier.
 
-**This mod is in alpha.** It is still early, and it will keep changing. When you
-update to a new version, your groups may be lost. If that happens, you have to
-make them again. Your buildings will keep serving the districts they already
-have.
+**This mod is in beta.** The core functionality is completed, but things still may be buggy or confusing. Please leave feedback wherever possible so it can be addressed.
 
 **How to use it**
 
@@ -46,7 +43,7 @@ save without the mod is safe. But if you save the game while the mod is removed,
 the groups are gone for good.
 	</LongDescription>
 	<!--Thumbnail-->
-	<Thumbnail Value="Properties/Thumbnail.alpha.png" />
+	<Thumbnail Value="Properties/Thumbnail.beta.png" />
 	<!--Screenshot, can be set multiple times-->
 	<Screenshot Value="Properties/ProjectBanner.png" />
 	<Screenshot Value="Properties/Screenshots/Preview1.png" />
@@ -62,7 +59,7 @@ the groups are gone for good.
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 	<!--Version of the mod-->
-	<ModVersion Value="0.3.0" />
+	<ModVersion Value="0.3.1" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -73,12 +70,10 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Added confirmation dialog when deleting groups that are in-use
-- Added Settings option to control the width of group overlay border
-- Removed debug and development Settings options and keybindings
-- Overhaul the group district selection UI/UX
-- Fixed empty groups being deleted when you load the save file
-- Fixed the filter selector tooltip in the panel no longer appearing once you've changed the filter
+- Fixed the group deletion dialog not working as expected (sorry for unintended deletions!)
+- Fixed confusing new group default names
+- Prep UI for localization support (contributions welcome)
+- Changed the height of the groups panel
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/Mordil/cs2-district-groups" />
