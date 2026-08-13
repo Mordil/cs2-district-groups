@@ -1,7 +1,6 @@
 import { ModRegistrar } from "cs2/modding";
 import { DistrictGroupSectionComponent } from "mods/districtGroupSection";
 import { GroupManager } from "mods/groupManagerPanel";
-import mod from "../mod.json";
 
 const register: ModRegistrar = (moduleRegistry) => {
     moduleRegistry.append("GameTopLeft", GroupManager);
@@ -10,7 +9,6 @@ const register: ModRegistrar = (moduleRegistry) => {
         "selectedInfoSectionComponents",
         DistrictGroupSectionComponent
     );
-    console.log(mod.id + " UI module registrations completed.");
 };
 
 export default register;
