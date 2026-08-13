@@ -42,9 +42,8 @@ export const GroupCard = (props: { group: Group }) => {
         />
     )
 
-    // Deleting an unassigned group is a no-op consequence-wise; deleting one
-    // that's actively managing a building's operating districts is not, so
-    // that case alone gets a confirmation stop.
+    // Deleting an unassigned group is pretty easy to recover from; deleting one
+    // that's actively managing a building's operating districts is not, so let's get the user to double confirm
     const handleDeleteGroup = () => {
         if (group.assignedBuildingCount === 0) {
             trigger(mod.id, "deleteGroup", group.entity)
@@ -61,11 +60,11 @@ export const GroupCard = (props: { group: Group }) => {
                 multiline={true}
                 confirm={t("deleteGroupConfirm")}
                 cancel={t("deleteGroupCancel")}
-                onConfirm={() => dialogStack.closeAll()}
-                onCancel={() => {
+                onConfirm={() => {
                     trigger(mod.id, "deleteGroup", group.entity)
                     dialogStack.closeAll()
                 }}
+                onCancel={() => dialogStack.closeAll()}
             />
         )
     }

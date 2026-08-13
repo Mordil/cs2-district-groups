@@ -78,8 +78,8 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     deleteGroupConfirmMessage:
         '"{NAME}" is assigned to {COUNT} service building(s).\nAssigned service building(s) will serve the whole city again.',
     deleteGroupDialogTitle: "Delete District Group?",
-    deleteGroupConfirm: "Keep group",
-    deleteGroupCancel: "Delete group",
+    deleteGroupConfirm: "Delete group",
+    deleteGroupCancel: "Keep group",
     removeMemberTooltip: "Remove the district from the group.",
     selectDistrictsButton: "Select Districts",
 

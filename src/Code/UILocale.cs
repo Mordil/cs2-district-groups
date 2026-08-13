@@ -32,8 +32,8 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[TypePickerTooltipLine3]", "All other types are only available to matching service buildings." },
                 { "DistrictGroups.UI[DeleteGroupConfirmMessage]", "\"{NAME}\" is assigned to {COUNT} service building(s).\nAssigned service building(s) will serve the whole city again." },
                 { "DistrictGroups.UI[DeleteGroupDialogTitle]", "Delete District Group?" },
-                { "DistrictGroups.UI[DeleteGroupConfirm]", "Keep group" },
-                { "DistrictGroups.UI[DeleteGroupCancel]", "Delete group" },
+                { "DistrictGroups.UI[DeleteGroupConfirm]", "Delete group" },
+                { "DistrictGroups.UI[DeleteGroupCancel]", "Keep group" },
                 { "DistrictGroups.UI[RemoveMemberTooltip]", "Remove the district from the group." },
                 { "DistrictGroups.UI[SelectDistrictsButton]", "Select Districts" },
 
