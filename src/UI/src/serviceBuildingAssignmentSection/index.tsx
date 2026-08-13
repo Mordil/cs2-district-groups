@@ -3,7 +3,8 @@ import { getModule } from "cs2/modding"
 import { Dropdown, DropdownToggle, FormattedParagraphs } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import mod from "../../mod.json"
-import { kTypeLabels } from "../constants"
+import { useTypeLabels } from "../constants"
+import { useTranslation } from "../locale"
 import { markdownRenderer } from "../shared"
 import selectorCss from "../components/selectorToggle.module.scss"
 
@@ -41,6 +42,8 @@ const sortCandidates = (candidates: GroupOption[], buildingType: number): GroupO
     })
 
 const Section = (props: any) => {
+    const t = useTranslation()
+    const typeLabels = useTypeLabels()
     const buildingType: number = props.buildingType ?? kGenericType
     const candidates: GroupOption[] = sortCandidates(props.candidates ?? [], buildingType)
     const hasAssignment: boolean = props.hasAssignment ?? false
@@ -50,9 +53,9 @@ const Section = (props: any) => {
         <FormattedParagraphs
             renderer={markdownRenderer}
             text={[
-                "Service buildings can be assigned to a **district group**.",
-                "When assigned, the group will manage the **operating districts** for the building.",
-                "When unassigned, **operating districts** are managed manually.",
+                t("sectionTooltipLine1"),
+                t("sectionTooltipLine2"),
+                t("sectionTooltipLine3"),
             ]}
         />
     )
@@ -60,7 +63,7 @@ const Section = (props: any) => {
     return (
         <InfoSection disableFocus={true} tooltip={sectionTooltip}>
             <InfoRow
-                left={"DISTRICT GROUP"}
+                left={t("sectionLabel")}
                 right={
                     <Dropdown
                         theme={dropdownTheme}
@@ -73,7 +76,7 @@ const Section = (props: any) => {
                                 closeOnSelect={true}
                                 onChange={() => trigger(mod.id, "unassignGroup")}
                             >
-                                <div>None (Unassign)</div>
+                                <div>{t("unassignOption")}</div>
                             </DropdownItem>,
                             ...candidates.map((candidate) => (
                                 <DropdownItem
@@ -83,7 +86,7 @@ const Section = (props: any) => {
                                     closeOnSelect={true}
                                     onChange={() => trigger(mod.id, "assignGroup", candidate.entity)}
                                 >
-                                    <div>{`${candidate.name} (${kTypeLabels[candidate.type] ?? "?"})`}</div>
+                                    <div>{`${candidate.name} (${typeLabels[candidate.type] ?? "?"})`}</div>
                                 </DropdownItem>
                             )),
                         ]}
@@ -94,7 +97,7 @@ const Section = (props: any) => {
                             closeIconComponent={<></>}
                             className={selectorCss.selectorToggle}
                         >
-                            <div>{hasAssignment ? assignedGroupName : "Unassigned"}</div>
+                            <div>{hasAssignment ? assignedGroupName : t("unassignedLabel")}</div>
                         </DropdownToggle>
                     </Dropdown>
                 }

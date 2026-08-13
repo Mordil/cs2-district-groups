@@ -5,7 +5,8 @@ import { useState } from "react"
 import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
 import { kAllTypes, TypeFilterPicker } from "../components/TypePicker"
-import { kTypeLabels } from "../constants"
+import { useTypeLabels } from "../constants"
+import { useTranslation } from "../locale"
 import css from "./index.module.scss"
 import { styles } from "./styles"
 import { areasVisible$, groups$ } from "./bindings"
@@ -15,20 +16,19 @@ import { GroupCard } from "./GroupCard"
 // Re-exported: modMenuButton's own tooltip needs the live group count.
 export { groups$ } from "./bindings"
 
-const filterTooltip = (
-    <FormattedParagraphs
-        renderer={markdownRenderer}
-        text={[
-            "Filter the list of groups by their **type**.",
-            "If **All Groups** is selected, then all groups will be listed."
-        ]}
-    />
-)
-
 export const GroupManagementPanel = () => {
+    const t = useTranslation()
+    const typeLabels = useTypeLabels()
     const [filterType, setFilterType] = useState(kAllTypes)
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
+
+    const filterTooltip = (
+        <FormattedParagraphs
+            renderer={markdownRenderer}
+            text={[t("filterTooltipLine1"), t("filterTooltipLine2")]}
+        />
+    )
 
     // "All Types" keeps creation order (the binding's own order); a specific
     // type filters down to just that type, still in creation order.
@@ -45,7 +45,7 @@ export const GroupManagementPanel = () => {
         const newGroupType = filterType === kAllTypes ? 0 : filterType
         // groups.length (not displayedGroups.length) so the suggested name
         // reflects every group, regardless of the active filter.
-        trigger(mod.id, "createGroup", `New Group ${groups.length + 1}`, newGroupType)
+        trigger(mod.id, "createGroup", t("newGroupDefaultName", { number: groups.length + 1 }), newGroupType)
     }
 
     const onAreasVisibleChange = (checked: boolean) => {
@@ -56,22 +56,22 @@ export const GroupManagementPanel = () => {
         <>
             <div style={styles.panelHeader}>
                 <div style={styles.headerRow}>
-                    <div style={styles.header}>District Groups</div>
+                    <div style={styles.header}>{t("panelTitle")}</div>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <Tooltip tooltip="Adds a new group with no member districts.">
+                        <Tooltip tooltip={t("newGroupButtonTooltip")}>
                             <button
                                 className={css.newGroupButton}
                                 style={styles.newGroupButton}
                                 onClick={onCreateGroup}
                             >
-                                New Group
+                                {t("newGroupButton")}
                             </button>
                         </Tooltip>
                         <TypeFilterPicker
                             value={filterType}
                             onChange={onFilterChange}
-                            labels={kTypeLabels}
-                            allLabel="All Groups"
+                            labels={typeLabels}
+                            allLabel={t("allGroupsLabel")}
                             tooltip={filterTooltip}
                         />
                     </div>
@@ -85,10 +85,10 @@ export const GroupManagementPanel = () => {
                     style={styles.listArea}
                 >
                     {groups.length === 0 && (
-                        <div style={styles.subtle}>No groups yet. Create one above.</div>
+                        <div style={styles.subtle}>{t("noGroupsYet")}</div>
                     )}
                     {groups.length > 0 && displayedGroups.length === 0 && (
-                        <div style={styles.subtle}>No groups match this filter.</div>
+                        <div style={styles.subtle}>{t("noGroupsMatchFilter")}</div>
                     )}
                     {displayedGroups.map((group) => (
                         <GroupCard
@@ -102,7 +102,7 @@ export const GroupManagementPanel = () => {
                 <Checkbox
                     checked={areasVisible}
                     onChange={onAreasVisibleChange}
-                    label="Display District areas"
+                    label={t("displayDistrictAreasLabel")}
                     style={styles.areasToggleRow}
                 />
             </div>

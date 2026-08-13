@@ -4,6 +4,7 @@ import { useState } from "react"
 import mod from "../../mod.json"
 import { ModIcon } from "../components/icons"
 import { markdownRenderer } from "../shared"
+import { useTranslation } from "../locale"
 import { groups$, GroupManagementPanel } from "groupManagementPanel"
 import css from "./index.module.scss"
 
@@ -39,6 +40,7 @@ const panelShellStyle = {
 */
 
 export const GroupManager = () => {
+    const t = useTranslation()
     const [open, setOpen] = useState(false)
     const [contentMounted, setContentMounted] = useState(false)
     const groups = useValue(groups$)
@@ -63,9 +65,9 @@ export const GroupManager = () => {
         <FormattedParagraphs
             renderer={markdownRenderer}
             text={[
-                "**DISTRICT GROUPS**",
-                "Create groups of districts to assign to service buildings for self-managing of **operating districts**.",
-                `Existing groups: ${groups.length}`,
+                t("toggleTooltipTitle"),
+                t("toggleTooltipBody"),
+                t("toggleTooltipCount", { count: groups.length }),
             ]}
         />
     )
