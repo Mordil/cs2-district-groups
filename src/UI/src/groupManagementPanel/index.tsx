@@ -27,9 +27,6 @@ const filterTooltip = (
 
 export const GroupManagementPanel = () => {
     const [filterType, setFilterType] = useState(kAllTypes)
-    // Increments with every "New Group" click this session, regardless of
-    // deletions, so the Nth click always suggests "New Group N".
-    const [nextGroupNumber, setNextGroupNumber] = useState(1)
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
 
@@ -46,8 +43,9 @@ export const GroupManagementPanel = () => {
         // "All Groups" (kAllTypes) has no real type to inherit, so new
         // groups created under that filter default to Generic.
         const newGroupType = filterType === kAllTypes ? 0 : filterType
-        trigger(mod.id, "createGroup", `New Group ${nextGroupNumber}`, newGroupType)
-        setNextGroupNumber((n) => n + 1)
+        // groups.length (not displayedGroups.length) so the suggested name
+        // reflects every group, regardless of the active filter.
+        trigger(mod.id, "createGroup", `New Group ${groups.length + 1}`, newGroupType)
     }
 
     const onAreasVisibleChange = (checked: boolean) => {
