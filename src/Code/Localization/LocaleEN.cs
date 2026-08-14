@@ -23,9 +23,13 @@ namespace DistrictGroups
                 { m_Setting.GetSettingsLocaleID(), "District Groups" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Main" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kGeneralGroup), "General" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kDebugGroup), "Debug" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Overlay border width" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DumpDebugData)), "Log debug mod data" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.DumpDebugData)), "Writes all mod state (groups, service buildings, etc.) to the mod's log file. Include the the log file when filing a bug report." },
 
                 { "DistrictGroups.UI[PanelTitle]", "District Groups" },
                 { "DistrictGroups.UI[NewGroupButton]", "New Group" },

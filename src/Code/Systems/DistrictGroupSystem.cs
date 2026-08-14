@@ -22,6 +22,7 @@ namespace DistrictGroups
             base.OnCreate();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_AssignmentQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupAssignment>());
+            InitializeDebugSupport();
             Enabled = false;
         }
 

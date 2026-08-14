@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Colossal.UI.Binding;
 using Game.Areas;
-using Game.Prefabs;
 using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
@@ -110,7 +109,7 @@ namespace DistrictGroups
             m_AssignedGroup = EntityManager.HasComponent<DistrictGroupAssignment>(selectedEntity)
                 ? EntityManager.GetComponentData<DistrictGroupAssignment>(selectedEntity).m_Group
                 : Entity.Null;
-            m_BuildingType = DetectServiceType(selectedPrefab);
+            m_BuildingType = m_GroupSystem.DetectServiceType(selectedPrefab);
         }
 
         public override void OnWriteProperties(IJsonWriter writer)
@@ -156,34 +155,6 @@ namespace DistrictGroups
                 writer.TypeEnd();
             }
             writer.ArrayEnd();
-        }
-
-        private GroupServiceType DetectServiceType(Entity prefab)
-        {
-            if (!EntityManager.Exists(prefab))
-            {
-                return GroupServiceType.Generic;
-            }
-            if (EntityManager.HasComponent<PoliceStationData>(prefab)) return GroupServiceType.Police;
-            if (EntityManager.HasComponent<FireStationData>(prefab)) return GroupServiceType.Fire;
-            if (EntityManager.HasComponent<HospitalData>(prefab)) return GroupServiceType.Healthcare;
-            if (EntityManager.HasComponent<DeathcareFacilityData>(prefab)) return GroupServiceType.Deathcare;
-            if (EntityManager.HasComponent<GarbageFacilityData>(prefab)) return GroupServiceType.Garbage;
-            if (EntityManager.HasComponent<PostFacilityData>(prefab)) return GroupServiceType.Post;
-            if (EntityManager.HasComponent<ParkData>(prefab)) return GroupServiceType.Parks;
-            if (EntityManager.HasComponent<WelfareOfficeData>(prefab)) return GroupServiceType.Welfare;
-            if (EntityManager.HasComponent<SchoolData>(prefab))
-            {
-                SchoolData school = EntityManager.GetComponentData<SchoolData>(prefab);
-                switch (school.m_EducationLevel)
-                {
-                    case 1: return GroupServiceType.EducationElementary;
-                    case 2: return GroupServiceType.EducationHighSchool;
-                    case 3: return GroupServiceType.EducationCollege;
-                    default: return GroupServiceType.EducationUniversity;
-                }
-            }
-            return GroupServiceType.Generic;
         }
     }
 }
