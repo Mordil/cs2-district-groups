@@ -9,10 +9,10 @@ using Unity.Entities;
 
 namespace DistrictGroups
 {
-    // Phase 5.3: a section on the vanilla selected-building info panel. Visible
-    // for buildings that can serve districts; shows the assigned group and offers
-    // type-filtered candidates. The JS side keys off this type's FULL NAME
-    // ("DistrictGroups.DistrictGroupSection") — renaming breaks the UI.
+    /* Renaming this class will break the UI unless it's changed to the new name, since we're referencing things by exact type names as strings */
+
+    // A custom section to be injected in the info panel of service buildings
+    // Allows interaction with the building's district group assignment
     public partial class DistrictGroupSection : InfoSectionBase
     {
         protected override string group => "DistrictGroupSection";
@@ -23,10 +23,11 @@ namespace DistrictGroups
         private GroupServiceType m_BuildingType;
         private int m_LastSeenVersion = -1;
 
-        // SelectedInfoUISystem only exposes append (AddMiddleSection); vanilla
-        // sections are registered in a fixed order via a private list, so
-        // placing ours immediately before DistrictsSection ("Operating
-        // Districts") needs a direct Insert into that list via reflection.
+        /*
+            We need to use reflection to find the index of the "operating districts" section since it's all private and done before we load
+
+            That way we can insert at the right index
+        */
         private static readonly FieldInfo kMiddleSectionsField =
             typeof(SelectedInfoUISystem).GetField("m_MiddleSections", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -43,10 +44,6 @@ namespace DistrictGroups
 
         private void InsertBeforeDistrictsSection()
         {
-            // By the time m_InfoUISystem exists, SelectedInfoUISystem.OnCreate
-            // has already run AddSections(), so DistrictsSection is already in
-            // the list — GetOrCreateSystemManaged only creates it if it somehow
-            // isn't (defensive; shouldn't happen for a vanilla section).
             DistrictsSection districtsSection = World.GetOrCreateSystemManaged<DistrictsSection>();
             if (kMiddleSectionsField?.GetValue(m_InfoUISystem) is List<ISectionSource> sections)
             {
@@ -85,6 +82,13 @@ namespace DistrictGroups
             m_BuildingType = GroupServiceType.Generic;
         }
 
+        // Required by InfoSectionBase. This section's refresh logic lives in
+        // OnUpdate instead (it needs the group-version check gate before
+        // recomputing visibility/assignment), so there's nothing to do here.
+        protected override void OnProcess()
+        {
+        }
+
         protected override void OnUpdate()
         {
             base.OnUpdate();
@@ -107,10 +111,6 @@ namespace DistrictGroups
                 ? EntityManager.GetComponentData<DistrictGroupAssignment>(selectedEntity).m_Group
                 : Entity.Null;
             m_BuildingType = DetectServiceType(selectedPrefab);
-        }
-
-        protected override void OnProcess()
-        {
         }
 
         public override void OnWriteProperties(IJsonWriter writer)

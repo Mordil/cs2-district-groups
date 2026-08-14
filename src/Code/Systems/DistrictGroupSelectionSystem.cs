@@ -8,16 +8,12 @@ namespace DistrictGroups
 {
     // "District selection mode": lets the user click districts in the world to
     // add/remove them from a group's member list, mirroring vanilla's own
-    // "Select operating districts" tool on service buildings as closely as
-    // possible by literally reusing that tool (Game.Tools.SelectionToolSystem
-    // with SelectionType.ServiceDistrict) rather than reimplementing district
-    // raycasting/highlighting ourselves.
+    // "Select operating districts" tool on service buildings
     //
     // The vanilla tool only knows how to write into a ServiceDistrict buffer on
     // whatever entity is set as its selectionOwner. Rather than attach that
-    // buffer to our persisted group entities (risking opting them into whatever
-    // *other* vanilla systems assume about entities carrying that buffer), we
-    // give the tool one disposable scratch entity instead, and mirror its
+    // buffer to our persisted group entities,
+    // give the tool one disposable scratch entity, and mirror its
     // buffer contents into the real group's DistrictGroupMember list each frame
     // while active.
     public partial class DistrictGroupSelectionSystem : GameSystemBase
@@ -43,9 +39,7 @@ namespace DistrictGroups
             EntityManager.AddBuffer<ServiceDistrict>(m_ScratchEntity);
             EntityManager.SetName(m_ScratchEntity, "DistrictGroups scratch selection owner");
 
-            // Mirrors DistrictsSection's own wiring: if the player switches to a
-            // different tool entirely (bulldozer, another mod, etc.) while we're
-            // active, treat that the same as our own toggle-off.
+            // if the player switches to a different tool, just toggle off
             m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Combine(
                 m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
         }
@@ -98,8 +92,7 @@ namespace DistrictGroups
             SyncScratchIntoGroup(m_SelectingGroup);
         }
 
-        // Existing members show pre-highlighted by the vanilla tool, matching
-        // how "Select operating districts" shows a building's current list.
+        // Show existing member districts as already highlighted
         private void SeedScratchFromGroup(Entity group)
         {
             DynamicBuffer<ServiceDistrict> scratch = EntityManager.GetBuffer<ServiceDistrict>(m_ScratchEntity);
@@ -111,10 +104,7 @@ namespace DistrictGroups
             }
         }
 
-        // One-directional diff, scratch -> group: whatever the vanilla tool's
-        // clicks left in the scratch buffer becomes the group's real member
-        // list, going through AddMember/RemoveMember so Version bumps and
-        // assigned buildings re-expand normally.
+        // Forward data events one-way into the target group.
         private void SyncScratchIntoGroup(Entity group)
         {
             if (!EntityManager.Exists(group))

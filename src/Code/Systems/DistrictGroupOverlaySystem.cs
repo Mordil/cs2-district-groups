@@ -14,10 +14,7 @@ using UnityEngine;
 
 namespace DistrictGroups
 {
-    // Phase 4: draws each group's member-district boundaries in a distinct color
-    // through the game's OverlayRenderSystem. Boundary segments are subdivided
-    // and snapped to terrain/water height so they hug the ground like vanilla
-    // district borders. Toggled by hotkey until the Phase 5 UI takes over.
+    // draws each group's member-district boundaries in a distinct color through the game's OverlayRenderSystem.
     public partial class DistrictGroupOverlaySystem : GameSystemBase
     {
         private static readonly Color[] kPalette =
@@ -38,9 +35,6 @@ namespace DistrictGroups
 
         private const float kSegmentStep = 12f;
 
-        // requireAreas has a protected setter; setting it on the default tool
-        // makes the game render all districts exactly like the vanilla Areas
-        // tool does (fills, borders, labels) — no drawing on our side.
         private static readonly PropertyInfo kRequireAreasProperty =
             typeof(ToolBaseSystem).GetProperty(nameof(ToolBaseSystem.requireAreas));
 
@@ -51,12 +45,6 @@ namespace DistrictGroups
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
 
-        // The panel's own "Display District areas" checkbox preference,
-        // persisted across sessions via Mod.Settings (defaults to off the
-        // first time). This is just the remembered preference — actual vanilla
-        // area rendering (fills/borders/labels for every district) only ever
-        // happens while the panel is also open (m_Visible); closing the panel
-        // always hides areas regardless of this checkbox's state.
         private bool m_AreasVisible;
         public bool AreasVisible => m_AreasVisible;
 
@@ -91,9 +79,6 @@ namespace DistrictGroups
             ApplyAreasVisibility();
         }
 
-        // Vanilla area rendering requires both: the checkbox preference AND
-        // the panel being open. Closing the panel hides areas unconditionally
-        // without touching (or forgetting) the checkbox's own state.
         private void ApplyAreasVisibility()
         {
             bool shouldShow = m_Visible && m_AreasVisible;
@@ -117,9 +102,7 @@ namespace DistrictGroups
 
             // Read the persisted checkbox state directly (not via
             // SetAreasVisible) so loading a session doesn't immediately
-            // rewrite the setting it just read. m_Visible starts false (panel
-            // closed), so ApplyAreasVisibility correctly keeps areas hidden
-            // at startup regardless of the remembered checkbox preference.
+            // rewrite the setting it just read.
             m_AreasVisible = Mod.Settings?.DisplayDistrictAreas ?? false;
             ApplyAreasVisibility();
         }

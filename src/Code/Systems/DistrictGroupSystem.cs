@@ -6,13 +6,9 @@ using Unity.Entities;
 
 namespace DistrictGroups
 {
-    // Phase 2 registry (see CLAUDE_IMPL_PLAN.md): owns district-group entities and
-    // expands group membership into the vanilla ServiceDistrict buffers of assigned
-    // buildings. API-only for now — no per-frame work until Phase 3 (sync).
+    // System that actually owns district-group entities and expands group membership into ServiceDistrict buffers of assigned buildings.
     //
-    // Persistence: groups are ordinary entities whose components implement
-    // ISerializable, so the game's save system stores them and remaps the Entity
-    // references on load (verified in Phase 1 for vanilla buffers).
+    // Persistence: groups are ordinary entities whose components implement ISerializable, so the game's save system handles them.
     public partial class DistrictGroupSystem : GameSystemBase
     {
         private EntityQuery m_GroupQuery;
@@ -33,10 +29,8 @@ namespace DistrictGroups
         {
         }
 
-        // The game only purges entities it knows about when a city unloads, so
-        // mod-created group entities survive into the next session as ghosts with
-        // dangling references (observed in Phase 2 testing). Purge before every
-        // load; the incoming save then deserializes its own groups fresh.
+        // The game only purges entities it knows about when a city unloads, so mod-created group entities survive into the next session as ghosts with dangling references
+        // Purge before every load; the incoming save then deserializes its own groups fresh.
         protected override void OnGamePreload(Purpose purpose, GameMode mode)
         {
             base.OnGamePreload(purpose, mode);
@@ -48,13 +42,7 @@ namespace DistrictGroups
             }
         }
 
-        // Safety net for saves that already contain corrupted groups: drop member
-        // entries whose district no longer exists. Does NOT delete groups just for
-        // being empty/unassigned — a freshly created group is legitimately both
-        // until the user populates it, and that's not this method's call to make.
-        // (Ghost entities left over from a *previous* session are a different
-        // problem, already fully handled by OnGamePreload's purge above, which
-        // runs before this save's own data is even deserialized.)
+        // Safety net for saves that already contain corrupted groups: drop member entries whose district no longer exists.
         protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
         {
             base.OnGameLoadingComplete(purpose, mode);
@@ -155,8 +143,7 @@ namespace DistrictGroups
             return false;
         }
 
-        // v1 is exclusive: while assigned, the group owns the building's entire
-        // ServiceDistrict buffer content.
+        // while assigned, the group owns the building's entire ServiceDistrict buffer content.
         public bool AssignBuilding(Entity building, Entity group)
         {
             if (!EntityManager.HasBuffer<ServiceDistrict>(building))

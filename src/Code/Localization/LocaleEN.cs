@@ -3,17 +3,30 @@ using System.Collections.Generic;
 
 namespace DistrictGroups
 {
-    // English text for the React UI panel/tooltips (src/UI/src). Key strings
-    // here must match src/UI/src/locale.ts's id() output exactly - the
-    // "DistrictGroups.UI[Key]" scheme mirrors the game's own locale id style
-    // (e.g. "Options.SECTION[...]") so other locales can register their own
-    // translations for the same keys via additional IDictionarySource classes.
-    public class UILocaleEN : IDictionarySource
+    public class LocaleEN : IDictionarySource
     {
+        private readonly Setting m_Setting;
+
+        public LocaleEN(Setting setting)
+        {
+            m_Setting = setting;
+        }
+
         public IEnumerable<KeyValuePair<string, string>> ReadEntries(IList<IDictionaryEntryError> errors, Dictionary<string, int> indexCounts)
         {
+            /*
+                Key strings for the custom mod UI must match locale.ts's id() exactly
+            */
+
             return new Dictionary<string, string>
             {
+                { m_Setting.GetSettingsLocaleID(), "District Groups" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Main" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kGeneralGroup), "General" },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Overlay border width" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
+
                 { "DistrictGroups.UI[PanelTitle]", "District Groups" },
                 { "DistrictGroups.UI[NewGroupButton]", "New Group" },
                 { "DistrictGroups.UI[NewGroupButtonTooltip]", "Adds a new group with no member districts." },
@@ -64,8 +77,6 @@ namespace DistrictGroups
             };
         }
 
-        public void Unload()
-        {
-        }
+        public void Unload() { }
     }
 }

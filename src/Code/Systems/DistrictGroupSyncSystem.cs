@@ -7,10 +7,8 @@ using Unity.Entities;
 
 namespace DistrictGroups
 {
-    // Phase 3: live sync. When a district is deleted during play, prune it from
-    // all groups and re-expand affected buildings. (Vanilla's ServiceDistrictSystem
-    // prunes the buildings' ServiceDistrict buffers itself; this keeps the group
-    // definitions from dangling and re-adding dead refs on a later expansion.)
+    // Keeps data in sync.
+    // When a district is deleted during play, prune it from all groups and re-expand affected buildings.
     public partial class DistrictGroupSyncSystem : GameSystemBase
     {
         private EntityQuery m_DeletedDistrictQuery;

@@ -9,10 +9,9 @@ using Unity.Entities;
 
 namespace DistrictGroups
 {
-    // Phase 5: C# side of the UI bindings. Binding group is the mod id from
-    // UI/mod.json — keep the two in sync.
     public partial class DistrictGroupsUISystem : UISystemBase
     {
+        /* This needs to be the same as in mod.json */
         public const string kBindingGroup = "district-groups";
 
         private DistrictGroupSystem m_GroupSystem;

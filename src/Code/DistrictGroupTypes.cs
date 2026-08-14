@@ -21,8 +21,7 @@ namespace DistrictGroups
         Welfare = 12,
     }
 
-    // A named, typed set of base districts. One entity per group; members live
-    // in a DistrictGroupMember buffer on the same entity.
+    // A named, typed set of base districts.
     public struct DistrictGroupData : IComponentData, IQueryTypeParameter, ISerializable
     {
         public GroupServiceType m_Type;
@@ -66,7 +65,6 @@ namespace DistrictGroups
     }
 
     // On a service building: which group its ServiceDistrict buffer is managed by.
-    // v1 is exclusive — while assigned, the mod owns the building's buffer content.
     public struct DistrictGroupAssignment : IComponentData, IQueryTypeParameter, ISerializable
     {
         public Entity m_Group;

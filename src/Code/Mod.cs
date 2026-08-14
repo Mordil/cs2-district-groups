@@ -37,7 +37,6 @@ namespace DistrictGroups
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
-            GameManager.instance.localizationManager.AddSource("en-US", new UILocaleEN());
 
 
             AssetDatabase.global.LoadSettings(nameof(DistrictGroups), m_Setting, new Setting(this));
