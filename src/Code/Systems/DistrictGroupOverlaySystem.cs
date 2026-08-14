@@ -35,6 +35,13 @@ namespace DistrictGroups
 
         private const float kSegmentStep = 12f;
 
+        // Wall-clock (not game-speed-affected) cadence for OnUpdate timing
+        // samples. NegativeInfinity forces the first OnUpdate after the
+        // overlay becomes visible to always sample, even if the user
+        // dismisses the overlay again before kSampleIntervalSeconds elapses.
+        private const float kSampleIntervalSeconds = 4f;
+        private float m_LastSampleTime = float.NegativeInfinity;
+
         private static readonly PropertyInfo kRequireAreasProperty =
             typeof(ToolBaseSystem).GetProperty(nameof(ToolBaseSystem.requireAreas));
 
@@ -60,6 +67,10 @@ namespace DistrictGroups
                 return;
             }
             m_Visible = visible;
+            if (m_Visible)
+            {
+                m_LastSampleTime = float.NegativeInfinity;
+            }
             Mod.log.Info($"Group overlay toggled; visible:{m_Visible}");
             ApplyAreasVisibility();
         }
@@ -115,12 +126,17 @@ namespace DistrictGroups
                 return;
             }
 
+            bool shouldSample = UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
+            System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
+
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
             TerrainHeightData terrainHeight = m_TerrainSystem.GetHeightData();
             var waterSurface = m_WaterSystem.GetSurfaceData(out JobHandle _);
 
             OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
+            int districtCount = 0;
+            int segmentCount = 0;
             for (int i = 0; i < groups.Length; i++)
             {
                 if (m_TypeFilter >= 0
@@ -140,6 +156,7 @@ namespace DistrictGroups
                     {
                         continue;
                     }
+                    districtCount++;
 
                     DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
                     for (int j = 0; j < nodes.Length; j++)
@@ -157,9 +174,17 @@ namespace DistrictGroups
                             point.y = WaterUtils.SampleHeight(ref waterSurface, ref terrainHeight, point);
                             buffer.DrawLine(color, new Line3.Segment(previous, point), outlineWidth);
                             previous = point;
+                            segmentCount++;
                         }
                     }
                 }
+            }
+
+            if (shouldSample)
+            {
+                stopwatch.Stop();
+                m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
+                Mod.log.Info($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} group_count:{groups.Length} district_count:{districtCount} segment_count:{segmentCount}");
             }
         }
     }
