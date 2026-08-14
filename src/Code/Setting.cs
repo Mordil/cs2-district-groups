@@ -1,4 +1,3 @@
-using System.Reflection;
 using Colossal.IO.AssetDatabase;
 using Game;
 using Game.Modding;
@@ -73,9 +72,6 @@ namespace DistrictGroups
 
         // Read-only, so players can confirm which build they're on when reporting issues.
         [SettingsUISection(kSection, kVersionGroup)]
-        public string ModVersion => Assembly.GetExecutingAssembly()
-            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-            ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
-            ?? "unknown";
+        public string ModVersion => Mod.Version;
     }
 }

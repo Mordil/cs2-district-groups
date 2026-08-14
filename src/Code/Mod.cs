@@ -1,10 +1,11 @@
+using System.IO;
+using System.Reflection;
 using Colossal.Logging;
 using Game;
 using Game.Modding;
 using Game.SceneFlow;
 using Colossal.IO.AssetDatabase;
 using Colossal.UI;
-using System.IO;
 
 namespace DistrictGroups
 {
@@ -39,7 +40,7 @@ namespace DistrictGroups
 
         public void OnLoad(UpdateSystem updateSystem)
         {
-            log.Info($"{nameof(OnLoad)};");
+            log.Info($"{nameof(OnLoad)}; version:{Version}");
 
             if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
             {
