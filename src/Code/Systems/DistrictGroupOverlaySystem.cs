@@ -4,7 +4,6 @@ using Game;
 using Game.Areas;
 using Game.Common;
 using Game.Rendering;
-using Game.Simulation;
 using Game.Tools;
 using Unity.Collections;
 using Unity.Entities;
@@ -33,8 +32,6 @@ namespace DistrictGroups
             new Color(0.55f, 0.60f, 0.65f, 1f), // slate
         };
 
-        private const float kSegmentStep = 12f;
-
         // Wall-clock (not game-speed-affected) cadence for OnUpdate timing
         // samples. NegativeInfinity forces the first OnUpdate after the
         // overlay becomes visible to always sample, even if the user
@@ -46,8 +43,6 @@ namespace DistrictGroups
             typeof(ToolBaseSystem).GetProperty(nameof(ToolBaseSystem.requireAreas));
 
         private OverlayRenderSystem m_OverlayRenderSystem;
-        private TerrainSystem m_TerrainSystem;
-        private WaterSystem m_WaterSystem;
         private DefaultToolSystem m_DefaultToolSystem;
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
@@ -107,8 +102,6 @@ namespace DistrictGroups
         {
             base.OnCreate();
             m_OverlayRenderSystem = World.GetOrCreateSystemManaged<OverlayRenderSystem>();
-            m_TerrainSystem = World.GetOrCreateSystemManaged<TerrainSystem>();
-            m_WaterSystem = World.GetOrCreateSystemManaged<WaterSystem>();
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
 
@@ -130,8 +123,6 @@ namespace DistrictGroups
             System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
-            TerrainHeightData terrainHeight = m_TerrainSystem.GetHeightData();
-            var waterSurface = m_WaterSystem.GetSurfaceData(out JobHandle _);
 
             OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
@@ -158,24 +149,14 @@ namespace DistrictGroups
                     }
                     districtCount++;
 
+                    // draw just a straight line between node points
                     DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
                     for (int j = 0; j < nodes.Length; j++)
                     {
                         float3 a = nodes[j].m_Position;
                         float3 b = nodes[(j + 1) % nodes.Length].m_Position;
-
-                        // Subdivide so the border hugs terrain like vanilla.
-                        int steps = math.max(1, (int)math.ceil(math.distance(a.xz, b.xz) / kSegmentStep));
-                        float3 previous = a;
-                        previous.y = WaterUtils.SampleHeight(ref waterSurface, ref terrainHeight, a);
-                        for (int s = 1; s <= steps; s++)
-                        {
-                            float3 point = math.lerp(a, b, (float)s / steps);
-                            point.y = WaterUtils.SampleHeight(ref waterSurface, ref terrainHeight, point);
-                            buffer.DrawLine(color, new Line3.Segment(previous, point), outlineWidth);
-                            previous = point;
-                            segmentCount++;
-                        }
+                        buffer.DrawLine(color, new Line3.Segment(a, b), outlineWidth);
+                        segmentCount++;
                     }
                 }
             }
