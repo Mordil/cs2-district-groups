@@ -1,3 +1,4 @@
+using System.Reflection;
 using Colossal.IO.AssetDatabase;
 using Game;
 using Game.Modding;
@@ -9,11 +10,14 @@ using Unity.Entities;
 namespace DistrictGroups
 {
     [FileLocation(nameof(DistrictGroups))]
+    [SettingsUIGroupOrder(kGeneralGroup, kDebugGroup, kVersionGroup)]
+    [SettingsUIShowGroupName(kGeneralGroup, kDebugGroup)]
     public class Setting : ModSetting
     {
         public const string kSection = "Main";
         public const string kGeneralGroup = "General";
         public const string kDebugGroup = "Debug";
+        public const string kVersionGroup = "Version";
 
         public const int kMinOverlayBorderWidth = 5;
         public const int kMaxOverlayBorderWidth = 50;
@@ -66,5 +70,12 @@ namespace DistrictGroups
 
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
+
+        // Read-only, so players can confirm which build they're on when reporting issues.
+        [SettingsUISection(kSection, kVersionGroup)]
+        public string ModVersion => Assembly.GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+            ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+            ?? "unknown";
     }
 }

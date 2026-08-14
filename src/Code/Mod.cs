@@ -17,6 +17,23 @@ namespace DistrictGroups
         // for coui://uil/. Keep in sync with kIconHost in src/UI/src/mods/modIcons.tsx.
         public const string kIconHost = "districtgroups";
 
+        // Read from the csproj's <Version> via the SDK-generated assembly
+        // attribute, so it never drifts out of sync with the built DLL.
+        // InformationalVersion gets a "+<git sha>" suffix appended by the SDK's
+        // source-revision-id feature - strip it, we only want "0.4.0".
+        public static string Version
+        {
+            get
+            {
+                string version = Assembly.GetExecutingAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                    ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+                    ?? "unknown";
+                int shaIndex = version.IndexOf('+');
+                return shaIndex >= 0 ? version.Substring(0, shaIndex) : version;
+            }
+        }
+
         public static Setting Settings { get; private set; }
         private Setting m_Setting;
 
