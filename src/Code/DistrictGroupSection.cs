@@ -81,12 +81,7 @@ namespace DistrictGroups
             m_BuildingType = GroupServiceType.Generic;
         }
 
-        // Required by InfoSectionBase. This section's refresh logic lives in
-        // OnUpdate instead (it needs the group-version check gate before
-        // recomputing visibility/assignment), so there's nothing to do here.
-        protected override void OnProcess()
-        {
-        }
+        protected override void OnProcess() { }
 
         protected override void OnUpdate()
         {

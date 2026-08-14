@@ -13,15 +13,10 @@ namespace DistrictGroups
     {
         public static ILog log = LogManager.GetLogger($"{nameof(DistrictGroups)}").SetShowsErrorsInUI(false);
 
-        // The mod's own coui:// host, serving Icons/*.svg to the UI as
-        // coui://districtgroups/<Name>.svg. Same pattern Unified Icon Library uses
-        // for coui://uil/. Keep in sync with kIconHost in src/UI/src/mods/modIcons.tsx.
+        // The mod's own coui:// host, serving Icons/*.svg to the UI as coui://districtgroups/<Name>.svg.
         public const string kIconHost = "districtgroups";
 
-        // Read from the csproj's <Version> via the SDK-generated assembly
-        // attribute, so it never drifts out of sync with the built DLL.
-        // InformationalVersion gets a "+<git sha>" suffix appended by the SDK's
-        // source-revision-id feature - strip it, we only want "0.4.0".
+        // Read from the csproj's <Version> via the SDK-generated assembly attribute, so it never drifts out of sync with the built DLL.
         public static string Version
         {
             get
