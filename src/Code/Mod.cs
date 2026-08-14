@@ -22,16 +22,16 @@ namespace DistrictGroups
 
         public void OnLoad(UpdateSystem updateSystem)
         {
-            log.Info(nameof(OnLoad));
+            log.Info($"{nameof(OnLoad)};");
 
             if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
             {
-                log.Info($"Current mod asset at {asset.path}");
+                log.Info($"Resolved mod asset; path:{asset.path}");
                 RegisterIconHost(asset.path);
             }
             else
             {
-                log.Warn("Could not resolve the mod asset - custom icons will not load.");
+                log.Warn("Could not resolve mod asset, custom icons will not load;");
             }
 
             m_Setting = new Setting(this);
@@ -57,18 +57,18 @@ namespace DistrictGroups
             string modDir = Path.GetDirectoryName(assetPath);
             if (string.IsNullOrEmpty(modDir))
             {
-                log.Warn($"Could not resolve the mod directory from '{assetPath}' - custom icons will not load.");
+                log.Warn($"Could not resolve mod directory, custom icons will not load; asset_path:{assetPath}");
                 return;
             }
 
             string iconDir = modDir + "/Icons/";
             UIManager.defaultUISystem.AddHostLocation(kIconHost, iconDir, shouldWatch: true, priority: 0);
-            log.Info($"Registered icon host coui://{kIconHost}/ -> {iconDir} (exists: {Directory.Exists(iconDir)})");
+            log.Info($"Registered icon host; host:{kIconHost} path:{iconDir} exists:{Directory.Exists(iconDir)}");
         }
 
         public void OnDispose()
         {
-            log.Info(nameof(OnDispose));
+            log.Info($"{nameof(OnDispose)};");
 
             UIManager.defaultUISystem?.RemoveHostLocation(kIconHost);
 

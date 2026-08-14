@@ -11,6 +11,7 @@ import css from "./index.module.scss"
 import { styles } from "./styles"
 import { areasVisible$, groups$ } from "./bindings"
 import { markdownRenderer } from "../shared"
+import { logger } from "../log"
 import { GroupCard } from "./GroupCard"
 
 // Re-exported: modMenuButton's own tooltip needs the live group count.
@@ -35,11 +36,13 @@ export const GroupManagementPanel = () => {
     const displayedGroups = filterType === kAllTypes ? groups : groups.filter((g) => g.type === filterType)
 
     const onFilterChange = (type: number) => {
+        logger.info(`Filter changed; type:${type}`)
         setFilterType(type)
         trigger(mod.id, "setOverlayFilter", type)
     }
 
     const onCreateGroup = () => {
+        logger.info("New group clicked;")
         // "All Groups" (kAllTypes) has no real type to inherit, so new
         // groups created under that filter default to Generic.
         const newGroupType = filterType === kAllTypes ? 0 : filterType
@@ -49,6 +52,7 @@ export const GroupManagementPanel = () => {
     }
 
     const onAreasVisibleChange = (checked: boolean) => {
+        logger.info(`Areas visible toggled; visible:${checked}`)
         trigger(mod.id, "setAreasVisible", checked)
     }
 

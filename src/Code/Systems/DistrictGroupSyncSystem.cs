@@ -49,7 +49,7 @@ namespace DistrictGroups
                 }
                 if (removed > 0)
                 {
-                    Mod.log.Info($"Sync: removed {removed} deleted district(s) from group \"{m_GroupSystem.GetGroupName(group)}\"; re-expanding.");
+                    Mod.log.Info($"Sync removed deleted districts from group, re-expanding; group:{m_GroupSystem.GetGroupName(group)} count:{removed}");
                     m_GroupSystem.ReexpandGroup(group);
                 }
             }

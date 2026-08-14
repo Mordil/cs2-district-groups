@@ -6,6 +6,7 @@ import mod from "../../mod.json"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import { markdownRenderer } from "../shared"
+import { logger } from "../log"
 import selectorCss from "../components/selectorToggle.module.scss"
 
 interface GroupOption {
@@ -74,7 +75,10 @@ const Section = (props: any) => {
                                 className={dropdownTheme.dropdownItem}
                                 selected={!hasAssignment}
                                 closeOnSelect={true}
-                                onChange={() => trigger(mod.id, "unassignGroup")}
+                                onChange={() => {
+                                    logger.info("Unassign group clicked;")
+                                    trigger(mod.id, "unassignGroup")
+                                }}
                             >
                                 <div>{t("unassignOption")}</div>
                             </DropdownItem>,
@@ -84,7 +88,10 @@ const Section = (props: any) => {
                                     value={candidate.entity}
                                     className={dropdownTheme.dropdownItem}
                                     closeOnSelect={true}
-                                    onChange={() => trigger(mod.id, "assignGroup", candidate.entity)}
+                                    onChange={() => {
+                                        logger.info(`Assign group clicked; entity:${entityKey(candidate.entity)}`)
+                                        trigger(mod.id, "assignGroup", candidate.entity)
+                                    }}
                                 >
                                     <div>{`${candidate.name} (${typeLabels[candidate.type] ?? "?"})`}</div>
                                 </DropdownItem>

@@ -12,6 +12,7 @@ import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import { selectingGroup$ } from "./bindings"
 import { markdownRenderer } from "../shared"
+import { logger } from "../log"
 
 export const GroupCard = (props: { group: Group }) => {
     const { group } = props
@@ -45,6 +46,7 @@ export const GroupCard = (props: { group: Group }) => {
     // Deleting an unassigned group is pretty easy to recover from; deleting one
     // that's actively managing a building's operating districts is not, so let's get the user to double confirm
     const handleDeleteGroup = () => {
+        logger.info(`Delete group clicked; entity:${entityKey(group.entity)}`)
         if (group.assignedBuildingCount === 0) {
             trigger(mod.id, "deleteGroup", group.entity)
             return
@@ -61,10 +63,14 @@ export const GroupCard = (props: { group: Group }) => {
                 confirm={t("deleteGroupConfirm")}
                 cancel={t("deleteGroupCancel")}
                 onConfirm={() => {
+                    logger.info(`Delete group confirmed; entity:${entityKey(group.entity)}`)
                     trigger(mod.id, "deleteGroup", group.entity)
                     dialogStack.closeAll()
                 }}
-                onCancel={() => dialogStack.closeAll()}
+                onCancel={() => {
+                    logger.info(`Delete group dialog dismissed; entity:${entityKey(group.entity)}`)
+                    dialogStack.closeAll()
+                }}
             />
         )
     }
@@ -84,14 +90,20 @@ export const GroupCard = (props: { group: Group }) => {
         if (trimmed.length === 0) {
             setNameDraft(group.name)
         } else if (trimmed !== group.name) {
+            logger.info(`Group renamed; entity:${entityKey(group.entity)} name:${trimmed}`)
             trigger(mod.id, "renameGroup", group.entity, trimmed)
         }
+    }
+
+    const toggleExpanded = () => {
+        logger.info(`Group card toggled; entity:${entityKey(group.entity)} expanded:${!expanded}`)
+        setExpanded(!expanded)
     }
 
     return (
         <div style={styles.groupCard}>
             <div style={styles.row}>
-                <button className={css.expandButton} onClick={() => setExpanded(!expanded)}>
+                <button className={css.expandButton} onClick={toggleExpanded}>
                     <UilIcon name={expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke"} size="12rem" />
                 </button>
                 <input
@@ -109,7 +121,10 @@ export const GroupCard = (props: { group: Group }) => {
                 />
                 <TypePicker
                     value={group.type}
-                    onChange={(newType) => trigger(mod.id, "setGroupType", group.entity, newType)}
+                    onChange={(newType) => {
+                        logger.info(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
+                        trigger(mod.id, "setGroupType", group.entity, newType)
+                    }}
                     labels={typeLabels}
                     tooltip={typePickerTooltip}
                     style={{ marginRight: "4rem" }}
@@ -134,7 +149,10 @@ export const GroupCard = (props: { group: Group }) => {
                                 <Tooltip tooltip={t("removeMemberTooltip")}>
                                     <button
                                         className={css.memberDeleteButton}
-                                        onClick={() => trigger(mod.id, "removeMember", group.entity, member.entity)}
+                                        onClick={() => {
+                                            logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                            trigger(mod.id, "removeMember", group.entity, member.entity)
+                                        }}
                                     >
                                         <UilIcon name="Trash" size="20rem" />
                                     </button>
@@ -145,7 +163,10 @@ export const GroupCard = (props: { group: Group }) => {
 
                     <button
                         className={`${css.selectDistrictsButton} ${selectingThisGroup ? css.selectDistrictsButtonActive : ""}`}
-                        onClick={() => trigger(mod.id, "toggleDistrictSelection", group.entity)}
+                        onClick={() => {
+                            logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                            trigger(mod.id, "toggleDistrictSelection", group.entity)
+                        }}
                     >
                         <GameIcon name="Districts" size="16rem" />
                         <span style={{ marginLeft: "6rem" }}>{t("selectDistrictsButton")}</span>

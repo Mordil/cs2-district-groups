@@ -6,6 +6,7 @@ import { ModIcon } from "../components/icons"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
 import { groups$, GroupManagementPanel } from "groupManagementPanel"
+import { logger } from "../log"
 import css from "./index.module.scss"
 
 // Matches panelShellStyle's own transition duration below.
@@ -46,12 +47,14 @@ export const GroupManager = () => {
     const groups = useValue(groups$)
 
     const openPanel = () => {
+        logger.info("Panel opened;")
         setOpen(true)
         trigger(mod.id, "setOverlay", true)
         setContentMounted(true)
     }
 
     const closePanel = () => {
+        logger.info("Panel closed;")
         setOpen(false)
         trigger(mod.id, "setOverlay", false)
         window.setTimeout(() => setContentMounted(false), kFadeDurationMs)

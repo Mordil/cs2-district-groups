@@ -37,7 +37,7 @@ namespace DistrictGroups
             int count = m_GroupQuery.CalculateEntityCount();
             if (count > 0)
             {
-                Mod.log.Info($"OnGamePreload({purpose}, {mode}): purging {count} leftover group entity(ies).");
+                Mod.log.Info($"Purging leftover groups on preload; purpose:{purpose} mode:{mode} count:{count}");
                 EntityManager.DestroyEntity(m_GroupQuery);
             }
         }
@@ -67,7 +67,7 @@ namespace DistrictGroups
                 }
                 if (pruned > 0)
                 {
-                    Mod.log.Info($"Load cleanup: pruned {pruned} dangling member(s) from group \"{GetGroupName(group)}\".");
+                    Mod.log.Info($"Load cleanup pruned dangling members; group:{GetGroupName(group)} count:{pruned}");
                     ReexpandGroup(group);
                 }
             }
@@ -75,60 +75,70 @@ namespace DistrictGroups
 
         public Entity CreateGroup(string name, GroupServiceType type)
         {
+            Mod.log.Info($"Creating new group; type:{type}");
             Entity group = EntityManager.CreateEntity();
             EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type });
             EntityManager.AddBuffer<DistrictGroupMember>(group);
             Version++;
-            Mod.log.Info($"Created group {group} \"{name}\" ({type})");
+            Mod.log.Info($"Finished creating new group; type:{type}");
             return group;
         }
 
         public void DeleteGroup(Entity group)
         {
+            Mod.log.Info($"Deleting group; group:{group}");
             using NativeArray<Entity> buildings = GetAssignedBuildings(group, Allocator.Temp);
             foreach (Entity building in buildings)
             {
                 UnassignBuilding(building);
             }
-            Mod.log.Info($"Deleting group {group} \"{GetGroupName(group)}\" ({buildings.Length} building(s) unassigned)");
             EntityManager.DestroyEntity(group);
             Version++;
+            Mod.log.Info($"Finished deleting group; group:{group}");
         }
 
         public void RenameGroup(Entity group, string name)
         {
+            Mod.log.Info($"Renaming group; group:{group} name:{name}");
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Name = name;
             EntityManager.SetComponentData(group, data);
             Version++;
+            Mod.log.Info($"Finished renaming group; group:{group} name:{name}");
         }
 
         public void SetGroupType(Entity group, GroupServiceType type)
         {
+            Mod.log.Info($"Setting group type; group:{group} type:{type}");
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Type = type;
             EntityManager.SetComponentData(group, data);
             Version++;
+            Mod.log.Info($"Finished setting group type; group:{group} type:{type}");
         }
 
         public bool AddMember(Entity group, Entity district)
         {
+            Mod.log.Info($"Adding district to group; district:{district} group:{group}");
             DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group);
             foreach (DistrictGroupMember member in members)
             {
                 if (member.m_District == district)
                 {
+                    Mod.log.Info($"District already in group, skipping; district:{district} group:{group}");
                     return false;
                 }
             }
             members.Add(new DistrictGroupMember(district));
             ReexpandGroup(group);
             Version++;
+            Mod.log.Info($"Finished adding district to group; district:{district} group:{group}");
             return true;
         }
 
         public bool RemoveMember(Entity group, Entity district)
         {
+            Mod.log.Info($"Removing district from group; district:{district} group:{group}");
             DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group);
             for (int i = 0; i < members.Length; i++)
             {
@@ -137,18 +147,21 @@ namespace DistrictGroups
                     members.RemoveAt(i);
                     ReexpandGroup(group);
                     Version++;
+                    Mod.log.Info($"Finished removing district from group; district:{district} group:{group}");
                     return true;
                 }
             }
+            Mod.log.Info($"District not found in group, skipping; district:{district} group:{group}");
             return false;
         }
 
         // while assigned, the group owns the building's entire ServiceDistrict buffer content.
         public bool AssignBuilding(Entity building, Entity group)
         {
+            Mod.log.Info($"Assigning group to building; group:{group} building:{building}");
             if (!EntityManager.HasBuffer<ServiceDistrict>(building))
             {
-                Mod.log.Info($"Cannot assign group: {building} has no ServiceDistrict buffer.");
+                Mod.log.Info($"Cannot assign group, building has no ServiceDistrict buffer; building:{building}");
                 return false;
             }
             if (EntityManager.HasComponent<DistrictGroupAssignment>(building))
@@ -161,14 +174,16 @@ namespace DistrictGroups
             }
             ExpandToBuilding(building, group);
             Version++;
-            Mod.log.Info($"Assigned group \"{GetGroupName(group)}\" to {building}.");
+            Mod.log.Info($"Finished assigning group to building; group:{group} building:{building}");
             return true;
         }
 
         public bool UnassignBuilding(Entity building)
         {
+            Mod.log.Info($"Unassigning building; building:{building}");
             if (!EntityManager.HasComponent<DistrictGroupAssignment>(building))
             {
+                Mod.log.Info($"Building has no group assignment, skipping; building:{building}");
                 return false;
             }
             EntityManager.RemoveComponent<DistrictGroupAssignment>(building);
@@ -177,7 +192,7 @@ namespace DistrictGroups
                 EntityManager.GetBuffer<ServiceDistrict>(building).Clear();
             }
             Version++;
-            Mod.log.Info($"Unassigned group from {building}; it serves the whole city again.");
+            Mod.log.Info($"Finished unassigning building; building:{building}");
             return true;
         }
 

@@ -60,7 +60,7 @@ namespace DistrictGroups
                 return;
             }
             m_Visible = visible;
-            Mod.log.Info($"Group overlay {(m_Visible ? "ON" : "OFF")}");
+            Mod.log.Info($"Group overlay toggled; visible:{m_Visible}");
             ApplyAreasVisibility();
         }
 
@@ -71,7 +71,7 @@ namespace DistrictGroups
                 return;
             }
             m_AreasVisible = visible;
-            Mod.log.Info($"Display District areas checkbox {(m_AreasVisible ? "ON" : "OFF")}");
+            Mod.log.Info($"District areas checkbox toggled; visible:{m_AreasVisible}");
             if (Mod.Settings != null)
             {
                 Mod.Settings.DisplayDistrictAreas = visible;
@@ -88,6 +88,7 @@ namespace DistrictGroups
 
         public void SetTypeFilter(int type)
         {
+            Mod.log.Info($"Setting overlay filter; type:{type}");
             m_TypeFilter = type;
         }
 

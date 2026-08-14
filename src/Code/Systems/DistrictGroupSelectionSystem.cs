@@ -65,9 +65,11 @@ namespace DistrictGroups
         {
             if (m_SelectingGroup == group)
             {
+                Mod.log.Info($"Stopping district selection; group:{group}");
                 SyncScratchIntoGroup(group);
                 m_SelectingGroup = Entity.Null;
                 m_ToolSystem.activeTool = m_DefaultToolSystem;
+                Mod.log.Info($"Finished stopping district selection; group:{group}");
                 return;
             }
 
@@ -76,11 +78,13 @@ namespace DistrictGroups
                 SyncScratchIntoGroup(m_SelectingGroup);
             }
 
+            Mod.log.Info($"Starting district selection; group:{group}");
             m_SelectingGroup = group;
             SeedScratchFromGroup(group);
             m_SelectionToolSystem.selectionOwner = m_ScratchEntity;
             m_SelectionToolSystem.selectionType = SelectionType.ServiceDistrict;
             m_ToolSystem.activeTool = m_SelectionToolSystem;
+            Mod.log.Info($"Finished starting district selection; group:{group}");
         }
 
         protected override void OnUpdate()
