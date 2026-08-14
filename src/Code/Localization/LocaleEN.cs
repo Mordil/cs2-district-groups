@@ -32,7 +32,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DumpDebugData)), "Writes all mod state (groups, service buildings, etc.) to the mod's log file. Include the the log file when filing a bug report." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "File a bug" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Opens the mod's GitHub issue tracker in your browser." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Logs debug data, then opens the mod's GitHub issue tracker in your browser." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Mod version" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "The installed version of the mod. Include this when filing a bug report." },

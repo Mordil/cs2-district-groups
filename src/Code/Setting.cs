@@ -1,3 +1,4 @@
+using System;
 using Colossal.IO.AssetDatabase;
 using Game;
 using Game.Modding;
@@ -5,6 +6,7 @@ using Game.SceneFlow;
 using Game.Settings;
 using Game.UI;
 using Unity.Entities;
+using UnityEngine.Device;
 
 namespace DistrictGroups
 {
@@ -17,6 +19,8 @@ namespace DistrictGroups
         public const string kGeneralGroup = "General";
         public const string kDebugGroup = "Debug";
         public const string kVersionGroup = "Version";
+
+        private const string kIssueUrl = "https://github.com/Mordil/cs2-district-groups/issues/new";
 
         public const int kMinOverlayBorderWidth = 5;
         public const int kMaxOverlayBorderWidth = 50;
@@ -59,16 +63,46 @@ namespace DistrictGroups
         [SettingsUIHideByCondition(typeof(Setting), nameof(IsNotInGame))]
         public bool DumpDebugData
         {
-            set
-            {
-                World.DefaultGameObjectInjectionWorld?
-                    .GetExistingSystemManaged<DistrictGroupSystem>()?
-                    .DumpDebugData();
-            }
+            set => TryDumpDebugData();
         }
 
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
+
+        // Captures a dump alongside the report so it's already in the log by
+        // the time the player pastes it into the issue. No-ops from the main
+        // menu, same as the dump button being hidden there.
+        private void TryDumpDebugData()
+        {
+            Mod.log.Info($"Attempting to dump debug data; in_game:{!IsNotInGame()}");
+
+            World.DefaultGameObjectInjectionWorld?
+                .GetExistingSystemManaged<DistrictGroupSystem>()?
+                .DumpDebugData();
+        }
+
+        // Opens the mod's GitHub issue tracker in the player's default browser.
+        [SettingsUIButton]
+        [SettingsUISection(kSection, kDebugGroup)]
+        public bool FileBug
+        {
+            set
+            {
+                Mod.log.Info("FileBug Settings button clicked");
+
+                TryDumpDebugData();
+
+                try
+                {
+                    Application.OpenURL(kIssueUrl);
+                    Mod.log.Info("Issue tracker opened successfully");
+                }
+                catch (Exception e)
+                {
+                    Mod.log.Warn($"Could not open issue tracker URL; url:{kIssueUrl} error:{e.Message}");
+                }
+            }
+        }
 
         // Read-only, so players can confirm which build they're on when reporting issues.
         [SettingsUISection(kSection, kVersionGroup)]
