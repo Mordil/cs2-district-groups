@@ -76,18 +76,37 @@
         <None Include="$(ModTargetsFile)" Link="Properties\Mod.targets"/>
     </ItemGroup>
 
+    <!--Override (same target name, per Mod.targets' own documented extension
+        point): -p:SkipDeploy=true compiles/post-processes the DLL fully but
+        skips copying it into the game's Mods folder - lets `build` (see the
+        `-n` flag of the root build script) verify the mod still compiles
+        without touching a copy the running game might have locked.-->
+    <Target Name="DeployWIP" AfterTargets="AfterBuild" Condition="'$(NeedBuild)' and '$(SkipDeploy)' != 'true'">
+        <ItemGroup>
+            <FilesToDeploy Include="$(OutDir)\**\*.*"/>
+        </ItemGroup>
+        <Message Text="Copy output to deploy directory $(DeployDir)" Importance="high"/>
+        <RemoveDir Directories="$(DeployDir)"/>
+        <Copy SourceFiles="@(FilesToDeploy)" DestinationFiles="@(FilesToDeploy->'$(DeployDir)\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    </Target>
+
     <!--The deploy step wipes the Mods folder, deleting the UI bundle webpack put
         there - so rebuild the UI after every deploy. UI-only iteration can still
-        use 'npm run dev' in UI/ for hot reload without touching the C# build.-->
-    <Target Name="BuildUIModule" AfterTargets="DeployWIP">
+        use 'npm run dev' in UI/ for hot reload without touching the C# build.
+        -p:SkipUIBuild=true (the build script's `code` mode) skips this so a
+        C#-only check doesn't wait on a webpack rebuild. Also skipped whenever
+        SkipDeploy is set: webpack writes straight into the Mods folder (see
+        OUTPUT_DIR in webpack.config.js) - there's no build-without-deploy for it.-->
+    <Target Name="BuildUIModule" AfterTargets="DeployWIP" Condition="'$(SkipUIBuild)' != 'true' and '$(SkipDeploy)' != 'true'">
         <Exec Command="&quot;$(MSBuildProjectDirectory)\src\UI\build-ui.bat&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\src\UI"/>
     </Target>
 
     <!--Custom SVG icons served to the UI over coui://districtgroups/ (the host is
         registered in Mod.OnLoad). The deploy step wipes the Mods folder, so - like
         the UI bundle above - these have to be re-copied after every deploy. Pattern
-        is the one documented in the toolchain's Mod.targets header.-->
-    <Target Name="DeployIcons" AfterTargets="DeployWIP">
+        is the one documented in the toolchain's Mod.targets header. Skipped
+        alongside the DLL under SkipDeploy, since this is a Mods-folder copy too.-->
+    <Target Name="DeployIcons" AfterTargets="DeployWIP" Condition="'$(SkipDeploy)' != 'true'">
         <ItemGroup>
             <IconFilesToDeploy Include="$(MSBuildProjectDirectory)\Icons\**\*.svg"/>
         </ItemGroup>
