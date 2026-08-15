@@ -21,9 +21,9 @@ namespace DistrictGroups
             return new Dictionary<string, string>
             {
                 { m_Setting.GetSettingsLocaleID(), "District Groups" },
-                { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Main" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kGeneralGroup), "Display" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kDebugGroup), "Troubleshooting" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "Main" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Default" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Troubleshooting" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Overlay border width" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
@@ -34,7 +34,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "File a bug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Logs debug data, then opens the mod's GitHub issue tracker in your browser." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Mod version" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Version" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "The installed version of the mod. Include this when filing a bug report." },
 
                 { "DistrictGroups.UI[PanelTitle]", "District Groups" },

@@ -11,20 +11,24 @@ using UnityEngine.Device;
 namespace DistrictGroups
 {
     [FileLocation(nameof(DistrictGroups))]
-    [SettingsUIGroupOrder(kGeneralGroup, kDebugGroup, kVersionGroup)]
-    [SettingsUIShowGroupName(kGeneralGroup, kDebugGroup)]
+    [SettingsUIGroupOrder(kSectionDefault, kSectionDebug, kSectionVersion)]
+    [SettingsUIShowGroupName(kSectionDebug)]
     public class Setting : ModSetting
     {
-        public const string kSection = "Main";
-        public const string kGeneralGroup = "General";
-        public const string kDebugGroup = "Debug";
-        public const string kVersionGroup = "Version";
+        public const string kTabGeneral = "General";
+
+        public const string kSectionDefault = "Default";
+        public const string kSectionDebug = "Debug";
+        public const string kSectionVersion = "Version";
 
         private const string kIssueUrl = "https://github.com/Mordil/cs2-district-groups/issues/new";
 
-        public const int kMinOverlayBorderWidth = 5;
-        public const int kMaxOverlayBorderWidth = 50;
         public const int kDefaultOverlayBorderWidth = 15;
+
+        // There's nothing in memory to dump while sitting on the main menu.
+        public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
+
+        private bool m_DisplayDistrictAreas;
 
         public Setting(IMod mod) : base(mod)
         {
@@ -36,8 +40,6 @@ namespace DistrictGroups
             m_DisplayDistrictAreas = false;
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
         }
-
-        private bool m_DisplayDistrictAreas;
 
         // Persisted, but controlled via in-game mod UI
         [SettingsUIHidden]
@@ -52,26 +54,20 @@ namespace DistrictGroups
         }
 
         // Width (in world units) of the group boundary overlay lines drawn by the overlay system.
-        [SettingsUISlider(min = kMinOverlayBorderWidth, max = kMaxOverlayBorderWidth, step = 1, unit = Unit.kInteger)]
-        [SettingsUISection(kSection, kGeneralGroup)]
+        [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kTabGeneral, kSectionDefault)]
         public int OverlayBorderWidth { get; set; }
 
-        // Writes group/building/district counts and a full per-group
-        // breakdown to the log file, for troubleshooting reports.
+        // Writes group/building/district counts and a full per-group breakdown to the log file, for troubleshooting reports.
         [SettingsUIButton]
-        [SettingsUISection(kSection, kDebugGroup)]
+        [SettingsUISection(kTabGeneral, kSectionDebug)]
         [SettingsUIHideByCondition(typeof(Setting), nameof(IsNotInGame))]
         public bool DumpDebugData
         {
             set => TryDumpDebugData();
         }
 
-        // There's nothing in memory to dump while sitting on the main menu.
-        public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
-
-        // Captures a dump alongside the report so it's already in the log by
-        // the time the player pastes it into the issue. No-ops from the main
-        // menu, same as the dump button being hidden there.
+        // Captures a dump alongside the report so it's already in the log by the time the player pastes it into the issue.
         private void TryDumpDebugData()
         {
             Mod.log.Info($"Attempting to dump debug data; in_game:{!IsNotInGame()}");
@@ -83,7 +79,7 @@ namespace DistrictGroups
 
         // Opens the mod's GitHub issue tracker in the player's default browser.
         [SettingsUIButton]
-        [SettingsUISection(kSection, kDebugGroup)]
+        [SettingsUISection(kTabGeneral, kSectionDebug)]
         public bool FileBug
         {
             set
@@ -105,7 +101,7 @@ namespace DistrictGroups
         }
 
         // Read-only, so players can confirm which build they're on when reporting issues.
-        [SettingsUISection(kSection, kVersionGroup)]
+        [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
     }
 }
