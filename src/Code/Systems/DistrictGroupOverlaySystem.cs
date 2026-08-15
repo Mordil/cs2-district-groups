@@ -183,13 +183,24 @@ namespace DistrictGroups
                     }
                     districtCount++;
 
-                    // draw just a straight line between node points
+                    // roundness=(1,1) bakes rounded end caps into each
+                    // segment's own quad, so adjacent segments' caps
+                    // overlap exactly at the shared node and cover the
+                    // corner notch without a separate draw call per node.
                     DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
                     for (int j = 0; j < nodes.Length; j++)
                     {
                         float3 a = nodes[j].m_Position;
                         float3 b = nodes[(j + 1) % nodes.Length].m_Position;
-                        buffer.DrawLine(color, new Line3.Segment(a, b), outlineWidth);
+                        buffer.DrawLine(
+                            color,
+                            color,
+                            0f,
+                            (OverlayRenderSystem.StyleFlags)0,
+                            new Line3.Segment(a, b),
+                            outlineWidth,
+                            new float2(1f, 1f)
+                        );
                         segmentCount++;
                     }
                 }
