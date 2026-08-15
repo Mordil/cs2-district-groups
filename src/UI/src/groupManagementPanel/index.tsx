@@ -9,7 +9,7 @@ import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
 import { styles } from "./styles"
-import { areasVisible$, groups$ } from "./bindings"
+import { areasVisible$, groups$, showOverlay$ } from "./bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
 import { GroupCard } from "./GroupCard"
@@ -23,6 +23,7 @@ export const GroupManagementPanel = () => {
     const [filterType, setFilterType] = useState(kAllTypes)
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
+    const showOverlay = useValue(showOverlay$)
 
     const filterTooltip = (
         <FormattedParagraphs
@@ -54,6 +55,11 @@ export const GroupManagementPanel = () => {
     const onAreasVisibleChange = (checked: boolean) => {
         logger.info(`Areas visible toggled; visible:${checked}`)
         trigger(mod.id, "setAreasVisible", checked)
+    }
+
+    const onShowOverlayChange = (checked: boolean) => {
+        logger.info(`Show group overlay toggled; show:${checked}`)
+        trigger(mod.id, "setShowOverlay", checked)
     }
 
     return (
@@ -103,6 +109,12 @@ export const GroupManagementPanel = () => {
                 </Scrollable>
 
                 <div style={styles.divider} />
+                <Checkbox
+                    checked={showOverlay}
+                    onChange={onShowOverlayChange}
+                    label={t("showGroupOverlayLabel")}
+                    style={styles.areasToggleRow}
+                />
                 <Checkbox
                     checked={areasVisible}
                     onChange={onAreasVisibleChange}

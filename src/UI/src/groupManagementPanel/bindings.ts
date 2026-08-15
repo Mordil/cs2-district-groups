@@ -5,4 +5,5 @@ import { Group } from "../types"
 
 export const groups$ = bindValue<Group[]>(mod.id, "groups", [])
 export const areasVisible$ = bindValue<boolean>(mod.id, "areasVisible", false)
+export const showOverlay$ = bindValue<boolean>(mod.id, "showOverlay", true)
 export const selectingGroup$ = bindValue<Entity>(mod.id, "selectingGroup", { index: 0, version: 0 })

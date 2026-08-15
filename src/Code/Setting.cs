@@ -30,6 +30,7 @@ namespace DistrictGroups
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
 
         private bool m_DisplayDistrictAreas;
+        private bool m_ShowGroupOverlay;
         private bool m_ShowFpsCounter;
 
         public Setting(IMod mod) : base(mod)
@@ -40,6 +41,7 @@ namespace DistrictGroups
         public override void SetDefaults()
         {
             m_DisplayDistrictAreas = false;
+            m_ShowGroupOverlay = true;
             m_ShowFpsCounter = false;
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
         }
@@ -52,6 +54,18 @@ namespace DistrictGroups
             set
             {
                 m_DisplayDistrictAreas = value;
+                ApplyAndSave();
+            }
+        }
+
+        // Persisted, but controlled via in-game mod UI
+        [SettingsUIHidden]
+        public bool ShowGroupOverlay
+        {
+            get => m_ShowGroupOverlay;
+            set
+            {
+                m_ShowGroupOverlay = value;
                 ApplyAndSave();
             }
         }

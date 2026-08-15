@@ -53,6 +53,8 @@ namespace DistrictGroups
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "districts", WriteDistricts));
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "areasVisible",
                 () => m_OverlaySystem.AreasVisible));
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "showOverlay",
+                () => m_OverlaySystem.ShowOverlay));
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "isDebugBuild",
                 () => IsDebugBuild));
             // Setting.ShowFpsCounter's getter is hardcoded false outside a Debug build, so this binding needs no #if DEBUG of its own.
@@ -78,6 +80,8 @@ namespace DistrictGroups
                 type => m_OverlaySystem.SetTypeFilter(type)));
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setAreasVisible",
                 visible => m_OverlaySystem.SetAreasVisible(visible)));
+            AddBinding(new TriggerBinding<bool>(kBindingGroup, "setShowOverlay",
+                show => m_OverlaySystem.SetShowOverlay(show)));
             AddBinding(new TriggerBinding<Entity>(kBindingGroup, "toggleDistrictSelection",
                 group => m_SelectionSystem.ToggleSelection(group)));
             AddBinding(new TriggerBinding<string, string>(kBindingGroup, "log", LogFromUI));

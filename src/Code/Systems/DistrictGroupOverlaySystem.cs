@@ -47,6 +47,10 @@ namespace DistrictGroups
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
 
+        // Master on/off for the border+fill overlay, persisted via Setting.ShowGroupOverlay
+        private bool m_ShowOverlay;
+        public bool ShowOverlay => m_ShowOverlay;
+
         private bool m_AreasVisible;
         public bool AreasVisible => m_AreasVisible;
 
@@ -54,20 +58,51 @@ namespace DistrictGroups
         // groups of that type are drawn, mirroring the panel's own filtered list.
         private int m_TypeFilter = -1;
 
-        // The UI panel drives visibility too (panel open = overlay on).
+
+        private bool IsOverlayActive => m_Visible && m_ShowOverlay;
+
+        // The UI panel drives visibility
         public void SetVisible(bool visible)
         {
             if (m_Visible == visible)
             {
                 return;
             }
+            bool wasActive = IsOverlayActive;
             m_Visible = visible;
-            if (m_Visible)
+            OnOverlayActiveChanged(wasActive);
+            Mod.log.Info($"Group overlay toggled; visible:{m_Visible}");
+            ApplyAreasVisibility();
+        }
+
+        // The panel's own "Show group overlay" checkbox.
+        public void SetShowOverlay(bool show)
+        {
+            if (m_ShowOverlay == show)
+            {
+                return;
+            }
+            bool wasActive = IsOverlayActive;
+            m_ShowOverlay = show;
+            if (Mod.Settings != null)
+            {
+                Mod.Settings.ShowGroupOverlay = show;
+            }
+            OnOverlayActiveChanged(wasActive);
+            Mod.log.Info($"Show group overlay toggled; show:{m_ShowOverlay}");
+        }
+
+        private void OnOverlayActiveChanged(bool wasActive)
+        {
+            bool isActive = IsOverlayActive;
+            if (isActive == wasActive)
+            {
+                return;
+            }
+            if (isActive)
             {
                 m_LastSampleTime = float.NegativeInfinity;
             }
-            Mod.log.Info($"Group overlay toggled; visible:{m_Visible}");
-            ApplyAreasVisibility();
         }
 
         public void SetAreasVisible(bool visible)
@@ -105,16 +140,15 @@ namespace DistrictGroups
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
 
-            // Read the persisted checkbox state directly (not via
-            // SetAreasVisible) so loading a session doesn't immediately
-            // rewrite the setting it just read.
+            // Read the persisted checkbox state directly to avoid immediately rewriting the setting it just read
             m_AreasVisible = Mod.Settings?.DisplayDistrictAreas ?? false;
+            m_ShowOverlay = Mod.Settings?.ShowGroupOverlay ?? true;
             ApplyAreasVisibility();
         }
 
         protected override void OnUpdate()
         {
-            if (!m_Visible || m_GroupQuery.IsEmptyIgnoreFilter)
+            if (!IsOverlayActive || m_GroupQuery.IsEmptyIgnoreFilter)
             {
                 return;
             }
