@@ -46,7 +46,7 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[AllGroupsLabel]", "All Groups" },
                 { "DistrictGroups.UI[NoGroupsYet]", "No groups yet. Create one above." },
                 { "DistrictGroups.UI[NoGroupsMatchFilter]", "No groups match this filter." },
-                { "DistrictGroups.UI[DisplayDistrictAreasLabel]", "Display District areas" },
+                { "DistrictGroups.UI[DisplayDistrictAreasLabel]", "Show all districts" },
 
                 { "DistrictGroups.UI[DeleteGroupTooltipLine1]", "Permanently delete the group." },
                 { "DistrictGroups.UI[DeleteGroupTooltipLine2]", "Assigned buildings will lose their **operating districts**." },
