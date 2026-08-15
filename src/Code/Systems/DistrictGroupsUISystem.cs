@@ -27,6 +27,14 @@ namespace DistrictGroups
         // the two panels share the same screen corner and shouldn't compete.
         private Entity m_SavedSelection = Entity.Null;
 
+        // Lets the UI know if we're in a debug build
+        public static bool IsDebugBuild =>
+#if DEBUG
+            true;
+#else
+            false;
+#endif
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -45,6 +53,11 @@ namespace DistrictGroups
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "districts", WriteDistricts));
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "areasVisible",
                 () => m_OverlaySystem.AreasVisible));
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "isDebugBuild",
+                () => IsDebugBuild));
+            // Setting.ShowFpsCounter's getter is hardcoded false outside a Debug build, so this binding needs no #if DEBUG of its own.
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "debugShowFpsCounter",
+                () => Mod.Settings?.ShowFpsCounter ?? false));
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "selectingGroup",
                 writer => WriteEntity(writer, m_SelectionSystem.SelectingGroup)));
 

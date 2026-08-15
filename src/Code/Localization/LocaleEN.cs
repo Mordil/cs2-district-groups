@@ -22,6 +22,7 @@ namespace DistrictGroups
             {
                 { m_Setting.GetSettingsLocaleID(), "District Groups" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "Main" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Developer" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Default" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Troubleshooting" },
 
@@ -36,6 +37,9 @@ namespace DistrictGroups
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Version" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "The installed version of the mod. Include this when filing a bug report." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ShowFpsCounter)), "Show FPS" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ShowFpsCounter)), "Shows a small FPS counter at the top of the screen. Debug builds only." },
 
                 { "DistrictGroups.UI[PanelTitle]", "District Groups" },
                 { "DistrictGroups.UI[NewGroupButton]", "New Group" },

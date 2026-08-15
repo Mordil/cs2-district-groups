@@ -16,6 +16,7 @@ namespace DistrictGroups
     public class Setting : ModSetting
     {
         public const string kTabGeneral = "General";
+        public const string kTabDeveloper = "Developer";
 
         public const string kSectionDefault = "Default";
         public const string kSectionDebug = "Debug";
@@ -29,6 +30,7 @@ namespace DistrictGroups
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
 
         private bool m_DisplayDistrictAreas;
+        private bool m_ShowFpsCounter;
 
         public Setting(IMod mod) : base(mod)
         {
@@ -38,6 +40,7 @@ namespace DistrictGroups
         public override void SetDefaults()
         {
             m_DisplayDistrictAreas = false;
+            m_ShowFpsCounter = false;
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
         }
 
@@ -103,5 +106,24 @@ namespace DistrictGroups
         // Read-only, so players can confirm which build they're on when reporting issues.
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
+
+        #region DEVELOPER
+        // Hardcoded false outside a Debug build
+        [SettingsUISection(kTabDeveloper, kSectionDefault)]
+        public bool ShowFpsCounter
+        {
+            get =>
+#if DEBUG
+                m_ShowFpsCounter;
+#else
+                false;
+#endif
+            set
+            {
+                m_ShowFpsCounter = value;
+                ApplyAndSave();
+            }
+        }
+        #endregion
     }
 }
