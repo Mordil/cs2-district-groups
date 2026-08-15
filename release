@@ -1,0 +1,262 @@
+#!/usr/bin/env bash
+#
+# release - publish District Groups to Paradox Mods, with pre-flight checks.
+#
+#   ./release new       upload a new version (builds Release, uploads content + metadata)
+#   ./release update    update the store page only (no build, no content upload)
+#
+# Both modes run the same pre-flight checks and refuse to publish if any fail.
+# Add -y / --yes to skip the confirmation prompt.
+#
+# Notes:
+#   - dotnet must run through cmd.exe: the csproj reads CSII_TOOLPATH/CSII_MANAGEDPATH
+#     as *Windows user* environment variables, which Linux processes in WSL cannot see.
+#   - `new` builds Release first, so the game must be closed or the deploy step fails
+#     partway through and leaves the deploy folder half-wiped.
+#   - `update` sets NeedBuild=false in Mod.targets, so it neither builds nor deploys
+#     and is safe to run with the game open.
+
+set -uo pipefail
+
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$PROJECT_DIR" || exit 1
+
+CONFIG="Properties/PublishConfiguration.xml"
+LOG_DIR="obj/release-logs"
+
+MODE=""
+ASSUME_YES=0
+
+for arg in "$@"; do
+    case "$arg" in
+        new|update) MODE="$arg" ;;
+        -y|--yes)   ASSUME_YES=1 ;;
+        -h|--help)  sed -n '3,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        *) echo "release: unknown argument '$arg'" >&2; exit 2 ;;
+    esac
+done
+
+if [[ -z "$MODE" ]]; then
+    echo "usage: ./release {new|update} [-y]" >&2
+    echo "  new     - upload a new version (builds Release)" >&2
+    echo "  update  - update the store page only (no build)" >&2
+    exit 2
+fi
+
+case "$MODE" in
+    new)    PROFILE="PublishNewVersion" ;;
+    update) PROFILE="UpdatePublishedConfiguration" ;;
+esac
+
+echo "=============================================="
+echo " District Groups release - mode: $MODE"
+echo " profile: $PROFILE"
+echo "=============================================="
+echo
+
+# ---------------------------------------------------------------- pre-flight
+# Mirrors the ModPublisher's own validation (extracted from the decompiled tool)
+# plus the constraints we have hit for real: the 2.1 MB per-image cap, the
+# Value-attribute-shadows-element-body rule, and version drift between the three
+# places the version is written.
+MODE="$MODE" python3 - "$CONFIG" <<'PYEOF'
+import os, re, sys, xml.etree.ElementTree as ET
+
+config = sys.argv[1]
+mode = os.environ["MODE"]
+fail, warn = [], []
+
+try:
+    root = ET.parse(config).getroot()
+except Exception as e:
+    print(f"  FAIL  {config} is not valid XML: {e}")
+    sys.exit(1)
+
+def value(tag):
+    el = root.find(tag)
+    if el is None:
+        return None
+    return el.get("Value") if el.get("Value") is not None else (el.text or "").strip()
+
+def read(path, pattern):
+    try:
+        m = re.search(pattern, open(path, encoding="utf-8-sig").read())
+        return m.group(1) if m else None
+    except OSError:
+        return None
+
+# --- versions must agree across all three files -----------------------------
+versions = {
+    config:                            value("ModVersion"),
+    "district-groups.csproj":          read("district-groups.csproj", r"<Version>([^<]+)</Version>"),
+    "src/UI/mod.json":                 read("src/UI/mod.json", r'"version"\s*:\s*"([^"]+)"'),
+}
+print("VERSION")
+for where, v in versions.items():
+    print(f"    {v or '(not found)':<10} {where}")
+if len(set(versions.values())) != 1 or None in versions.values():
+    fail.append("version mismatch across the three files")
+else:
+    print(f"    -> consistent at {next(iter(versions.values()))}")
+print()
+
+# --- element-body fields must not be shadowed by a Value attribute ----------
+# `Attribute("Value") ?? element text` means an empty Value="" still wins and
+# blanks the field, which fails validation or silently publishes nothing.
+for tag in ("ChangeLog", "LongDescription"):
+    el = root.find(tag)
+    if el is None:
+        fail.append(f"{tag} element is missing")
+    elif el.get("Value") is not None:
+        fail.append(f"{tag} has a Value attribute, which shadows its body text")
+
+# --- changelog --------------------------------------------------------------
+changelog = (root.find("ChangeLog").text or "").strip() if root.find("ChangeLog") is not None else ""
+if not changelog:
+    fail.append("ChangeLog is empty (required by both new and update)")
+print("CHANGELOG (becomes this release's notes)")
+for line in changelog.splitlines() or ["(empty)"]:
+    print(f"    {line}")
+print()
+
+# --- identity / listing fields ---------------------------------------------
+mod_id = value("ModId")
+tags = [e.get("Value") for e in root.findall("Tag") if e.get("Value")]
+access = value("AccessLevel")
+tag_display = tags if tags else "(none - the publisher seeds 'Code Mod')"
+print("LISTING")
+print(f"    ModId        {mod_id or '(empty)'}")
+print(f"    Tags         {tag_display}")
+print(f"    AccessLevel  {access}")
+print(f"    GameVersion  {value('GameVersion')}")
+print(f"    DisplayName  {value('DisplayName')}")
+print()
+if not mod_id:
+    fail.append("ModId is empty - required for both new and update")
+
+placeholder = "This is a"
+if placeholder in (value("ShortDescription") or "") or placeholder in (root.find("LongDescription").text or ""):
+    fail.append("template placeholder text is still in a description")
+
+# --- images: exist, and under the server's 2.1 MB cap ----------------------
+HARD = int(2.1 * 1024 * 1024)   # reject above 2.1 MiB
+SOFT = 2_100_000                # warn above 2.1 MB decimal - which unit the
+                                # server means is unverified, so flag the gap
+print("IMAGES (server rejects anything over 2.1 MB)")
+images = [("Thumbnail", value("Thumbnail"))] + [("Screenshot", e.get("Value")) for e in root.findall("Screenshot")]
+for kind, path in images:
+    if not path:
+        warn.append(f"{kind} entry is empty")
+        continue
+    if not os.path.exists(path):
+        print(f"    MISSING  {kind:<11} {path}")
+        fail.append(f"{kind} file not found: {path}")
+        continue
+    size = os.path.getsize(path)
+    dims = ""
+    try:
+        with open(path, "rb") as fh:
+            head = fh.read(32)
+        if head[:8] == b"\x89PNG\r\n\x1a\n":
+            import struct
+            w, h = struct.unpack(">II", head[16:24])
+            dims = f"{w}x{h}"
+    except Exception:
+        pass
+    label = "OK      "
+    if size > HARD:
+        label = "OVER    "
+        fail.append(f"{os.path.basename(path)} is {size/1024/1024:.2f} MB, over the 2.1 MB cap")
+    elif size > SOFT:
+        label = "BORDERLN"
+        warn.append(f"{os.path.basename(path)} is {size/1024/1024:.2f} MB - right at the cap")
+    print(f"    {label} {kind:<11} {size/1024/1024:>5.2f} MB  {dims:<10} {path}")
+print()
+
+# --- mode-specific ---------------------------------------------------------
+if mode == "new":
+    print("NOTE  'new' creates a permanent version record stamped with the version above.")
+else:
+    print("NOTE  'update' pushes ALL metadata (descriptions, images, tags, links,")
+    print("      AccessLevel) - not just the field you changed. No content upload.")
+if access == "Public":
+    print("NOTE  AccessLevel is Public - this will be visible to everyone.")
+print()
+
+for w in warn:
+    print(f"  WARN  {w}")
+for f in fail:
+    print(f"  FAIL  {f}")
+
+print()
+print("PRE-FLIGHT:", "PASS" if not fail else f"FAILED ({len(fail)} problem(s))")
+sys.exit(1 if fail else 0)
+PYEOF
+
+if [[ $? -ne 0 ]]; then
+    echo
+    echo "Refusing to publish. Fix the failures above and re-run." >&2
+    exit 1
+fi
+
+# ------------------------------------------------------- game-running check
+# Only blocks `new`: that builds Release, and the deploy step cannot wipe and
+# refresh the mod folder while the game holds the DLL open. A failed deploy
+# leaves the folder half-populated and the installed mod broken until a rebuild.
+# Capture first rather than piping into `grep -q`: grep exits on first match and
+# closes the pipe, cmd.exe then dies on EPIPE, and `set -o pipefail` reports that
+# non-zero status as the pipeline's - so the test read as "not running" precisely
+# when the game WAS running.
+RUNNING_TASKS="$(cmd.exe /c tasklist 2>/dev/null || true)"
+if grep -qi "Cities2.exe" <<< "$RUNNING_TASKS"; then
+    if [[ "$MODE" == "new" ]]; then
+        echo "BLOCKED: Cities2.exe is running." >&2
+        echo "  'new' builds Release first; the deploy step will fail mid-way and leave" >&2
+        echo "  the deploy folder half-wiped. Close the game and re-run." >&2
+        exit 1
+    fi
+    echo "Cities2.exe is running - fine for 'update' (it neither builds nor deploys)."
+    echo
+fi
+
+# ------------------------------------------------------------- confirmation
+if [[ "$ASSUME_YES" -ne 1 ]]; then
+    if [[ ! -t 0 ]]; then
+        echo "Not a terminal and -y not given; aborting rather than publishing unattended." >&2
+        exit 1
+    fi
+    read -r -p "Publish now? [y/N] " reply
+    case "$reply" in
+        y|Y|yes|YES) ;;
+        *) echo "Aborted."; exit 1 ;;
+    esac
+    echo
+fi
+
+# ----------------------------------------------------------------- publish
+mkdir -p "$LOG_DIR"
+LOG="$LOG_DIR/$MODE-$(date +%Y%m%d-%H%M%S).log"
+
+echo "Running: dotnet publish -p:PublishProfile=$PROFILE"
+echo "Log:     $LOG"
+echo
+
+cmd.exe /c "dotnet publish -p:PublishProfile=$PROFILE" > "$LOG" 2>&1
+status=$?
+
+grep -E "User Mod Version|Access Control Level State|Publishing|Updating|Mod published|Could not|failed|successfully|error (CS|MSB)" "$LOG" \
+    | sed 's/^[[:space:]]*/  /' || true
+echo
+
+if [[ $status -eq 0 ]]; then
+    echo "SUCCESS - see https://mods.paradoxplaza.com/mods/$(python3 -c "
+import xml.etree.ElementTree as ET
+print(ET.parse('$CONFIG').getroot().find('ModId').get('Value'))
+")"
+else
+    echo "FAILED (exit $status). Full output: $LOG" >&2
+    echo "  Server-side rejections (bad tag, oversized image) fail before anything is" >&2
+    echo "  created, so nothing was published and it is safe to fix and re-run." >&2
+fi
+
+exit $status
