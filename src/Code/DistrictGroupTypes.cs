@@ -1,6 +1,7 @@
 using Colossal.Serialization.Entities;
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 namespace DistrictGroups
 {
@@ -26,21 +27,38 @@ namespace DistrictGroups
     {
         public GroupServiceType m_Type;
         public FixedString64Bytes m_Name;
+        public Color m_Color;
 
         public void Serialize<TWriter>(TWriter writer) where TWriter : IWriter
         {
-            writer.Write((byte)1);
+            writer.Write((byte)2);
             writer.Write((byte)m_Type);
             writer.Write(m_Name.ToString());
+            writer.Write(m_Color.r);
+            writer.Write(m_Color.g);
+            writer.Write(m_Color.b);
+            writer.Write(m_Color.a);
         }
 
         public void Deserialize<TReader>(TReader reader) where TReader : IReader
         {
-            reader.Read(out byte _);
+            reader.Read(out byte version);
             reader.Read(out byte type);
             m_Type = (GroupServiceType)type;
             reader.Read(out string name);
             m_Name = name;
+            if (version >= 2)
+            {
+                reader.Read(out float r);
+                reader.Read(out float g);
+                reader.Read(out float b);
+                reader.Read(out float a);
+                m_Color = new Color(r, g, b, a);
+            }
+            else
+            {
+                m_Color = new Color(0f, 0f, 0f, -1f);
+            }
         }
     }
 

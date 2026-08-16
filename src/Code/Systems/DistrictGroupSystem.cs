@@ -3,6 +3,7 @@ using Game;
 using Game.Areas;
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 namespace DistrictGroups
 {
@@ -11,11 +12,31 @@ namespace DistrictGroups
     // Persistence: groups are ordinary entities whose components implement ISerializable, so the game's save system handles them.
     public partial class DistrictGroupSystem : GameSystemBase
     {
+        // Default colors that are assigned in order to groups as they are created.
+        private static readonly Color[] kPalette =
+        {
+            new Color(0.90f, 0.30f, 0.25f, 1f), // red
+            new Color(0.25f, 0.55f, 0.95f, 1f), // blue
+            new Color(0.30f, 0.80f, 0.40f, 1f), // green
+            new Color(0.95f, 0.75f, 0.20f, 1f), // amber
+            new Color(0.70f, 0.40f, 0.90f, 1f), // purple
+            new Color(0.20f, 0.80f, 0.80f, 1f), // teal
+            new Color(0.95f, 0.50f, 0.75f, 1f), // pink
+            new Color(0.60f, 0.75f, 0.20f, 1f), // olive
+            new Color(0.95f, 0.55f, 0.15f, 1f), // orange
+            new Color(0.45f, 0.50f, 0.95f, 1f), // indigo
+            new Color(0.55f, 0.35f, 0.20f, 1f), // brown
+            new Color(0.55f, 0.60f, 0.65f, 1f), // slate
+        };
+
         private EntityQuery m_GroupQuery;
         private EntityQuery m_AssignmentQuery;
 
         // Bumped on every group/assignment mutation so UI systems can refresh.
         public int Version { get; private set; }
+
+        // Next palette index to hand out to a newly created group.
+        private int m_NextColorIndex;
 
         protected override void OnCreate()
         {
@@ -41,6 +62,7 @@ namespace DistrictGroups
                 Mod.log.Info($"Purging leftover groups on preload; purpose:{purpose} mode:{mode} count:{count}");
                 EntityManager.DestroyEntity(m_GroupQuery);
             }
+            m_NextColorIndex = 0;
         }
 
         // Safety net for saves that already contain corrupted groups: drop member entries whose district no longer exists.
@@ -72,13 +94,29 @@ namespace DistrictGroups
                     ReexpandGroup(group);
                 }
             }
+
+            // Saves from before m_Color existed deserialize it with a negative alpha; hand those
+            // groups a real palette color now so every group ends the load with an intrinsic color.
+            foreach (Entity group in groups)
+            {
+                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
+                if (data.m_Color.a < 0f)
+                {
+                    data.m_Color = kPalette[m_NextColorIndex++ % kPalette.Length];
+                    EntityManager.SetComponentData(group, data);
+                    Mod.log.Info($"Assigned color to legacy group; group:{GetGroupName(group)}");
+                }
+            }
+
+            m_NextColorIndex = groups.Length;
         }
 
         public Entity CreateGroup(string name, GroupServiceType type)
         {
             Mod.log.Info($"Creating new group; type:{type}");
             Entity group = EntityManager.CreateEntity();
-            EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type });
+            Color color = kPalette[m_NextColorIndex++ % kPalette.Length];
+            EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type, m_Color = color });
             EntityManager.AddBuffer<DistrictGroupMember>(group);
             Version++;
             Mod.log.Info($"Finished creating new group; type:{type}");
@@ -116,6 +154,16 @@ namespace DistrictGroups
             EntityManager.SetComponentData(group, data);
             Version++;
             Mod.log.Info($"Finished setting group type; group:{group} type:{type}");
+        }
+
+        public void SetGroupColor(Entity group, Color color)
+        {
+            Mod.log.Info($"Setting group color; group:{group}");
+            DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
+            data.m_Color = color;
+            EntityManager.SetComponentData(group, data);
+            Version++;
+            Mod.log.Info($"Finished setting group color; group:{group}");
         }
 
         public bool AddMember(Entity group, Entity district)

@@ -6,6 +6,7 @@ using Game.UI;
 using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 namespace DistrictGroups
 {
@@ -71,6 +72,8 @@ namespace DistrictGroups
                 (group, name) => m_GroupSystem.RenameGroup(group, name)));
             AddBinding(new TriggerBinding<Entity, int>(kBindingGroup, "setGroupType",
                 (group, type) => m_GroupSystem.SetGroupType(group, (GroupServiceType)type)));
+            AddBinding(new TriggerBinding<Entity, Color>(kBindingGroup, "setGroupColor",
+                (group, color) => m_GroupSystem.SetGroupColor(group, color)));
             AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "addMember",
                 (group, district) => m_GroupSystem.AddMember(group, district)));
             AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "removeMember",
@@ -141,6 +144,8 @@ namespace DistrictGroups
                 writer.Write(data.m_Name.ToString());
                 writer.PropertyName("type");
                 writer.Write((int)data.m_Type);
+                writer.PropertyName("color");
+                writer.Write(data.m_Color);
                 writer.PropertyName("assignedBuildingCount");
                 using (NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp))
                 {

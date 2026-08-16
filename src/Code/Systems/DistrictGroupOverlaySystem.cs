@@ -13,25 +13,9 @@ using UnityEngine;
 
 namespace DistrictGroups
 {
-    // draws each group's member-district boundaries in a distinct color through the game's OverlayRenderSystem.
+    // draws each group's member-district boundaries in its own intrinsic color through the game's OverlayRenderSystem.
     public partial class DistrictGroupOverlaySystem : GameSystemBase
     {
-        private static readonly Color[] kPalette =
-        {
-            new Color(0.90f, 0.30f, 0.25f, 1f), // red
-            new Color(0.25f, 0.55f, 0.95f, 1f), // blue
-            new Color(0.30f, 0.80f, 0.40f, 1f), // green
-            new Color(0.95f, 0.75f, 0.20f, 1f), // amber
-            new Color(0.70f, 0.40f, 0.90f, 1f), // purple
-            new Color(0.20f, 0.80f, 0.80f, 1f), // teal
-            new Color(0.95f, 0.50f, 0.75f, 1f), // pink
-            new Color(0.60f, 0.75f, 0.20f, 1f), // olive
-            new Color(0.95f, 0.55f, 0.15f, 1f), // orange
-            new Color(0.45f, 0.50f, 0.95f, 1f), // indigo
-            new Color(0.55f, 0.35f, 0.20f, 1f), // brown
-            new Color(0.55f, 0.60f, 0.65f, 1f), // slate
-        };
-
         // Wall-clock (not game-speed-affected) cadence for OnUpdate timing
         // samples. NegativeInfinity forces the first OnUpdate after the
         // overlay becomes visible to always sample, even if the user
@@ -164,13 +148,13 @@ namespace DistrictGroups
             int segmentCount = 0;
             for (int i = 0; i < groups.Length; i++)
             {
-                if (m_TypeFilter >= 0
-                    && (int)EntityManager.GetComponentData<DistrictGroupData>(groups[i]).m_Type != m_TypeFilter)
+                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(groups[i]);
+                if (m_TypeFilter >= 0 && (int)data.m_Type != m_TypeFilter)
                 {
                     continue;
                 }
 
-                Color color = kPalette[i % kPalette.Length];
+                Color color = data.m_Color;
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
                 foreach (DistrictGroupMember member in members)
                 {

@@ -64,6 +64,7 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[DeleteGroupCancel]", "Keep group" },
                 { "DistrictGroups.UI[RemoveMemberTooltip]", "Remove the district from the group." },
                 { "DistrictGroups.UI[SelectDistrictsButton]", "Select Districts" },
+                { "DistrictGroups.UI[GroupColorTooltip]", "Group Color" },
 
                 { "DistrictGroups.UI[ToggleTooltipTitle]", "**DISTRICT GROUPS**" },
                 { "DistrictGroups.UI[ToggleTooltipBody]", "Create groups of districts to assign to service buildings for self-managing of **operating districts**." },

@@ -3,6 +3,7 @@ import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "c
 import { entityEquals, entityKey } from "cs2/utils"
 import { useContext, useEffect, useState } from "react"
 import mod from "../../mod.json"
+import { ColorPicker } from "../components/ColorPicker"
 import { UilIcon, GameIcon } from "../components/icons"
 import { TypePicker } from "../components/TypePicker"
 import css from "./index.module.scss"
@@ -106,6 +107,15 @@ export const GroupCard = (props: { group: Group }) => {
                 <button className={css.expandButton} onClick={toggleExpanded}>
                     <UilIcon name={expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke"} size="12rem" />
                 </button>
+                <ColorPicker
+                    value={group.color}
+                    onChange={(color) => {
+                        logger.info(`Group color changed; entity:${entityKey(group.entity)}`)
+                        trigger(mod.id, "setGroupColor", group.entity, color)
+                    }}
+                    tooltip={t("groupColorTooltip")}
+                    className={css.colorSwatch}
+                />
                 <input
                     className={css.nameInput}
                     style={{ marginRight: "4rem" }}
