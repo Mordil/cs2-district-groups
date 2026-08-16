@@ -18,7 +18,7 @@ cmd.exe /c "dotnet build"
 
 - Do **not** use a Linux `dotnet` (it can't resolve the toolchain env vars). `cmd.exe /c "dotnet build"` uses Windows dotnet (`C:\Program Files\dotnet\dotnet.exe`) with the user env vars present.
 - A successful build takes ~10–60 s (first build runs Unity IL post-processing + Burst compilation for win/mac/linux)
-- Release build: `cmd.exe /c "dotnet build -c Release"`.
+- Release build: `cmd.exe /c "dotnet build -c Release"`, or `./build -r` (add `-n` to skip deploying).
 
 ## Deploy & reload rules
 

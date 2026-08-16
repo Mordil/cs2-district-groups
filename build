@@ -3,7 +3,7 @@
 # bundle), both of which live on the Windows side and have to run through
 # cmd.exe from WSL.
 #
-# Usage: ./build [full|ui|code] [-n]
+# Usage: ./build [full|ui|code] [-n] [-r]
 #   full   C# + UI, the normal end-to-end build. Default if omitted.
 #   code   C# only - skips the UI (webpack) rebuild.
 #   ui     UI only - skips dotnet build entirely.
@@ -15,13 +15,17 @@
 #          `full`. That's a real, if partial, substitute: it catches type/
 #          syntax errors but not anything webpack-specific (loaders, asset
 #          resolution, bundling).
+#   -r     Build the C# side with `-c Release`, for locally testing release
+#          builds. No effect on the UI - webpack already always builds in
+#          production mode (see `mode: "production"` in webpack.config.js).
 set -euo pipefail
 
 MODE=""
 NO_DEPLOY=0
+RELEASE=0
 
 usage() {
-    echo "Usage: $0 [full|ui|code] [-n]" >&2
+    echo "Usage: $0 [full|ui|code] [-n] [-r]" >&2
     exit 1
 }
 
@@ -29,6 +33,7 @@ for arg in "$@"; do
     case "$arg" in
         full|ui|code) MODE="$arg" ;;
         -n) NO_DEPLOY=1 ;;
+        -r) RELEASE=1 ;;
         *) usage ;;
     esac
 done
@@ -39,12 +44,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 build_code() {
+    local config=""
+    if [[ "$RELEASE" -eq 1 ]]; then
+        config="-c Release"
+    fi
     local props="-p:SkipUIBuild=true"
     if [[ "$NO_DEPLOY" -eq 1 ]]; then
         props="$props -p:SkipDeploy=true"
     fi
-    echo "==> Building code (no deploy: $NO_DEPLOY)"
-    cmd.exe /c "dotnet build $props"
+    echo "==> Building code (no deploy: $NO_DEPLOY, release: $RELEASE)"
+    cmd.exe /c "dotnet build $config $props"
 }
 
 typecheck_ui() {
@@ -53,14 +62,18 @@ typecheck_ui() {
 }
 
 build_full() {
+    local config=""
+    if [[ "$RELEASE" -eq 1 ]]; then
+        config="-c Release"
+    fi
     if [[ "$NO_DEPLOY" -eq 1 ]]; then
-        echo "==> Building full (no deploy)"
-        cmd.exe /c "dotnet build -p:SkipDeploy=true -p:SkipUIBuild=true"
+        echo "==> Building full (no deploy, release: $RELEASE)"
+        cmd.exe /c "dotnet build $config -p:SkipDeploy=true -p:SkipUIBuild=true"
         typecheck_ui
         return
     fi
-    echo "==> Building full"
-    cmd.exe /c "dotnet build"
+    echo "==> Building full (release: $RELEASE)"
+    cmd.exe /c "dotnet build $config"
 }
 
 build_ui() {
