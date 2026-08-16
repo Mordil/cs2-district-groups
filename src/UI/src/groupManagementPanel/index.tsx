@@ -17,10 +17,13 @@ import { GroupCard } from "./GroupCard"
 // Re-exported: modMenuButton's own tooltip needs the live group count.
 export { groups$ } from "./bindings"
 
+// temporarily persisted value between UI mounting
+let lastFilterType = kAllTypes
+
 export const GroupManagementPanel = () => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
-    const [filterType, setFilterType] = useState(kAllTypes)
+    const [filterType, setFilterType] = useState(lastFilterType)
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
     const showOverlay = useValue(showOverlay$)
@@ -38,6 +41,7 @@ export const GroupManagementPanel = () => {
 
     const onFilterChange = (type: number) => {
         logger.info(`Filter changed; type:${type}`)
+        lastFilterType = type
         setFilterType(type)
         trigger(mod.id, "setOverlayFilter", type)
     }
