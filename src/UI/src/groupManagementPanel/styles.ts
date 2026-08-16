@@ -61,7 +61,7 @@ export const styles = {
         color: "white",
         borderRadius: "3rem",
         padding: "2rem 10rem",
-        marginRight: "6rem",
+        marginLeft: "6rem",
         fontWeight: "bold",
     } as const,
     subtle: { color: "rgba(255,255,255,0.6)" } as const,

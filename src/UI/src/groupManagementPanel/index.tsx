@@ -4,6 +4,7 @@ import { entityKey } from "cs2/utils"
 import { useState } from "react"
 import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
+import { UilIcon } from "../components/icons"
 import { kAllTypes, TypeFilterPicker } from "../components/TypePicker"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
@@ -20,7 +21,11 @@ export { groups$ } from "./bindings"
 // temporarily persisted value between UI mounting
 let lastFilterType = kAllTypes
 
-export const GroupManagementPanel = () => {
+interface GroupManagementPanelProps {
+    onClose: () => void
+}
+
+export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const [filterType, setFilterType] = useState(lastFilterType)
@@ -71,28 +76,34 @@ export const GroupManagementPanel = () => {
             <div style={styles.panelHeader}>
                 <div style={styles.headerRow}>
                     <div style={styles.header}>{t("panelTitle")}</div>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <Tooltip tooltip={t("newGroupButtonTooltip")}>
-                            <button
-                                className={css.newGroupButton}
-                                style={styles.newGroupButton}
-                                onClick={onCreateGroup}
-                            >
-                                {t("newGroupButton")}
-                            </button>
-                        </Tooltip>
-                        <TypeFilterPicker
-                            value={filterType}
-                            onChange={onFilterChange}
-                            labels={typeLabels}
-                            allLabel={t("allGroupsLabel")}
-                            tooltip={filterTooltip}
-                        />
-                    </div>
+                    <button className={css.headerCloseButton} onClick={onClose}>
+                        <UilIcon name="XClose" size="20rem" />
+                    </button>
                 </div>
             </div>
 
             <div style={styles.panelBody}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <TypeFilterPicker
+                        value={filterType}
+                        onChange={onFilterChange}
+                        labels={typeLabels}
+                        allLabel={t("allGroupsLabel")}
+                        tooltip={filterTooltip}
+                    />
+
+                    <Tooltip tooltip={t("newGroupButtonTooltip")}>
+                        <button
+                            className={css.newGroupButton}
+                            style={styles.newGroupButton}
+                            onClick={onCreateGroup}
+                        >
+                            {t("newGroupButton")}
+                        </button>
+                    </Tooltip>
+                </div>
+                <div style={styles.divider} />
+
                 <Scrollable
                     vertical={true}
                     trackVisibility={displayedGroups.length > 0 ? "always" : "scrollable"}

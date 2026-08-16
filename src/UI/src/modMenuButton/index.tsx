@@ -89,7 +89,7 @@ export const GroupManager = () => {
                     pointerEvents: open ? "auto" : "none",
                 }}
             >
-                {contentMounted && <GroupManagementPanel />}
+                {contentMounted && <GroupManagementPanel onClose={closePanel} />}
             </div>
         </>
     )
