@@ -31,7 +31,11 @@ namespace DistrictGroups
 
         private bool m_DisplayDistrictAreas;
         private bool m_ShowGroupOverlay;
+
+        /* Debug-only properties */
+#if DEBUG
         private bool m_ShowFpsCounter;
+#endif
 
         public Setting(IMod mod) : base(mod)
         {
@@ -42,8 +46,12 @@ namespace DistrictGroups
         {
             m_DisplayDistrictAreas = false;
             m_ShowGroupOverlay = true;
-            m_ShowFpsCounter = false;
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
+
+            /* Debug-only defaults */
+#if DEBUG
+            m_ShowFpsCounter = false;
+#endif
         }
 
         // Persisted, but controlled via in-game mod UI
@@ -121,17 +129,12 @@ namespace DistrictGroups
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
 
+#if DEBUG
         #region DEVELOPER
-        // Hardcoded false outside a Debug build
         [SettingsUISection(kTabDeveloper, kSectionDefault)]
         public bool ShowFpsCounter
         {
-            get =>
-#if DEBUG
-                m_ShowFpsCounter;
-#else
-                false;
-#endif
+            get => m_ShowFpsCounter;
             set
             {
                 m_ShowFpsCounter = value;
@@ -139,5 +142,8 @@ namespace DistrictGroups
             }
         }
         #endregion
+#else
+        internal bool ShowFpsCounter => false;
+#endif
     }
 }
