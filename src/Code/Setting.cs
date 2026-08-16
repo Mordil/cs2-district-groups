@@ -29,9 +29,6 @@ namespace DistrictGroups
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
 
-        private bool m_DisplayDistrictAreas;
-        private bool m_ShowGroupOverlay;
-
         /* Debug-only properties */
 #if DEBUG
         private bool m_ShowFpsCounter;
@@ -44,38 +41,12 @@ namespace DistrictGroups
 
         public override void SetDefaults()
         {
-            m_DisplayDistrictAreas = false;
-            m_ShowGroupOverlay = true;
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
 
             /* Debug-only defaults */
 #if DEBUG
             m_ShowFpsCounter = false;
 #endif
-        }
-
-        // Persisted, but controlled via in-game mod UI
-        [SettingsUIHidden]
-        public bool DisplayDistrictAreas
-        {
-            get => m_DisplayDistrictAreas;
-            set
-            {
-                m_DisplayDistrictAreas = value;
-                ApplyAndSave();
-            }
-        }
-
-        // Persisted, but controlled via in-game mod UI
-        [SettingsUIHidden]
-        public bool ShowGroupOverlay
-        {
-            get => m_ShowGroupOverlay;
-            set
-            {
-                m_ShowGroupOverlay = value;
-                ApplyAndSave();
-            }
         }
 
         // Width (in world units) of the group boundary overlay lines drawn by the overlay system.

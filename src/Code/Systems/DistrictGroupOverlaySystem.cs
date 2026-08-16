@@ -33,8 +33,9 @@ namespace DistrictGroups
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
 
-        // Master on/off for the border+fill overlay, persisted via Setting.ShowGroupOverlay
-        private bool m_ShowOverlay;
+        // Master on/off for the border+fill overlay. In-session only, like m_TypeFilter below -
+        // resets to the default each time the game starts.
+        private bool m_ShowOverlay = true;
         public bool ShowOverlay => m_ShowOverlay;
 
         private bool m_AreasVisible;
@@ -43,7 +44,6 @@ namespace DistrictGroups
         // -1 ("All Groups" in the panel) draws every group; otherwise only
         // groups of that type are drawn, mirroring the panel's own filtered list.
         private int m_TypeFilter = -1;
-
 
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
 
@@ -70,10 +70,6 @@ namespace DistrictGroups
             }
             bool wasActive = IsOverlayActive;
             m_ShowOverlay = show;
-            if (Mod.Settings != null)
-            {
-                Mod.Settings.ShowGroupOverlay = show;
-            }
             OnOverlayActiveChanged(wasActive);
             Mod.log.Info($"Show group overlay toggled; show:{m_ShowOverlay}");
         }
@@ -99,10 +95,6 @@ namespace DistrictGroups
             }
             m_AreasVisible = visible;
             Mod.log.Info($"District areas checkbox toggled; visible:{m_AreasVisible}");
-            if (Mod.Settings != null)
-            {
-                Mod.Settings.DisplayDistrictAreas = visible;
-            }
             ApplyAreasVisibility();
         }
 
@@ -126,10 +118,6 @@ namespace DistrictGroups
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GameScreenUISystem = World.GetOrCreateSystemManaged<GameScreenUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
-
-            // Read the persisted checkbox state directly to avoid immediately rewriting the setting it just read
-            m_AreasVisible = Mod.Settings?.DisplayDistrictAreas ?? false;
-            m_ShowOverlay = Mod.Settings?.ShowGroupOverlay ?? true;
             ApplyAreasVisibility();
         }
 
