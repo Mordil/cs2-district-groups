@@ -5,6 +5,7 @@ using Game.Areas;
 using Game.Common;
 using Game.Rendering;
 using Game.Tools;
+using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -28,6 +29,7 @@ namespace DistrictGroups
 
         private OverlayRenderSystem m_OverlayRenderSystem;
         private DefaultToolSystem m_DefaultToolSystem;
+        private GameScreenUISystem m_GameScreenUISystem;
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
 
@@ -43,7 +45,7 @@ namespace DistrictGroups
         private int m_TypeFilter = -1;
 
 
-        private bool IsOverlayActive => m_Visible && m_ShowOverlay;
+        private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
 
         // The UI panel drives visibility
         public void SetVisible(bool visible)
@@ -122,6 +124,7 @@ namespace DistrictGroups
             base.OnCreate();
             m_OverlayRenderSystem = World.GetOrCreateSystemManaged<OverlayRenderSystem>();
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
+            m_GameScreenUISystem = World.GetOrCreateSystemManaged<GameScreenUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
 
             // Read the persisted checkbox state directly to avoid immediately rewriting the setting it just read
