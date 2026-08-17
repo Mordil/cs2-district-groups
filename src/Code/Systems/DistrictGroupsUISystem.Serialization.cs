@@ -41,17 +41,6 @@ namespace DistrictGroups
             writer.ArrayEnd();
         }
 
-        private void WriteDistricts(IJsonWriter writer)
-        {
-            using NativeArray<Entity> districts = m_DistrictQuery.ToEntityArray(Allocator.Temp);
-            writer.ArrayBegin(districts.Length);
-            foreach (Entity district in districts)
-            {
-                WriteNamedEntity(writer, district);
-            }
-            writer.ArrayEnd();
-        }
-
         private void WriteNamedEntity(IJsonWriter writer, Entity entity)
         {
             writer.TypeBegin("NamedEntity");

@@ -21,7 +21,6 @@ namespace DistrictGroups
         private NameSystem m_NameSystem;
         private SelectedInfoUISystem m_SelectedInfoUISystem;
         private EntityQuery m_GroupQuery;
-        private EntityQuery m_DistrictQuery;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -46,10 +45,6 @@ namespace DistrictGroups
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
             m_SelectedInfoUISystem = World.GetOrCreateSystemManaged<SelectedInfoUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
-            m_DistrictQuery = GetEntityQuery(
-                ComponentType.ReadOnly<District>(),
-                ComponentType.Exclude<Deleted>(),
-                ComponentType.Exclude<Temp>());
 
             SetupRootBindings();
             SetupOverlayBindings();
@@ -86,7 +81,6 @@ namespace DistrictGroups
         private void SetupGroupManagementPanelBindings()
         {
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "groups", WriteGroups));
-            AddUpdateBinding(new RawValueBinding(kBindingGroup, "districts", WriteDistricts));
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "selectingGroup",
                 writer => WriteEntity(writer, m_SelectionSystem.SelectingGroup)));
 
@@ -100,8 +94,6 @@ namespace DistrictGroups
                 (group, type) => m_GroupSystem.SetGroupType(group, (GroupServiceType)type)));
             AddBinding(new TriggerBinding<Entity, Color>(kBindingGroup, "setGroupColor",
                 (group, color) => m_GroupSystem.SetGroupColor(group, color)));
-            AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "addMember",
-                (group, district) => m_GroupSystem.AddMember(group, district)));
             AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "removeMember",
                 (group, district) => m_GroupSystem.RemoveMember(group, district)));
             AddBinding(new TriggerBinding<Entity>(kBindingGroup, "toggleDistrictSelection",
