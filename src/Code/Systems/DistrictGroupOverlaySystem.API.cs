@@ -64,8 +64,17 @@ namespace DistrictGroups
 
         public void SetTypeFilter(int type)
         {
+            if (m_TypeFilter == type)
+            {
+                Mod.log.Info($"Not changing overlay filter, same type; type:{type}");
+                return;
+            }
+
             Mod.log.Info($"Setting overlay filter; type:{type}");
             m_TypeFilter = type;
+
+            // signal that the color cache needs to be rebuilt
+            m_ColorCacheVersion = -1;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using Game;
 using Game.Areas;
@@ -5,6 +6,7 @@ using Game.Rendering;
 using Game.Tools;
 using Game.UI.InGame;
 using Unity.Entities;
+using UnityEngine;
 
 namespace DistrictGroups
 {
@@ -24,8 +26,14 @@ namespace DistrictGroups
         private OverlayRenderSystem m_OverlayRenderSystem;
         private DefaultToolSystem m_DefaultToolSystem;
         private GameScreenUISystem m_GameScreenUISystem;
+        private DistrictGroupSystem m_GroupSystem;
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
+
+        // borders draw on every frame, so we cache data infrequently changing data
+        // rebuilt when m_GroupSystem.Version or m_TypeFilter changes
+        private readonly Dictionary<Entity, Color> m_DistrictColorCache = new Dictionary<Entity, Color>();
+        private int m_ColorCacheVersion = -1;
 
         // Master on/off for the border+fill overlay. In-session only, like m_TypeFilter below -
         // resets to the default each time the game starts.
@@ -47,6 +55,7 @@ namespace DistrictGroups
             m_OverlayRenderSystem = World.GetOrCreateSystemManaged<OverlayRenderSystem>();
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GameScreenUISystem = World.GetOrCreateSystemManaged<GameScreenUISystem>();
+            m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             ApplyAreasVisibility();
         }
