@@ -60,7 +60,7 @@ export const styles = {
     newGroupButton: {
         color: "white",
         borderRadius: "3rem",
-        padding: "2rem 10rem",
+        padding: "4rem 10rem",
         marginLeft: "6rem",
         fontWeight: "bold",
     } as const,
