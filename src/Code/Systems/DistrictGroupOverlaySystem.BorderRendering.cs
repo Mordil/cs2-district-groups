@@ -14,10 +14,17 @@ namespace DistrictGroups
     {
         private void DrawGroupOverlays()
         {
+            bool shouldSample = UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
+
             // Fully transparent borders are invisible either way - skip the cache rebuild and draw entirely.
             float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
             if (outlineAlpha <= 0f)
             {
+                if (shouldSample)
+                {
+                    m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
+                    Mod.log.Info("Overlay draw skipped, border alpha is 0");
+                }
                 return;
             }
 
@@ -28,7 +35,6 @@ namespace DistrictGroups
                 m_ColorCacheVersion = groupVersion;
             }
 
-            bool shouldSample = UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
             System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
