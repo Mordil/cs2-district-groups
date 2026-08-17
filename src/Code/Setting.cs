@@ -25,6 +25,7 @@ namespace DistrictGroups
         private const string kIssueUrl = "https://github.com/Mordil/cs2-district-groups/issues/new";
 
         public const int kDefaultOverlayBorderWidth = 15;
+        public const int kDefaultOverlayBorderAlpha = 100;
 
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
@@ -42,6 +43,7 @@ namespace DistrictGroups
         public override void SetDefaults()
         {
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
+            OverlayBorderAlpha = kDefaultOverlayBorderAlpha;
 
             /* Debug-only defaults */
 #if DEBUG
@@ -53,6 +55,11 @@ namespace DistrictGroups
         [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
         [SettingsUISection(kTabGeneral, kSectionDefault)]
         public int OverlayBorderWidth { get; set; }
+
+        // Opacity of the group boundary overlay lines drawn by the overlay system; 0 is fully transparent, 100 fully opaque.
+        [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
+        [SettingsUISection(kTabGeneral, kSectionDefault)]
+        public int OverlayBorderAlpha { get; set; }
 
         // Writes group/building/district counts and a full per-group breakdown to the log file, for troubleshooting reports.
         [SettingsUIButton]

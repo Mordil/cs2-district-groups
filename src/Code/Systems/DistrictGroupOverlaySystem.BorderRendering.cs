@@ -25,6 +25,7 @@ namespace DistrictGroups
             System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
+            float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
 
             OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
             int districtCount = 0;
@@ -44,6 +45,7 @@ namespace DistrictGroups
                 districtCount++;
 
                 Color color = entry.Value;
+                color.a = outlineAlpha;
 
                 // roundness=(1,1) bakes rounded end caps into each
                 // segment's own quad, so adjacent segments' caps
