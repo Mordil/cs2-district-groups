@@ -27,6 +27,7 @@ namespace DistrictGroups
 
         public const int kDefaultOverlayBorderWidth = 15;
         public const int kDefaultOverlayBorderAlpha = 100;
+        public const int kDefaultOverlayBorderHeightOffset = 15;
 
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
@@ -45,12 +46,18 @@ namespace DistrictGroups
         {
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
             OverlayBorderAlpha = kDefaultOverlayBorderAlpha;
+            OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
 
             /* Debug-only defaults */
 #if DEBUG
             m_ShowFpsCounter = false;
 #endif
         }
+
+        // Height (in world units) the group boundary overlay lines are raised above the district node height.
+        [SettingsUISlider(min = 0, max = 250, step = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        public int OverlayBorderHeightOffset { get; set; }
 
         // Opacity of the group boundary overlay lines drawn by the overlay system; 0 is fully transparent, 100 fully opaque.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
