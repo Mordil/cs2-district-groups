@@ -11,7 +11,7 @@ using UnityEngine.Device;
 namespace DistrictGroups
 {
     [FileLocation(nameof(DistrictGroups))]
-    [SettingsUIGroupOrder(kSectionDefault, kSectionDebug, kSectionVersion)]
+    [SettingsUIGroupOrder(kSectionDefault, kSectionOverlay, kSectionDebug, kSectionVersion)]
     [SettingsUIShowGroupName(kSectionDebug)]
     public class Setting : ModSetting
     {
@@ -19,6 +19,7 @@ namespace DistrictGroups
         public const string kTabDeveloper = "Developer";
 
         public const string kSectionDefault = "Default";
+        public const string kSectionOverlay = "Overlay";
         public const string kSectionDebug = "Debug";
         public const string kSectionVersion = "Version";
 
@@ -51,15 +52,15 @@ namespace DistrictGroups
 #endif
         }
 
-        // Width (in world units) of the group boundary overlay lines drawn by the overlay system.
-        [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
-        [SettingsUISection(kTabGeneral, kSectionDefault)]
-        public int OverlayBorderWidth { get; set; }
-
         // Opacity of the group boundary overlay lines drawn by the overlay system; 0 is fully transparent, 100 fully opaque.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabGeneral, kSectionDefault)]
+        [SettingsUISection(kTabGeneral, kSectionOverlay)]
         public int OverlayBorderAlpha { get; set; }
+
+        // Width (in world units) of the group boundary overlay lines drawn by the overlay system.
+        [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        public int OverlayBorderWidth { get; set; }
 
         // Writes group/building/district counts and a full per-group breakdown to the log file, for troubleshooting reports.
         [SettingsUIButton]

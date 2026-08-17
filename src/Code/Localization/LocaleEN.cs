@@ -23,13 +23,15 @@ namespace DistrictGroups
                 { m_Setting.GetSettingsLocaleID(), "District Groups" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "Main" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Developer" },
+
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Default" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Overlay UI" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Troubleshooting" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Overlay border width" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Border width" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Overlay border transparency" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Border opacity" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacity of the colored district-group boundary lines drawn on the map. 0% is fully transparent, 100% is fully opaque." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DumpDebugData)), "Log debug mod data" },
