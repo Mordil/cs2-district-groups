@@ -18,7 +18,7 @@ export interface IconProps {
 function icon(source: string, props: IconProps) {
     return <img
         src={source + props.name + ".svg"}
-        style={{ width: props.size ?? props.width ?? "16rem", height: props.size ?? props.height ?? "16rem" }}
+        style={{ width: props.size ?? props.width ?? "20rem", height: props.size ?? props.height ?? "20rem" }}
     />
 }
 

@@ -92,7 +92,7 @@ export const TypeFilterPicker = (props: {
                 className={selectorCss.selectorToggle}
             >
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    <UilIcon name="FunnelFilter" size="12rem" />
+                    <UilIcon name="FunnelFilter"/>
                     <span style={{ marginLeft: "5rem" }}>
                         {props.value === kAllTypes ? props.allLabel : props.labels[props.value] ?? "?"}
                     </span>

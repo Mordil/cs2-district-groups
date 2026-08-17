@@ -105,7 +105,7 @@ export const GroupCard = (props: { group: Group }) => {
         <div style={styles.groupCard}>
             <div style={styles.row}>
                 <button className={css.expandButton} onClick={toggleExpanded}>
-                    <UilIcon name={expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke"} size="12rem" />
+                    <UilIcon name={expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke"} />
                 </button>
                 <ColorPicker
                     value={group.color}
@@ -145,7 +145,7 @@ export const GroupCard = (props: { group: Group }) => {
                         style={styles.dangerButton}
                         onClick={handleDeleteGroup}
                     >
-                        <UilIcon name="Trash" size="20rem"/>
+                        <UilIcon name="Trash"/>
                     </button>
                 </Tooltip>
             </div>
@@ -164,7 +164,7 @@ export const GroupCard = (props: { group: Group }) => {
                                             trigger(mod.id, "removeMember", group.entity, member.entity)
                                         }}
                                     >
-                                        <UilIcon name="Trash" size="20rem" />
+                                        <UilIcon name="Trash"/>
                                     </button>
                                 </Tooltip>
                             </div>
@@ -178,7 +178,7 @@ export const GroupCard = (props: { group: Group }) => {
                             trigger(mod.id, "toggleDistrictSelection", group.entity)
                         }}
                     >
-                        <GameIcon name="Districts" size="16rem" />
+                        <GameIcon name="Districts"/>
                         <span style={{ marginLeft: "6rem" }}>{t("selectDistrictsButton")}</span>
                     </button>
                 </>

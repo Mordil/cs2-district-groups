@@ -77,7 +77,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                 <div style={styles.headerRow}>
                     <div style={styles.header}>{t("panelTitle")}</div>
                     <button className={css.headerCloseButton} onClick={onClose}>
-                        <UilIcon name="XClose" size="20rem" />
+                        <UilIcon name="XClose"/>
                     </button>
                 </div>
             </div>
