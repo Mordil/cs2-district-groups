@@ -14,6 +14,13 @@ namespace DistrictGroups
     {
         private void DrawGroupOverlays()
         {
+            // Fully transparent borders are invisible either way - skip the cache rebuild and draw entirely.
+            float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
+            if (outlineAlpha <= 0f)
+            {
+                return;
+            }
+
             int groupVersion = m_GroupSystem.Version;
             if (groupVersion != m_ColorCacheVersion)
             {
@@ -25,7 +32,6 @@ namespace DistrictGroups
             System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
-            float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
 
             OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
             int districtCount = 0;
