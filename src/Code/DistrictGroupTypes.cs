@@ -1,10 +1,27 @@
 using Colossal.Serialization.Entities;
+using Colossal.UI.Binding;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 
 namespace DistrictGroups
 {
+    // Shared JSON-writing helpers for the mod's ECS types
+    internal static class EntityJson
+    {
+        // Matches the JS-side Entity shape ({index, version}) explicitly, so the
+        // wire format never depends on which writer extensions exist.
+        internal static void WriteEntity(IJsonWriter writer, Entity entity)
+        {
+            writer.TypeBegin("Unity.Entities.Entity");
+            writer.PropertyName("index");
+            writer.Write(entity.Index);
+            writer.PropertyName("version");
+            writer.Write(entity.Version);
+            writer.TypeEnd();
+        }
+    }
+
     public enum GroupServiceType : byte
     {
         Generic = 0,

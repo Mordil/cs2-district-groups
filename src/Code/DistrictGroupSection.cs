@@ -5,6 +5,7 @@ using Game.Areas;
 using Game.UI.InGame;
 using Unity.Collections;
 using Unity.Entities;
+using static DistrictGroups.EntityJson;
 
 namespace DistrictGroups
 {
@@ -137,12 +138,7 @@ namespace DistrictGroups
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(candidate);
                 writer.TypeBegin("GroupOption");
                 writer.PropertyName("entity");
-                writer.TypeBegin("Unity.Entities.Entity");
-                writer.PropertyName("index");
-                writer.Write(candidate.Index);
-                writer.PropertyName("version");
-                writer.Write(candidate.Version);
-                writer.TypeEnd();
+                WriteEntity(writer, candidate);
                 writer.PropertyName("name");
                 writer.Write(data.m_Name.ToString());
                 writer.PropertyName("type");
