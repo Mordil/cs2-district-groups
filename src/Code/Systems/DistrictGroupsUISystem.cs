@@ -56,8 +56,6 @@ namespace DistrictGroups
         {
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "isDebugBuild",
                 () => IsDebugBuild));
-            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "debugShowFpsCounter",
-                () => Mod.Settings?.ShowFpsCounter ?? false));
 
             AddBinding(new TriggerBinding<string, string>(kBindingGroup, "log", LogFromUI));
         }

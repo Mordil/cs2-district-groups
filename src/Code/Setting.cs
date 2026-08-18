@@ -32,11 +32,6 @@ namespace DistrictGroups
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
 
-        /* Debug-only properties */
-#if DEBUG
-        private bool m_ShowFpsCounter;
-#endif
-
         public Setting(IMod mod) : base(mod)
         {
             SetDefaults();
@@ -47,11 +42,6 @@ namespace DistrictGroups
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
             OverlayBorderAlpha = kDefaultOverlayBorderAlpha;
             OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
-
-            /* Debug-only defaults */
-#if DEBUG
-            m_ShowFpsCounter = false;
-#endif
         }
 
         // Height (in world units) the group boundary overlay lines are raised above the district node height.
@@ -115,21 +105,14 @@ namespace DistrictGroups
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
 
-#if DEBUG
         #region DEVELOPER
-        [SettingsUISection(kTabDeveloper, kSectionDefault)]
-        public bool ShowFpsCounter
-        {
-            get => m_ShowFpsCounter;
-            set
-            {
-                m_ShowFpsCounter = value;
-                ApplyAndSave();
-            }
-        }
-        #endregion
+#if DEBUG
 #else
-        internal bool ShowFpsCounter => false;
+/*
+    because settings are reflection based, properties need to be stripped in release or each annotation wrapped in #if DEBUG,
+    but because code still references these properties, we need to provide constants
+*/
 #endif
+        #endregion
     }
 }
