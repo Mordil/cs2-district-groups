@@ -36,21 +36,29 @@ namespace DistrictGroups
                 return;
             }
 
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
             m_DesaturationVolume = VolumeHelper.CreateVolume("DistrictGroupsDesaturationVolume", VolumeHelper.kOverrideVolumePriority);
             m_DesaturationVolume.isGlobal = true;
             VolumeHelper.GetOrCreateVolumeComponent(m_DesaturationVolume, ref m_ColorAdjustments);
             m_ColorAdjustments.active = true;
-            Mod.log.Info("Group overlay desaturation volume created");
+
+            stopwatch.Stop();
+            Mod.log.Info($"Group overlay desaturation volume created; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
         }
 
         private void DestroyDesaturationVolume()
         {
             if (m_DesaturationVolume != null)
             {
+                System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
                 VolumeHelper.DestroyVolume(m_DesaturationVolume);
                 m_DesaturationVolume = null;
                 m_ColorAdjustments = null;
-                Mod.log.Info("Group overlay desaturation volume destroyed");
+
+                stopwatch.Stop();
+                Mod.log.Info($"Group overlay desaturation volume destroyed; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
             }
             else
             {
