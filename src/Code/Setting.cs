@@ -112,6 +112,21 @@ namespace DistrictGroups
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
 
+        // Resets every mod setting back to its shipped default.
+        [SettingsUIButton]
+        [SettingsUIConfirmation]
+        [SettingsUISection(kTabGeneral, kSectionVersion)]
+        public bool ResetSettings
+        {
+            set
+            {
+                Mod.log.Info("ResetSettings button clicked");
+
+                SetDefaults();
+                ApplyAndSave();
+            }
+        }
+
         #region DEVELOPER
 #if DEBUG
 #else
