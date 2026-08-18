@@ -59,7 +59,7 @@ the groups are gone for good.
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 	<!--Version of the mod-->
-	<ModVersion Value="0.5.0" />
+	<ModVersion Value="0.6.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -70,15 +70,11 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Stopped the "show all districts" button from being remembered across game sessions
-- Moved the type filter and new group button down into the panel to have an explicit close button
-- Groups can now have colors assigned to them. New groups are still assigned one of a short list of default colors when created
-- The Group Management panel now remembers the last selected filter when you reopen the panel. This persists for the current game session
-- Fixed the rendering of the group overlay so that the border is one connected line
-- Improved the performance of the group overlay
-- Added toggle to the Group Management panel to show/hide the group overlay. This persists for the current game session
-- Updated text in Settings for clarity and simplicity
-- Updated text in the UI for clarity and simplicity
+- Added a button to reset settings to their default
+- Added a world color desaturation filter when viewing the overlay. This is configurable in the Settings
+- Added settings to control border opacity and a height offset from the ground
+- Further improved the performance of rendering the group overlay
+- Adjust UI element sizes to be a little larger
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/Mordil/cs2-district-groups" />
