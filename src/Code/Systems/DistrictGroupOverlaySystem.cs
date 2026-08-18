@@ -69,11 +69,18 @@ namespace DistrictGroups
 
         protected override void OnUpdate()
         {
+            // we don't want to flood the logs with rendering breadcrumbs, so we sample instead
+            bool shouldSample = UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
+            if (shouldSample)
+            {
+                m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
+            }
+
             bool active = IsOverlayActive && !m_GroupQuery.IsEmptyIgnoreFilter;
             if (active)
             {
                 UpdateDesaturation();
-                DrawGroupOverlays();
+                DrawGroupOverlays(shouldSample);
             }
             else if (m_DesaturationActive)
             {

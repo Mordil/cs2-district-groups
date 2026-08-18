@@ -12,17 +12,14 @@ namespace DistrictGroups
 {
     public partial class DistrictGroupOverlaySystem
     {
-        private void DrawGroupOverlays()
+        private void DrawGroupOverlays(bool shouldSample)
         {
-            bool shouldSample = UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
-
             // Fully transparent borders are invisible either way - skip the cache rebuild and draw entirely.
             float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
             if (outlineAlpha <= 0f)
             {
                 if (shouldSample)
                 {
-                    m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
                     Mod.log.Info("Overlay draw skipped, border alpha is 0");
                 }
                 return;
@@ -86,7 +83,6 @@ namespace DistrictGroups
             if (shouldSample)
             {
                 stopwatch.Stop();
-                m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
                 Mod.log.Info($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} district_count:{districtCount} segment_count:{segmentCount}");
             }
         }
