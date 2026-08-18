@@ -57,6 +57,12 @@
         <Reference Include="Unity.Mathematics">
             <Private>false</Private>
         </Reference>
+        <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Unity.RenderPipelines.Core.Runtime">
+            <Private>false</Private>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>

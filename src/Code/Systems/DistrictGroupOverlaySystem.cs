@@ -7,6 +7,8 @@ using Game.Tools;
 using Game.UI.InGame;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 namespace DistrictGroups
 {
@@ -47,6 +49,11 @@ namespace DistrictGroups
         // groups of that type are drawn, mirroring the panel's own filtered list.
         private int m_TypeFilter = -1;
 
+        // Full-screen desaturation Volume shown alongside the border overlay
+        private Volume m_DesaturationVolume;
+        private ColorAdjustments m_ColorAdjustments;
+        private bool m_DesaturationActive;
+
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
 
         protected override void OnCreate()
@@ -62,14 +69,24 @@ namespace DistrictGroups
 
         protected override void OnUpdate()
         {
-            if (!IsOverlayActive || m_GroupQuery.IsEmptyIgnoreFilter)
+            bool active = IsOverlayActive && !m_GroupQuery.IsEmptyIgnoreFilter;
+            if (active)
             {
-                return;
+                UpdateDesaturation();
+                DrawGroupOverlays();
             }
-
-            DrawGroupOverlays();
+            else if (m_DesaturationActive)
+            {
+                DisableDesaturation();
+            }
         }
-        
+
+        protected override void OnDestroy()
+        {
+            DestroyDesaturationVolume();
+            base.OnDestroy();
+        }
+
         // The UI panel drives visibility
         public void SetVisible(bool visible)
         {
