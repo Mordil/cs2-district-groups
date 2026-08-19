@@ -87,15 +87,18 @@ namespace DistrictGroups
             }
         }
 
-        // Districts can belong to more than one visible group - a district
-        // is bordered in the color of whichever group claims it first, in
-        // group-query iteration order. Only runs on a version/filter change,
-        // not every frame (see m_ColorCacheVersion).
+        // Only single-group districts get a border
         private void RebuildDistrictColorCache()
         {
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
             m_DistrictColorCache.Clear();
+
+            // A second group claiming a district evicts its already-cached
+            // color and marks it mixed, so a third+ group claiming the same
+            // district doesn't re-add it via ContainsKey coming back false.
+            var mixedDistricts = new HashSet<Entity>();
+
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
             for (int i = 0; i < groups.Length; i++)
             {
@@ -108,15 +111,23 @@ namespace DistrictGroups
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
                 foreach (DistrictGroupMember member in members)
                 {
-                    if (!m_DistrictColorCache.ContainsKey(member.m_District))
+                    Entity district = member.m_District;
+                    if (mixedDistricts.Contains(district))
                     {
-                        m_DistrictColorCache[member.m_District] = data.m_Color;
+                        continue;
                     }
+                    if (m_DistrictColorCache.ContainsKey(district))
+                    {
+                        m_DistrictColorCache.Remove(district);
+                        mixedDistricts.Add(district);
+                        continue;
+                    }
+                    m_DistrictColorCache[district] = data.m_Color;
                 }
             }
 
             stopwatch.Stop();
-            Mod.log.Info($"Overlay color cache rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} group_count:{groups.Length} district_count:{m_DistrictColorCache.Count}");
+            Mod.log.Info($"Overlay color cache rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} group_count:{groups.Length} district_count:{m_DistrictColorCache.Count} mixed_count:{mixedDistricts.Count}");
         }
     }
 }
