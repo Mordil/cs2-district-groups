@@ -12,7 +12,7 @@ using UnityEngine.Rendering.HighDefinition;
 
 namespace DistrictGroups
 {
-    // draws each group's member-district boundaries in its own intrinsic color through the game's OverlayRenderSystem.
+    // draws each group's member-district boundaries and regions using its own intrinsic color
     public partial class DistrictGroupOverlaySystem : GameSystemBase
     {
         // Wall-clock (not game-speed-affected) cadence for OnUpdate timing
@@ -54,6 +54,22 @@ namespace DistrictGroups
         private ColorAdjustments m_ColorAdjustments;
         private bool m_DesaturationActive;
 
+        // Fixed for now, not user-tunable - "vibrancy" is the V-channel
+        // multiplier in Lighten(), pinned at a value that looked good
+        // rather than exposed as a slider.
+        private const float kFillVibrancy = 0.75f;
+        private const float kFillDesaturation = 0.75f;
+        // How many times the color cycle repeats across a multi-group district's fill.
+        private const int kStripeRepeatCount = 4;
+
+        private GameObject m_FillRoot;
+        private Material m_FillMaterial;
+        private readonly List<GameObject> m_FillObjects = new List<GameObject>();
+        private readonly List<Mesh> m_FillMeshes = new List<Mesh>();
+        private readonly List<Texture2D> m_FillTextures = new List<Texture2D>();
+        private int m_FillBuiltVersion = -1;
+        private bool m_FillActive;
+
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
 
         protected override void OnCreate()
@@ -80,17 +96,26 @@ namespace DistrictGroups
             if (active)
             {
                 UpdateDesaturation();
+                UpdateFill();
                 DrawGroupOverlays(shouldSample);
             }
-            else if (m_DesaturationActive)
+            else
             {
-                DisableDesaturation();
+                if (m_DesaturationActive)
+                {
+                    DisableDesaturation();
+                }
+                if (m_FillActive)
+                {
+                    DisableFill();
+                }
             }
         }
 
         protected override void OnDestroy()
         {
             DestroyDesaturationVolume();
+            DestroyFillRoot();
             base.OnDestroy();
         }
 
@@ -163,8 +188,9 @@ namespace DistrictGroups
             Mod.log.Info($"Setting overlay filter; type:{type}");
             m_TypeFilter = type;
 
-            // signal that the color cache needs to be rebuilt
+            // signal that the color cache and fill mesh both need to be rebuilt
             m_ColorCacheVersion = -1;
+            m_FillBuiltVersion = -1;
         }
     }
 }
