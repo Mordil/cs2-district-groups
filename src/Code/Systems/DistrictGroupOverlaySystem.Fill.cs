@@ -16,10 +16,15 @@ namespace DistrictGroups
             ApplyFillHeightOffset();
 
             int fillVersion = m_GroupSystem.Version;
-            if (fillVersion != m_FillBuiltVersion)
+            int saturationSetting = Mathf.Clamp(
+                Mod.Settings?.OverlayFillSaturationPercent ?? Setting.kDefaultOverlayFillSaturationPercent,
+                0,
+                100);
+            if (fillVersion != m_FillBuiltVersion || saturationSetting != m_FillBuiltSaturationPercent)
             {
-                RebuildFillObjects();
+                RebuildFillObjects(saturationSetting);
                 m_FillBuiltVersion = fillVersion;
+                m_FillBuiltSaturationPercent = saturationSetting;
             }
 
             if (!m_FillActive)
@@ -109,11 +114,14 @@ namespace DistrictGroups
             return districtColors;
         }
 
-        private void RebuildFillObjects()
+        private void RebuildFillObjects(int saturationSetting)
         {
             DestroyFillObjects();
 
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
+            float saturation = actualSaturationPercent / 100f;
 
             Dictionary<Entity, List<Color>> districtGroupColors = CollectDistrictGroupColors();
             int totalVertices = 0;
@@ -123,13 +131,20 @@ namespace DistrictGroups
                 var lightened = new List<Color>(entry.Value.Count);
                 foreach (Color baseColor in entry.Value)
                 {
-                    lightened.Add(Lighten(baseColor, kFillDesaturation, kFillVibrancy));
+                    lightened.Add(Lighten(baseColor, saturation, kFillVibrancy));
                 }
                 totalVertices += CreateFillObject(entry.Key, lightened);
             }
 
             stopwatch.Stop();
-            Mod.log.Info($"Group overlay; rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillObjects.Count} vertex_count:{totalVertices}");
+            Mod.log.Info($"Group overlay; rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillObjects.Count} vertex_count:{totalVertices} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+        }
+
+        // Linearly maps the user-facing 0-100% slider onto an actual [kMinFillSaturationPercent, 100] saturation percent
+        private static float MapFillSaturationPercent(int displayPercent)
+        {
+            float t = Mathf.Clamp(displayPercent, 0, 100) / 100f;
+            return Mathf.Lerp(kMinFillSaturationPercent, 100f, t);
         }
 
         // Desaturates and scales vibrancy towards white, so the fill reads as "a lighter" version of the group's color next to the border

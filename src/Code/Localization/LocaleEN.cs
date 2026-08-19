@@ -40,6 +40,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Overlay desaturation" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "How much the rest of the scene is desaturated while the group overlay is visible. 0% leaves the scene untouched, 100% is grayscale." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Overlay fill saturation" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "How saturated the colored district-group fill areas are. 100% is the group's full color; lower values fade towards gray." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DumpDebugData)), "Log debug mod data" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.DumpDebugData)), "Writes all mod state (groups, service buildings, etc.) to the mod's log file. Include the the log file when filing a bug report." },
 

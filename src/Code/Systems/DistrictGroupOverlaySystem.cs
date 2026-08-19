@@ -54,11 +54,9 @@ namespace DistrictGroups
         private ColorAdjustments m_ColorAdjustments;
         private bool m_DesaturationActive;
 
-        // Fixed for now, not user-tunable - "vibrancy" is the V-channel
-        // multiplier in Lighten(), pinned at a value that looked good
-        // rather than exposed as a slider.
         private const float kFillVibrancy = 0.75f;
-        private const float kFillDesaturation = 0.75f;
+        private const float kMinFillSaturationPercent = 35f;
+
         // How many times the color cycle repeats across a multi-group district's fill.
         private const int kStripeRepeatCount = 4;
 
@@ -68,6 +66,10 @@ namespace DistrictGroups
         private readonly List<Mesh> m_FillMeshes = new List<Mesh>();
         private readonly List<Texture2D> m_FillTextures = new List<Texture2D>();
         private int m_FillBuiltVersion = -1;
+
+        // Last (clamped) saturation percent the fill meshes were actually built with
+        // a Settings change has to be caught to trigger a rebuild
+        private int m_FillBuiltSaturationPercent = -1;
         private bool m_FillActive;
 
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;

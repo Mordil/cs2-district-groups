@@ -29,6 +29,7 @@ namespace DistrictGroups
         public const int kDefaultOverlayBorderAlpha = 100;
         public const int kDefaultOverlayBorderHeightOffset = 15;
         public const int kDefaultOverlayDesaturationPercent = 80;
+        public const int kDefaultOverlayFillSaturationPercent = 60;
 
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
@@ -44,6 +45,7 @@ namespace DistrictGroups
             OverlayBorderAlpha = kDefaultOverlayBorderAlpha;
             OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
+            OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
         }
 
         // How much the rest of the scene is desaturated while the group overlay is visible
@@ -65,6 +67,11 @@ namespace DistrictGroups
         [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
         [SettingsUISection(kTabGeneral, kSectionOverlay)]
         public int OverlayBorderWidth { get; set; }
+
+        // How saturated the group fill color is. The slider spans the full 0-100% range, but the value actually between 35-100%, scaled.
+        [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
+        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        public int OverlayFillSaturationPercent { get; set; }
 
         // Writes group/building/district counts and a full per-group breakdown to the log file, for troubleshooting reports.
         [SettingsUIButton]
