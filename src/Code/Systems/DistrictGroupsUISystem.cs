@@ -66,6 +66,8 @@ namespace DistrictGroups
                 () => m_OverlaySystem.AreasVisible));
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "showOverlay",
                 () => m_OverlaySystem.ShowOverlay));
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "areaToolActive",
+                () => m_OverlaySystem.IsAreaToolActive));
 
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setOverlay", OnPanelOpenChanged));
             AddBinding(new TriggerBinding<int>(kBindingGroup, "setOverlayFilter",

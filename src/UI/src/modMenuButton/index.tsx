@@ -1,11 +1,11 @@
 import { trigger, useValue } from "cs2/api"
 import { FormattedParagraphs, Tooltip } from "cs2/ui"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
 import { ModIcon } from "../components/icons"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { groups$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, groups$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import css from "./index.module.scss"
 
@@ -45,6 +45,8 @@ export const GroupManager = () => {
     const [open, setOpen] = useState(false)
     const [contentMounted, setContentMounted] = useState(false)
     const groups = useValue(groups$)
+    const areaToolActive = useValue(areaToolActive$)
+    const dismissedByAreaTool = useRef(false)
 
     const openPanel = () => {
         logger.info("Panel opened;")
@@ -61,6 +63,21 @@ export const GroupManager = () => {
     }
 
     const togglePanel = () => (open ? closePanel() : openPanel())
+
+    // The district area tool shares the same screen space our panel occupies
+    // when it comes up, we dismiss our UI
+    // then afterwards, we show our UI
+    useEffect(() => {
+        if (areaToolActive) {
+            if (open) {
+                dismissedByAreaTool.current = true
+                closePanel()
+            }
+        } else if (dismissedByAreaTool.current) {
+            dismissedByAreaTool.current = false
+            openPanel()
+        }
+    }, [areaToolActive])
 
     // Built per-render (not a module-level constant like other tooltips)
     // since it needs the live group count.

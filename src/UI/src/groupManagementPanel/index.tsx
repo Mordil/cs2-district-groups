@@ -15,8 +15,7 @@ import { markdownRenderer } from "../shared"
 import { logger } from "../log"
 import { GroupCard } from "./GroupCard"
 
-// Re-exported: modMenuButton's own tooltip needs the live group count.
-export { groups$ } from "./bindings"
+export { groups$, areaToolActive$ } from "./bindings"
 
 // temporarily persisted value between UI mounting
 let lastFilterType = kAllTypes

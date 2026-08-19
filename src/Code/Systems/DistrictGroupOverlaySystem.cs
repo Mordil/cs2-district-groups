@@ -37,6 +37,7 @@ namespace DistrictGroups
         private ToolSystem m_ToolSystem;
         private AreaToolSystem m_AreaToolSystem;
         private bool m_WasAreaToolActive;
+        public bool IsAreaToolActive => m_WasAreaToolActive;
 
         // borders draw on every frame, so we cache data infrequently changing data
         // rebuilt when m_GroupSystem.Version or m_TypeFilter changes
