@@ -13,6 +13,7 @@ namespace DistrictGroups
         private void UpdateFill()
         {
             EnsureFillRoot();
+            ApplyFillHeightOffset();
 
             int fillVersion = m_GroupSystem.Version;
             if (fillVersion != m_FillBuiltVersion)
@@ -56,6 +57,17 @@ namespace DistrictGroups
             HDMaterial.SetRenderingPass(m_FillMaterial, HDMaterial.RenderingPass.AfterPostProcess);
 
             Mod.log.Info($"Group overlay, fill material ready; shader:{shader?.name ?? "<null>"}");
+        }
+
+        // Mesh vertices are baked with each district's raw node height, the user-tunable offset lives entirely on the root's transform instead,
+        private void ApplyFillHeightOffset()
+        {
+            float heightOffset = (Mod.Settings?.OverlayBorderHeightOffset ?? Setting.kDefaultOverlayBorderHeightOffset) + 0.3f;
+            Vector3 position = m_FillRoot.transform.position;
+            if (!Mathf.Approximately(position.y, heightOffset))
+            {
+                m_FillRoot.transform.position = new Vector3(position.x, heightOffset, position.z);
+            }
         }
 
         // Districts can belong to more than one visible group, so we gather all colors
@@ -139,13 +151,11 @@ namespace DistrictGroups
                 return 0;
             }
 
-            float heightOffset = (Mod.Settings?.OverlayBorderHeightOffset ?? Setting.kDefaultOverlayBorderHeightOffset) + 0.3f;
-
             Vector3[] vertices = new Vector3[nodes.Length];
             for (int i = 0; i < nodes.Length; i++)
             {
                 float3 pos = nodes[i].m_Position;
-                vertices[i] = new Vector3(pos.x, pos.y + heightOffset, pos.z);
+                vertices[i] = new Vector3(pos.x, pos.y, pos.z);
             }
 
             List<int> triangles = Triangulate(vertices);
@@ -177,8 +187,10 @@ namespace DistrictGroups
 
             mesh.RecalculateBounds();
 
+            // worldPositionStays: false - the mesh's own vertices already carry each district's absolute world X/Z and raw (unoffset) Y,
+            // so this object should sit at the root's local origin and let the root's transform.position supply the height offset uniformly
             GameObject fillObject = new GameObject($"Fill_{district.Index}");
-            fillObject.transform.SetParent(m_FillRoot.transform, worldPositionStays: true);
+            fillObject.transform.SetParent(m_FillRoot.transform, worldPositionStays: false);
             MeshFilter filter = fillObject.AddComponent<MeshFilter>();
             filter.sharedMesh = mesh;
             MeshRenderer renderer = fillObject.AddComponent<MeshRenderer>();
