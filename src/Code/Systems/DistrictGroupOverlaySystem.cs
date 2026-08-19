@@ -32,6 +32,12 @@ namespace DistrictGroups
         private EntityQuery m_GroupQuery;
         private bool m_Visible;
 
+        // Used to detect when the vanilla area tool (which edits a district's boundaries) closes,
+        // so the fill mesh can be forced to rebuild
+        private ToolSystem m_ToolSystem;
+        private AreaToolSystem m_AreaToolSystem;
+        private bool m_WasAreaToolActive;
+
         // borders draw on every frame, so we cache data infrequently changing data
         // rebuilt when m_GroupSystem.Version or m_TypeFilter changes
         private readonly Dictionary<Entity, Color> m_DistrictColorCache = new Dictionary<Entity, Color>();
@@ -83,6 +89,11 @@ namespace DistrictGroups
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             ApplyAreasVisibility();
+
+            m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();
+            m_AreaToolSystem = World.GetOrCreateSystemManaged<AreaToolSystem>();
+            m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Combine(
+                m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
         }
 
         protected override void OnUpdate()
@@ -116,6 +127,8 @@ namespace DistrictGroups
 
         protected override void OnDestroy()
         {
+            m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Remove(
+                m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
             DestroyDesaturationVolume();
             DestroyFillRoot();
             base.OnDestroy();
@@ -193,6 +206,18 @@ namespace DistrictGroups
             // signal that the color cache and fill mesh both need to be rebuilt
             m_ColorCacheVersion = -1;
             m_FillBuiltVersion = -1;
+        }
+
+        // Handle that the district area tool was closed
+        private void OnActiveToolChanged(ToolBaseSystem tool)
+        {
+            bool isAreaToolActive = tool == m_AreaToolSystem;
+            if (m_WasAreaToolActive && !isAreaToolActive)
+            {
+                Mod.log.Info("Area tool closed, forcing fill rebuild");
+                m_FillBuiltVersion = -1;
+            }
+            m_WasAreaToolActive = isAreaToolActive;
         }
     }
 }
