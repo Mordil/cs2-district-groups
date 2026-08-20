@@ -59,7 +59,7 @@ the groups are gone for good.
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 	<!--Version of the mod-->
-	<ModVersion Value="0.6.0" />
+	<ModVersion Value="0.7.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -70,11 +70,16 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Added a button to reset settings to their default
-- Added a world color desaturation filter when viewing the overlay. This is configurable in the Settings
-- Added settings to control border opacity and a height offset from the ground
-- Further improved the performance of rendering the group overlay
-- Adjust UI element sizes to be a little larger
+- Improved general mod performance
+- Optimized the logic for rebuilding overlay visuals
+- Reduced memory usage and improved performance of overlay visual
+- Removed group count from the mod button tooltip
+- The mod UI now dismisses if you open the District tool and reopens after closing the District tool
+- Fixed overlay geometry not updating when you change the district area nodes
+- Added Settings option to control the color saturation of the Overlay fill
+- Fixed overlay height not being respected when making changes in settings during gameplay
+- Borders are no longer drawn for mixed group districts
+- Added an area fill visual for the overlay UI
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/Mordil/cs2-district-groups" />
