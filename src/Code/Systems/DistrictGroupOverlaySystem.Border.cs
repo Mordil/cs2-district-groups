@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Colossal.Mathematics;
 using Game.Common;
 using Game.Rendering;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -14,7 +13,7 @@ namespace DistrictGroups
     {
         private void DrawGroupOverlays(bool shouldSample)
         {
-            // Fully transparent borders are invisible either way - skip the cache rebuild and draw entirely.
+            // Fully transparent borders are invisible either way - skip drawing entirely.
             float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
             if (outlineAlpha <= 0f)
             {
@@ -25,24 +24,22 @@ namespace DistrictGroups
                 return;
             }
 
-            int groupVersion = m_GroupSystem.Version;
-            if (groupVersion != m_ColorCacheVersion)
-            {
-                RebuildDistrictColorCache();
-                m_ColorCacheVersion = groupVersion;
-            }
-
             System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
 
-            // +0.3 keeps the border a hair above the terrain it's drawn on, on top of the user-tunable offset.
-            float heightOffset = (Mod.Settings?.OverlayBorderHeightOffset ?? Setting.kDefaultOverlayBorderHeightOffset) + 0.3f;
+            float heightOffset = OverlayHeightOffset;
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
 
             OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
             int districtCount = 0;
             int segmentCount = 0;
-            foreach (KeyValuePair<Entity, Color> entry in m_DistrictColorCache)
+            foreach (KeyValuePair<Entity, List<Color>> entry in m_DistrictGroupColors)
             {
+                // Only single-group districts get a border; multi-group districts get a striped fill instead.
+                if (entry.Value.Count > 1)
+                {
+                    continue;
+                }
+
                 // A cached district can still die (or lose its Node buffer) between
                 // color-cache rebuilds, since district deletion doesn't bump
                 // m_GroupSystem.Version
@@ -55,7 +52,7 @@ namespace DistrictGroups
                 }
                 districtCount++;
 
-                Color color = entry.Value;
+                Color color = entry.Value[0];
                 color.a = outlineAlpha;
 
                 // roundness=(1,1) bakes rounded end caps into each
@@ -85,49 +82,6 @@ namespace DistrictGroups
                 stopwatch.Stop();
                 Mod.log.Info($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} district_count:{districtCount} segment_count:{segmentCount}");
             }
-        }
-
-        // Only single-group districts get a border
-        private void RebuildDistrictColorCache()
-        {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-            m_DistrictColorCache.Clear();
-
-            // A second group claiming a district evicts its already-cached
-            // color and marks it mixed, so a third+ group claiming the same
-            // district doesn't re-add it via ContainsKey coming back false.
-            var mixedDistricts = new HashSet<Entity>();
-
-            using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
-            for (int i = 0; i < groups.Length; i++)
-            {
-                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(groups[i]);
-                if (m_TypeFilter >= 0 && (int)data.m_Type != m_TypeFilter)
-                {
-                    continue;
-                }
-
-                DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
-                foreach (DistrictGroupMember member in members)
-                {
-                    Entity district = member.m_District;
-                    if (mixedDistricts.Contains(district))
-                    {
-                        continue;
-                    }
-                    if (m_DistrictColorCache.ContainsKey(district))
-                    {
-                        m_DistrictColorCache.Remove(district);
-                        mixedDistricts.Add(district);
-                        continue;
-                    }
-                    m_DistrictColorCache[district] = data.m_Color;
-                }
-            }
-
-            stopwatch.Stop();
-            Mod.log.Info($"Overlay color cache rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} group_count:{groups.Length} district_count:{m_DistrictColorCache.Count} mixed_count:{mixedDistricts.Count}");
         }
     }
 }

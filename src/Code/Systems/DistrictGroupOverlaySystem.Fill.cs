@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -67,51 +66,11 @@ namespace DistrictGroups
         // Mesh vertices are baked with each district's raw node height, the user-tunable offset lives entirely on the root's transform instead,
         private void ApplyFillHeightOffset()
         {
-            float heightOffset = (Mod.Settings?.OverlayBorderHeightOffset ?? Setting.kDefaultOverlayBorderHeightOffset) + 0.3f;
             Vector3 position = m_FillRoot.transform.position;
-            if (!Mathf.Approximately(position.y, heightOffset))
+            if (!Mathf.Approximately(position.y, OverlayHeightOffset))
             {
                 m_FillRoot.transform.position = new Vector3(position.x, heightOffset, position.z);
             }
-        }
-
-        // Districts can belong to more than one visible group, so we gather all colors
-        private Dictionary<Entity, List<Color>> CollectDistrictGroupColors()
-        {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-            using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
-
-            var districtColors = new Dictionary<Entity, List<Color>>();
-            for (int i = 0; i < groups.Length; i++)
-            {
-                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(groups[i]);
-                if (m_TypeFilter >= 0 && (int)data.m_Type != m_TypeFilter)
-                {
-                    continue;
-                }
-
-                DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
-                foreach (DistrictGroupMember member in members)
-                {
-                    Entity district = member.m_District;
-                    if (!EntityManager.Exists(district) || !EntityManager.HasBuffer<Game.Areas.Node>(district))
-                    {
-                        continue;
-                    }
-                    if (!districtColors.TryGetValue(district, out List<Color> colors))
-                    {
-                        colors = new List<Color>();
-                        districtColors[district] = colors;
-                    }
-                    colors.Add(data.m_Color);
-                }
-            }
-
-            stopwatch.Stop();
-            Mod.log.Info($"Group overlay, fill colors collected; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} group_count:{groups.Length} district_count:{districtColors.Count}");
-
-            return districtColors;
         }
 
         private void RebuildFillObjects(int saturationSetting)
@@ -123,9 +82,8 @@ namespace DistrictGroups
             float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
             float saturation = actualSaturationPercent / 100f;
 
-            Dictionary<Entity, List<Color>> districtGroupColors = CollectDistrictGroupColors();
             int totalVertices = 0;
-            foreach (KeyValuePair<Entity, List<Color>> entry in districtGroupColors)
+            foreach (KeyValuePair<Entity, List<Color>> entry in m_DistrictGroupColors)
             {
                 // Lighter (desaturated/vibrancy-scaled) variant of each raw group color
                 var lightened = new List<Color>(entry.Value.Count);

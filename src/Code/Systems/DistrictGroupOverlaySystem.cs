@@ -5,6 +5,7 @@ using Game.Areas;
 using Game.Rendering;
 using Game.Tools;
 using Game.UI.InGame;
+using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -39,10 +40,10 @@ namespace DistrictGroups
         private bool m_WasAreaToolActive;
         public bool IsAreaToolActive => m_WasAreaToolActive;
 
-        // borders draw on every frame, so we cache data infrequently changing data
-        // rebuilt when m_GroupSystem.Version or m_TypeFilter changes
-        private readonly Dictionary<Entity, Color> m_DistrictColorCache = new Dictionary<Entity, Color>();
-        private int m_ColorCacheVersion = -1;
+        // Raw per-district colors of every visible group that claims that district (0..n colors each).
+        // Rebuilt only when m_GroupSystem.Version or m_TypeFilter changes
+        private readonly Dictionary<Entity, List<Color>> m_DistrictGroupColors = new Dictionary<Entity, List<Color>>();
+        private int m_DistrictGroupColorsVersion = -1;
 
         // Master on/off for the border+fill overlay. In-session only, like m_TypeFilter below -
         // resets to the default each time the game starts.
@@ -81,6 +82,10 @@ namespace DistrictGroups
 
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
 
+        // +0.3 keeps the border/fill a hair above the terrain it's drawn on, on top of the user-tunable offset.
+        private float OverlayHeightOffset =>
+            (Mod.Settings?.OverlayBorderHeightOffset ?? Setting.kDefaultOverlayBorderHeightOffset) + 0.3f;
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -109,6 +114,7 @@ namespace DistrictGroups
             bool active = IsOverlayActive && !m_GroupQuery.IsEmptyIgnoreFilter;
             if (active)
             {
+                EnsureDistrictGroupColors();
                 UpdateDesaturation();
                 UpdateFill();
                 DrawGroupOverlays(shouldSample);
@@ -205,8 +211,54 @@ namespace DistrictGroups
             m_TypeFilter = type;
 
             // signal that the color cache and fill mesh both need to be rebuilt
-            m_ColorCacheVersion = -1;
+            m_DistrictGroupColorsVersion = -1;
             m_FillBuiltVersion = -1;
+        }
+
+        // Rebuilds the district <-> color list cache based on membership if the system has changed
+        private void EnsureDistrictGroupColors()
+        {
+            int version = m_GroupSystem.Version;
+            if (version == m_DistrictGroupColorsVersion)
+            {
+                return;
+            }
+
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            m_DistrictGroupColors.Clear();
+
+            using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
+            for (int i = 0; i < groups.Length; i++)
+            {
+                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(groups[i]);
+                if (m_TypeFilter >= 0 && (int)data.m_Type != m_TypeFilter)
+                {
+                    continue;
+                }
+
+                DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
+                foreach (DistrictGroupMember member in members)
+                {
+                    Entity district = member.m_District;
+                    if (!EntityManager.Exists(district) || !EntityManager.HasBuffer<Game.Areas.Node>(district))
+                    {
+                        continue;
+                    }
+                    if (!m_DistrictGroupColors.TryGetValue(district, out List<Color> colors))
+                    {
+                        colors = new List<Color>();
+                        m_DistrictGroupColors[district] = colors;
+                    }
+                    colors.Add(data.m_Color);
+                }
+            }
+
+            m_DistrictGroupColorsVersion = version;
+
+            stopwatch.Stop();
+            Mod.log.Info($"Overlay district colors rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+                $"group_count:{groups.Length} district_count:{m_DistrictGroupColors.Count}");
         }
 
         // Handle that the district area tool was closed
