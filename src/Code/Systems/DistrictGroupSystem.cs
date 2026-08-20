@@ -292,12 +292,13 @@ namespace DistrictGroups
         public NativeArray<Entity> GetAssignedBuildings(Entity group, Allocator allocator)
         {
             using NativeArray<Entity> candidates = m_AssignmentQuery.ToEntityArray(Allocator.Temp);
+            using NativeArray<DistrictGroupAssignment> assignments = m_AssignmentQuery.ToComponentDataArray<DistrictGroupAssignment>(Allocator.Temp);
             using NativeList<Entity> result = new NativeList<Entity>(candidates.Length, Allocator.Temp);
-            foreach (Entity building in candidates)
+            for (int i = 0; i < candidates.Length; i++)
             {
-                if (EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group == group)
+                if (assignments[i].m_Group == group)
                 {
-                    result.Add(building);
+                    result.Add(candidates[i]);
                 }
             }
             return result.ToArray(allocator);
