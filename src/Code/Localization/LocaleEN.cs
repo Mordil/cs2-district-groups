@@ -83,7 +83,6 @@ namespace DistrictGroups
 
                 { "DistrictGroups.UI[ToggleTooltipTitle]", "**DISTRICT GROUPS**" },
                 { "DistrictGroups.UI[ToggleTooltipBody]", "Create groups of districts to assign to service buildings for self-managing of **operating districts**." },
-                { "DistrictGroups.UI[ToggleTooltipCount]", "Existing groups: {COUNT}" },
 
                 { "DistrictGroups.UI[SectionTooltipLine1]", "Service buildings can be assigned to a **district group**." },
                 { "DistrictGroups.UI[SectionTooltipLine2]", "When assigned, the group will manage the **operating districts** for the building." },

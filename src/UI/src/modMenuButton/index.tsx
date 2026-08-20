@@ -5,7 +5,7 @@ import mod from "../../mod.json"
 import { ModIcon } from "../components/icons"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, groups$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import css from "./index.module.scss"
 
@@ -44,7 +44,6 @@ export const GroupManager = () => {
     const t = useTranslation()
     const [open, setOpen] = useState(false)
     const [contentMounted, setContentMounted] = useState(false)
-    const groups = useValue(groups$)
     const areaToolActive = useValue(areaToolActive$)
     const dismissedByAreaTool = useRef(false)
 
@@ -79,16 +78,10 @@ export const GroupManager = () => {
         }
     }, [areaToolActive])
 
-    // Built per-render (not a module-level constant like other tooltips)
-    // since it needs the live group count.
     const panelToggleTooltip = (
         <FormattedParagraphs
             renderer={markdownRenderer}
-            text={[
-                t("toggleTooltipTitle"),
-                t("toggleTooltipBody"),
-                t("toggleTooltipCount", { count: groups.length }),
-            ]}
+            text={[t("toggleTooltipTitle"), t("toggleTooltipBody")]}
         />
     )
 

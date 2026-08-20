@@ -33,7 +33,6 @@ export const kLocale = {
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
     toggleTooltipBody: id("ToggleTooltipBody"),
-    toggleTooltipCount: id("ToggleTooltipCount"),
 
     sectionTooltipLine1: id("SectionTooltipLine1"),
     sectionTooltipLine2: id("SectionTooltipLine2"),
@@ -90,7 +89,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     toggleTooltipTitle: "**DISTRICT GROUPS**",
     toggleTooltipBody:
         "Create groups of districts to assign to service buildings for self-managing of **operating districts**.",
-    toggleTooltipCount: "Existing groups: {COUNT}",
 
     sectionTooltipLine1: "Service buildings can be assigned to a **district group**.",
     sectionTooltipLine2: "When assigned, the group will manage the **operating districts** for the building.",
