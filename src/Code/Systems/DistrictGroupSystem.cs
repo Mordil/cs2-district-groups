@@ -32,8 +32,10 @@ namespace DistrictGroups
         private EntityQuery m_GroupQuery;
         private EntityQuery m_AssignmentQuery;
 
-        // Bumped on every group/assignment mutation so UI systems can refresh.
+        // Bumped on every group/assignment mutation (including renames and per-building assignment)
         public int Version { get; private set; }
+        // Bumped only when a group's membership, type, or color changes
+        public int GroupCompositionVersion { get; private set; }
 
         // Next palette index to hand out to a newly created group.
         private int m_NextColorIndex;
@@ -119,6 +121,7 @@ namespace DistrictGroups
             EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type, m_Color = color });
             EntityManager.AddBuffer<DistrictGroupMember>(group);
             Version++;
+            GroupCompositionVersion++;
             Mod.log.Info($"Finished creating new group; type:{type}");
             return group;
         }
@@ -133,6 +136,7 @@ namespace DistrictGroups
             }
             EntityManager.DestroyEntity(group);
             Version++;
+            GroupCompositionVersion++;
             Mod.log.Info($"Finished deleting group; group:{group}");
         }
 
@@ -153,6 +157,7 @@ namespace DistrictGroups
             data.m_Type = type;
             EntityManager.SetComponentData(group, data);
             Version++;
+            GroupCompositionVersion++;
             Mod.log.Info($"Finished setting group type; group:{group} type:{type}");
         }
 
@@ -163,6 +168,7 @@ namespace DistrictGroups
             data.m_Color = color;
             EntityManager.SetComponentData(group, data);
             Version++;
+            GroupCompositionVersion++;
             Mod.log.Info($"Finished setting group color; group:{group}");
         }
 
@@ -181,6 +187,7 @@ namespace DistrictGroups
             members.Add(new DistrictGroupMember(district));
             ReexpandGroup(group);
             Version++;
+            GroupCompositionVersion++;
             Mod.log.Info($"Finished adding district to group; district:{district} group:{group}");
             return true;
         }
@@ -196,6 +203,7 @@ namespace DistrictGroups
                     members.RemoveAt(i);
                     ReexpandGroup(group);
                     Version++;
+                    GroupCompositionVersion++;
                     Mod.log.Info($"Finished removing district from group; district:{district} group:{group}");
                     return true;
                 }
@@ -278,6 +286,8 @@ namespace DistrictGroups
         {
             return m_GroupQuery.ToEntityArray(allocator);
         }
+
+        public bool HasGroups => !m_GroupQuery.IsEmptyIgnoreFilter;
 
         public NativeArray<Entity> GetAssignedBuildings(Entity group, Allocator allocator)
         {

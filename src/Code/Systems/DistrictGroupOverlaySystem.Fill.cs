@@ -14,15 +14,22 @@ namespace DistrictGroups
             EnsureFillRoot();
             ApplyFillHeightOffset();
 
-            int fillVersion = m_GroupSystem.Version;
+            int compositionVersion = m_GroupSystem.GroupCompositionVersion;
             int saturationSetting = Mathf.Clamp(
                 Mod.Settings?.OverlayFillSaturationPercent ?? Setting.kDefaultOverlayFillSaturationPercent,
                 0,
                 100);
-            if (fillVersion != m_FillBuiltVersion || saturationSetting != m_FillBuiltSaturationPercent)
+            bool geometryDirty = compositionVersion != m_FillBuiltVersion;
+            bool saturationDirty = saturationSetting != m_FillBuiltSaturationPercent;
+            if (geometryDirty)
             {
                 RebuildFillObjects(saturationSetting);
-                m_FillBuiltVersion = fillVersion;
+                m_FillBuiltVersion = compositionVersion;
+                m_FillBuiltSaturationPercent = saturationSetting;
+            }
+            else if (saturationDirty)
+            {
+                RecolorFillObjects(saturationSetting);
                 m_FillBuiltSaturationPercent = saturationSetting;
             }
 
@@ -66,8 +73,9 @@ namespace DistrictGroups
         // Mesh vertices are baked with each district's raw node height, the user-tunable offset lives entirely on the root's transform instead,
         private void ApplyFillHeightOffset()
         {
+            float heightOffset = OverlayHeightOffset;
             Vector3 position = m_FillRoot.transform.position;
-            if (!Mathf.Approximately(position.y, OverlayHeightOffset))
+            if (!Mathf.Approximately(position.y, heightOffset))
             {
                 m_FillRoot.transform.position = new Vector3(position.x, heightOffset, position.z);
             }
@@ -95,7 +103,59 @@ namespace DistrictGroups
             }
 
             stopwatch.Stop();
-            Mod.log.Info($"Group overlay; rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillObjects.Count} vertex_count:{totalVertices} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            Mod.log.Info($"Group overlay, rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillEntries.Count} vertex_count:{totalVertices} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+        }
+
+        // Updates the colors applied to fill textures
+        private void RecolorFillObjects(int saturationSetting)
+        {
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
+            float saturation = actualSaturationPercent / 100f;
+
+            int recoloredCount = 0;
+            foreach (KeyValuePair<Entity, FillEntry> entry in m_FillEntries)
+            {
+                if (!m_DistrictGroupColors.TryGetValue(entry.Key, out List<Color> baseColors))
+                {
+                    continue;
+                }
+
+                var lightened = new List<Color>(baseColors.Count);
+                foreach (Color baseColor in baseColors)
+                {
+                    lightened.Add(Lighten(baseColor, saturation, kFillVibrancy));
+                }
+                ApplyFillColors(entry.Value, lightened);
+                recoloredCount++;
+            }
+
+            stopwatch.Stop();
+            Mod.log.Info($"Group overlay, recolored fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} recolored_count:{recoloredCount} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+        }
+
+        // Applies a district's colors to an already-built mesh/renderer
+        private void ApplyFillColors(FillEntry entry, List<Color> colors)
+        {
+            MaterialPropertyBlock colorBlock = new MaterialPropertyBlock();
+            if (colors.Count > 1)
+            {
+                if (entry.Texture == null)
+                {
+                    Mod.log.Warn($"Group overlay, fill recolor expected a texture but found none; object:{entry.Object?.name ?? "<null>"} color_count:{colors.Count}");
+                    return;
+                }
+                entry.Texture.SetPixels(colors.ToArray());
+                entry.Texture.Apply(updateMipmaps: false, makeNoLongerReadable: false);
+                colorBlock.SetColor("_UnlitColor", Color.white);
+                colorBlock.SetTexture("_UnlitColorMap", entry.Texture);
+            }
+            else
+            {
+                colorBlock.SetColor("_UnlitColor", colors[0]);
+            }
+            entry.Renderer.SetPropertyBlock(colorBlock);
         }
 
         // Linearly maps the user-facing 0-100% slider onto an actual [kMinFillSaturationPercent, 100] saturation percent
@@ -171,15 +231,15 @@ namespace DistrictGroups
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
 
-            // cache the multi-group textures
-            if (fillTexture != null)
-            {
-                m_FillTextures.Add(fillTexture);
-            }
             renderer.SetPropertyBlock(colorBlock);
 
-            m_FillObjects.Add(fillObject);
-            m_FillMeshes.Add(mesh);
+            m_FillEntries[district] = new FillEntry
+            {
+                Object = fillObject,
+                Mesh = mesh,
+                Texture = fillTexture,
+                Renderer = renderer,
+            };
             return vertices.Length;
         }
 
@@ -194,7 +254,9 @@ namespace DistrictGroups
                 wrapMode = TextureWrapMode.Repeat,
             };
             texture.SetPixels(colors.ToArray());
-            texture.Apply(updateMipmaps: false, makeNoLongerReadable: true);
+            // Kept CPU-readable (unlike a typical upload-and-forget texture) so a saturation-only
+            // change can call SetPixels/Apply on this same texture again later instead of rebuilding it.
+            texture.Apply(updateMipmaps: false, makeNoLongerReadable: false);
             return texture;
         }
 
@@ -336,33 +398,23 @@ namespace DistrictGroups
 
         private void DestroyFillObjects()
         {
-            foreach (GameObject fillObject in m_FillObjects)
+            foreach (FillEntry entry in m_FillEntries.Values)
             {
-                if (fillObject != null)
+                if (entry.Object != null)
                 {
-                    Object.Destroy(fillObject);
+                    Object.Destroy(entry.Object);
+                }
+                // Destroying a GameObject doesn't destroy the assets its components merely reference
+                if (entry.Mesh != null)
+                {
+                    Object.Destroy(entry.Mesh);
+                }
+                if (entry.Texture != null)
+                {
+                    Object.Destroy(entry.Texture);
                 }
             }
-            m_FillObjects.Clear();
-
-            // Destroying a GameObject doesn't destroy the assets its components merely reference
-            foreach (Mesh mesh in m_FillMeshes)
-            {
-                if (mesh != null)
-                {
-                    Object.Destroy(mesh);
-                }
-            }
-            m_FillMeshes.Clear();
-
-            foreach (Texture2D texture in m_FillTextures)
-            {
-                if (texture != null)
-                {
-                    Object.Destroy(texture);
-                }
-            }
-            m_FillTextures.Clear();
+            m_FillEntries.Clear();
         }
 
         private void DestroyFillRoot()

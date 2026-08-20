@@ -40,9 +40,7 @@ namespace DistrictGroups
                     continue;
                 }
 
-                // A cached district can still die (or lose its Node buffer) between
-                // color-cache rebuilds, since district deletion doesn't bump
-                // m_GroupSystem.Version
+                // A cached district can still die (or lose its Node buffer) between color-cache rebuilds
                 Entity district = entry.Key;
                 if (!EntityManager.Exists(district)
                     || EntityManager.HasComponent<Deleted>(district)

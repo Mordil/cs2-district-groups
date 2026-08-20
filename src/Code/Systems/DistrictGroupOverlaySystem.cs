@@ -30,7 +30,6 @@ namespace DistrictGroups
         private DefaultToolSystem m_DefaultToolSystem;
         private GameScreenUISystem m_GameScreenUISystem;
         private DistrictGroupSystem m_GroupSystem;
-        private EntityQuery m_GroupQuery;
         private bool m_Visible;
 
         // Used to detect when the vanilla area tool (which edits a district's boundaries) closes,
@@ -41,7 +40,7 @@ namespace DistrictGroups
         public bool IsAreaToolActive => m_WasAreaToolActive;
 
         // Raw per-district colors of every visible group that claims that district (0..n colors each).
-        // Rebuilt only when m_GroupSystem.Version or m_TypeFilter changes
+        // Rebuilt only when m_GroupSystem.GroupCompositionVersion or m_TypeFilter changes
         private readonly Dictionary<Entity, List<Color>> m_DistrictGroupColors = new Dictionary<Entity, List<Color>>();
         private int m_DistrictGroupColorsVersion = -1;
 
@@ -68,11 +67,21 @@ namespace DistrictGroups
         // How many times the color cycle repeats across a multi-group district's fill.
         private const int kStripeRepeatCount = 4;
 
+        // One entry per district with a fill mesh; keyed by district so a saturation-only change can
+        // recolor an existing entry in place instead of destroying and recreating it.
+        private struct FillEntry
+        {
+            public GameObject Object;
+            public Mesh Mesh;
+            public Texture2D Texture; // null for single-color districts (flat _UnlitColor tint, no texture)
+            public MeshRenderer Renderer; // cached so recoloring doesn't need GetComponent
+        }
+
         private GameObject m_FillRoot;
         private Material m_FillMaterial;
-        private readonly List<GameObject> m_FillObjects = new List<GameObject>();
-        private readonly List<Mesh> m_FillMeshes = new List<Mesh>();
-        private readonly List<Texture2D> m_FillTextures = new List<Texture2D>();
+        private readonly Dictionary<Entity, FillEntry> m_FillEntries = new Dictionary<Entity, FillEntry>();
+
+        // Compared against m_GroupSystem.GroupCompositionVersion; gates the full geometry rebuild
         private int m_FillBuiltVersion = -1;
 
         // Last (clamped) saturation percent the fill meshes were actually built with
@@ -93,7 +102,6 @@ namespace DistrictGroups
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GameScreenUISystem = World.GetOrCreateSystemManaged<GameScreenUISystem>();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
-            m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             ApplyAreasVisibility();
 
             m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();
@@ -111,7 +119,7 @@ namespace DistrictGroups
                 m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
             }
 
-            bool active = IsOverlayActive && !m_GroupQuery.IsEmptyIgnoreFilter;
+            bool active = IsOverlayActive && m_GroupSystem.HasGroups;
             if (active)
             {
                 EnsureDistrictGroupColors();
@@ -218,7 +226,7 @@ namespace DistrictGroups
         // Rebuilds the district <-> color list cache based on membership if the system has changed
         private void EnsureDistrictGroupColors()
         {
-            int version = m_GroupSystem.Version;
+            int version = m_GroupSystem.GroupCompositionVersion;
             if (version == m_DistrictGroupColorsVersion)
             {
                 return;
@@ -228,7 +236,7 @@ namespace DistrictGroups
 
             m_DistrictGroupColors.Clear();
 
-            using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
+            using NativeArray<Entity> groups = m_GroupSystem.GetGroups(Allocator.Temp);
             for (int i = 0; i < groups.Length; i++)
             {
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(groups[i]);
