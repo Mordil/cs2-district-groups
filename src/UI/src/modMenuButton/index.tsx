@@ -1,13 +1,13 @@
 import { trigger, useValue } from "cs2/api"
-import { FormattedParagraphs, Tooltip } from "cs2/ui"
+import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
-import { ModIcon } from "../components/icons"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
 import { areaToolActive$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
-import css from "./index.module.scss"
+
+const kToggleButtonIcon = "coui://districtgroups/DistrictGroupRing.svg"
 
 // Matches panelShellStyle's own transition duration below.
 const kFadeDurationMs = 150
@@ -88,9 +88,12 @@ export const GroupManager = () => {
     return (
         <>
             <Tooltip tooltip={panelToggleTooltip}>
-                <button className={css.panelToggleButton} onClick={togglePanel}>
-                    <ModIcon name="DistrictGroupRing" size="28rem" />
-                </button>
+                <Button
+                    variant="floating"
+                    src={kToggleButtonIcon}
+                    selected={open}
+                    onSelect={togglePanel}
+                />
             </Tooltip>
             <div
                 style={{

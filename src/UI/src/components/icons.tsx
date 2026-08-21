@@ -23,5 +23,4 @@ function icon(source: string, props: IconProps) {
 }
 
 export const UilIcon = (props: IconProps) => icon(kUilStandard, props)
-export const ModIcon = (props: IconProps) => icon(kModIcons, props)
 export const GameIcon = (props: IconProps) => icon(kGameIcons, props)
