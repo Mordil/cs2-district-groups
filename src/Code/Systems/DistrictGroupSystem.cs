@@ -269,22 +269,43 @@ namespace DistrictGroups
 
         public void ReexpandGroup(Entity group)
         {
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
             using NativeArray<Entity> buildings = GetAssignedBuildings(group, Allocator.Temp);
+            double lookupMs = stopwatch.Elapsed.TotalMilliseconds;
+            using NativeArray<Entity> validDistricts = GetValidMemberDistricts(group, Allocator.Temp);
             foreach (Entity building in buildings)
             {
-                ExpandToBuilding(building, group);
+                ExpandToBuilding(building, validDistricts);
             }
+            Mod.log.Info($"Reexpanded group; group:{GetGroupName(group)} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+                $"lookup_ms:{lookupMs:F3} building_count:{buildings.Length} district_count:{validDistricts.Length}");
         }
 
         private void ExpandToBuilding(Entity building, Entity group)
         {
-            DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
+            using NativeArray<Entity> validDistricts = GetValidMemberDistricts(group, Allocator.Temp);
+            ExpandToBuilding(building, validDistricts);
+        }
+
+        private void ExpandToBuilding(Entity building, NativeArray<Entity> validDistricts)
+        {
             DynamicBuffer<ServiceDistrict> serviceDistricts = EntityManager.GetBuffer<ServiceDistrict>(building);
             serviceDistricts.Clear();
+            foreach (Entity district in validDistricts)
+            {
+                serviceDistricts.Add(new ServiceDistrict(district));
+            }
+        }
+
+        // membership pruning happens in DistrictGroupSyncSystem and on load,
+        // but a dead district must never reach a vanilla buffer.
+        // Filtered once per group instead of once per assigned building.
+        private NativeArray<Entity> GetValidMemberDistricts(Entity group, Allocator allocator)
+        {
+            DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
+            using NativeList<Entity> valid = new NativeList<Entity>(members.Length, Allocator.Temp);
             foreach (DistrictGroupMember member in members)
             {
-                // Backstop: membership pruning happens in DistrictGroupSyncSystem
-                // and on load, but a dead district must never reach a vanilla buffer.
                 Entity district = member.m_District;
                 if (!EntityManager.Exists(district)
                     || !EntityManager.HasComponent<District>(district)
@@ -292,8 +313,9 @@ namespace DistrictGroups
                 {
                     continue;
                 }
-                serviceDistricts.Add(new ServiceDistrict(district));
+                valid.Add(district);
             }
+            return valid.ToArray(allocator);
         }
 
         public NativeArray<Entity> GetGroups(Allocator allocator)
