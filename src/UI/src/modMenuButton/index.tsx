@@ -2,7 +2,7 @@ import { trigger, useValue } from "cs2/api"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
-import { kIconStyleMonochrome, kIconStylePaths } from "../constants"
+import { kIconStyleMonochrome, kIconStylePaths, kUITopOffset } from "../constants"
 import { iconStyle$, markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
 import { areaToolActive$, GroupManagementPanel } from "groupManagementPanel"
@@ -13,7 +13,7 @@ const kFadeDurationMs = 150
 
 const panelShellStyle = {
     position: "absolute",
-    top: "60rem",
+    top: `${kUITopOffset}rem`,
     left: "10rem",
     width: "490rem",
     height: "80vh",
