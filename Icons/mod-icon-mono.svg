@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 256 256"
+     role="img"
+     aria-labelledby="title"
+     style="color:#ffffff">
+  <title id="title">District Groups icon</title>
+
+  <!-- Change the root color value to recolor the one-color glyph. -->
+  <g fill="currentColor">
+    <!-- Outer district panels -->
+    <path d="M30 118 L54 109 L70 154 L80 179 L72 190 L50 168 Z"/>
+    <path d="M226 118 L202 109 L186 154 L176 179 L184 190 L206 168 Z"/>
+
+    <!-- Inner district panels -->
+    <path d="M66 90 L89 83 L99 176 L92 195 L78 168 Z"/>
+    <path d="M190 90 L167 83 L157 176 L164 195 L178 168 Z"/>
+
+    <!-- Central tower, with a small transparent art-deco slot -->
+    <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M104 48 L112 48 L116 38 L140 38 L144 48 L152 48 L160 57 L148 191 L128 222 L108 191 L96 57 Z
+             M114 54 L142 54 L139 62 L117 62 Z"/>
+  </g>
+</svg>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 256 256"
+     role="img"
+     aria-labelledby="title">
+  <title id="title">District Groups icon</title>
+
+  <!-- Pale keyline preserves separation on dark opaque backgrounds. -->
+  <g fill="none" stroke="#F0D39A" stroke-width="12" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M30 118 L54 109 L70 154 L80 179 L72 190 L50 168 Z"/>
+    <path d="M226 118 L202 109 L186 154 L176 179 L184 190 L206 168 Z"/>
+    <path d="M66 90 L89 83 L99 176 L92 195 L78 168 Z"/>
+    <path d="M190 90 L167 83 L157 176 L164 195 L178 168 Z"/>
+    <path d="M104 48 L112 48 L116 38 L140 38 L144 48 L152 48 L160 57 L148 191 L128 222 L108 191 L96 57 Z"/>
+  </g>
+
+  <!-- Main dark outline and color fields. -->
+  <g stroke="#242A30" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+    <path fill="#7FB64D" d="M30 118 L54 109 L70 154 L80 179 L72 190 L50 168 Z"/>
+    <path fill="#7FB64D" d="M226 118 L202 109 L186 154 L176 179 L184 190 L206 168 Z"/>
+    <path fill="#2BA7A0" d="M66 90 L89 83 L99 176 L92 195 L78 168 Z"/>
+    <path fill="#2BA7A0" d="M190 90 L167 83 L157 176 L164 195 L178 168 Z"/>
+    <path fill="#F7B733" d="M104 48 L112 48 L116 38 L140 38 L144 48 L152 48 L160 57 L148 191 L128 222 L108 191 L96 57 Z"/>
+  </g>
+
+  <!-- Minimal highlights retain the reference concept without adding noise. -->
+  <path d="M116 56 H140" fill="none" stroke="#FFF0B8" stroke-width="5" stroke-linecap="round"/>
+  <path d="M110 70 L119 181 L128 202" fill="none" stroke="#FFD264" stroke-width="5" stroke-linecap="round" opacity="0.55"/>
+  <path d="M77 104 L94 174" fill="none" stroke="#66D0C8" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  <path d="M179 104 L162 174" fill="none" stroke="#66D0C8" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+</svg>

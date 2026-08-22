@@ -22,6 +22,13 @@ namespace DistrictGroups
         }
     }
 
+    // Which mod-icon variant the UI shows.
+    public enum ModIconStyle : byte
+    {
+        Color = 0,
+        Monochrome = 1,
+    }
+
     public enum GroupServiceType : byte
     {
         Generic = 0,
