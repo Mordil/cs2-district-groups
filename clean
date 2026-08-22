@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+# clean - removes the dotnet build cache (bin/, obj/) so the next build starts fresh.
+#
+# These pile up over time: every Debug/Release build leaves the per-platform Burst
+# libraries plus the DLL/PDB under bin/<Config>/net48, and obj/ accumulates NuGet
+# restore artifacts - including stale ones left over from before this project was
+# renamed from multi-district-tool. None of it is source; all of it gets regenerated
+# by the next `./build` or `dotnet build`.
+#
+# obj/release-logs (this repo's own release-run history, not a dotnet build artifact)
+# is preserved.
+#
+# Usage: ./clean [-n]
+#   -n   dry run - print what would be removed without deleting anything
+
+set -euo pipefail
+
+DRY_RUN=0
+for arg in "$@"; do
+    case "$arg" in
+        -n) DRY_RUN=1 ;;
+        -h|--help) sed -n '2,13p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        *) echo "clean: unknown argument '$arg'" >&2; exit 2 ;;
+    esac
+done
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+TARGETS=()
+[[ -d bin ]] && TARGETS+=("bin")
+if [[ -d obj ]]; then
+    for entry in obj/*; do
+        [[ "$(basename "$entry")" == "release-logs" ]] && continue
+        TARGETS+=("$entry")
+    done
+fi
+
+if [[ ${#TARGETS[@]} -eq 0 ]]; then
+    echo "Nothing to clean."
+    exit 0
+fi
+
+if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo "Would remove:"
+    printf '  %s\n' "${TARGETS[@]}"
+    exit 0
+fi
+
+echo "Removing dotnet build cache:"
+printf '  %s\n' "${TARGETS[@]}"
+rm -rf "${TARGETS[@]}"
+echo "Done."
