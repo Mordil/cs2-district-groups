@@ -43,9 +43,8 @@ save without the mod is safe. But if you save the game while the mod is removed,
 the groups are gone for good.
 	</LongDescription>
 	<!--Thumbnail-->
-	<Thumbnail Value="Properties/Thumbnail.alpha.png" />
+	<Thumbnail Value="Properties/Thumbnail.beta.png" />
 	<!--Screenshot, can be set multiple times-->
-	<Screenshot Value="Properties/ProjectBanner.png" />
 	<Screenshot Value="Properties/Screenshots/Preview1.png" />
 	<Screenshot Value="Properties/Screenshots/Preview2.png" />
 	<Screenshot Value="Properties/Screenshots/Preview3.jpg" />
