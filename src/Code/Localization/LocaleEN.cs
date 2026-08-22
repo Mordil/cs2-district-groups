@@ -69,7 +69,6 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[NewGroupButtonTooltip]", "Adds a new group with no member districts." },
                 { "DistrictGroups.UI[NewGroupDefaultName]", "New Group {NUMBER}" },
                 { "DistrictGroups.UI[FilterTooltipLine1]", "Filter the list of groups by their **type**." },
-                { "DistrictGroups.UI[FilterTooltipLine2]", "If **All Groups** is selected, then all groups will be listed." },
                 { "DistrictGroups.UI[AllGroupsLabel]", "All Groups" },
                 { "DistrictGroups.UI[NoGroupsYet]", "No groups yet. Create one above." },
                 { "DistrictGroups.UI[NoGroupsMatchFilter]", "No groups match this filter." },

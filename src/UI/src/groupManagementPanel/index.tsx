@@ -5,7 +5,7 @@ import { useState } from "react"
 import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
 import { UilIcon } from "../components/icons"
-import { kAllTypes, TypeFilterPicker } from "../components/TypePicker"
+import { TypeFilterPicker } from "../components/TypePicker"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
@@ -17,8 +17,8 @@ import { GroupCard } from "./GroupCard"
 
 export { groups$, areaToolActive$ } from "./bindings"
 
-// temporarily persisted value between UI mounting
-let lastFilterType = kAllTypes
+// temporarily persisted value between UI mounting; 0 = Generic
+let lastFilterType = 0
 
 interface GroupManagementPanelProps {
     onClose: () => void
@@ -35,13 +35,12 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const filterTooltip = (
         <FormattedParagraphs
             renderer={markdownRenderer}
-            text={[t("filterTooltipLine1"), t("filterTooltipLine2")]}
+            text={[t("filterTooltipLine1")]}
         />
     )
 
-    // "All Types" keeps creation order (the binding's own order); a specific
-    // type filters down to just that type, still in creation order.
-    const displayedGroups = filterType === kAllTypes ? groups : groups.filter((g) => g.type === filterType)
+    // Groups matching the filtered type, in creation order (the binding's own order).
+    const displayedGroups = groups.filter((g) => g.type === filterType)
 
     const onFilterChange = (type: number) => {
         logger.info(`Filter changed; type:${type}`)
@@ -52,12 +51,9 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
 
     const onCreateGroup = () => {
         logger.info("New group clicked;")
-        // "All Groups" (kAllTypes) has no real type to inherit, so new
-        // groups created under that filter default to Generic.
-        const newGroupType = filterType === kAllTypes ? 0 : filterType
         // groups.length (not displayedGroups.length) so the suggested name
         // reflects every group, regardless of the active filter.
-        trigger(mod.id, "createGroup", t("newGroupDefaultName", { number: groups.length + 1 }), newGroupType)
+        trigger(mod.id, "createGroup", t("newGroupDefaultName", { number: groups.length + 1 }), filterType)
     }
 
     const onAreasVisibleChange = (checked: boolean) => {
@@ -87,7 +83,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                         value={filterType}
                         onChange={onFilterChange}
                         labels={typeLabels}
-                        allLabel={t("allGroupsLabel")}
+                        allLabel={null}
                         tooltip={filterTooltip}
                     />
 

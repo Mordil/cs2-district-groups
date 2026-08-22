@@ -57,47 +57,53 @@ export const TypePicker = (props: {
 // option occupies labels[0..n-1], so -1 is free to mean "show everything".
 export const kAllTypes = -1
 
-// TypePicker plus a leading "all" entry (value kAllTypes) and a filter icon
+// TypePicker plus a filter icon and, when allLabel is given, a leading "all" entry
+// (value kAllTypes). Pass allLabel={null} to restrict the picker to real types only.
 export const TypeFilterPicker = (props: {
     value: number
     onChange: (value: number) => void
     labels: string[]
-    allLabel: string
+    allLabel: string | null
     tooltip?: ReactNode
-}) => (
-    // See TypePicker's identical key comment above — same fix, same reason.
-    <Tooltip key={props.value} tooltip={props.tooltip}>
-        <Dropdown
-            theme={dropdownTheme}
-            content={[props.allLabel, ...props.labels].map((label, i) => {
-                const value = i - 1
-                return (
-                    <DropdownItem
-                        key={value}
-                        value={value}
-                        className={dropdownTheme.dropdownItem}
-                        selected={value === props.value}
-                        closeOnSelect={true}
-                        onChange={() => props.onChange(value)}
-                    >
-                        <div>{label}</div>
-                    </DropdownItem>
-                )
-            })}
-        >
-            <DropdownToggle
-                disabled={false}
-                openIconComponent={<></>}
-                closeIconComponent={<></>}
-                className={selectorCss.selectorToggle}
+}) => {
+    const options = props.allLabel !== null ? [props.allLabel, ...props.labels] : props.labels
+    return (
+        // See TypePicker's identical key comment above — same fix, same reason.
+        <Tooltip key={props.value} tooltip={props.tooltip}>
+            <Dropdown
+                theme={dropdownTheme}
+                content={options.map((label, i) => {
+                    const value = props.allLabel !== null ? i - 1 : i
+                    return (
+                        <DropdownItem
+                            key={value}
+                            value={value}
+                            className={dropdownTheme.dropdownItem}
+                            selected={value === props.value}
+                            closeOnSelect={true}
+                            onChange={() => props.onChange(value)}
+                        >
+                            <div>{label}</div>
+                        </DropdownItem>
+                    )
+                })}
             >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <UilIcon name="FunnelFilter"/>
-                    <span style={{ marginLeft: "5rem" }}>
-                        {props.value === kAllTypes ? props.allLabel : props.labels[props.value] ?? "?"}
-                    </span>
-                </div>
-            </DropdownToggle>
-        </Dropdown>
-    </Tooltip>
-)
+                <DropdownToggle
+                    disabled={false}
+                    openIconComponent={<></>}
+                    closeIconComponent={<></>}
+                    className={selectorCss.selectorToggle}
+                >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                        <UilIcon name="FunnelFilter"/>
+                        <span style={{ marginLeft: "5rem" }}>
+                            {props.value === kAllTypes && props.allLabel !== null
+                                ? props.allLabel
+                                : props.labels[props.value] ?? "?"}
+                        </span>
+                    </div>
+                </DropdownToggle>
+            </Dropdown>
+        </Tooltip>
+    )
+}
