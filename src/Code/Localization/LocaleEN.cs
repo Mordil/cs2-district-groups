@@ -95,6 +95,7 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[SectionTooltipLine1]", "Service buildings can be assigned to a **district group**." },
                 { "DistrictGroups.UI[SectionTooltipLine2]", "When assigned, the group will manage the **operating districts** for the building." },
                 { "DistrictGroups.UI[SectionTooltipLine3]", "When unassigned, **operating districts** are managed manually." },
+                { "DistrictGroups.UI[SectionTooltipLine4]", "NOTE: The Info Panel can take a few seconds to visually update after changing the assignment." },
                 { "DistrictGroups.UI[SectionLabel]", "DISTRICT GROUP" },
                 { "DistrictGroups.UI[UnassignOption]", "None (Unassign)" },
                 { "DistrictGroups.UI[UnassignedLabel]", "Unassigned" },

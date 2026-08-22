@@ -86,30 +86,45 @@ namespace DistrictGroups
 
         protected override void OnUpdate()
         {
-            base.OnUpdate();
-
-            // Group edits made in the manager panel must refresh this section too.
-            int version = m_GroupSystem.Version;
-            if (version != m_LastSeenVersion)
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            try
             {
-                m_LastSeenVersion = version;
-                RequestUpdate();
-            }
+                base.OnUpdate();
 
-            visible = EntityManager.Exists(selectedEntity)
-                && EntityManager.HasBuffer<ServiceDistrict>(selectedEntity);
-            if (!visible)
-            {
-                return;
+                // Group edits made in the manager panel must refresh this section too.
+                int version = m_GroupSystem.Version;
+                if (version != m_LastSeenVersion)
+                {
+                    m_LastSeenVersion = version;
+                    RequestUpdate();
+                }
+
+                visible = EntityManager.Exists(selectedEntity)
+                    && EntityManager.HasBuffer<ServiceDistrict>(selectedEntity);
+                if (!visible)
+                {
+                    return;
+                }
+                m_AssignedGroup = EntityManager.HasComponent<DistrictGroupAssignment>(selectedEntity)
+                    ? EntityManager.GetComponentData<DistrictGroupAssignment>(selectedEntity).m_Group
+                    : Entity.Null;
+                m_BuildingType = m_GroupSystem.DetectServiceType(selectedPrefab);
             }
-            m_AssignedGroup = EntityManager.HasComponent<DistrictGroupAssignment>(selectedEntity)
-                ? EntityManager.GetComponentData<DistrictGroupAssignment>(selectedEntity).m_Group
-                : Entity.Null;
-            m_BuildingType = m_GroupSystem.DetectServiceType(selectedPrefab);
+            finally
+            {
+                // Diagnostic only: flags a slow frame so we can tell whether a UI stall is inside
+                // our own code (an EntityManager call forced to wait on an in-flight job) or elsewhere.
+                double elapsedMs = stopwatch.Elapsed.TotalMilliseconds;
+                if (elapsedMs > 5.0)
+                {
+                    Mod.log.Debug($"DistrictGroupSection.OnUpdate slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
+                }
+            }
         }
 
         public override void OnWriteProperties(IJsonWriter writer)
         {
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
             writer.PropertyName("buildingType");
             writer.Write((int)m_BuildingType);
             writer.PropertyName("hasAssignment");
@@ -146,6 +161,12 @@ namespace DistrictGroups
                 writer.TypeEnd();
             }
             writer.ArrayEnd();
+
+            double elapsedMs = stopwatch.Elapsed.TotalMilliseconds;
+            if (elapsedMs > 5.0)
+            {
+                Mod.log.Debug($"DistrictGroupSection.OnWriteProperties slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
+            }
         }
     }
 }

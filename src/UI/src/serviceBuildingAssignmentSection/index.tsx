@@ -57,6 +57,7 @@ const Section = (props: any) => {
                 t("sectionTooltipLine1"),
                 t("sectionTooltipLine2"),
                 t("sectionTooltipLine3"),
+                t("sectionTooltipLine4"),
             ]}
         />
     )

@@ -107,7 +107,9 @@ namespace DistrictGroups
     }
 
     // On a service building: which group its ServiceDistrict buffer is managed by.
-    public struct DistrictGroupAssignment : IComponentData, IQueryTypeParameter, ISerializable
+    // Enableable so toggling a building's assignment flips a bit instead of triggering an ECS archetype move.
+    // Disabled == unassigned; queries over this type exclude disabled entities by default
+    public struct DistrictGroupAssignment : IComponentData, IEnableableComponent, IQueryTypeParameter, ISerializable
     {
         public Entity m_Group;
 
