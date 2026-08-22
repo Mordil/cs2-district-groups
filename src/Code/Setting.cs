@@ -1,5 +1,6 @@
 using System;
 using Colossal.IO.AssetDatabase;
+using Colossal.Logging;
 using Game;
 using Game.Modding;
 using Game.SceneFlow;
@@ -31,8 +32,14 @@ namespace DistrictGroups
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
         public const ModIconStyle kDefaultIconStyle = ModIconStyle.Color;
+#if DEBUG
+        public const bool kDefaultEnableDebugLogging = true;
+#else
+        public const bool kDefaultEnableDebugLogging = false;
+#endif
 
         private ModIconStyle m_IconStyle;
+        private bool m_EnableDebugLogging;
 
         // There's nothing in memory to dump while sitting on the main menu.
         public bool IsNotInGame() => GameManager.instance.gameMode != GameMode.Game;
@@ -50,6 +57,7 @@ namespace DistrictGroups
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
             IconStyle = kDefaultIconStyle;
+            EnableDebugLogging = kDefaultEnableDebugLogging;
         }
 
         // Which mod-icon variant is shown on the in-game toggle button.
@@ -91,6 +99,18 @@ namespace DistrictGroups
         [SettingsUISection(kTabGeneral, kSectionOverlay)]
         public int OverlayFillSaturationPercent { get; set; }
 
+        // Gates the log's own minimum severity, so disabling this stops Debug-level entries at the source instead of just hiding them from a report.
+        [SettingsUISection(kTabGeneral, kSectionDebug)]
+        public bool EnableDebugLogging
+        {
+            get => m_EnableDebugLogging;
+            set
+            {
+                m_EnableDebugLogging = value;
+                Mod.log.effectivenessLevel = value ? Level.Debug : Level.Info;
+            }
+        }
+
         // Writes group/building/district counts and a full per-group breakdown to the log file, for troubleshooting reports.
         [SettingsUIButton]
         [SettingsUISection(kTabGeneral, kSectionDebug)]
@@ -128,7 +148,7 @@ namespace DistrictGroups
                 }
                 catch (Exception e)
                 {
-                    Mod.log.Warn($"Could not open issue tracker URL; url:{kIssueUrl} error:{e.Message}");
+                    Mod.log.Error($"Could not open issue tracker URL; url:{kIssueUrl} error:{e.Message}");
                 }
             }
         }
