@@ -44,7 +44,7 @@ namespace DistrictGroups
             }
             else
             {
-                log.Warn("Could not resolve mod asset, custom icons will not load;");
+                log.Error("Could not resolve mod asset, custom icons will not load;");
             }
 
             m_Setting = new Setting(this);
@@ -70,7 +70,7 @@ namespace DistrictGroups
             string modDir = Path.GetDirectoryName(assetPath);
             if (string.IsNullOrEmpty(modDir))
             {
-                log.Warn($"Could not resolve mod directory, custom icons will not load; asset_path:{assetPath}");
+                log.Error($"Could not resolve mod directory, custom icons will not load; asset_path:{assetPath}");
                 return;
             }
 

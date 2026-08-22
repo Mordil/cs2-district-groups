@@ -103,7 +103,7 @@ namespace DistrictGroups
             }
 
             stopwatch.Stop();
-            Mod.log.Info($"Group overlay, rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillEntries.Count} vertex_count:{totalVertices} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            Mod.log.Debug($"Group overlay, rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillEntries.Count} vertex_count:{totalVertices} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
         }
 
         // Updates the colors applied to fill textures
@@ -132,7 +132,7 @@ namespace DistrictGroups
             }
 
             stopwatch.Stop();
-            Mod.log.Info($"Group overlay, recolored fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} recolored_count:{recoloredCount} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            Mod.log.Debug($"Group overlay, recolored fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} recolored_count:{recoloredCount} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
         }
 
         // Applies a district's colors to an already-built mesh/renderer

@@ -54,7 +54,7 @@ namespace DistrictGroups
                     return;
                 }
             }
-            Mod.log.Info("Could not locate DistrictsSection in the info panel. falling back to appending our section;");
+            Mod.log.Warn("Could not locate DistrictsSection in the info panel. falling back to appending our section;");
             m_InfoUISystem.AddMiddleSection(this);
         }
 

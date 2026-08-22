@@ -121,7 +121,8 @@ namespace DistrictGroups
             foreach (Entity building in allAssignedBuildings)
             {
                 Entity group = EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group;
-                if (EntityManager.Exists(group) && EntityManager.HasComponent<DistrictGroupData>(group))
+                if (group == Entity.Null
+                    || (EntityManager.Exists(group) && EntityManager.HasComponent<DistrictGroupData>(group)))
                 {
                     continue;
                 }

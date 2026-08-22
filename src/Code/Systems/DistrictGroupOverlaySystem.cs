@@ -265,7 +265,7 @@ namespace DistrictGroups
             m_DistrictGroupColorsVersion = version;
 
             stopwatch.Stop();
-            Mod.log.Info($"Overlay district colors rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+            Mod.log.Debug($"Overlay district colors rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
                 $"group_count:{groups.Length} district_count:{m_DistrictGroupColors.Count}");
         }
 

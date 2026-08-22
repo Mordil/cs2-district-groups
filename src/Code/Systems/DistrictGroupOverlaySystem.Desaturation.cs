@@ -44,7 +44,7 @@ namespace DistrictGroups
             m_ColorAdjustments.active = true;
 
             stopwatch.Stop();
-            Mod.log.Info($"Group overlay desaturation volume created; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
+            Mod.log.Debug($"Group overlay desaturation volume created; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
         }
 
         private void DestroyDesaturationVolume()
@@ -58,7 +58,7 @@ namespace DistrictGroups
                 m_ColorAdjustments = null;
 
                 stopwatch.Stop();
-                Mod.log.Info($"Group overlay desaturation volume destroyed; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
+                Mod.log.Debug($"Group overlay desaturation volume destroyed; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
             }
             else
             {

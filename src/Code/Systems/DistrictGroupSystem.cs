@@ -230,40 +230,53 @@ namespace DistrictGroups
         public bool AssignBuilding(Entity building, Entity group)
         {
             Mod.log.Info($"Assigning group to building; group:{group} building:{building}");
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
             if (!EntityManager.HasBuffer<ServiceDistrict>(building))
             {
-                Mod.log.Info($"Cannot assign group, building has no ServiceDistrict buffer; building:{building}");
+                Mod.log.Error($"Cannot assign group, building has no ServiceDistrict buffer; building:{building}");
                 return false;
             }
             if (EntityManager.HasComponent<DistrictGroupAssignment>(building))
             {
                 EntityManager.SetComponentData(building, new DistrictGroupAssignment(group));
+                EntityManager.SetComponentEnabled<DistrictGroupAssignment>(building, true);
             }
             else
             {
                 EntityManager.AddComponentData(building, new DistrictGroupAssignment(group));
             }
+            double assignmentMs = stopwatch.Elapsed.TotalMilliseconds;
             ExpandToBuilding(building, group);
             Version++;
-            Mod.log.Info($"Finished assigning group to building; group:{group} building:{building}");
+            double totalMs = stopwatch.Elapsed.TotalMilliseconds;
+            Mod.log.Debug($"Finished assigning group to building; group:{group} building:{building} " +
+                $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3} expand_ms:{totalMs - assignmentMs:F3}");
             return true;
         }
 
         public bool UnassignBuilding(Entity building)
         {
             Mod.log.Info($"Unassigning building; building:{building}");
-            if (!EntityManager.HasComponent<DistrictGroupAssignment>(building))
+            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            if (!EntityManager.HasComponent<DistrictGroupAssignment>(building)
+                || EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group == Entity.Null)
             {
                 Mod.log.Info($"Building has no group assignment, skipping; building:{building}");
                 return false;
             }
-            EntityManager.RemoveComponent<DistrictGroupAssignment>(building);
+            // m_Group is the source of truth for "assigned" (robust even if the enabled bit doesn't
+            // round-trip through save/load); disabling too is what keeps this off the query fast path.
+            EntityManager.SetComponentData(building, new DistrictGroupAssignment(Entity.Null));
+            EntityManager.SetComponentEnabled<DistrictGroupAssignment>(building, false);
+            double assignmentMs = stopwatch.Elapsed.TotalMilliseconds;
             if (EntityManager.HasBuffer<ServiceDistrict>(building))
             {
                 EntityManager.GetBuffer<ServiceDistrict>(building).Clear();
             }
             Version++;
-            Mod.log.Info($"Finished unassigning building; building:{building}");
+            double totalMs = stopwatch.Elapsed.TotalMilliseconds;
+            Mod.log.Debug($"Finished unassigning building; building:{building} " +
+                $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3} expand_ms:{totalMs - assignmentMs:F3}");
             return true;
         }
 
@@ -277,7 +290,7 @@ namespace DistrictGroups
             {
                 ExpandToBuilding(building, validDistricts);
             }
-            Mod.log.Info($"Reexpanded group; group:{GetGroupName(group)} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+            Mod.log.Debug($"Reexpanded group; group:{GetGroupName(group)} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
                 $"lookup_ms:{lookupMs:F3} building_count:{buildings.Length} district_count:{validDistricts.Length}");
         }
 

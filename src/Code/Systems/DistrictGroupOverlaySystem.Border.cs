@@ -19,7 +19,7 @@ namespace DistrictGroups
             {
                 if (shouldSample)
                 {
-                    Mod.log.Info("Overlay draw skipped, border alpha is 0");
+                    Mod.log.Debug("Overlay draw skipped, border alpha is 0");
                 }
                 return;
             }
@@ -78,7 +78,7 @@ namespace DistrictGroups
             if (shouldSample)
             {
                 stopwatch.Stop();
-                Mod.log.Info($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} district_count:{districtCount} segment_count:{segmentCount}");
+                Mod.log.Debug($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} district_count:{districtCount} segment_count:{segmentCount}");
             }
         }
     }
