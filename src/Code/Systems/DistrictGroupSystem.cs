@@ -212,6 +212,20 @@ namespace DistrictGroups
             return false;
         }
 
+        // Updates the member districts of the provided group
+        public void SetMembers(Entity group, DynamicBuffer<ServiceDistrict> desiredDistricts)
+        {
+            DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group);
+            members.Clear();
+            foreach (ServiceDistrict entry in desiredDistricts)
+            {
+                members.Add(new DistrictGroupMember(entry.m_District));
+            }
+            Version++;
+            GroupCompositionVersion++;
+            Mod.log.Info($"Set group members from selection; group:{group} count:{members.Length}");
+        }
+
         // while assigned, the group owns the building's entire ServiceDistrict buffer content.
         public bool AssignBuilding(Entity building, Entity group)
         {

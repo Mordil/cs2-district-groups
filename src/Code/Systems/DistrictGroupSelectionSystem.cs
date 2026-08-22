@@ -1,7 +1,6 @@
 using Game;
 using Game.Areas;
 using Game.Tools;
-using Unity.Collections;
 using Unity.Entities;
 
 namespace DistrictGroups
@@ -12,10 +11,8 @@ namespace DistrictGroups
     //
     // The vanilla tool only knows how to write into a ServiceDistrict buffer on
     // whatever entity is set as its selectionOwner. Rather than attach that
-    // buffer to our persisted group entities,
-    // give the tool one disposable scratch entity, and mirror its
-    // buffer contents into the real group's DistrictGroupMember list each frame
-    // while active.
+    // buffer to our persisted group entities, give the tool one disposable scratch
+    // entity, and mirror its buffer contents into the real group's DistrictGroupMember
     public partial class DistrictGroupSelectionSystem : GameSystemBase
     {
         private ToolSystem m_ToolSystem;
@@ -56,7 +53,7 @@ namespace DistrictGroups
             bool stillOurs = tool == m_SelectionToolSystem && m_SelectionToolSystem.selectionOwner == m_ScratchEntity;
             if (m_SelectingGroup != Entity.Null && !stillOurs)
             {
-                SyncScratchIntoGroup(m_SelectingGroup);
+                FinalizeSelection(m_SelectingGroup);
                 m_SelectingGroup = Entity.Null;
             }
         }
@@ -66,7 +63,7 @@ namespace DistrictGroups
             if (m_SelectingGroup == group)
             {
                 Mod.log.Info($"Stopping district selection; group:{group}");
-                SyncScratchIntoGroup(group);
+                FinalizeSelection(group);
                 m_SelectingGroup = Entity.Null;
                 m_ToolSystem.activeTool = m_DefaultToolSystem;
                 Mod.log.Info($"Finished stopping district selection; group:{group}");
@@ -75,7 +72,7 @@ namespace DistrictGroups
 
             if (m_SelectingGroup != Entity.Null)
             {
-                SyncScratchIntoGroup(m_SelectingGroup);
+                FinalizeSelection(m_SelectingGroup);
             }
 
             Mod.log.Info($"Starting district selection; group:{group}");
@@ -93,6 +90,14 @@ namespace DistrictGroups
             {
                 return;
             }
+
+            ArchetypeChunk chunk = EntityManager.GetChunk(m_ScratchEntity);
+            BufferTypeHandle<ServiceDistrict> handle = GetBufferTypeHandle<ServiceDistrict>(isReadOnly: true);
+            if (!chunk.DidChange(ref handle, LastSystemVersion))
+            {
+                return;
+            }
+
             SyncScratchIntoGroup(m_SelectingGroup);
         }
 
@@ -117,32 +122,18 @@ namespace DistrictGroups
             }
 
             DynamicBuffer<ServiceDistrict> scratch = EntityManager.GetBuffer<ServiceDistrict>(m_ScratchEntity, isReadOnly: true);
-            using NativeList<Entity> scratchDistricts = new NativeList<Entity>(scratch.Length, Allocator.Temp);
-            foreach (ServiceDistrict entry in scratch)
-            {
-                scratchDistricts.Add(entry.m_District);
-            }
+            m_GroupSystem.SetMembers(group, scratch);
+        }
 
-            DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
-            using NativeList<Entity> currentMembers = new NativeList<Entity>(members.Length, Allocator.Temp);
-            foreach (DistrictGroupMember member in members)
+        // Final catch-up sync, then push the result down to assigned buildings exactly once.
+        private void FinalizeSelection(Entity group)
+        {
+            SyncScratchIntoGroup(group);
+            if (EntityManager.Exists(group))
             {
-                currentMembers.Add(member.m_District);
-            }
-
-            foreach (Entity district in scratchDistricts)
-            {
-                if (!currentMembers.Contains(district))
-                {
-                    m_GroupSystem.AddMember(group, district);
-                }
-            }
-            foreach (Entity district in currentMembers)
-            {
-                if (!scratchDistricts.Contains(district))
-                {
-                    m_GroupSystem.RemoveMember(group, district);
-                }
+                Mod.log.Info($"Expanding district selection changes to assigned buildings; group:{group}");
+                m_GroupSystem.ReexpandGroup(group);
+                Mod.log.Info($"Finished expanding district selection changes; group:{group}");
             }
         }
     }
