@@ -40,9 +40,25 @@ namespace DistrictGroups
         public bool IsAreaToolActive => m_WasAreaToolActive;
 
         // Raw per-district colors of every visible group that claims that district (0..n colors each).
-        // Rebuilt only when m_GroupSystem.GroupCompositionVersion or m_TypeFilter changes
+        // Rebuilt whenever the DistrictColors dirty bit is set.
         private readonly Dictionary<Entity, List<Color>> m_DistrictGroupColors = new Dictionary<Entity, List<Color>>();
-        private int m_DistrictGroupColorsVersion = -1;
+
+        // What overlay-derived state needs rebuilding; bits are set by DetectChanges and
+        // the explicit invalidation sites, cleared by each consumer after it rebuilds.
+        [System.Flags]
+        private enum OverlayDirtyFlags : byte
+        {
+            None = 0,
+            DistrictColors = 1 << 0,   // m_DistrictGroupColors
+            FillGeometry = 1 << 1,     // fill meshes (full rebuild)
+            All = DistrictColors | FillGeometry,
+        }
+
+        private OverlayDirtyFlags m_DirtyFlags = OverlayDirtyFlags.All; // All = never built
+
+        // Last GroupCompositionVersion already folded into m_DirtyFlags; advanced only
+        // inside DetectChanges, so drift during inactive frames is caught on reactivation.
+        private int m_LastSeenCompositionVersion = -1;
 
         // Master on/off for the border+fill overlay. In-session only, like m_TypeFilter below -
         // resets to the default each time the game starts.
@@ -80,9 +96,6 @@ namespace DistrictGroups
         private GameObject m_FillRoot;
         private Material m_FillMaterial;
         private readonly Dictionary<Entity, FillEntry> m_FillEntries = new Dictionary<Entity, FillEntry>();
-
-        // Compared against m_GroupSystem.GroupCompositionVersion; gates the full geometry rebuild
-        private int m_FillBuiltVersion = -1;
 
         // Last (clamped) saturation percent the fill meshes were actually built with
         // a Settings change has to be caught to trigger a rebuild
@@ -122,6 +135,7 @@ namespace DistrictGroups
             bool active = IsOverlayActive && m_GroupSystem.HasGroups;
             if (active)
             {
+                DetectChanges();
                 EnsureDistrictGroupColors();
                 UpdateDesaturation();
                 UpdateFill();
@@ -137,6 +151,17 @@ namespace DistrictGroups
                 {
                     DisableFill();
                 }
+            }
+        }
+
+        // Folds the upstream composition counter into dirty bits, consumers then only check/clear their own bit.
+        private void DetectChanges()
+        {
+            int compositionVersion = m_GroupSystem.GroupCompositionVersion;
+            if (compositionVersion != m_LastSeenCompositionVersion)
+            {
+                m_LastSeenCompositionVersion = compositionVersion;
+                m_DirtyFlags |= OverlayDirtyFlags.All;
             }
         }
 
@@ -219,15 +244,13 @@ namespace DistrictGroups
             m_TypeFilter = type;
 
             // signal that the color cache and fill mesh both need to be rebuilt
-            m_DistrictGroupColorsVersion = -1;
-            m_FillBuiltVersion = -1;
+            m_DirtyFlags |= OverlayDirtyFlags.All;
         }
 
-        // Rebuilds the district <-> color list cache based on membership if the system has changed
+        // Rebuilds the district <-> color list cache based on membership if it has been marked dirty
         private void EnsureDistrictGroupColors()
         {
-            int version = m_GroupSystem.GroupCompositionVersion;
-            if (version == m_DistrictGroupColorsVersion)
+            if ((m_DirtyFlags & OverlayDirtyFlags.DistrictColors) == 0)
             {
                 return;
             }
@@ -262,7 +285,7 @@ namespace DistrictGroups
                 }
             }
 
-            m_DistrictGroupColorsVersion = version;
+            m_DirtyFlags &= ~OverlayDirtyFlags.DistrictColors;
 
             stopwatch.Stop();
             Mod.log.Debug($"Overlay district colors rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
@@ -276,7 +299,7 @@ namespace DistrictGroups
             if (m_WasAreaToolActive && !isAreaToolActive)
             {
                 Mod.log.Info("Area tool closed, forcing fill rebuild");
-                m_FillBuiltVersion = -1;
+                m_DirtyFlags |= OverlayDirtyFlags.FillGeometry;
             }
             m_WasAreaToolActive = isAreaToolActive;
         }

@@ -14,17 +14,16 @@ namespace DistrictGroups
             EnsureFillRoot();
             ApplyFillHeightOffset();
 
-            int compositionVersion = m_GroupSystem.GroupCompositionVersion;
             int saturationSetting = Mathf.Clamp(
                 Mod.Settings?.OverlayFillSaturationPercent ?? Setting.kDefaultOverlayFillSaturationPercent,
                 0,
                 100);
-            bool geometryDirty = compositionVersion != m_FillBuiltVersion;
+            bool geometryDirty = (m_DirtyFlags & OverlayDirtyFlags.FillGeometry) != 0;
             bool saturationDirty = saturationSetting != m_FillBuiltSaturationPercent;
             if (geometryDirty)
             {
                 RebuildFillObjects(saturationSetting);
-                m_FillBuiltVersion = compositionVersion;
+                m_DirtyFlags &= ~OverlayDirtyFlags.FillGeometry;
                 m_FillBuiltSaturationPercent = saturationSetting;
             }
             else if (saturationDirty)
