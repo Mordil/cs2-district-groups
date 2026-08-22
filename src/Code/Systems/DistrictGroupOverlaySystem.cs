@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Reflection;
+using Colossal.Serialization.Entities;
 using Game;
 using Game.Areas;
 using Game.Rendering;
@@ -123,6 +124,24 @@ namespace DistrictGroups
                 m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
         }
 
+        protected override void OnDestroy()
+        {
+            m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Remove(
+                m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
+            DestroyDesaturationVolume();
+            DestroyFillRoot();
+            base.OnDestroy();
+        }
+
+        protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
+        {
+            base.OnGameLoadingComplete(purpose, mode);
+
+            // We need to reset the overlay entirely in between cities because otherwise we'd display the last city's
+            // cached overlay
+            m_DirtyFlags = OverlayDirtyFlags.All;
+        }
+
         protected override void OnUpdate()
         {
             // we don't want to flood the logs with rendering breadcrumbs, so we sample instead
@@ -163,15 +182,6 @@ namespace DistrictGroups
                 m_LastSeenCompositionVersion = compositionVersion;
                 m_DirtyFlags |= OverlayDirtyFlags.All;
             }
-        }
-
-        protected override void OnDestroy()
-        {
-            m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Remove(
-                m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
-            DestroyDesaturationVolume();
-            DestroyFillRoot();
-            base.OnDestroy();
         }
 
         // The UI panel drives visibility
