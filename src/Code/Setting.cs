@@ -17,6 +17,7 @@ namespace DistrictGroups
     public class Setting : ModSetting
     {
         public const string kTabGeneral = "General";
+        public const string kTabOverlay = "Overlay";
         public const string kTabDeveloper = "Developer";
 
         public const string kSectionDefault = "Default";
@@ -74,29 +75,29 @@ namespace DistrictGroups
             }
         }
 
-        // How much the rest of the scene is desaturated while the group overlay is visible
-        [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabGeneral, kSectionOverlay)]
-        public int OverlayDesaturationPercent { get; set; }
-
         // Height (in world units) the group boundary overlay lines are raised above the district node height.
         [SettingsUISlider(min = 0, max = 250, step = 1, unit = Unit.kInteger)]
-        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionDefault)]
         public int OverlayBorderHeightOffset { get; set; }
+
+        // How much the rest of the scene is desaturated while the group overlay is visible
+        [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
+        [SettingsUISection(kTabOverlay, kSectionOverlay)]
+        public int OverlayDesaturationPercent { get; set; }
 
         // Opacity of the group boundary overlay lines drawn by the overlay system; 0 is fully transparent, 100 fully opaque.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionOverlay)]
         public int OverlayBorderAlpha { get; set; }
 
         // Width (in world units) of the group boundary overlay lines drawn by the overlay system.
         [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
-        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionOverlay)]
         public int OverlayBorderWidth { get; set; }
 
         // How saturated the group fill color is. The slider spans the full 0-100% range, but the value actually between 35-100%, scaled.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabGeneral, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionOverlay)]
         public int OverlayFillSaturationPercent { get; set; }
 
         // Gates the log's own minimum severity, so disabling this stops Debug-level entries at the source instead of just hiding them from a report.
