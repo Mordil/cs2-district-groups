@@ -37,22 +37,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Overlay border opacity" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacity of the colored district-group boundary lines drawn on the map. 0% is fully transparent, 100% is fully opaque." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacity of the colored district-group boundary lines drawn on the map.\n\n0% is fully transparent, 100% is fully opaque." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Overlay height offset" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "An offset from the height of the terrain at which the district-group overlay is drawn." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Overlay desaturation" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "How much the rest of the scene is desaturated while the group overlay is visible. 0% leaves the scene untouched, 100% is grayscale." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "How much the rest of the scene is desaturated while the group overlay is visible.\n\n0% leaves the scene untouched, 100% is grayscale." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Overlay fill saturation" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "How saturated the colored district-group fill areas are. 100% is the group's full color; lower values fade towards gray." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "How saturated the colored district-group fill areas are.\n\n100% is the group's full color; lower values fade towards gray." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Enable debug logging" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Writes verbose Debug-level entries to the mod's log file.\n\nThis may affect performance." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DumpDebugData)), "Log debug mod data" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.DumpDebugData)), "Writes all mod state (groups, service buildings, etc.) to the mod's log file. Include the the log file when filing a bug report." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.DumpDebugData)), "Writes all mod state (groups, service buildings, etc.) to the mod's log file.\n\nInclude the the log file when filing a bug report." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "File a bug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Logs debug data, then opens the mod's GitHub issue tracker in your browser." },
@@ -62,7 +62,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "All mod settings will revert to their default values.\r\nDo you want to proceed?" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Version" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "The installed version of the mod. Include this when filing a bug report." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "The installed version of the mod.\n\nInclude this when filing a bug report." },
 
                 { "DistrictGroups.UI[PanelTitle]", "District Groups" },
                 { "DistrictGroups.UI[NewGroupButton]", "New Group" },
