@@ -483,7 +483,7 @@ declare module "cs2/ui" {
   export interface ScrollableProps {
   	horizontal?: boolean;
   	vertical?: boolean;
-  	trackVisibility?: "always" | "scrollable";
+  	trackVisibility?: "always" | "scrollable" | "reserve";
   	overshootX?: number;
   	overshootY?: number;
   	smooth?: boolean;

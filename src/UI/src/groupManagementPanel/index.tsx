@@ -1,15 +1,14 @@
 import { trigger, useValue } from "cs2/api"
-import { FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
+import { Button, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
-import { useState } from "react"
+import { MouseEvent, useState } from "react"
 import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
-import { UilIcon } from "../components/icons"
 import { TypeFilterPicker } from "../components/TypePicker"
+import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
-import { styles } from "./styles"
 import { areasVisible$, groups$, showOverlay$ } from "./bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
@@ -67,71 +66,76 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     }
 
     return (
-        <>
-            <div style={styles.panelHeader}>
-                <div style={styles.headerRow}>
-                    <div style={styles.header}>{t("panelTitle")}</div>
-                    <button className={css.headerCloseButton} onClick={onClose}>
-                        <UilIcon name="XClose"/>
-                    </button>
-                </div>
+        <div className={css.panel}>
+            <div className={css.header}>
+                <span className={css.title}>{t("panelTitle")}</span>
+                <VC.IconButton
+                    tinted={true}
+                    focusKey={VF.FOCUS_DISABLED}
+                    src={VT.panel.closeIcon}
+                    theme={VT.roundIconButton}
+                    className={VT.panel.closeButton}
+                    onSelect={onClose}
+                    onMouseDown={(e: MouseEvent) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                    }}
+                />
             </div>
 
-            <div style={styles.panelBody}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <TypeFilterPicker
-                        value={filterType}
-                        onChange={onFilterChange}
-                        labels={typeLabels}
-                        allLabel={null}
-                        tooltip={filterTooltip}
+            <div className={css.actionSection}>
+                <TypeFilterPicker
+                    value={filterType}
+                    onChange={onFilterChange}
+                    labels={typeLabels}
+                    allLabel={null}
+                    tooltip={filterTooltip}
+                />
+
+                <Tooltip tooltip={t("newGroupButtonTooltip")}>
+                    <Button
+                        variant="primary"
+                        className={css.newGroupButton}
+                        onSelect={onCreateGroup}
+                    >
+                        {t("newGroupButton")}
+                    </Button>
+                </Tooltip>
+            </div>
+
+            <Scrollable
+                vertical={true}
+                trackVisibility="reserve"
+                className={css.list}
+            >
+                {groups.length === 0 && (
+                    <div>{t("noGroupsYet")}</div>
+                )}
+                {groups.length > 0 && displayedGroups.length === 0 && (
+                    <div>{t("noGroupsMatchFilter")}</div>
+                )}
+                {displayedGroups.map((group) => (
+                    <GroupCard
+                        key={entityKey(group.entity)}
+                        group={group}
                     />
+                ))}
+            </Scrollable>
 
-                    <Tooltip tooltip={t("newGroupButtonTooltip")}>
-                        <button
-                            className={css.newGroupButton}
-                            style={styles.newGroupButton}
-                            onClick={onCreateGroup}
-                        >
-                            {t("newGroupButton")}
-                        </button>
-                    </Tooltip>
-                </div>
-                <div style={styles.divider} />
-
-                <Scrollable
-                    vertical={true}
-                    trackVisibility={displayedGroups.length > 0 ? "always" : "scrollable"}
-                    style={styles.listArea}
-                >
-                    {groups.length === 0 && (
-                        <div style={styles.subtle}>{t("noGroupsYet")}</div>
-                    )}
-                    {groups.length > 0 && displayedGroups.length === 0 && (
-                        <div style={styles.subtle}>{t("noGroupsMatchFilter")}</div>
-                    )}
-                    {displayedGroups.map((group) => (
-                        <GroupCard
-                            key={entityKey(group.entity)}
-                            group={group}
-                        />
-                    ))}
-                </Scrollable>
-
-                <div style={styles.divider} />
+            <div className={css.footer}>
                 <Checkbox
                     checked={showOverlay}
                     onChange={onShowOverlayChange}
                     label={t("showGroupOverlayLabel")}
-                    style={styles.areasToggleRow}
+                    className={css.areasToggleRow}
                 />
                 <Checkbox
                     checked={areasVisible}
                     onChange={onAreasVisibleChange}
                     label={t("displayDistrictAreasLabel")}
-                    style={styles.areasToggleRow}
+                    className={css.areasToggleRow}
                 />
             </div>
-        </>
+        </div>
     )
 }

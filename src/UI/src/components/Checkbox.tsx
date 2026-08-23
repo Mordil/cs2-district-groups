@@ -5,9 +5,11 @@ export const Checkbox = (props: {
     checked: boolean
     onChange: (checked: boolean) => void
     label: string
+    className?: string
     style?: CSSProperties
 }) => (
     <div
+        className={props.className}
         style={{ display: "flex", alignItems: "center", cursor: "pointer", ...props.style }}
         onClick={() => props.onChange(!props.checked)}
     >

@@ -27,7 +27,10 @@ export const TypePicker = (props: {
                     closeOnSelect={true}
                     onChange={() => props.onChange(i)}
                 >
-                    <div>{label}</div>
+                    <div style={{
+                        paddingLeft: "8rem",
+                        paddingRight: "8rem"
+                    }}>{label}</div>
                 </VC.DropdownItem>
             ))}
         >
@@ -37,8 +40,6 @@ export const TypePicker = (props: {
                 closeIconComponent={<></>}
                 className={selectorCss.selectorToggle}
                 style={{
-                    height: "22rem",
-                    boxSizing: "border-box",
                     display: "flex",
                     alignItems: "center",
                     ...props.style,
@@ -80,7 +81,10 @@ export const TypeFilterPicker = (props: {
                             closeOnSelect={true}
                             onChange={() => props.onChange(value)}
                         >
-                            <div>{label}</div>
+                            <div style={{
+                                paddingLeft: "8rem",
+                                paddingRight: "8rem"
+                            }}>{label}</div>
                         </VC.DropdownItem>
                     )
                 })}

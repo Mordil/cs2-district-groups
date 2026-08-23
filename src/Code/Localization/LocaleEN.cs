@@ -66,7 +66,7 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[NewGroupDefaultName]", "New Group {NUMBER}" },
                 { "DistrictGroups.UI[FilterTooltipLine1]", "Filter the list of groups by their **type**." },
                 { "DistrictGroups.UI[AllGroupsLabel]", "All Groups" },
-                { "DistrictGroups.UI[NoGroupsYet]", "No groups yet. Create one above." },
+                { "DistrictGroups.UI[NoGroupsYet]", "No groups yet. Create one with the NEW GROUP button." },
                 { "DistrictGroups.UI[NoGroupsMatchFilter]", "No groups match this filter." },
                 { "DistrictGroups.UI[DisplayDistrictAreasLabel]", "Show all districts" },
                 { "DistrictGroups.UI[ShowGroupOverlayLabel]", "Show group overlay" },

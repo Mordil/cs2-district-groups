@@ -1,11 +1,11 @@
 
 .selectorToggle {
-    background: rgba(120, 130, 145, 0.5) !important;
-    color: white !important;
+    background-color: var(--activeColor);
+    color: var(--textColor);
     border-radius: 3rem;
     padding: 4rem 10rem;
+    font-size: var(--fontSizeS);
 }
-
 .selectorToggle:hover {
-    background: rgba(93, 102, 116, 0.9) !important;
+    background-color: var(--activeColorBright);
 }

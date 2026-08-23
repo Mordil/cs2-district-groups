@@ -26,6 +26,15 @@ export const VC = {
     IconButton: getModule("game-ui/common/input/button/icon-button.tsx", "IconButton") as any,
 }
 
+const iconButtonClasses = getModule(
+    "game-ui/common/input/button/icon-button.module.scss",
+    "classes"
+) as any
+const roundHighlightButtonClasses = getModule(
+    "game-ui/common/input/button/themes/round-highlight-button.module.scss",
+    "classes"
+) as any
+
 // Vanilla Themes (real CSS-module classname maps compiled by the game)
 export const VT = {
     checkbox: getModule(
@@ -40,15 +49,17 @@ export const VT = {
         "game-ui/game/components/selected-info-panel/shared-components/primary-button/section-primary-button.module.scss",
         "classes"
     ) as any,
-    iconButton: getModule(
-        "game-ui/common/input/button/icon-button.module.scss",
-        "classes"
-    ) as any,
-    roundHighlightButton: getModule(
-        "game-ui/common/input/button/themes/round-highlight-button.module.scss",
-        "classes"
-    ) as any,
+    iconButton: iconButtonClasses,
+    roundHighlightButton: roundHighlightButtonClasses,
+    roundIconButton: {
+        button: `${iconButtonClasses.button} ${roundHighlightButtonClasses.button}`,
+        icon: iconButtonClasses.icon,
+    },
     panel: getModule("game-ui/common/panel/panel.module.scss", "classes") as any,
+    districtsSection: getModule(
+        "game-ui/game/components/selected-info-panel/selected-info-sections/building-sections/districts-section/districts-section.module.scss",
+        "classes"
+    ) as any,
 }
 
 // Vanilla Focus keys

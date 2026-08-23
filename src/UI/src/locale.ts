@@ -71,7 +71,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     newGroupDefaultName: "New Group {NUMBER}",
     filterTooltipLine1: "Filter the list of groups by their **type**.",
     allGroupsLabel: "All Groups",
-    noGroupsYet: "No groups yet. Create one above.",
+    noGroupsYet: "No groups yet. Create one with the NEW GROUP button.",
     noGroupsMatchFilter: "No groups match this filter.",
     displayDistrictAreasLabel: "Display District areas",
     showGroupOverlayLabel: "Show group overlay",

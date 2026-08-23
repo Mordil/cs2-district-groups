@@ -1,127 +1,84 @@
-$rowControlHeight: 22rem;
+$horizontal-padding: 16rem;
 
-.expandButton {
-    background: transparent;
-    color: white;
-    border-radius: 3rem;
-    padding: 2rem 8rem;
-    margin: 2rem 2rem;
-    height: $rowControlHeight;
-    box-sizing: border-box;
+.panel {
+    pointer-events: auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    max-height: 100%;
+    border-top-left-radius: var(--panelRadius);
+    border-top-right-radius: var(--panelRadius);
+    border-bottom-left-radius: var(--panelRadius);
+    border-bottom-right-radius: var(--panelRadius);
+    overflow: hidden;
 }
 
-.expandButton:hover {
-    background: rgba(255, 255, 255, 0.15);
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    color: var(--accentColorNormal);
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+    border-bottom-style: solid;
+    border-bottom-width: var(--stroke2);
+    border-bottom-color: var(--accentColorDark);
+}
+
+.title {
+    font-size: var(--fontSizeXL);
+    text-transform: uppercase;
+    letter-spacing: 0.5rem;
+}
+
+.actionSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    padding-bottom: $horizontal-padding;
+    padding-left: $horizontal-padding;
+    background-color: var(--sectionHeaderColor);
 }
 
 .newGroupButton {
-    background: rgba(46, 125, 50, 0.9);
+    font-size: var(--fontSizeM);
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    border: none;
+    text-transform: none;
 }
-
 .newGroupButton:hover {
-    background: rgba(58, 155, 62, 0.9);
+    border: none;
 }
 
-.dangerButton {
-    background: rgba(160, 40, 40, 0.8);
-}
-
-.dangerButton:hover {
-    background: rgba(190, 55, 55, 0.9);
-}
-
-.colorSwatch {
-    margin: 0 12rem 0 0;
-}
-
-.nameInput {
-    background: transparent;
-    border: 1rem solid transparent;
-    border-radius: 3rem;
-    padding: 1rem 4rem;
-    margin-left: -4rem;
-    color: white;
-    font-weight: bold;
+.list {
+    color: var(--textColorDim);
     flex: 1;
-    min-width: 0;
-    height: $rowControlHeight;
-    box-sizing: border-box;
+    min-height: 0;
+    padding-top: $horizontal-padding;
+    padding-bottom: $horizontal-padding;
+    padding-left: $horizontal-padding;
+    background-color: var(--panelColorNormal);
+    backdrop-filter: var(--panelBlur);
 }
 
-.nameInput:hover {
-    background: rgba(255, 255, 255, 0.08);
+.footer {
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
 }
 
-.nameInput:focus {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.4);
-    outline: none;
-}
-
-.headerDeleteButton {
-    height: $rowControlHeight;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.headerCloseButton {
-    background: transparent;
-    height: $rowControlHeight;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 3rem;
-}
-
-.headerCloseButton:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.memberDeleteButton {
-    background: transparent;
-    border-radius: 3rem;
-    padding: 2rem 8rem;
-    margin: 2rem 2rem;
-    height: $rowControlHeight;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.55;
-}
-
-.memberDeleteButton:hover {
-    background: rgba(255, 255, 255, 0.1);
-    opacity: 0.85;
-}
-
-.selectDistrictsButton {
-    width: 100%;
-    height: 32rem;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 4rem;
-    color: white;
-    margin: 4rem 0;
-}
-
-.selectDistrictsButton:hover {
-    background: rgba(0, 0, 0, 0.55);
-}
-
-.selectDistrictsButtonActive {
-    background: rgb(75, 195, 241);
-}
-
-.selectDistrictsButtonActive:hover {
-    background: rgb(122, 211, 245);
+.areasToggleRow {
+    justify-content: flex-end;
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    color: var(--textColorDim);
 }

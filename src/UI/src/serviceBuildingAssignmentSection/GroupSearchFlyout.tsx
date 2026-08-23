@@ -75,7 +75,7 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
                         tinted={true}
                         focusKey={VF.FOCUS_DISABLED}
                         src={VT.panel.closeIcon}
-                        theme={{ ...VT.iconButton, ...VT.roundHighlightButton }}
+                        theme={VT.roundIconButton}
                         className={VT.panel.closeButton}
                         onSelect={props.onClose}
                         onMouseDown={(e: MouseEvent) => {

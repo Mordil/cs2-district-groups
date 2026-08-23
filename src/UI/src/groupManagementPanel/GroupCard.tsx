@@ -1,19 +1,28 @@
 import { trigger, useValue } from "cs2/api"
-import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
+import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
 import { entityEquals, entityKey } from "cs2/utils"
-import { useContext, useEffect, useState } from "react"
+import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
 import mod from "../../mod.json"
 import { ColorPicker } from "../components/ColorPicker"
-import { UilIcon, GameIcon } from "../components/icons"
+import { gameIconSrc, uilIconSrc } from "../components/icons"
 import { TypePicker } from "../components/TypePicker"
-import css from "./index.module.scss"
+import { VC, VF, VT } from "../components/vanilla"
+import css from "./GroupCard.module.scss"
 import { Group } from "../types"
-import { styles } from "./styles"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import { selectingGroup$ } from "./bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
+
+// Tints the trash icon on the group-level delete action to flag it as the
+// harder-to-reverse one; the per-member remove below stays neutral.
+const dangerIconStyle = { "--iconColor": "var(--negativeColor)" } as CSSProperties
+
+const stopMouseDown = (e: MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+}
 
 export const GroupCard = (props: { group: Group }) => {
     const { group } = props
@@ -102,11 +111,17 @@ export const GroupCard = (props: { group: Group }) => {
     }
 
     return (
-        <div style={styles.groupCard}>
-            <div style={styles.row}>
-                <button className={css.expandButton} onClick={toggleExpanded}>
-                    <UilIcon name={expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke"} />
-                </button>
+        <div className={css.groupCard}>
+            <div className={`${css.groupDetailRow} ${(expanded ? '' : css.collapsed)}`}>
+                <VC.IconButton
+                    tinted={true}
+                    focusKey={VF.FOCUS_DISABLED}
+                    src={uilIconSrc(expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke")}
+                    theme={VT.roundIconButton}
+                    className={css.rowIconButton}
+                    onSelect={toggleExpanded}
+                    onMouseDown={stopMouseDown}
+                />
                 <ColorPicker
                     value={group.color}
                     onChange={(color) => {
@@ -118,7 +133,6 @@ export const GroupCard = (props: { group: Group }) => {
                 />
                 <input
                     className={css.nameInput}
-                    style={{ marginRight: "4rem" }}
                     value={nameDraft}
                     onFocus={() => setNameFocused(true)}
                     onChange={(e) => setNameDraft((e.target as HTMLInputElement).value)}
@@ -129,6 +143,7 @@ export const GroupCard = (props: { group: Group }) => {
                         }
                     }}
                 />
+
                 <TypePicker
                     value={group.type}
                     onChange={(newType) => {
@@ -139,47 +154,58 @@ export const GroupCard = (props: { group: Group }) => {
                     tooltip={typePickerTooltip}
                     style={{ marginRight: "4rem" }}
                 />
+
                 <Tooltip tooltip={deleteGroupTooltip}>
-                    <button
-                        className={`${css.headerDeleteButton} ${css.dangerButton}`}
-                        style={styles.dangerButton}
-                        onClick={handleDeleteGroup}
-                    >
-                        <UilIcon name="Trash"/>
-                    </button>
+                    <div className={css.deleteButtonHover}>
+                        <VC.IconButton
+                            tinted={true}
+                            focusKey={VF.FOCUS_DISABLED}
+                            src={uilIconSrc("Trash")}
+                            className={VT.districtsSection.deleteButton}
+                            style={dangerIconStyle}
+                            onSelect={handleDeleteGroup}
+                            onMouseDown={stopMouseDown}
+                        />
+                    </div>
                 </Tooltip>
             </div>
 
             {expanded && (
                 <>
-                    <div style={styles.memberList}>
+                    <div className={css.memberList}>
                         {group.members.map((member) => (
-                            <div style={styles.row} key={entityKey(member.entity)}>
-                                <div style={{ flex: 1, paddingLeft: "40rem" }}>{member.name}</div>
+                            <div className={css.memberRow} key={entityKey(member.entity)}>
+                                <div className={css.memberName}>{member.name}</div>
+
                                 <Tooltip tooltip={t("removeMemberTooltip")}>
-                                    <button
-                                        className={css.memberDeleteButton}
-                                        onClick={() => {
-                                            logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
-                                            trigger(mod.id, "removeMember", group.entity, member.entity)
-                                        }}
-                                    >
-                                        <UilIcon name="Trash"/>
-                                    </button>
+                                    <div className={css.deleteButtonHover}>
+                                        <VC.IconButton
+                                            tinted={true}
+                                            focusKey={VF.FOCUS_DISABLED}
+                                            src={uilIconSrc("Trash")}
+                                            className={`${VT.districtsSection.deleteButton} ${css.memberDeleteButton}`}
+                                            onSelect={() => {
+                                                logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                                trigger(mod.id, "removeMember", group.entity, member.entity)
+                                            }}
+                                            onMouseDown={stopMouseDown}
+                                        />
+                                    </div>
                                 </Tooltip>
                             </div>
                         ))}
                     </div>
 
                     <button
-                        className={`${css.selectDistrictsButton} ${selectingThisGroup ? css.selectDistrictsButtonActive : ""}`}
+                        className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, selectingThisGroup ? "selected" : ""]
+                            .filter(Boolean).join(" ")}
                         onClick={() => {
                             logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                             trigger(mod.id, "toggleDistrictSelection", group.entity)
                         }}
                     >
-                        <GameIcon name="Districts"/>
-                        <span style={{ marginLeft: "6rem" }}>{t("selectDistrictsButton")}</span>
+                        <Icon className={VT.sectionPrimaryButton.icon} tinted={true} src={gameIconSrc("Districts")} />
+                        <span className={VT.sectionPrimaryButton.label}>{t("selectDistrictsButton")}</span>
                     </button>
                 </>
             )}

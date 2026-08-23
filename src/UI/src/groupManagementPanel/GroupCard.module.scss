@@ -1,0 +1,102 @@
+.groupCard {
+    background-color: var(--hoverColor);
+
+    border-top-left-radius: var(--panelRadiusInner);
+    border-top-right-radius: var(--panelRadiusInner);
+    border-bottom-left-radius: var(--panelRadiusInner);
+    border-bottom-right-radius: var(--panelRadiusInner);
+
+    margin: var(--gap4) 10rem;
+}
+.groupCard + .groupCard {
+    margin-top: var(--gap8);
+}
+
+.groupDetailRow {
+    display: flex;
+    align-items: center;
+    padding-left: var(--gap8);
+    padding-top: var(--gap8);
+    padding-right: var(--gap8);
+    padding-bottom: var(--gap8);
+}
+
+// when I introduce a "Inspect Group" type of panel, we can have this styling.
+// .groupDetailRow.collapsed:hover {
+//     border-bottom-left-radius: var(--panelRadiusInner);
+//     border-bottom-right-radius: var(--panelRadiusInner);
+// }
+// .groupDetailRow:hover {
+//     background-color: var(--activeColor);
+//     border-top-left-radius: var(--panelRadiusInner);
+//     border-top-right-radius: var(--panelRadiusInner);
+// }
+
+.deleteButtonHover {
+    border-radius: 3rem;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.deleteButtonHover:hover {
+    background-color: var(--hoverColorNormal);
+}
+
+.colorSwatch {
+    margin-left: var(--gap8);
+    margin-right: var(--gap4);
+}
+
+.nameInput {
+    background-color: transparent;
+    border: none;
+    border-top-left-radius: var(--panelRadius);
+    border-top-right-radius: var(--panelRadius);
+    border-bottom-left-radius: var(--panelRadius);
+    border-bottom-right-radius: var(--panelRadius);
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    padding-left: var(--gap8);
+    padding-right: var(--gap8);
+    margin-right: var(--gap4);
+    color: var(--textColorDim);
+    font-size: var(--fontSizeM);
+    line-height: 1;
+    flex: 1;
+}
+.nameInput:hover {
+    background-color: var(--hoverColor);
+}
+.nameInput:focus {
+    outline: none;
+    background-color: var(--activeColor);
+    border-color: var(--focusedColor);
+}
+
+.memberList {
+    margin-top: var(--gap4);
+}
+
+.memberRow {
+    display: flex;
+    align-items: center;
+    padding-left: 24rem;
+    padding-right: var(--gap8);
+}
+.memberRow+.memberRow {
+    margin-top: var(--gap4);
+}
+
+.memberName {
+    flex: 1;
+    color: var(--textColor);
+}
+
+.selectDistrictsButton {
+    flex-grow: 1;
+    margin-top: var(--gap4);
+    margin-bottom: var(--gap8);
+    margin-left: var(--gap8);
+    margin-right: var(--gap8);
+}
