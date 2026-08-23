@@ -24,3 +24,6 @@ function icon(source: string, props: IconProps) {
 
 export const UilIcon = (props: IconProps) => icon(kUilStandard, props)
 export const GameIcon = (props: IconProps) => icon(kGameIcons, props)
+
+// For consumers that need the raw coui:// path instead of a rendered <img>
+export const uilIconSrc = (name: string): string => `${kUilStandard}${name}.svg`

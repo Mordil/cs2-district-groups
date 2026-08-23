@@ -1,0 +1,166 @@
+$horizontal-padding: 16rem;
+
+@keyframes groupSearchFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.panel {
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    border-top-left-radius: var(--panelRadius);
+    border-top-right-radius: var(--panelRadius);
+    border-bottom-left-radius: var(--panelRadius);
+    border-bottom-right-radius: var(--panelRadius);
+    overflow: hidden;
+    animation: groupSearchFadeIn 0.12s ease-out;
+}
+
+.header {
+    padding: 8rem 10rem;
+    color: var(--accentColorNormal);
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+    border-bottom-style: solid;
+    border-bottom-width: var(--stroke2);
+    border-bottom-color: var(--accentColorDark);
+}
+
+.titleSection {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.actionSection {
+    display: flex;
+    align-items: space-between;
+    margin-top: var(--gap8);
+}
+
+.unassignButton {
+    background-color: var(--activeColor);
+    color: var(--textColorDim);
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.unassignButton:hover {
+    background-color: var(--hoverColor);
+}
+.unassignButton:active {
+    background-image: none;
+    background-color: var(--selectedColor-active);
+    border-color: rgba(0, 0, 0, 0);
+}
+.unassignButton[disabled] {
+    background-color: var(--disabledColor);
+    color: var(--textColorDisabled);
+}
+
+.searchInput {
+    flex-grow: 1;
+    background-color: var(--toolbarFieldColor);
+    border-style: solid;
+    border-left-color: var(--menuActiveColor);
+    border-right-color: var(--menuActiveColor);
+    border-top-color: var(--menuActiveColor);
+    border-bottom-color: var(--menuActiveColor);
+    border-left-width: var(--stroke1);
+    border-right-width: var(--stroke1);
+    border-top-width: var(--stroke1);
+    border-bottom-width: var(--stroke1);
+    border-top-left-radius: var(--panelRadiusInner);
+    border-top-right-radius: var(--panelRadiusInner);
+    border-bottom-left-radius: var(--panelRadiusInner);
+    border-bottom-right-radius: var(--panelRadiusInner);
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    padding-left: var(--gap8);
+    padding-right: var(--gap8);
+    margin-left: var(--gap8);
+    color: var(--textColorDim);
+}
+.searchInput:hover {
+    background-color: var(--toolbarFieldColor-hover);
+    border-left-color: var(--menuFocusedColor);
+    border-right-color: var(--menuFocusedColor);
+    border-top-color: var(--menuFocusedColor);
+    border-bottom-color: var(--menuFocusedColor);
+}
+.searchInput:focus {
+    outline: none;
+    border-left-color: var(--menuBorderColor2);
+    border-right-color: var(--menuBorderColor2);
+    border-top-color: var(--menuBorderColor2);
+    border-bottom-color: var(--menuBorderColor2);
+    background-color: var(--toolbarFieldColor-active);
+}
+
+.searchInputPlaceholder {
+    color: var(--textColorDimmer);
+}
+
+.list {
+    flex: 1;
+    min-height: 0;
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    background-color: var(--panelColorNormal);
+    backdrop-filter: var(--panelBlur);
+}
+
+.listSectionHeader {
+    color: var(--textColorDimmer);
+    font-size: var(--fontSizeS);
+    text-transform: uppercase;
+    line-height: 130%;
+    letter-spacing: 0.5rem;
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+}
+
+.listItem {
+    color: var(--textColorDim);
+    display: flex;
+    align-items: center;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+}
+.listItem:hover {
+    color: var(--textColor);
+    background-color: var(--menuHoverColor);
+}
+
+.colorSwatch {
+    width: 16rem;
+    height: 16rem;
+    border-radius: var(--panelRadiusInner);
+    margin-right: var(--gap8);
+    flex-shrink: 0;
+}
+
+.listItemName {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty {
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    color: var(--textColor);
+}

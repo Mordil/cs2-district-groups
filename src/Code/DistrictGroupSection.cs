@@ -158,6 +158,8 @@ namespace DistrictGroups
                 writer.Write(data.m_Name.ToString());
                 writer.PropertyName("type");
                 writer.Write((int)data.m_Type);
+                writer.PropertyName("color");
+                writer.Write(data.m_Color);
                 writer.TypeEnd();
             }
             writer.ArrayEnd();

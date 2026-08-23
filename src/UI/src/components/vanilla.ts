@@ -23,6 +23,7 @@ export const VC = {
         "game-ui/game/components/selected-info-panel/shared-components/info-row/info-row.tsx",
         "InfoRow"
     ) as any,
+    IconButton: getModule("game-ui/common/input/button/icon-button.tsx", "IconButton") as any,
 }
 
 // Vanilla Themes (real CSS-module classname maps compiled by the game)
@@ -35,6 +36,19 @@ export const VT = {
         "game-ui/editor/themes/editor-dropdown.module.scss",
         "classes"
     ) as any,
+    sectionPrimaryButton: getModule(
+        "game-ui/game/components/selected-info-panel/shared-components/primary-button/section-primary-button.module.scss",
+        "classes"
+    ) as any,
+    iconButton: getModule(
+        "game-ui/common/input/button/icon-button.module.scss",
+        "classes"
+    ) as any,
+    roundHighlightButton: getModule(
+        "game-ui/common/input/button/themes/round-highlight-button.module.scss",
+        "classes"
+    ) as any,
+    panel: getModule("game-ui/common/panel/panel.module.scss", "classes") as any,
 }
 
 // Vanilla Focus keys

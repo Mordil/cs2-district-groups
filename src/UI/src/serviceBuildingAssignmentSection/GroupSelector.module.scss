@@ -1,0 +1,21 @@
+
+.toggle {
+    width: "fit-content";
+    justify-content: space-between;
+    padding-right: var(--gap2);
+    --iconColor: var(--textColor);
+}
+
+.label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chevron {
+    flex-shrink: 0;
+    width: 16rem;
+    height: 16rem;
+    margin-left: var(--gap8);
+}
