@@ -1,0 +1,88 @@
+.toggle {
+    position: fixed;
+    top: 10rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    padding: 6rem 10rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1rem solid rgba(255, 255, 255, 0.3);
+    border-radius: 4rem;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.panel {
+    position: fixed;
+    top: 46rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360rem;
+    max-height: 70vh;
+    background: rgba(10, 10, 14, 0.95);
+    border: 1rem solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--panelRadius);
+    padding: 8rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+}
+
+.list {
+    flex: 1;
+    min-height: 0;
+}
+
+.groupHeader {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5rem;
+    padding: 8rem 4rem 4rem;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 8rem;
+    padding: 3rem 4rem;
+}
+
+.name {
+    color: white;
+    font-size: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Checkerboard backing so semi-transparent tokens (most of them) show their
+// real alpha instead of just blending into the panel's own background.
+.swatch {
+    display: inline-block;
+    position: relative;
+    width: 20rem;
+    height: 20rem;
+    border-radius: 3rem;
+    border: 1rem solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+    overflow: hidden;
+    background-color: #444;
+    background-image:
+        linear-gradient(45deg, #808080 25%, transparent 25%),
+        linear-gradient(-45deg, #808080 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #808080 75%),
+        linear-gradient(-45deg, transparent 75%, #808080 75%);
+    background-size: 8rem 8rem;
+    background-position: 0 0, 0 4rem, 4rem -4rem, -4rem 0;
+}
+
+.swatchFill {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
