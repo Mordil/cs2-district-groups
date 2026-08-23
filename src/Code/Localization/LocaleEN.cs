@@ -29,11 +29,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Overlay UI" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Troubleshooting" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.IconStyle)), "Mod Icon Style" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.IconStyle)), "Which icon style the in-game toggle button uses." },
-                { m_Setting.GetEnumValueLocaleID(ModIconStyle.Color), "Color" },
-                { m_Setting.GetEnumValueLocaleID(ModIconStyle.Monochrome), "Monochrome" },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Border width" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
 

@@ -8,6 +8,3 @@ export const markdownRenderer = new MarkdownRenderer()
 
 // True only in a Debug build of the C# side
 export const isDebugBuild$ = bindValue<boolean>(mod.id, "isDebugBuild", false)
-
-// The player's IconStyle setting as its raw int value.
-export const iconStyle$ = bindValue<number>(mod.id, "iconStyle", 0)

@@ -32,14 +32,12 @@ namespace DistrictGroups
         public const int kDefaultOverlayBorderHeightOffset = 15;
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
-        public const ModIconStyle kDefaultIconStyle = ModIconStyle.Color;
 #if DEBUG
         public const bool kDefaultEnableDebugLogging = true;
 #else
         public const bool kDefaultEnableDebugLogging = false;
 #endif
 
-        private ModIconStyle m_IconStyle;
         private bool m_EnableDebugLogging;
 
         // There's nothing in memory to dump while sitting on the main menu.
@@ -57,22 +55,7 @@ namespace DistrictGroups
             OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
-            IconStyle = kDefaultIconStyle;
             EnableDebugLogging = kDefaultEnableDebugLogging;
-        }
-
-        // Which mod-icon variant is shown on the in-game toggle button.
-        [SettingsUISection(kTabGeneral, kSectionDefault)]
-        public ModIconStyle IconStyle
-        {
-            get => m_IconStyle;
-            set
-            {
-                m_IconStyle = value;
-                World.DefaultGameObjectInjectionWorld?
-                    .GetExistingSystemManaged<DistrictGroupsUISystem>()?
-                    .SetIconStyle(value);
-            }
         }
 
         // Height (in world units) the group boundary overlay lines are raised above the district node height.

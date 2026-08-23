@@ -21,7 +21,6 @@ namespace DistrictGroups
         private NameSystem m_NameSystem;
         private SelectedInfoUISystem m_SelectedInfoUISystem;
         private EntityQuery m_GroupQuery;
-        private ValueBinding<int> m_IconStyleBinding;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -59,13 +58,7 @@ namespace DistrictGroups
                 () => IsDebugBuild));
 
             AddBinding(new TriggerBinding<string, string>(kBindingGroup, "log", LogFromUI));
-
-            m_IconStyleBinding = new ValueBinding<int>(kBindingGroup, "iconStyle",
-                (int)(Mod.Settings?.IconStyle ?? Setting.kDefaultIconStyle));
-            AddBinding(m_IconStyleBinding);
         }
-
-        public void SetIconStyle(ModIconStyle style) => m_IconStyleBinding.Update((int)style);
 
         private void SetupOverlayBindings()
         {

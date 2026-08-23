@@ -2,8 +2,8 @@ import { trigger, useValue } from "cs2/api"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
-import { kIconStyleMonochrome, kIconStylePaths, kUITopOffset } from "../constants"
-import { iconStyle$, markdownRenderer } from "../shared"
+import { kIconStylePaths, kUITopOffset } from "../constants"
+import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
 import { areaToolActive$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
@@ -44,9 +44,7 @@ export const GroupManager = () => {
     const [open, setOpen] = useState(false)
     const [contentMounted, setContentMounted] = useState(false)
     const areaToolActive = useValue(areaToolActive$)
-    const iconStyle = useValue(iconStyle$)
-    const iconPath = kIconStylePaths[iconStyle]
-    const iconTinted = iconStyle === kIconStyleMonochrome
+    const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
 
     const openPanel = () => {
@@ -93,7 +91,7 @@ export const GroupManager = () => {
                 <Button
                     variant="floating"
                     src={iconPath}
-                    tinted={iconTinted}
+                    tinted={!open}
                     selected={open}
                     onSelect={togglePanel}
                 />
