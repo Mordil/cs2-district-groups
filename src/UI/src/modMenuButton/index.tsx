@@ -1,5 +1,5 @@
 import { trigger, useValue } from "cs2/api"
-import { game, selectedInfo } from "cs2/bindings"
+import { game, infoview, selectedInfo } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals } from "cs2/utils"
 import { useEffect, useRef, useState } from "react"
@@ -43,6 +43,8 @@ export const GroupManager = () => {
         logger.info("Panel opened;")
         setOpen(true)
         trigger(mod.id, "setOverlay", true)
+        // We occupy the same corner as the Info Views menu - dismiss it so they don't overlap.
+        infoview.closeInfoviewMenu()
     }
 
     const closePanel = () => {
