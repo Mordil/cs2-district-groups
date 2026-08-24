@@ -17,8 +17,8 @@
 
 .panelShell {
     position: absolute;
-    // taken from the Info Panel
-    top: calc(var(--screenPadding) * 2 + var(--floatingToggleSize));
+    // taken from the Info Panel, should be ~50px
+    top: calc(var(--screenPadding) + var(--floatingToggleSize));
     width: 490rem;
     height: 80vh;
     display: flex;
