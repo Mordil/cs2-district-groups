@@ -212,7 +212,7 @@ export const GroupCard = (props: { group: Group }) => {
                             trigger(mod.id, "toggleDistrictSelection", group.entity)
                         }}
                     >
-                        <Icon className={VT.sectionPrimaryButton.icon} tinted={true} src={gameIconSrc("Districts")} />
+                        <Icon className={VT.sectionPrimaryButton.icon} src={gameIconSrc("Districts")} />
                         <span className={VT.sectionPrimaryButton.label}>{t("selectDistrictsButton")}</span>
                     </button>
                 </div>
