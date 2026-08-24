@@ -12,6 +12,7 @@ using UnityEngine.Device;
 namespace DistrictGroups
 {
     [FileLocation(nameof(DistrictGroups))]
+    [SettingsUITabOrder(kTabGeneral, kTabOverlay, kTabDeveloper)]
     [SettingsUIGroupOrder(kSectionDefault, kSectionOverlay, kSectionDebug, kSectionVersion)]
     [SettingsUIShowGroupName(kSectionDebug)]
     public class Setting : ModSetting
