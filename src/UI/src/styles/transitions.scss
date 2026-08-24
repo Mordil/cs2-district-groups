@@ -1,0 +1,30 @@
+@use "sass:map";
+
+// Reusable enter/exit transition, mirroring vanilla CS2's own 4-class
+// pattern (enter/enterActive/exit/exitActive), confirmed against the game's
+// shipped index.css (toolbar-panel-children.module.scss and
+// section/themes/transition.module.scss both use this exact pairing:
+// enter+exitActive share the hidden-state values, enterActive+exit share
+// the shown-state values).
+//
+// $from/$to are SCSS maps of CSS property -> value, e.g.
+//   (opacity: 0, transform: translateY(15rem))
+@mixin enter-exit-transition($duration, $from, $to, $easing: ease) {
+    transition-duration: $duration;
+    transition-timing-function: $easing;
+    transition-property: map.keys($from);
+
+    &.enter,
+    &.exitActive {
+        @each $prop, $value in $from {
+            #{$prop}: $value;
+        }
+    }
+
+    &.enterActive,
+    &.exit {
+        @each $prop, $value in $to {
+            #{$prop}: $value;
+        }
+    }
+}

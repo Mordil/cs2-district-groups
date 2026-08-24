@@ -1,3 +1,5 @@
+@use "../styles/transitions" as *;
+
 .panelToggleButton {
     pointer-events: auto;
     width: 40rem;
@@ -11,4 +13,25 @@
 
 .panelToggleButton:hover {
     background: rgb(122, 211, 245);
+}
+
+.panelShell {
+    position: absolute;
+    // taken from the Info Panel
+    top: calc(var(--screenPadding) * 2 + var(--floatingToggleSize));
+    width: 490rem;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--textColorDim);
+    border-radius: var(--panelRadius);
+    font-size: var(--fontSizeS);
+    overflow: hidden;
+    transform-origin: 50% 100%;
+
+    @include enter-exit-transition(
+        150ms,
+        (opacity: 0, transform: translateY(15rem), pointer-events: none),
+        (opacity: 1, transform: translateY(0), pointer-events: auto)
+    );
 }

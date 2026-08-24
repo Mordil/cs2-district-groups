@@ -14,6 +14,10 @@ import { useTranslation } from "../locale"
 import { selectingGroup$ } from "./bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
+import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
+
+// Matches the mixin's own transition duration in GroupCard.module.scss.
+const kExpandDurationMs = 250
 
 // Tints the trash icon on the group-level delete action to flag it as the
 // harder-to-reverse one; the per-member remove below stays neutral.
@@ -29,6 +33,10 @@ export const GroupCard = (props: { group: Group }) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const [expanded, setExpanded] = useState(false)
+    const { phase: expandPhase, mounted: expandedContentMounted } = useEnterExitPhase(
+        expanded,
+        kExpandDurationMs
+    )
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
     const selectingGroup = useValue(selectingGroup$)
@@ -170,8 +178,8 @@ export const GroupCard = (props: { group: Group }) => {
                 </Tooltip>
             </div>
 
-            {expanded && (
-                <>
+            {expandedContentMounted && (
+                <div className={`${css.expandableContent} ${css[expandPhase]}`}>
                     <div className={css.memberList}>
                         {group.members.map((member) => (
                             <div className={css.memberRow} key={entityKey(member.entity)}>
@@ -207,7 +215,7 @@ export const GroupCard = (props: { group: Group }) => {
                         <Icon className={VT.sectionPrimaryButton.icon} tinted={true} src={gameIconSrc("Districts")} />
                         <span className={VT.sectionPrimaryButton.label}>{t("selectDistrictsButton")}</span>
                     </button>
-                </>
+                </div>
             )}
         </div>
     )

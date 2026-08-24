@@ -7,9 +7,13 @@ import { useTypeLabels, kUITopOffset } from "../constants"
 import { VC, VF, VT } from "../components/vanilla"
 import css from "./GroupSearchFlyout.module.scss"
 import { GroupOption, groupCandidatesByType } from "./GroupSelector"
+import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 
 const kFlyoutWidthPx = 580
 const kGapPx = 24
+
+// Matches the mixin's own transition duration in GroupSearchFlyout.module.scss.
+const kFadeDurationMs = 120
 
 // Color channels arrive as 0-1 floats (see ColorPicker.tsx's own {..., a: 1} clamp).
 const colorToCss = (c: Color): string =>
@@ -37,6 +41,11 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
     const typeLabels = useTypeLabels()
     const [query, setQuery] = useState("")
     const [searchFocused, setSearchFocused] = useState(false)
+    // This component is only ever mounted by its parent while it should be
+    // shown (see GroupSelector's `open && anchorEdges` check), so it's
+    // "active" for its whole lifetime — skipInitial: false makes the enter
+    // transition play immediately on mount instead of being skipped.
+    const { phase } = useEnterExitPhase(true, kFadeDurationMs, { skipInitial: false })
 
     const showPlaceholder = !searchFocused && query.length === 0
 
@@ -58,7 +67,7 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
     return (
         <div
             ref={props.rootRef}
-            className={css.panel}
+            className={`${css.panel} ${css[phase]}`}
             style={{
                 position: "fixed",
                 top: `${kUITopOffset}rem`,

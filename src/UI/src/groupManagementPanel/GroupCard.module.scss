@@ -1,3 +1,5 @@
+@use "../styles/transitions" as *;
+
 .groupCard {
     background-color: var(--hoverColor);
 
@@ -72,6 +74,12 @@
     outline: none;
     background-color: var(--activeColor);
     border-color: var(--focusedColor);
+}
+
+.expandableContent {
+    overflow: hidden;
+
+    @include enter-exit-transition(250ms, (opacity: 0.5, height: 0), (opacity: 1, height: auto));
 }
 
 .memberList {

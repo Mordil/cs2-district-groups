@@ -7,24 +7,11 @@ import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
 import { areaToolActive$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
+import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
+import css from "./index.module.scss"
 
-// Matches panelShellStyle's own transition duration below.
+// Matches the mixin's own transition duration in index.module.scss.
 const kFadeDurationMs = 150
-
-const panelShellStyle = {
-    position: "absolute",
-    top: `${kUITopOffset}rem`,
-    left: "10rem",
-    width: "490rem",
-    height: "80vh",
-    display: "flex",
-    flexDirection: "column",
-    color: "white",
-    borderRadius: "6rem",
-    fontSize: "14rem",
-    overflow: "hidden",
-    transition: "opacity .15s ease",
-} as const
 
 /*
 
@@ -42,7 +29,7 @@ const panelShellStyle = {
 export const GroupManager = () => {
     const t = useTranslation()
     const [open, setOpen] = useState(false)
-    const [contentMounted, setContentMounted] = useState(false)
+    const { phase, mounted: contentMounted } = useEnterExitPhase(open, kFadeDurationMs)
     const areaToolActive = useValue(areaToolActive$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
@@ -51,14 +38,12 @@ export const GroupManager = () => {
         logger.info("Panel opened;")
         setOpen(true)
         trigger(mod.id, "setOverlay", true)
-        setContentMounted(true)
     }
 
     const closePanel = () => {
         logger.info("Panel closed;")
         setOpen(false)
         trigger(mod.id, "setOverlay", false)
-        window.setTimeout(() => setContentMounted(false), kFadeDurationMs)
     }
 
     const togglePanel = () => (open ? closePanel() : openPanel())
@@ -96,14 +81,11 @@ export const GroupManager = () => {
                     onSelect={togglePanel}
                 />
             </Tooltip>
-            <div
-                style={{
-                    ...panelShellStyle,
-                    opacity: open ? 1 : 0,
-                    pointerEvents: open ? "auto" : "none",
-                }}
-            >
-                {contentMounted && <GroupManagementPanel onClose={closePanel} />}
+
+            <div className={`${css.panelShell} ${css[phase]}`}>
+                {contentMounted &&
+                    <GroupManagementPanel onClose={closePanel} />
+                }
             </div>
         </>
     )
