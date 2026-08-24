@@ -1,5 +1,7 @@
 import { trigger, useValue } from "cs2/api"
+import { game, selectedInfo } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
+import { entityEquals } from "cs2/utils"
 import { useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
@@ -32,6 +34,8 @@ export const GroupManager = () => {
     const { phase, mounted: contentMounted } = useEnterExitPhase(open, kFadeDurationMs)
     const areaToolActive = useValue(areaToolActive$)
     const overlayVisible = useValue(overlayVisible$)
+    const selectedEntity = useValue(selectedInfo.selectedEntity$)
+    const activeGamePanel = useValue(game.activeGamePanel$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
 
@@ -63,6 +67,19 @@ export const GroupManager = () => {
             openPanel()
         }
     }, [areaToolActive])
+
+    // We occupy the same area as other game panels, so if they open, dismiss ourselves
+    // Because these actions are entirely different concerns from users from what we do, don't reopen after they close
+    useEffect(() => {
+        if (!open) {
+            return
+        }
+        const infoviewMenuOpen = activeGamePanel?.__Type === game.GamePanelType.InfoviewMenu
+        const entitySelected = !entityEquals(selectedEntity, { index: 0, version: 0 })
+        if (entitySelected || infoviewMenuOpen) {
+            closePanel()
+        }
+    }, [selectedEntity, activeGamePanel])
 
     // If something happens code side that we need to close, respect it
     useEffect(() => {
