@@ -15,19 +15,27 @@ mind, you have to edit every building again.
 
 District Groups makes this easier.
 
-**This mod is in alpha.** The core functionality is complete, I am just figuring out the best UI.
+# BETA
+**This mod is in BETA.** The intial mod feature set is complete and highly optimized.
 
-**How to use it**
+Please, if you find bugs, [report them on GitHub](https://github.com/Mordil/cs2-district-groups/issues/new).
+
+## How to use it
 
 1. Open the District Groups panel.
-2. Make a group. Give it a name and pick a service type, like fire or garbage.
+2. Make a group. Give it a name, choose a color, and pick a service type like fire or garbage.
 3. Add districts to the group.
 4. Select a service building. In its info panel, pick a group.
 
 The building now serves every district in that group. Later, when you add or
 remove a district, every building that uses the group updates by itself.
 
-**Good to know**
+### Known Issues
+
+1. It takes a few seconds after assigning a group to a building for the UI to show the change.
+This is the game simulation catching up.
+
+## Things to Know
 
 - One district can be in many groups.
 - A building only sees groups that match its own service type.
@@ -36,11 +44,17 @@ remove a district, every building that uses the group updates by itself.
 - While a building uses a group, the mod controls its district list. If you
   edit that list by hand, your change will be replaced.
 
-**If you remove the mod**
+## Uninstalling the mod
 
 Your buildings keep serving their districts. Only the groups are lost. Loading a
 save without the mod is safe. But if you save the game while the mod is removed,
 the groups are gone for good.
+
+## Roadmap
+
+1. Service Building panel: See a list of all service buildings, and quickly assign them.
+2. Group Info panel: View an aggregate of wealth, population, etc. of districts in the group.
+3. District policy quality of life: Enable/disable district policies for all districts in a group.
 	</LongDescription>
 	<!--Thumbnail-->
 	<Thumbnail Value="Properties/Thumbnail.beta.png" />
@@ -58,7 +72,7 @@ the groups are gone for good.
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 	<!--Version of the mod-->
-	<ModVersion Value="0.7.0" />
+	<ModVersion Value="0.8.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -69,16 +83,17 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Improved general mod performance
-- Optimized the logic for rebuilding overlay visuals
-- Reduced memory usage and improved performance of overlay visual
-- Removed group count from the mod button tooltip
-- The mod UI now dismisses if you open the District tool and reopens after closing the District tool
-- Fixed overlay geometry not updating when you change the district area nodes
-- Added Settings option to control the color saturation of the Overlay fill
-- Fixed overlay height not being respected when making changes in settings during gameplay
-- Borders are no longer drawn for mixed group districts
-- Added an area fill visual for the overlay UI
+- Massive overhaul of the UI and UX of both the Group Management panel and Group Assignment button on service buildings
+- Fixed bugs related to outdated Overlays displaying between save loads
+- Micro optimization of the Overlay responding to world changes
+- Moved Overlay related Settings into a separate tab
+- Removed the "All Groups" filter option in the Group Management panel
+- Improved readability of English translations of Settings option descriptions
+- Optimized setting building group assignments
+- Add Settings option to enable/disable verbose logging. It is disabled by default.
+- Optimized updating assigned building districts
+- Optimized adding/removing districts from groups
+- Changed icon to open the Group Management panel
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/Mordil/cs2-district-groups" />
