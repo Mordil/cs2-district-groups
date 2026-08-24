@@ -35,6 +35,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
         <FormattedParagraphs
             renderer={markdownRenderer}
             text={[t("filterTooltipLine1")]}
+            nonInline
         />
     )
 

@@ -535,6 +535,7 @@ declare module "cs2/ui" {
   	renderer?: FormattedTextRenderer;
   	onLinkSelect?: (data: string) => void;
   	selectAction?: InputAction;
+  	nonInline?: boolean;
   }
   export export const FormattedText: ({ focusKey, text, theme: partialTheme, renderer, className, onLinkSelect, selectAction, ...props }: FormattedTextProps) => JSX.Element;
   export interface FormattedParagraphsTheme extends FormattedTextTheme {
@@ -550,8 +551,9 @@ declare module "cs2/ui" {
   	selectAction?: InputAction;
   	maxLineLength?: number;
   	splitLineLength?: number;
+  	nonInline?: boolean;
   }
-  export export const FormattedParagraphs: ({ focusKey, text, theme: partialTheme, renderer, className, children, onLinkSelect, selectAction, maxLineLength, splitLineLength, ...props }: PropsWithChildren<FormattedParagraphsProps>) => JSX.Element;
+  export export const FormattedParagraphs: ({ focusKey, text, theme: partialTheme, renderer, className, children, onLinkSelect, selectAction, maxLineLength, splitLineLength, nonInline, ...props }: PropsWithChildren<FormattedParagraphsProps>) => JSX.Element;
   export export class MarkdownRenderer implements FormattedTextRenderer {
   	render(str: string): FormattedTextRenderResult;
   }
