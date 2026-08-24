@@ -5,7 +5,7 @@ import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, overlayVisible$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -31,6 +31,7 @@ export const GroupManager = () => {
     const [open, setOpen] = useState(false)
     const { phase, mounted: contentMounted } = useEnterExitPhase(open, kFadeDurationMs)
     const areaToolActive = useValue(areaToolActive$)
+    const overlayVisible = useValue(overlayVisible$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
 
@@ -62,6 +63,13 @@ export const GroupManager = () => {
             openPanel()
         }
     }, [areaToolActive])
+
+    // If something happens code side that we need to close, respect it
+    useEffect(() => {
+        if (open && !overlayVisible) {
+            closePanel()
+        }
+    }, [overlayVisible])
 
     const panelToggleTooltip = (
         <FormattedParagraphs

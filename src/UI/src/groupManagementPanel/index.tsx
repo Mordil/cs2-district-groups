@@ -14,7 +14,7 @@ import { markdownRenderer } from "../shared"
 import { logger } from "../log"
 import { GroupCard } from "./GroupCard"
 
-export { groups$, areaToolActive$ } from "./bindings"
+export { groups$, areaToolActive$, overlayVisible$ } from "./bindings"
 
 // temporarily persisted value between UI mounting; 0 = Generic
 let lastFilterType = 0

@@ -32,6 +32,7 @@ namespace DistrictGroups
         private GameScreenUISystem m_GameScreenUISystem;
         private DistrictGroupSystem m_GroupSystem;
         private bool m_Visible;
+        public bool Visible => m_Visible;
 
         // Used to detect when the vanilla area tool (which edits a district's boundaries) closes,
         // so the fill mesh can be forced to rebuild
@@ -140,6 +141,22 @@ namespace DistrictGroups
             // We need to reset the overlay entirely in between cities because otherwise we'd display the last city's
             // cached overlay
             m_DirtyFlags = OverlayDirtyFlags.All;
+
+            // the system doesn't get refreshed in between save-game loads, so we need to make sure we're in a clean enough state
+            if (m_Visible)
+            {
+                m_Visible = false;
+                ApplyAreasVisibility();
+                Mod.log.Info("Forcing group overlay closed on load");
+            }
+            if (m_DesaturationActive)
+            {
+                DisableDesaturation();
+            }
+            if (m_FillActive)
+            {
+                DisableFill();
+            }
         }
 
         protected override void OnUpdate()

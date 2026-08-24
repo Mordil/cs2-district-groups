@@ -83,6 +83,7 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
+- Fixed bug where the Overlay continued to display if you had it open when loading a save
 - Massive overhaul of the UI and UX of both the Group Management panel and Group Assignment button on service buildings
 - Fixed bugs related to outdated Overlays displaying between save loads
 - Micro optimization of the Overlay responding to world changes

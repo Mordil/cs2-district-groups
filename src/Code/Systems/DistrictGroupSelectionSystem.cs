@@ -1,3 +1,4 @@
+using Colossal.Serialization.Entities;
 using Game;
 using Game.Areas;
 using Game.Tools;
@@ -46,6 +47,18 @@ namespace DistrictGroups
             m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Remove(
                 m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
             base.OnDestroy();
+        }
+
+        protected override void OnGameLoadingComplete(Purpose purpose, GameMode mode)
+        {
+            base.OnGameLoadingComplete(purpose, mode);
+
+            // the system doesn't get refreshed in between save-game loads, so we need to make sure we're in a clean state
+            if (m_SelectingGroup != Entity.Null)
+            {
+                Mod.log.Info($"Clearing in-progress district selection on load; group:{m_SelectingGroup}");
+                m_SelectingGroup = Entity.Null;
+            }
         }
 
         private void OnActiveToolChanged(ToolBaseSystem tool)
