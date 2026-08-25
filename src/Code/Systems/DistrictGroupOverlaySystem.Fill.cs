@@ -9,7 +9,7 @@ namespace DistrictGroups
 {
     public partial class DistrictGroupOverlaySystem
     {
-        private void UpdateFill()
+        private void UpdateFill(bool shouldSample)
         {
             EnsureFillRoot();
             ApplyFillHeightOffset();
@@ -38,6 +38,30 @@ namespace DistrictGroups
                 m_FillRoot.SetActive(true);
                 Mod.log.Info("Group overlay fill toggled; active:True");
             }
+
+            if (shouldSample)
+            {
+                LogFillMemorySample();
+            }
+        }
+
+        // Standing memory footprint estimate of the currently-live fill objects
+        private void LogFillMemorySample()
+        {
+            long totalMeshBytes = 0;
+            long totalTextureBytes = 0;
+            foreach (FillEntry entry in m_FillEntries.Values)
+            {
+                bool hasUV = entry.Texture != null;
+                if (entry.Mesh != null)
+                {
+                    totalMeshBytes += EstimateMeshBytes(entry.Mesh.vertexCount, (int)entry.Mesh.GetIndexCount(0), hasUV);
+                }
+                totalTextureBytes += EstimateTextureBytes(entry.Texture);
+            }
+
+            Mod.log.Debug($"Overlay fill memory sample; fill_count:{m_FillEntries.Count} " +
+                $"mesh_bytes:{totalMeshBytes} texture_bytes:{totalTextureBytes} total_bytes:{totalMeshBytes + totalTextureBytes}");
         }
 
         private void DisableFill()
@@ -240,6 +264,24 @@ namespace DistrictGroups
                 Renderer = renderer,
             };
             return vertices.Length;
+        }
+
+        // a deliberately rough estimate; good enough to track relative CPU/memory impact over time.
+        private static int EstimateMeshBytes(int vertexCount, int indexCount, bool hasUV)
+        {
+            int bytes = vertexCount * 12;
+            if (hasUV)
+            {
+                bytes += vertexCount * 8;
+            }
+            bytes += indexCount * 4;
+            return bytes;
+        }
+
+        private static int EstimateTextureBytes(Texture2D texture)
+        {
+            // RGBA32 = 4 bytes/texel
+            return texture == null ? 0 : texture.width * texture.height * 4;
         }
 
         // One texel per group color, cycled via ComputeStripeUVs's repeated UVs - a multi-group district's fill

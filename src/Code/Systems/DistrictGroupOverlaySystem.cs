@@ -174,7 +174,7 @@ namespace DistrictGroups
                 DetectChanges();
                 EnsureDistrictGroupColors();
                 UpdateDesaturation();
-                UpdateFill();
+                UpdateFill(shouldSample);
                 DrawGroupOverlays(shouldSample);
             }
             else
