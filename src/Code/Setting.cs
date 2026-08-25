@@ -84,6 +84,21 @@ namespace DistrictGroups
         [SettingsUISection(kTabOverlay, kSectionOverlay)]
         public int OverlayFillSaturationPercent { get; set; }
 
+        // Resets every mod setting back to its shipped default.
+        [SettingsUIButton]
+        [SettingsUIConfirmation]
+        [SettingsUISection(kTabGeneral, kSectionDefault)]
+        public bool ResetSettings
+        {
+            set
+            {
+                Mod.log.Info("ResetSettings button clicked");
+
+                SetDefaults();
+                ApplyAndSave();
+            }
+        }
+
         // Gates the log's own minimum severity, so disabling this stops Debug-level entries at the source instead of just hiding them from a report.
         [SettingsUISection(kTabGeneral, kSectionDebug)]
         public bool EnableDebugLogging
@@ -141,21 +156,6 @@ namespace DistrictGroups
         // Read-only, so players can confirm which build they're on when reporting issues.
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
-
-        // Resets every mod setting back to its shipped default.
-        [SettingsUIButton]
-        [SettingsUIConfirmation]
-        [SettingsUISection(kTabGeneral, kSectionVersion)]
-        public bool ResetSettings
-        {
-            set
-            {
-                Mod.log.Info("ResetSettings button clicked");
-
-                SetDefaults();
-                ApplyAndSave();
-            }
-        }
 
         #region DEVELOPER
 #if DEBUG
