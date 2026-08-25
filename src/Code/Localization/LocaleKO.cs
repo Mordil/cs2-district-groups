@@ -60,6 +60,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "버전" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "설치된 모드의 버전입니다.\n\n버그를 신고할 때 이 정보를 포함해 주세요." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "모드 데이터 제거" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "현재 세이브에 모드가 추가한 모든 구역 그룹, 서비스 건물 할당, 오버레이 리소스를 삭제합니다." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "이 세이브에서 모든 구역 그룹, 서비스 건물 할당, 오버레이 데이터가 영구적으로 삭제됩니다.\r\n이 작업은 되돌릴 수 없습니다.\r\n계속하시겠습니까?" },
+
                 { LocalizationKey.PanelTitle, "구역 그룹" },
                 { LocalizationKey.NewGroupButton, "새 그룹" },
                 { LocalizationKey.NewGroupButtonTooltip, "소속 구역이 없는 새 그룹을 추가합니다." },

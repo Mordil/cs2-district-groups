@@ -60,6 +60,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Wersja" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "Zainstalowana wersja moda.\n\nDołącz tę informację podczas zgłaszania błędu." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Usuń dane moda" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Usuwa wszystkie grupy dzielnic, przypisania budynków usługowych oraz zasoby nakładki, które mod dodał do bieżącego zapisu gry." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Wszystkie grupy dzielnic, przypisania budynków usługowych i dane nakładki zostaną bezpowrotnie usunięte z tego zapisu gry.\r\nTej operacji nie można odwrócić.\r\nCzy chcesz kontynuować?" },
+
                 { LocalizationKey.PanelTitle, "Grupy Dzielnic" },
                 { LocalizationKey.NewGroupButton, "Nowa grupa" },
                 { LocalizationKey.NewGroupButtonTooltip, "Dodaje nową grupę bez przypisanych dzielnic." },

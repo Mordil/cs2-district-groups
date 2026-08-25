@@ -157,6 +157,27 @@ namespace DistrictGroups
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
 
+        // Wipes every group, building assignment, and overlay asset the mod has added to the current save.
+        [SettingsUIButton]
+        [SettingsUIConfirmation]
+        [SettingsUISection(kTabGeneral, kSectionVersion)]
+        [SettingsUIHideByCondition(typeof(Setting), nameof(IsNotInGame))]
+        public bool RemoveModData
+        {
+            set => TryRemoveModData();
+        }
+
+        private void TryRemoveModData()
+        {
+            Mod.log.Info("RemoveModData button clicked");
+
+            World world = World.DefaultGameObjectInjectionWorld;
+            world?.GetExistingSystemManaged<DistrictGroupSystem>()?.RemoveAllData();
+            world?.GetExistingSystemManaged<DistrictGroupOverlaySystem>()?.RemoveAllData();
+
+            Mod.log.Info("Finished removing all mod data");
+        }
+
         #region DEVELOPER
 #if DEBUG
 #else

@@ -60,6 +60,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Версия" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "Установленная версия мода.\n\nУкажите её при подаче отчёта об ошибке." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Удалить данные мода" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Удаляет все группы районов, привязки зданий служб и ресурсы оверлея, добавленные модом в текущее сохранение." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Все группы районов, привязки зданий служб и данные оверлея будут безвозвратно удалены из этого сохранения.\r\nЭто действие невозможно отменить.\r\nВы хотите продолжить?" },
+
                 { LocalizationKey.PanelTitle, "Группы районов" },
                 { LocalizationKey.NewGroupButton, "Новая группа" },
                 { LocalizationKey.NewGroupButtonTooltip, "Добавляет новую группу без районов-участников." },

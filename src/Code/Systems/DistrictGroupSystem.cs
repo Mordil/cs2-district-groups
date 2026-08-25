@@ -31,6 +31,8 @@ namespace DistrictGroups
 
         private EntityQuery m_GroupQuery;
         private EntityQuery m_AssignmentQuery;
+        // Same component as m_AssignmentQuery, but including disabled (unassigned) buildings too
+        private EntityQuery m_AllAssignmentsQuery;
 
         // Bumped on every group/assignment mutation (including renames and per-building assignment)
         public int Version { get; private set; }
@@ -45,6 +47,11 @@ namespace DistrictGroups
             base.OnCreate();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_AssignmentQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupAssignment>());
+            m_AllAssignmentsQuery = GetEntityQuery(new EntityQueryDesc
+            {
+                All = new[] { ComponentType.ReadOnly<DistrictGroupAssignment>() },
+                Options = EntityQueryOptions.IgnoreComponentEnabledState,
+            });
             InitializeDebugSupport();
             Enabled = false;
         }
@@ -367,6 +374,27 @@ namespace DistrictGroups
             return EntityManager.Exists(group) && EntityManager.HasComponent<DistrictGroupData>(group)
                 ? EntityManager.GetComponentData<DistrictGroupData>(group).m_Name.ToString()
                 : "<missing>";
+        }
+
+        // Wipes every group and building assignment the mod has ever written
+        public void RemoveAllData()
+        {
+            int groupCount = m_GroupQuery.CalculateEntityCount();
+            using NativeArray<Entity> assignedBuildings = m_AllAssignmentsQuery.ToEntityArray(Allocator.Temp);
+            Mod.log.Info($"Removing all district-group data from the world; group_count:{groupCount} building_count:{assignedBuildings.Length}");
+
+            foreach (Entity building in assignedBuildings)
+            {
+                EntityManager.RemoveComponent<DistrictGroupAssignment>(building);
+            }
+
+            EntityManager.DestroyEntity(m_GroupQuery);
+
+            m_NextColorIndex = 0;
+            Version++;
+            GroupCompositionVersion++;
+
+            Mod.log.Info("Finished removing all district-group data from the world");
         }
 
         // Same definition UnassignBuilding checks: m_Group is authoritative, not the enabled bit.

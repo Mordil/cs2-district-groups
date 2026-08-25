@@ -60,6 +60,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Versão" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "A versão instalada do mod.\n\nInclua esta informação ao registrar um relatório de erro." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Remover dados do mod" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Exclui todos os grupos de distritos, atribuições de edifícios de serviço e recursos de sobreposição que o mod adicionou à partida atual." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Todos os grupos de distritos, atribuições de edifícios de serviço e dados de sobreposição serão permanentemente excluídos desta partida.\r\nEsta ação não pode ser desfeita.\r\nDeseja continuar?" },
+
                 { LocalizationKey.PanelTitle, "Grupos de Distritos" },
                 { LocalizationKey.NewGroupButton, "Novo Grupo" },
                 { LocalizationKey.NewGroupButtonTooltip, "Adiciona um novo grupo sem distritos membros." },

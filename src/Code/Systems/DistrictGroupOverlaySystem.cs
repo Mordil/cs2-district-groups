@@ -319,6 +319,32 @@ namespace DistrictGroups
                 $"group_count:{groups.Length} district_count:{m_DistrictGroupColors.Count}");
         }
 
+        // Tears down every runtime asset the overlay owns and forces the panel closed.
+        public void RemoveAllData()
+        {
+            Mod.log.Info("Removing all group overlay state from the world");
+
+            if (m_Visible)
+            {
+                m_Visible = false;
+                ApplyAreasVisibility();
+            }
+
+            if (m_DesaturationVolume != null)
+            {
+                DestroyDesaturationVolume();
+            }
+            m_DesaturationActive = false;
+
+            DestroyFillRoot();
+            m_FillActive = false;
+
+            m_DistrictGroupColors.Clear();
+            m_DirtyFlags = OverlayDirtyFlags.All;
+
+            Mod.log.Info("Finished removing all group overlay state from the world");
+        }
+
         // Handle that the district area tool was closed
         private void OnActiveToolChanged(ToolBaseSystem tool)
         {

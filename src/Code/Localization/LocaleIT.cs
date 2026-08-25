@@ -60,6 +60,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Versione" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "La versione installata della mod.\n\nIncludi questa informazione quando segnali un bug." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Rimuovi dati della mod" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Elimina tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e le risorse di sovrapposizione che la mod ha aggiunto alla partita corrente." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e i dati di sovrapposizione verranno eliminati definitivamente da questa partita.\r\nQuesta azione non può essere annullata.\r\nVuoi procedere?" },
+
                 { LocalizationKey.PanelTitle, "Gruppi di Quartieri" },
                 { LocalizationKey.NewGroupButton, "Nuovo Gruppo" },
                 { LocalizationKey.NewGroupButtonTooltip, "Aggiunge un nuovo gruppo senza quartieri membri." },

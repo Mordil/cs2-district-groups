@@ -60,6 +60,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Version" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "Die installierte Version des Mods.\n\nGib diese an, wenn du einen Fehlerbericht einreichst." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Mod-Daten entfernen" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Löscht alle Bezirksgruppen, Diensteinrichtungszuweisungen und Overlay-Ressourcen, die der Mod dem aktuellen Spielstand hinzugefügt hat." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Alle Bezirksgruppen, Diensteinrichtungszuweisungen und Overlay-Daten werden endgültig aus diesem Spielstand gelöscht.\r\nDies kann nicht rückgängig gemacht werden.\r\nMöchtest du fortfahren?" },
+
                 { LocalizationKey.PanelTitle, "District Groups" },
                 { LocalizationKey.NewGroupButton, "Neue Gruppe" },
                 { LocalizationKey.NewGroupButtonTooltip, "Fügt eine neue Gruppe ohne Mitgliedsbezirke hinzu." },
