@@ -269,14 +269,10 @@ namespace DistrictGroups
             EntityManager.SetComponentData(building, new DistrictGroupAssignment(Entity.Null));
             EntityManager.SetComponentEnabled<DistrictGroupAssignment>(building, false);
             double assignmentMs = stopwatch.Elapsed.TotalMilliseconds;
-            if (EntityManager.HasBuffer<ServiceDistrict>(building))
-            {
-                EntityManager.GetBuffer<ServiceDistrict>(building).Clear();
-            }
             Version++;
             double totalMs = stopwatch.Elapsed.TotalMilliseconds;
             Mod.log.Debug($"Finished unassigning building; building:{building} " +
-                $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3} expand_ms:{totalMs - assignmentMs:F3}");
+                $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3}");
             return true;
         }
 
