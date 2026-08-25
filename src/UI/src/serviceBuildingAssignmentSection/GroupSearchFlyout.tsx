@@ -6,7 +6,7 @@ import { useTranslation } from "../locale"
 import { useTypeLabels, kUITopOffset } from "../constants"
 import { VC, VF, VT } from "../components/vanilla"
 import css from "./GroupSearchFlyout.module.scss"
-import { GroupOption, groupCandidatesByType } from "./GroupSelector"
+import { GroupOption, groupCandidatesByType, kGenericGroupType } from "./GroupSelector"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 
 const kFlyoutWidthPx = 580
@@ -50,6 +50,7 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
     const showPlaceholder = !searchFocused && query.length === 0
 
     const trimmedQuery = query.trim().toLowerCase()
+    const alwaysShownTypes = new Set([props.buildingType, kGenericGroupType])
     const sections = groupCandidatesByType(props.candidates, props.buildingType)
         .map((section) => ({
             ...section,
@@ -57,7 +58,9 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
                 ? section.options
                 : section.options.filter((c) => c.name.toLowerCase().includes(trimmedQuery)),
         }))
-        .filter((section) => section.options.length > 0)
+        .filter((section) =>
+            section.options.length > 0
+            || (trimmedQuery.length === 0 && alwaysShownTypes.has(section.type)))
 
     const spaceRight = window.innerWidth - props.anchorEdges.right
     const openToLeft = spaceRight < kFlyoutWidthPx + kGapPx
@@ -128,6 +131,11 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
                     sections.map((section) => (
                         <div key={section.type}>
                             <div className={css.listSectionHeader}>{typeLabels[section.type] ?? "?"}</div>
+
+                            {section.options.length === 0 && (
+                                <div className={css.sectionEmpty}>{t("noGroupsInSection")}</div>
+                            )}
+
                             {section.options.map((candidate) => (
                                 <div
                                     key={entityKey(candidate.entity)}

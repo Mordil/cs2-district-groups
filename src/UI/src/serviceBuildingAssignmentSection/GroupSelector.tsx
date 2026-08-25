@@ -25,10 +25,16 @@ export interface GroupSection {
     options: GroupOption[]
 }
 
+// Indexed the same as useTypeLabels, order must match the C# GroupServiceType enum.
+export const kGenericGroupType = 0
+
 // One section per candidate type, each alphabetized - the building's own
 // matching type (if not Generic) leads, remaining types follow in enum order.
+// The building's own type and Generic always get a section, even if empty.
 export const groupCandidatesByType = (candidates: GroupOption[], buildingType: number): GroupSection[] => {
     const byType = new Map<number, GroupOption[]>()
+    byType.set(buildingType, [])
+    byType.set(kGenericGroupType, [])
     for (const candidate of candidates) {
         const options = byType.get(candidate.type)
         if (options) {

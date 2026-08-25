@@ -46,6 +46,7 @@ export const kLocale = {
     groupSearchTitle: id("GroupSearchTitle"),
     searchGroupsPlaceholder: id("SearchGroupsPlaceholder"),
     noGroupsMatchSearch: id("NoGroupsMatchSearch"),
+    noGroupsInSection: id("NoGroupsInSection"),
 
     typeGeneric: id("TypeGeneric"),
     typePolice: id("TypePolice"),
@@ -108,6 +109,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     groupSearchTitle: "Select District Group",
     searchGroupsPlaceholder: "Search...",
     noGroupsMatchSearch: "No groups match your search.",
+    noGroupsInSection: "No groups found.",
 
     typeGeneric: "Generic",
     typePolice: "Police",

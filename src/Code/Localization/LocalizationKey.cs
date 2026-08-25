@@ -47,6 +47,7 @@ namespace DistrictGroups
         public const string GroupSearchTitle = "DistrictGroups.UI[GroupSearchTitle]";
         public const string SearchGroupsPlaceholder = "DistrictGroups.UI[SearchGroupsPlaceholder]";
         public const string NoGroupsMatchSearch = "DistrictGroups.UI[NoGroupsMatchSearch]";
+        public const string NoGroupsInSection = "DistrictGroups.UI[NoGroupsInSection]";
 
         public const string TypeGeneric = "DistrictGroups.UI[TypeGeneric]";
         public const string TypePolice = "DistrictGroups.UI[TypePolice]";
