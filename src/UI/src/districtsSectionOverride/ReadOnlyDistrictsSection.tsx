@@ -1,0 +1,39 @@
+import { trigger } from "cs2/api"
+import { LocalizedEntityName, Name } from "cs2/l10n"
+import { Entity } from "cs2/utils"
+import { VC } from "../components/vanilla"
+import { useTranslation } from "../locale"
+
+interface VanillaDistrictEntry {
+    entity: Entity
+    name: Name
+}
+
+export interface VanillaDistrictsSectionProps {
+    districts: VanillaDistrictEntry[]
+}
+
+// Trimmed replacement for the vanilla DistrictsSection: drops the "Select operating
+// districts" button and per-row trash icon, since a group-assigned building's
+// ServiceDistrict buffer is managed by the group, not by manual editing.
+export const ReadOnlyDistrictsSection = (props: VanillaDistrictsSectionProps) => {
+    const t = useTranslation()
+    return (
+        <VC.InfoSection disableFocus={true}>
+            <VC.InfoRow uppercase={true} disableFocus={true} left={t("operatingDistrictsLabel")} />
+            {props.districts.map((district) => (
+                <VC.InfoRow
+                    key={district.entity.index}
+                    subRow={true}
+                    disableFocus={true}
+                    left={<LocalizedEntityName value={district.name} />}
+                    link={
+                        <VC.InfoLink onSelect={() => trigger("selectedInfo", "selectEntity", district.entity)}>
+                            Details
+                        </VC.InfoLink>
+                    }
+                />
+            ))}
+        </VC.InfoSection>
+    )
+}

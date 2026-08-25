@@ -24,6 +24,10 @@ export const VC = {
         "InfoRow"
     ) as any,
     IconButton: getModule("game-ui/common/input/button/icon-button.tsx", "IconButton") as any,
+    InfoLink: getModule(
+        "game-ui/game/components/selected-info-panel/shared-components/info-link/info-link.tsx",
+        "InfoLink"
+    ) as any,
 }
 
 const iconButtonClasses = getModule(

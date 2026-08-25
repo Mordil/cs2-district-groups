@@ -8,3 +8,10 @@ export const markdownRenderer = new MarkdownRenderer()
 
 // True only in a Debug build of the C# side
 export const isDebugBuild$ = bindValue<boolean>(mod.id, "isDebugBuild", false)
+
+// True when the currently selected entity has an active district-group assignment
+export const selectedBuildingHasGroupAssignment$ = bindValue<boolean>(
+    mod.id,
+    "selectedBuildingHasGroupAssignment",
+    false
+)

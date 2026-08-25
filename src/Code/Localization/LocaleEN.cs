@@ -92,6 +92,7 @@ namespace DistrictGroups
                 { "DistrictGroups.UI[SectionTooltipLine3]", "When unassigned, **operating districts** are managed manually." },
                 { "DistrictGroups.UI[SectionTooltipLine4]", "NOTE: The Info Panel can take a few seconds to visually update after changing the assignment." },
                 { "DistrictGroups.UI[SectionLabel]", "DISTRICT GROUP" },
+                { LocalizationKey.OperatingDistrictsLabel, "Operating Districts" },
                 { "DistrictGroups.UI[UnassignOption]", "Unassign" },
                 { "DistrictGroups.UI[UnassignTooltipDisabled]", "No group is assigned." },
                 { "DistrictGroups.UI[UnassignTooltipEnabled]", "Removes the current group assignment." },

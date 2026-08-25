@@ -51,6 +51,18 @@ namespace DistrictGroups
             m_Setting.RegisterInOptionsUI();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
 
+            GameManager.instance.localizationManager.AddSource("de-DE", new LocaleDE());
+            GameManager.instance.localizationManager.AddSource("es-ES", new LocaleES());
+            GameManager.instance.localizationManager.AddSource("fr-FR", new LocaleFR());
+            GameManager.instance.localizationManager.AddSource("it-IT", new LocaleIT());
+            GameManager.instance.localizationManager.AddSource("ja-JP", new LocaleJA());
+            GameManager.instance.localizationManager.AddSource("ko-KR", new LocaleKO());
+            GameManager.instance.localizationManager.AddSource("pl-PL", new LocalePL());
+            GameManager.instance.localizationManager.AddSource("pt-BR", new LocalePTBR());
+            GameManager.instance.localizationManager.AddSource("ru-RU", new LocaleRU());
+            GameManager.instance.localizationManager.AddSource("zh-HANS", new LocaleZHHANS());
+            GameManager.instance.localizationManager.AddSource("zh-HANT", new LocaleZHHANT());
+
 
             AssetDatabase.global.LoadSettings(nameof(DistrictGroups), m_Setting, new Setting(this));
             Settings = m_Setting;

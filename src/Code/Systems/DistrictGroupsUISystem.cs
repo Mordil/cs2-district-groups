@@ -57,6 +57,10 @@ namespace DistrictGroups
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "isDebugBuild",
                 () => IsDebugBuild));
 
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "selectedBuildingHasGroupAssignment",
+                () => EntityManager.Exists(m_SelectedInfoUISystem.selectedEntity)
+                    && m_GroupSystem.IsBuildingAssigned(m_SelectedInfoUISystem.selectedEntity)));
+
             AddBinding(new TriggerBinding<string, string>(kBindingGroup, "log", LogFromUI));
         }
 

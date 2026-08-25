@@ -372,5 +372,10 @@ namespace DistrictGroups
                 ? EntityManager.GetComponentData<DistrictGroupData>(group).m_Name.ToString()
                 : "<missing>";
         }
+
+        // Same definition UnassignBuilding checks: m_Group is authoritative, not the enabled bit.
+        public bool IsBuildingAssigned(Entity building) =>
+            EntityManager.HasComponent<DistrictGroupAssignment>(building)
+            && EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group != Entity.Null;
     }
 }
