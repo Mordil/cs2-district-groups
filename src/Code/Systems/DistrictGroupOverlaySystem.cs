@@ -70,9 +70,8 @@ namespace DistrictGroups
         private bool m_AreasVisible;
         public bool AreasVisible => m_AreasVisible;
 
-        // -1 ("All Groups" in the panel) draws every group; otherwise only
-        // groups of that type are drawn, mirroring the panel's own filtered list.
-        private int m_TypeFilter = -1;
+        // Defaults to Generic (0).
+        private int m_TypeFilter = (int)GroupServiceType.Generic;
 
         // Full-screen desaturation Volume shown alongside the border overlay
         private Volume m_DesaturationVolume;
