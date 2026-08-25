@@ -5,11 +5,116 @@ namespace DistrictGroups
 {
     public class LocaleES : IDictionarySource
     {
+        private readonly Setting m_Setting;
+
+        public LocaleES(Setting setting)
+        {
+            m_Setting = setting;
+        }
+
         public IEnumerable<KeyValuePair<string, string>> ReadEntries(IList<IDictionaryEntryError> errors, Dictionary<string, int> indexCounts)
         {
+            /*
+                Key strings for the custom mod UI must match locale.ts's id() exactly
+            */
+
             return new Dictionary<string, string>
             {
+                { m_Setting.GetSettingsLocaleID(), "Grupos de Distritos" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "Principal" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "Superposición" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Desarrollador" },
+
+                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Predeterminado" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Interfaz de superposición" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Solución de problemas" },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Ancho del borde" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Ancho de las líneas de color que delimitan los grupos de distritos en el mapa." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidad del borde" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidad de las líneas de color que delimitan los grupos de distritos en el mapa.\n\nEl 0% es totalmente transparente; el 100%, totalmente opaco." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Desplazamiento de altura" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Un desplazamiento respecto a la altura del terreno al que se dibuja la superposición de grupos de distritos." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturación de la escena" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Cuánto se desatura el resto de la escena mientras la superposición de grupos está visible.\n\nEl 0% deja la escena intacta; el 100% la deja en escala de grises." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturación del relleno" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Cuán saturadas están las áreas de relleno de color de los grupos de distritos.\n\nEl 100% es el color completo del grupo; los valores más bajos se difuminan hacia el gris." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Activar registro de depuración" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Escribe entradas detalladas de nivel de depuración en el archivo de registro del mod.\n\nEsto puede afectar al rendimiento." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.DumpDebugData)), "Registrar datos de depuración del mod" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.DumpDebugData)), "Escribe todo el estado del mod (grupos, edificios de servicio, etc.) en el archivo de registro del mod.\n\nAdjunta el archivo de registro al informar de un error." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "Informar de un error" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Registra los datos de depuración y, después, abre el gestor de incidencias de GitHub del mod en tu navegador." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Restablecer todos los ajustes" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Restablece todos los ajustes del mod a sus valores predeterminados." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Todos los ajustes del mod volverán a sus valores predeterminados.\r\n¿Deseas continuar?" },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Versión" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "La versión instalada del mod.\n\nInclúyela al informar de un error." },
+
+                { LocalizationKey.PanelTitle, "Grupos de Distritos" },
+                { LocalizationKey.NewGroupButton, "Nuevo grupo" },
+                { LocalizationKey.NewGroupButtonTooltip, "Añade un nuevo grupo sin distritos asignados." },
+                { LocalizationKey.NewGroupDefaultName, "Nuevo grupo {NUMBER}" },
+                { LocalizationKey.FilterTooltipLine1, "Filtra la lista de grupos por su **tipo**." },
+                { LocalizationKey.AllGroupsLabel, "Todos los grupos" },
+                { LocalizationKey.NoGroupsYet, "Aún no hay grupos. Crea uno con el botón NUEVO GRUPO." },
+                { LocalizationKey.NoGroupsMatchFilter, "Ningún grupo coincide con este filtro." },
+                { LocalizationKey.DisplayDistrictAreasLabel, "Mostrar todos los distritos" },
+                { LocalizationKey.ShowGroupOverlayLabel, "Mostrar superposición de grupos" },
+
+                { LocalizationKey.DeleteGroupTooltipLine1, "Elimina el grupo de forma permanente." },
+                { LocalizationKey.DeleteGroupTooltipLine2, "Los edificios asignados perderán sus **distritos operativos**." },
+                { LocalizationKey.TypePickerTooltipLine1, "Cambia el **tipo** del grupo." },
+                { LocalizationKey.TypePickerTooltipLine2, "Los grupos **genéricos** se pueden asignar a cualquier edificio de servicio." },
+                { LocalizationKey.TypePickerTooltipLine3, "El resto de tipos solo están disponibles para los edificios de servicio correspondientes." },
+                { LocalizationKey.DeleteGroupConfirmMessage, "«{NAME}» está asignado a {COUNT} edificio(s) de servicio.\nLos edificios de servicio asignados volverán a dar servicio a toda la ciudad." },
+                { LocalizationKey.DeleteGroupDialogTitle, "¿Eliminar grupo de distritos?" },
+                { LocalizationKey.DeleteGroupConfirm, "Eliminar grupo" },
+                { LocalizationKey.DeleteGroupCancel, "Conservar grupo" },
+                { LocalizationKey.RemoveMemberTooltip, "Elimina el distrito del grupo." },
+                { LocalizationKey.SelectDistrictsButton, "Seleccionar distritos" },
+                { LocalizationKey.GroupColorTooltip, "Color del grupo" },
+
+                { LocalizationKey.ToggleTooltipTitle, "**GRUPOS DE DISTRITOS**" },
+                { LocalizationKey.ToggleTooltipBody, "Crea grupos de distritos para asignarlos a edificios de servicio y gestionar automáticamente sus **distritos operativos**." },
+
+                { LocalizationKey.SectionTooltipLine1, "Los edificios de servicio se pueden asignar a un **grupo de distritos**." },
+                { LocalizationKey.SectionTooltipLine2, "Cuando está asignado, el grupo gestiona los **distritos operativos** del edificio." },
+                { LocalizationKey.SectionTooltipLine3, "Cuando no hay ninguno asignado, los **distritos operativos** se gestionan manualmente." },
+                { LocalizationKey.SectionTooltipLine4, "NOTA: El panel de información puede tardar unos segundos en actualizarse visualmente tras cambiar la asignación." },
+                { LocalizationKey.SectionLabel, "GRUPO DE DISTRITOS" },
                 { LocalizationKey.OperatingDistrictsLabel, "Distritos operativos" },
+                { LocalizationKey.UnassignOption, "Desasignar" },
+                { LocalizationKey.UnassignTooltipDisabled, "No hay ningún grupo asignado." },
+                { LocalizationKey.UnassignTooltipEnabled, "Elimina la asignación de grupo actual." },
+                { LocalizationKey.UnassignedLabel, "Sin asignar" },
+                { LocalizationKey.GroupSearchTitle, "Seleccionar grupo de distritos" },
+                { LocalizationKey.SearchGroupsPlaceholder, "Buscar..." },
+                { LocalizationKey.NoGroupsMatchSearch, "Ningún grupo coincide con tu búsqueda." },
+                { LocalizationKey.NoGroupsInSection, "No se han encontrado grupos." },
+
+                { LocalizationKey.TypeGeneric, "Genérico" },
+                { LocalizationKey.TypePolice, "Policía" },
+                { LocalizationKey.TypeFire, "Incendio" },
+                { LocalizationKey.TypeHealthcare, "Sanidad" },
+                { LocalizationKey.TypeDeathcare, "Funeraria" },
+                { LocalizationKey.TypeGarbage, "Residuos" },
+                { LocalizationKey.TypeEducationElementary, "Escuela primaria" },
+                { LocalizationKey.TypeEducationHighSchool, "Escuela secundaria" },
+                { LocalizationKey.TypeEducationCollege, "Escuela superior" },
+                { LocalizationKey.TypeEducationUniversity, "Universidad" },
+                { LocalizationKey.TypePost, "Correo" },
+                { LocalizationKey.TypeParks, "Parques" },
+                { LocalizationKey.TypeWelfare, "Oficinas de seguridad social" },
             };
         }
 

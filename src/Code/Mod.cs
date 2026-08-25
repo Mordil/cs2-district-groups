@@ -51,17 +51,17 @@ namespace DistrictGroups
             m_Setting.RegisterInOptionsUI();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
 
-            GameManager.instance.localizationManager.AddSource("de-DE", new LocaleDE());
-            GameManager.instance.localizationManager.AddSource("es-ES", new LocaleES());
-            GameManager.instance.localizationManager.AddSource("fr-FR", new LocaleFR());
-            GameManager.instance.localizationManager.AddSource("it-IT", new LocaleIT());
-            GameManager.instance.localizationManager.AddSource("ja-JP", new LocaleJA());
-            GameManager.instance.localizationManager.AddSource("ko-KR", new LocaleKO());
-            GameManager.instance.localizationManager.AddSource("pl-PL", new LocalePL());
-            GameManager.instance.localizationManager.AddSource("pt-BR", new LocalePTBR());
-            GameManager.instance.localizationManager.AddSource("ru-RU", new LocaleRU());
-            GameManager.instance.localizationManager.AddSource("zh-HANS", new LocaleZHHANS());
-            GameManager.instance.localizationManager.AddSource("zh-HANT", new LocaleZHHANT());
+            GameManager.instance.localizationManager.AddSource("de-DE", new LocaleDE(m_Setting));
+            GameManager.instance.localizationManager.AddSource("es-ES", new LocaleES(m_Setting));
+            GameManager.instance.localizationManager.AddSource("fr-FR", new LocaleFR(m_Setting));
+            GameManager.instance.localizationManager.AddSource("it-IT", new LocaleIT(m_Setting));
+            GameManager.instance.localizationManager.AddSource("ja-JP", new LocaleJA(m_Setting));
+            GameManager.instance.localizationManager.AddSource("ko-KR", new LocaleKO(m_Setting));
+            GameManager.instance.localizationManager.AddSource("pl-PL", new LocalePL(m_Setting));
+            GameManager.instance.localizationManager.AddSource("pt-BR", new LocalePTBR(m_Setting));
+            GameManager.instance.localizationManager.AddSource("ru-RU", new LocaleRU(m_Setting));
+            GameManager.instance.localizationManager.AddSource("zh-HANS", new LocaleZHHANS(m_Setting));
+            GameManager.instance.localizationManager.AddSource("zh-HANT", new LocaleZHHANT(m_Setting));
 
 
             AssetDatabase.global.LoadSettings(nameof(DistrictGroups), m_Setting, new Setting(this));
