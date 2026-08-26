@@ -34,6 +34,19 @@ $horizontal-padding: 16rem;
     letter-spacing: 0.5rem;
 }
 
+.panelContent {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    background-image: linear-gradient(var(--panelGradientStart), var(--panelGradientEnd));
+    background-color: var(--panelColorNormal);
+    backdrop-filter: var(--panelBlur);
+}
+:global(.legacy-interface) .panelContent {
+    background-image: none;
+}
+
 .actionSection {
     display: flex;
     align-items: center;
@@ -42,7 +55,7 @@ $horizontal-padding: 16rem;
     padding-right: $horizontal-padding;
     padding-bottom: $horizontal-padding;
     padding-left: $horizontal-padding;
-    background-color: var(--sectionHeaderColor);
+    background-color: rgba(19, 28, 48, 0.75)
 }
 
 .newGroupButton {
@@ -63,8 +76,6 @@ $horizontal-padding: 16rem;
     padding-top: $horizontal-padding;
     padding-bottom: $horizontal-padding;
     padding-left: $horizontal-padding;
-    background-color: var(--panelColorNormal);
-    backdrop-filter: var(--panelBlur);
 }
 
 .footer {

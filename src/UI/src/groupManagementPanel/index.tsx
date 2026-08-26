@@ -84,44 +84,46 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                 />
             </div>
 
-            <div className={css.actionSection}>
-                <TypeFilterPicker
-                    value={filterType}
-                    onChange={onFilterChange}
-                    labels={typeLabels}
-                    allLabel={null}
-                    tooltip={filterTooltip}
-                />
-
-                <Tooltip tooltip={t("newGroupButtonTooltip")}>
-                    <Button
-                        variant="primary"
-                        className={css.newGroupButton}
-                        onSelect={onCreateGroup}
-                    >
-                        {t("newGroupButton")}
-                    </Button>
-                </Tooltip>
-            </div>
-
-            <Scrollable
-                vertical={true}
-                trackVisibility="reserve"
-                className={css.list}
-            >
-                {groups.length === 0 && (
-                    <div>{t("noGroupsYet")}</div>
-                )}
-                {groups.length > 0 && displayedGroups.length === 0 && (
-                    <div>{t("noGroupsMatchFilter")}</div>
-                )}
-                {displayedGroups.map((group) => (
-                    <GroupCard
-                        key={entityKey(group.entity)}
-                        group={group}
+            <div className={css.panelContent}>
+                <div className={css.actionSection}>
+                    <TypeFilterPicker
+                        value={filterType}
+                        onChange={onFilterChange}
+                        labels={typeLabels}
+                        allLabel={null}
+                        tooltip={filterTooltip}
                     />
-                ))}
-            </Scrollable>
+
+                    <Tooltip tooltip={t("newGroupButtonTooltip")}>
+                        <Button
+                            variant="primary"
+                            className={css.newGroupButton}
+                            onSelect={onCreateGroup}
+                        >
+                            {t("newGroupButton")}
+                        </Button>
+                    </Tooltip>
+                </div>
+
+                <Scrollable
+                    vertical={true}
+                    trackVisibility="reserve"
+                    className={css.list}
+                >
+                    {groups.length === 0 && (
+                        <div>{t("noGroupsYet")}</div>
+                    )}
+                    {groups.length > 0 && displayedGroups.length === 0 && (
+                        <div>{t("noGroupsMatchFilter")}</div>
+                    )}
+                    {displayedGroups.map((group) => (
+                        <GroupCard
+                            key={entityKey(group.entity)}
+                            group={group}
+                        />
+                    ))}
+                </Scrollable>
+            </div>
 
             <div className={css.footer}>
                 <Checkbox

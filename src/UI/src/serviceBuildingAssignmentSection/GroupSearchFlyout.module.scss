@@ -111,6 +111,10 @@ $horizontal-padding: 16rem;
     padding-bottom: var(--gap8);
     background-color: var(--panelColorNormal);
     backdrop-filter: var(--panelBlur);
+    background-image: linear-gradient(var(--panelGradientStart), var(--panelGradientEnd));
+}
+:global(.legacy-interface) .list {
+    background-image: none;
 }
 
 .listSectionHeader {
