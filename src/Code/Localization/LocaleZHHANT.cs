@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "將該行政區從群組中移除。" },
                 { LocalizationKey.SelectDistrictsButton, "選擇行政區" },
                 { LocalizationKey.GroupColorTooltip, "群組顏色" },
+                { LocalizationKey.NameInputTooltip, "選取以修改名稱。" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**行政區群組**" },
                 { LocalizationKey.ToggleTooltipBody, "建立行政區群組並指派給服務建築，自動管理其**行政區**。" },

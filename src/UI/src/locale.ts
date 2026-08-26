@@ -29,6 +29,7 @@ export const kLocale = {
     removeMemberTooltip: id("RemoveMemberTooltip"),
     selectDistrictsButton: id("SelectDistrictsButton"),
     groupColorTooltip: id("GroupColorTooltip"),
+    nameInputTooltip: id("NameInputTooltip"),
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
     toggleTooltipBody: id("ToggleTooltipBody"),
@@ -94,6 +95,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     removeMemberTooltip: "Remove the district from the group.",
     selectDistrictsButton: "Select Districts",
     groupColorTooltip: "Group Color",
+    nameInputTooltip: "Select to edit the name.",
 
     toggleTooltipTitle: "**DISTRICT GROUPS**",
     toggleTooltipBody:

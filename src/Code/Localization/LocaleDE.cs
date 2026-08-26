@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "Entfernt den Bezirk aus der Gruppe." },
                 { LocalizationKey.SelectDistrictsButton, "Bezirke auswählen" },
                 { LocalizationKey.GroupColorTooltip, "Gruppenfarbe" },
+                { LocalizationKey.NameInputTooltip, "Auswählen, um den Namen bearbeiten zu können." },
 
                 { LocalizationKey.ToggleTooltipTitle, "**BEZIRKSGRUPPEN**" },
                 { LocalizationKey.ToggleTooltipBody, "Erstelle Gruppen von Bezirken, die du Diensteinrichtungen zuweisen kannst, um deren **versorgte Bezirke** automatisch zu verwalten." },

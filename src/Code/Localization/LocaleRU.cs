@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "Удалить район из группы." },
                 { LocalizationKey.SelectDistrictsButton, "Выбрать районы" },
                 { LocalizationKey.GroupColorTooltip, "Цвет группы" },
+                { LocalizationKey.NameInputTooltip, "Выберите, чтобы изменить название." },
 
                 { LocalizationKey.ToggleTooltipTitle, "**ГРУППЫ РАЙОНОВ**" },
                 { LocalizationKey.ToggleTooltipBody, "Создавайте группы районов и назначайте их зданиям служб для автоматического управления **районами обслуживания**." },

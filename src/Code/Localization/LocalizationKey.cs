@@ -30,6 +30,7 @@ namespace DistrictGroups
         public const string RemoveMemberTooltip = "DistrictGroups.UI[RemoveMemberTooltip]";
         public const string SelectDistrictsButton = "DistrictGroups.UI[SelectDistrictsButton]";
         public const string GroupColorTooltip = "DistrictGroups.UI[GroupColorTooltip]";
+        public const string NameInputTooltip = "DistrictGroups.UI[NameInputTooltip]";
 
         public const string ToggleTooltipTitle = "DistrictGroups.UI[ToggleTooltipTitle]";
         public const string ToggleTooltipBody = "DistrictGroups.UI[ToggleTooltipBody]";

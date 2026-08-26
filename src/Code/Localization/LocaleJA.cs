@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "この特区をグループから削除します。" },
                 { LocalizationKey.SelectDistrictsButton, "特区を選択" },
                 { LocalizationKey.GroupColorTooltip, "グループの色" },
+                { LocalizationKey.NameInputTooltip, "選択して名前を編集します。" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**特区グループ**" },
                 { LocalizationKey.ToggleTooltipBody, "特区をグループ化して公共施設に割り当てることで、**稼働特区**を自動的に管理できるようにします。" },

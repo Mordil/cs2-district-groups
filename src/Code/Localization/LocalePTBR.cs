@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "Remove o distrito do grupo." },
                 { LocalizationKey.SelectDistrictsButton, "Selecionar Distritos" },
                 { LocalizationKey.GroupColorTooltip, "Cor do Grupo" },
+                { LocalizationKey.NameInputTooltip, "Selecione para editar o nome." },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPOS DE DISTRITOS**" },
                 { LocalizationKey.ToggleTooltipBody, "Crie grupos de distritos para atribuir a edifícios de serviço e gerenciar automaticamente os **distritos em operação**." },

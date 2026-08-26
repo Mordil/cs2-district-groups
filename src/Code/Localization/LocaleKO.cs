@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "그룹에서 이 지구을 제거합니다." },
                 { LocalizationKey.SelectDistrictsButton, "지구 선택" },
                 { LocalizationKey.GroupColorTooltip, "그룹 색상" },
+                { LocalizationKey.NameInputTooltip, "선택하여 이름을 편집할 수 있습니다." },
 
                 { LocalizationKey.ToggleTooltipTitle, "**지구 그룹**" },
                 { LocalizationKey.ToggleTooltipBody, "지구 그룹을 만들어 서비스 건물에 할당하면 **운영 지구**이 자동으로 관리됩니다." },

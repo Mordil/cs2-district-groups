@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "Usuwa dzielnicę z grupy." },
                 { LocalizationKey.SelectDistrictsButton, "Wybierz dzielnice" },
                 { LocalizationKey.GroupColorTooltip, "Kolor grupy" },
+                { LocalizationKey.NameInputTooltip, "Wybierz, aby edytować nazwę." },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPY DZIELNIC**" },
                 { LocalizationKey.ToggleTooltipBody, "Twórz grupy dzielnic, które można przypisywać do budynków usługowych, aby automatycznie zarządzać ich **obsługiwanymi dzielnicami**." },

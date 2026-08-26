@@ -139,18 +139,20 @@ export const GroupCard = (props: { group: Group }) => {
                     tooltip={t("groupColorTooltip")}
                     className={css.colorSwatch}
                 />
-                <input
-                    className={css.nameInput}
-                    value={nameDraft}
-                    onFocus={() => setNameFocused(true)}
-                    onChange={(e) => setNameDraft((e.target as HTMLInputElement).value)}
-                    onBlur={commitName}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            (e.target as HTMLInputElement).blur()
-                        }
-                    }}
-                />
+                <Tooltip tooltip={t("nameInputTooltip")}>
+                    <input
+                        className={css.nameInput}
+                        value={nameDraft}
+                        onFocus={() => setNameFocused(true)}
+                        onChange={(e) => setNameDraft((e.target as HTMLInputElement).value)}
+                        onBlur={commitName}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                (e.target as HTMLInputElement).blur()
+                            }
+                        }}
+                    />
+                </Tooltip>
 
                 <TypePicker
                     value={group.type}

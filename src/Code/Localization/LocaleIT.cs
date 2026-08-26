@@ -87,6 +87,7 @@ namespace DistrictGroups
                 { LocalizationKey.RemoveMemberTooltip, "Rimuovi il quartiere dal gruppo." },
                 { LocalizationKey.SelectDistrictsButton, "Seleziona Quartieri" },
                 { LocalizationKey.GroupColorTooltip, "Colore del Gruppo" },
+                { LocalizationKey.NameInputTooltip, "Seleziona per modificare il nome." },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPPI DI QUARTIERI**" },
                 { LocalizationKey.ToggleTooltipBody, "Crea gruppi di quartieri da assegnare agli edifici di servizio per la gestione automatica dei **quartieri operativi**." },
