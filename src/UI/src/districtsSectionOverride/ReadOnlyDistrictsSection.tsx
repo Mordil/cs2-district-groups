@@ -1,8 +1,10 @@
 import { trigger } from "cs2/api"
 import { LocalizedEntityName, Name } from "cs2/l10n"
 import { Entity } from "cs2/utils"
+import { FormattedParagraphs } from "cs2/ui"
 import { VC } from "../components/vanilla"
 import { useTranslation } from "../locale"
+import { markdownRenderer } from "../shared"
 
 interface VanillaDistrictEntry {
     entity: Entity
@@ -18,8 +20,20 @@ export interface VanillaDistrictsSectionProps {
 // ServiceDistrict buffer is managed by the group, not by manual editing.
 export const ReadOnlyDistrictsSection = (props: VanillaDistrictsSectionProps) => {
     const t = useTranslation()
+
+    const readOnlyTooltip = (
+        <FormattedParagraphs
+            renderer={markdownRenderer}
+            text={[
+                t("readOnlySectionTooltipLine1"),
+                t("readOnlySectionTooltipLine2"),
+                t("readOnlySectionTooltipLine3"),
+            ]}
+        />
+    )
+
     return (
-        <VC.InfoSection disableFocus={true}>
+        <VC.InfoSection disableFocus={true} tooltip={readOnlyTooltip}>
             <VC.InfoRow uppercase={true} disableFocus={true} left={t("operatingDistrictsLabel")} />
             {props.districts.map((district) => (
                 <VC.InfoRow

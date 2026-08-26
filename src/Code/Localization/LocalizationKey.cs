@@ -40,6 +40,9 @@ namespace DistrictGroups
         public const string SectionTooltipLine4 = "DistrictGroups.UI[SectionTooltipLine4]";
         public const string SectionLabel = "DistrictGroups.UI[SectionLabel]";
         public const string OperatingDistrictsLabel = "DistrictGroups.UI[OperatingDistrictsLabel]";
+        public const string ReadOnlySectionTooltipLine1 = "DistrictGroups.UI[ReadOnlySectionTooltipLine1]";
+        public const string ReadOnlySectionTooltipLine2 = "DistrictGroups.UI[ReadOnlySectionTooltipLine2]";
+        public const string ReadOnlySectionTooltipLine3 = "DistrictGroups.UI[ReadOnlySectionTooltipLine3]";
         public const string UnassignOption = "DistrictGroups.UI[UnassignOption]";
         public const string UnassignTooltipDisabled = "DistrictGroups.UI[UnassignTooltipDisabled]";
         public const string UnassignTooltipEnabled = "DistrictGroups.UI[UnassignTooltipEnabled]";

@@ -39,6 +39,9 @@ export const kLocale = {
     sectionTooltipLine4: id("SectionTooltipLine4"),
     sectionLabel: id("SectionLabel"),
     operatingDistrictsLabel: id("OperatingDistrictsLabel"),
+    readOnlySectionTooltipLine1: id("ReadOnlySectionTooltipLine1"),
+    readOnlySectionTooltipLine2: id("ReadOnlySectionTooltipLine2"),
+    readOnlySectionTooltipLine3: id("ReadOnlySectionTooltipLine3"),
     unassignOption: id("UnassignOption"),
     unassignTooltipDisabled: id("UnassignTooltipDisabled"),
     unassignTooltipEnabled: id("UnassignTooltipEnabled"),
@@ -102,6 +105,11 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     sectionTooltipLine4: "NOTE: The Info Panel can take a few seconds to visually update after changing the assignment.",
     sectionLabel: "DISTRICT GROUP",
     operatingDistrictsLabel: "Operating Districts",
+    readOnlySectionTooltipLine1: "This building is currently assigned to a district group.",
+    readOnlySectionTooltipLine2:
+        "**City district** assignments will be managed by the **assigned district group**.",
+    readOnlySectionTooltipLine3:
+        "If no **city district** is in the **district group**, this building will provide their services everywhere within their **operational radius**.",
     unassignOption: "Unassign",
     unassignTooltipDisabled: "No group is assigned.",
     unassignTooltipEnabled: "Removes the current group assignment.",
