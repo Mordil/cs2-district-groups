@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "File a bug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Logs debug data, then opens the mod's GitHub issue tracker in your browser." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Refresh rate" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "The number of seconds to wait between UI updates for aggregate district information.\n\nUpdating frequently may negatively impact performance." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Reset all settings" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Resets all mod settings back to their default values." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "All mod settings will revert to their default values.\r\nDo you want to proceed?" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "Select Districts" },
                 { LocalizationKey.GroupColorTooltip, "Group Color" },
                 { LocalizationKey.NameInputTooltip, "Select to edit the name." },
+                { LocalizationKey.MetadataDistrictsTooltip, "Districts" },
+                { LocalizationKey.MetadataBuildingsTooltip, "Assigned buildings" },
+                { LocalizationKey.MetadataPopulationTooltip, "Population" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**DISTRICT GROUPS**" },
                 { LocalizationKey.ToggleTooltipBody, "Create groups of districts to assign to service buildings for self-managing of **operating districts**." },

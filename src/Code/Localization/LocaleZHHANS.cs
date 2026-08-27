@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "提交错误报告" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "记录调试数据，然后在浏览器中打开模组的 GitHub 问题跟踪页面。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "刷新率" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "在界面更新聚合市辖区信息之间等待的秒数。\n\n频繁更新可能会对性能产生负面影响。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重置所有设置" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "将所有模组设置恢复为默认值。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "所有模组设置都将恢复为默认值。\r\n是否继续？" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "选择市辖区" },
                 { LocalizationKey.GroupColorTooltip, "市辖区组颜色" },
                 { LocalizationKey.NameInputTooltip, "选择以修改名称。" },
+                { LocalizationKey.MetadataDistrictsTooltip, "市辖区" },
+                { LocalizationKey.MetadataBuildingsTooltip, "已分配建筑" },
+                { LocalizationKey.MetadataPopulationTooltip, "人口" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**市辖区组**" },
                 { LocalizationKey.ToggleTooltipBody, "创建市辖区组并分配给服务建筑，实现**工作区**的自动管理。" },

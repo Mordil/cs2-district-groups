@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "提交錯誤報告" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "記錄偵錯資料，然後在您的瀏覽器中開啟模組的 GitHub 問題追蹤頁面。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "更新率" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "介面更新彙總行政區資訊之間等待的秒數。\n\n頻繁更新可能會對效能產生負面影響。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重設所有設定" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "將所有模組設定重設為預設值。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "所有模組設定將還原為預設值。\r\n是否要繼續？" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "選擇行政區" },
                 { LocalizationKey.GroupColorTooltip, "群組顏色" },
                 { LocalizationKey.NameInputTooltip, "選取以修改名稱。" },
+                { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
+                { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
+                { LocalizationKey.MetadataPopulationTooltip, "人口" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**行政區群組**" },
                 { LocalizationKey.ToggleTooltipBody, "建立行政區群組並指派給服務建築，自動管理其**行政區**。" },

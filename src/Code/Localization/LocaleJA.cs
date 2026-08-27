@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "不具合を報告" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "デバッグデータをログに記録した後、ブラウザでMODのGitHub Issueトラッカーを開きます。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "更新頻度" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "特区の集計情報をUIで更新する間隔(秒)です。\n\n頻繁に更新すると、パフォーマンスに悪影響を及ぼす可能性があります。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "すべての設定をリセット" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "すべてのMOD設定を初期値に戻します。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "すべてのMOD設定が初期値に戻ります。\r\n続行しますか?" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "特区を選択" },
                 { LocalizationKey.GroupColorTooltip, "グループの色" },
                 { LocalizationKey.NameInputTooltip, "選択して名前を編集します。" },
+                { LocalizationKey.MetadataDistrictsTooltip, "特区" },
+                { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
+                { LocalizationKey.MetadataPopulationTooltip, "人口" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**特区グループ**" },
                 { LocalizationKey.ToggleTooltipBody, "特区をグループ化して公共施設に割り当てることで、**稼働特区**を自動的に管理できるようにします。" },

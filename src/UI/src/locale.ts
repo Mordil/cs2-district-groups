@@ -30,6 +30,9 @@ export const kLocale = {
     selectDistrictsButton: id("SelectDistrictsButton"),
     groupColorTooltip: id("GroupColorTooltip"),
     nameInputTooltip: id("NameInputTooltip"),
+    metadataDistrictsTooltip: id("MetadataDistrictsTooltip"),
+    metadataBuildingsTooltip: id("MetadataBuildingsTooltip"),
+    metadataPopulationTooltip: id("MetadataPopulationTooltip"),
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
     toggleTooltipBody: id("ToggleTooltipBody"),
@@ -96,6 +99,9 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     selectDistrictsButton: "Select Districts",
     groupColorTooltip: "Group Color",
     nameInputTooltip: "Select to edit the name.",
+    metadataDistrictsTooltip: "Districts",
+    metadataBuildingsTooltip: "Assigned buildings",
+    metadataPopulationTooltip: "Population",
 
     toggleTooltipTitle: "**DISTRICT GROUPS**",
     toggleTooltipBody:

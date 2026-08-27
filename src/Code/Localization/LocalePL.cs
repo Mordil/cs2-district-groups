@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "Zgłoś błąd" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Zapisuje dane debugowania, a następnie otwiera w przeglądarce stronę zgłoszeń błędów moda na GitHubie." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Częstotliwość odświeżania" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "Liczba sekund oczekiwania między aktualizacjami interfejsu dla zagregowanych informacji o dzielnicach.\n\nCzęste aktualizowanie może negatywnie wpłynąć na wydajność." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Zresetuj wszystkie ustawienia" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Przywraca wszystkie ustawienia moda do wartości domyślnych." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Wszystkie ustawienia moda zostaną przywrócone do wartości domyślnych.\r\nCzy chcesz kontynuować?" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "Wybierz dzielnice" },
                 { LocalizationKey.GroupColorTooltip, "Kolor grupy" },
                 { LocalizationKey.NameInputTooltip, "Wybierz, aby edytować nazwę." },
+                { LocalizationKey.MetadataDistrictsTooltip, "Dzielnice" },
+                { LocalizationKey.MetadataBuildingsTooltip, "Przypisane budynki" },
+                { LocalizationKey.MetadataPopulationTooltip, "Populacja" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPY DZIELNIC**" },
                 { LocalizationKey.ToggleTooltipBody, "Twórz grupy dzielnic, które można przypisywać do budynków usługowych, aby automatycznie zarządzać ich **obsługiwanymi dzielnicami**." },

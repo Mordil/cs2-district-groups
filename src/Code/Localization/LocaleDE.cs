@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "Fehler melden" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Protokolliert Debug-Daten und öffnet anschließend den GitHub-Issue-Tracker des Mods in deinem Browser." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Aktualisierungsrate" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "Die Anzahl an Sekunden, die zwischen Aktualisierungen der aggregierten Bezirksinformationen in der Benutzeroberfläche gewartet wird.\n\nHäufiges Aktualisieren kann sich negativ auf die Leistung auswirken." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Alle Einstellungen zurücksetzen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Setzt alle Mod-Einstellungen auf ihre Standardwerte zurück." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Alle Mod-Einstellungen werden auf ihre Standardwerte zurückgesetzt.\r\nMöchtest du fortfahren?" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "Bezirke auswählen" },
                 { LocalizationKey.GroupColorTooltip, "Gruppenfarbe" },
                 { LocalizationKey.NameInputTooltip, "Auswählen, um den Namen bearbeiten zu können." },
+                { LocalizationKey.MetadataDistrictsTooltip, "Bezirke" },
+                { LocalizationKey.MetadataBuildingsTooltip, "Zugewiesene Gebäude" },
+                { LocalizationKey.MetadataPopulationTooltip, "Bevölkerung" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**BEZIRKSGRUPPEN**" },
                 { LocalizationKey.ToggleTooltipBody, "Erstelle Gruppen von Bezirken, die du Diensteinrichtungen zuweisen kannst, um deren **versorgte Bezirke** automatisch zu verwalten." },

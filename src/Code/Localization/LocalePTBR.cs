@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "Registrar um erro" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Registra dados de depuração e depois abre o rastreador de problemas do GitHub do mod no seu navegador." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Taxa de atualização" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "O número de segundos a esperar entre as atualizações da interface para informações agregadas de distritos.\n\nAtualizar com frequência pode afetar negativamente o desempenho." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Redefinir todas as configurações" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Redefine todas as configurações do mod para os valores padrão." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Todas as configurações do mod voltarão aos valores padrão.\r\nDeseja continuar?" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "Selecionar Distritos" },
                 { LocalizationKey.GroupColorTooltip, "Cor do Grupo" },
                 { LocalizationKey.NameInputTooltip, "Selecione para editar o nome." },
+                { LocalizationKey.MetadataDistrictsTooltip, "Distritos" },
+                { LocalizationKey.MetadataBuildingsTooltip, "Edifícios atribuídos" },
+                { LocalizationKey.MetadataPopulationTooltip, "População" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPOS DE DISTRITOS**" },
                 { LocalizationKey.ToggleTooltipBody, "Crie grupos de distritos para atribuir a edifícios de serviço e gerenciar automaticamente os **distritos em operação**." },

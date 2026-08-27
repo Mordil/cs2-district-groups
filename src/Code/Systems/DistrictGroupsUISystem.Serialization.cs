@@ -1,4 +1,5 @@
 using Colossal.UI.Binding;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using static DistrictGroups.EntityJson;
@@ -10,6 +11,7 @@ namespace DistrictGroups
         private void WriteGroups(IJsonWriter writer)
         {
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
+            Dictionary<Entity, int> districtPopulations = m_GroupSystem.GetDistrictPopulations();
             writer.ArrayBegin(groups.Length);
             foreach (Entity group in groups)
             {
@@ -29,6 +31,8 @@ namespace DistrictGroups
                 {
                     writer.Write(assignedBuildings.Length);
                 }
+                writer.PropertyName("population");
+                writer.Write(m_GroupSystem.GetPopulation(group, districtPopulations));
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)

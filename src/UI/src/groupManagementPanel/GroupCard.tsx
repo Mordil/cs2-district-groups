@@ -1,10 +1,11 @@
 import { trigger, useValue } from "cs2/api"
+import { LocalizedNumber, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
 import { entityEquals, entityKey } from "cs2/utils"
 import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
 import mod from "../../mod.json"
 import { ColorPicker } from "../components/ColorPicker"
-import { gameIconSrc, uilIconSrc } from "../components/icons"
+import { gameIconSrc, modIconSrc, uilIconSrc } from "../components/icons"
 import { TypePicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
 import css from "./GroupCard.module.scss"
@@ -27,6 +28,19 @@ const stopMouseDown = (e: MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 }
+
+const MetadataItem = (props: { icon: string; value: number; tooltip: string }) => (
+    <Tooltip tooltip={props.tooltip}>
+        <div className={css.metadataItem}>
+            <Icon
+                tinted={true}
+                className={css.metadataIcon}
+                src={props.icon} />
+
+            <LocalizedNumber value={props.value} unit={Unit.Integer} />
+        </div>
+    </Tooltip>
+)
 
 export const GroupCard = (props: { group: Group }) => {
     const { group } = props
@@ -178,6 +192,24 @@ export const GroupCard = (props: { group: Group }) => {
                         />
                     </div>
                 </Tooltip>
+            </div>
+
+            <div className={css.metadataRow}>
+                <MetadataItem
+                    icon={gameIconSrc("LotTool")}
+                    value={group.members.length}
+                    tooltip={t("metadataDistrictsTooltip")}
+                />
+                <MetadataItem
+                    icon={modIconSrc("building")}
+                    value={group.assignedBuildingCount}
+                    tooltip={t("metadataBuildingsTooltip")}
+                />
+                <MetadataItem
+                    icon={gameIconSrc("Population")}
+                    value={group.population}
+                    tooltip={t("metadataPopulationTooltip")}
+                />
             </div>
 
             {expandedContentMounted && (

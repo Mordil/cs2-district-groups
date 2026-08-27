@@ -33,6 +33,7 @@ namespace DistrictGroups
         public const int kDefaultOverlayBorderHeightOffset = 15;
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
+        public const int kDefaultRefreshRateSeconds = 10;
 #if DEBUG
         public const bool kDefaultEnableDebugLogging = true;
 #else
@@ -56,6 +57,7 @@ namespace DistrictGroups
             OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
+            RefreshRateSeconds = kDefaultRefreshRateSeconds;
             EnableDebugLogging = kDefaultEnableDebugLogging;
         }
 
@@ -83,6 +85,11 @@ namespace DistrictGroups
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
         [SettingsUISection(kTabOverlay, kSectionOverlay)]
         public int OverlayFillSaturationPercent { get; set; }
+
+        // How often the mod recomputes aggregate district information
+        [SettingsUISlider(min = 1, max = 30, step = 1, unit = Unit.kInteger)]
+        [SettingsUISection(kTabGeneral, kSectionDefault)]
+        public int RefreshRateSeconds { get; set; }
 
         // Resets every mod setting back to its shipped default.
         [SettingsUIButton]

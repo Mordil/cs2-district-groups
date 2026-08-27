@@ -53,6 +53,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FileBug)), "Сообщить об ошибке" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.FileBug)), "Записывает отладочные данные, затем открывает трекер задач мода на GitHub в вашем браузере." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Частота обновления" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "Количество секунд ожидания между обновлениями интерфейса для агрегированной информации о районах.\n\nЧастое обновление может негативно повлиять на производительность." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Сбросить все настройки" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Сбрасывает все настройки мода к значениям по умолчанию." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Все настройки мода будут возвращены к значениям по умолчанию.\r\nВы хотите продолжить?" },
@@ -88,6 +91,9 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "Выбрать районы" },
                 { LocalizationKey.GroupColorTooltip, "Цвет группы" },
                 { LocalizationKey.NameInputTooltip, "Выберите, чтобы изменить название." },
+                { LocalizationKey.MetadataDistrictsTooltip, "Районы" },
+                { LocalizationKey.MetadataBuildingsTooltip, "Назначенные здания" },
+                { LocalizationKey.MetadataPopulationTooltip, "Население" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**ГРУППЫ РАЙОНОВ**" },
                 { LocalizationKey.ToggleTooltipBody, "Создавайте группы районов и назначайте их зданиям служб для автоматического управления **районами обслуживания**." },

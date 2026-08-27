@@ -12,5 +12,6 @@ export interface Group {
     type: number
     color: Color
     assignedBuildingCount: number
+    population: number
     members: NamedEntity[]
 }
