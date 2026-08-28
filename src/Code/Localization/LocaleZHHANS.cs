@@ -22,26 +22,26 @@ namespace DistrictGroups
             {
                 { m_Setting.GetSettingsLocaleID(), "市辖区组" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "主要" },
-                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "叠加层" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "覆盖图" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "开发者" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "默认" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "故障排除" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "边框宽度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "叠加层上绘制的市辖区边界线的宽度。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "覆盖图上绘制的市辖区边界线的宽度。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "边框不透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "叠加层上绘制的市辖区边界线的不透明度。\n\n0% 为完全透明，100% 为完全不透明。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "覆盖图上绘制的市辖区边界线的不透明度。\n\n0% 为完全透明，100% 为完全不透明。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "场景去饱和度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "显示市辖区组叠加层时，场景其余部分的去饱和程度。\n\n0% 保持场景不变，100% 为完全灰度。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "显示市辖区组覆盖图时，场景其余部分的去饱和程度。\n\n0% 保持场景不变，100% 为完全灰度。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "填充饱和度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "市辖区组叠加层填充区域的饱和程度。\n\n100% 为该组的完整颜色；数值越低，颜色越趋向灰色。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "市辖区组覆盖图填充区域的饱和程度。\n\n100% 为该组的完整颜色；数值越低，颜色越趋向灰色。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "使用填充透明化" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "为市辖区组叠加层的填充区域启用透明化。\n\n禁用时，叠加层将显示完全不透明的纯色，遮盖所有其他视觉内容。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "为市辖区组覆盖图的填充区域启用透明化。\n\n禁用时，覆盖图将显示完全不透明的纯色，遮盖所有其他视觉内容。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "启用调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "将详细的调试级别记录写入模组的日志文件。\n\n这可能会影响性能。" },
@@ -66,8 +66,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "移除模组数据" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "删除模组在当前存档中添加的所有市辖区组、服务建筑分配和叠加层资源。" },
-                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "此存档中的所有市辖区组、服务建筑分配和叠加层数据都将被永久删除。\r\n此操作无法撤销。\r\n是否继续？" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "删除模组在当前存档中添加的所有市辖区组、服务建筑分配和覆盖图资源。" },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "此存档中的所有市辖区组、服务建筑分配和覆盖图数据都将被永久删除。\r\n此操作无法撤销。\r\n是否继续？" },
 
                 { LocalizationKey.PanelTitle, "市辖区组" },
                 { LocalizationKey.NewGroupButton, "新建市辖区组" },
@@ -78,7 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsYet, "尚无市辖区组，点击「新建市辖区组」按钮创建一个。" },
                 { LocalizationKey.NoGroupsMatchFilter, "没有市辖区组匹配此筛选条件。" },
                 { LocalizationKey.DisplayDistrictAreasLabel, "显示所有市辖区" },
-                { LocalizationKey.ShowGroupOverlayLabel, "显示市辖区组叠加层" },
+                { LocalizationKey.ShowGroupOverlayLabel, "显示市辖区组覆盖图" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "永久删除该市辖区组。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "已分配的建筑将失去其**工作区**。" },

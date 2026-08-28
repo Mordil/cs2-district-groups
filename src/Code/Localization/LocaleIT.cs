@@ -22,26 +22,26 @@ namespace DistrictGroups
             {
                 { m_Setting.GetSettingsLocaleID(), "Gruppi di Quartieri" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "Principale" },
-                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "Overlay" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "Sovrimpressione" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Sviluppatore" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Predefinito" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Risoluzione problemi" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza del bordo" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza delle linee di confine dei quartieri disegnate sull'overlay." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza delle linee di confine dei quartieri disegnate sulla sovrimpressione." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità del bordo" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità delle linee di confine dei quartieri disegnate sull'overlay.\n\n0% è completamente trasparente, 100% è completamente opaco." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità delle linee di confine dei quartieri disegnate sulla sovrimpressione.\n\n0% è completamente trasparente, 100% è completamente opaco." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturazione della scena" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Quanto viene desaturato il resto della scena mentre l'overlay del gruppo è visibile.\n\n0% lascia la scena inalterata, 100% è in scala di grigi." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Quanto viene desaturato il resto della scena mentre la sovrimpressione del gruppo è visibile.\n\n0% lascia la scena inalterata, 100% è in scala di grigi." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturazione del riempimento" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Quanto sono sature le aree di riempimento dell'overlay del gruppo.\n\n100% è il colore pieno del gruppo; valori più bassi sfumano verso il grigio." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Quanto sono sature le aree di riempimento della sovrimpressione del gruppo.\n\n100% è il colore pieno del gruppo; valori più bassi sfumano verso il grigio." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Usa la trasparenza del riempimento" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Attiva la trasparenza per le aree di riempimento dell'overlay del gruppo.\n\nSe disattivata, l'overlay mostrerà un colore solido e completamente opaco che nasconde tutti gli altri elementi visivi." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Attiva la trasparenza per le aree di riempimento della sovrimpressione del gruppo.\n\nSe disattivata, la sovrimpressione mostrerà un colore solido e completamente opaco che nasconde tutti gli altri elementi visivi." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Attiva log di debug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Scrive voci dettagliate di livello Debug nel file di log della mod.\n\nQuesto potrebbe influire sulle prestazioni." },
@@ -66,8 +66,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Rimuovi dati della mod" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Elimina tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e le risorse di sovrapposizione che la mod ha aggiunto alla partita corrente." },
-                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e i dati di sovrapposizione verranno eliminati definitivamente da questa partita.\r\nQuesta azione non può essere annullata.\r\nVuoi procedere?" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Elimina tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e le risorse di sovrimpressione che la mod ha aggiunto alla partita corrente." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e i dati di sovrimpressione verranno eliminati definitivamente da questa partita.\r\nQuesta azione non può essere annullata.\r\nVuoi procedere?" },
 
                 { LocalizationKey.PanelTitle, "Gruppi di Quartieri" },
                 { LocalizationKey.NewGroupButton, "Nuovo Gruppo" },
@@ -78,7 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsYet, "Ancora nessun gruppo. Creane uno con il pulsante NUOVO GRUPPO." },
                 { LocalizationKey.NoGroupsMatchFilter, "Nessun gruppo corrisponde a questo filtro." },
                 { LocalizationKey.DisplayDistrictAreasLabel, "Mostra tutti i quartieri" },
-                { LocalizationKey.ShowGroupOverlayLabel, "Mostra overlay del gruppo" },
+                { LocalizationKey.ShowGroupOverlayLabel, "Mostra sovrimpressione del gruppo" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "Elimina definitivamente il gruppo." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Gli edifici assegnati perderanno i loro **quartieri operativi**." },

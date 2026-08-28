@@ -22,26 +22,26 @@ namespace DistrictGroups
             {
                 { m_Setting.GetSettingsLocaleID(), "Группы районов" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "Основные" },
-                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "Наложение" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "Слой" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Разработчик" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Общие" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Устранение неполадок" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина границы" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина линий границ районов, отображаемых на наложении." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина линий границ районов, отображаемых на слое." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность границы" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность линий границ районов, отображаемых на наложении.\n\n0% — полностью прозрачно, 100% — полностью непрозрачно." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность линий границ районов, отображаемых на слое.\n\n0% — полностью прозрачно, 100% — полностью непрозрачно." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Обесцвечивание сцены" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Насколько обесцвечивается остальная часть сцены, когда отображается наложение группы.\n\n0% — сцена остаётся без изменений, 100% — полностью чёрно-белая." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Насколько обесцвечивается остальная часть сцены, когда отображается слой группы.\n\n0% — сцена остаётся без изменений, 100% — полностью чёрно-белая." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насыщенность заливки" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насколько насыщена заливка областей наложения группы.\n\n100% — исходный цвет группы, при меньших значениях цвет становится более серым." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насколько насыщена заливка областей слоя группы.\n\n100% — исходный цвет группы, при меньших значениях цвет становится более серым." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Использовать прозрачность заливки" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Включает прозрачность для областей заливки наложения группы.\n\nЕсли отключено, наложение будет отображаться сплошным, полностью непрозрачным цветом, скрывающим все остальные визуальные элементы." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Включает прозрачность для областей заливки слоя группы.\n\nЕсли отключено, слой будет отображаться сплошным, полностью непрозрачным цветом, скрывающим все остальные визуальные элементы." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Включить отладочное логирование" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Записывает подробные отладочные записи в файл журнала мода.\n\nЭто может повлиять на производительность." },
@@ -66,8 +66,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Удалить данные мода" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Удаляет все группы районов, привязки зданий служб и ресурсы оверлея, добавленные модом в текущее сохранение." },
-                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Все группы районов, привязки зданий служб и данные оверлея будут безвозвратно удалены из этого сохранения.\r\nЭто действие невозможно отменить.\r\nВы хотите продолжить?" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Удаляет все группы районов, привязки зданий служб и ресурсы слоя, добавленные модом в текущее сохранение." },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Все группы районов, привязки зданий служб и данные слоя будут безвозвратно удалены из этого сохранения.\r\nЭто действие невозможно отменить.\r\nВы хотите продолжить?" },
 
                 { LocalizationKey.PanelTitle, "Группы районов" },
                 { LocalizationKey.NewGroupButton, "Новая группа" },
@@ -78,7 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsYet, "Групп пока нет. Создайте новую с помощью кнопки НОВАЯ ГРУППА." },
                 { LocalizationKey.NoGroupsMatchFilter, "Нет групп, соответствующих этому фильтру." },
                 { LocalizationKey.DisplayDistrictAreasLabel, "Показать все районы" },
-                { LocalizationKey.ShowGroupOverlayLabel, "Показать наложение группы" },
+                { LocalizationKey.ShowGroupOverlayLabel, "Показать слой группы" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "Полностью удалить группу." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Назначенные здания потеряют свои **районы обслуживания**." },

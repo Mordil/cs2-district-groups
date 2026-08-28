@@ -22,26 +22,26 @@ namespace DistrictGroups
             {
                 { m_Setting.GetSettingsLocaleID(), "行政區群組" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabGeneral), "主要" },
-                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "疊加圖層" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kTabOverlay), "覆蓋圖" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "開發者" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "預設" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "疑難排解" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "邊框寬度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "疊加圖層上繪製的行政區邊界線的寬度。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "覆蓋圖上繪製的行政區邊界線的寬度。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "邊框不透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "疊加圖層上繪製的行政區邊界線的不透明度。\n\n0% 為完全透明，100% 為完全不透明。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "覆蓋圖上繪製的行政區邊界線的不透明度。\n\n0% 為完全透明，100% 為完全不透明。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "場景去飽和度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "顯示群組疊加圖層時，場景其他部分的去飽和程度。\n\n0% 表示場景不受影響，100% 表示變為灰階。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "顯示群組覆蓋圖時，場景其他部分的去飽和程度。\n\n0% 表示場景不受影響，100% 表示變為灰階。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "填色飽和度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "群組疊加圖層填色區域的飽和程度。\n\n100% 為群組的完整顏色，數值越低則越趨近灰色。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "群組覆蓋圖填色區域的飽和程度。\n\n100% 為群組的完整顏色，數值越低則越趨近灰色。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "使用填色透明化" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "為群組疊加圖層的填色區域啟用透明化。\n\n停用時，疊加圖層會顯示完全不透明的純色，遮蔽所有其他視覺內容。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "為群組覆蓋圖的填色區域啟用透明化。\n\n停用時，覆蓋圖會顯示完全不透明的純色，遮蔽所有其他視覺內容。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "啟用偵錯記錄" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "將詳細的偵錯層級項目寫入模組的記錄檔。\n\n這可能會影響效能。" },
@@ -66,8 +66,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "移除模組資料" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "刪除模組在目前存檔中新增的所有行政區群組、服務建築指派及疊加層資源。" },
-                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "此存檔中的所有行政區群組、服務建築指派及疊加層資料將被永久刪除。\r\n此操作無法復原。\r\n是否要繼續？" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "刪除模組在目前存檔中新增的所有行政區群組、服務建築指派及覆蓋圖資源。" },
+                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "此存檔中的所有行政區群組、服務建築指派及覆蓋圖資料將被永久刪除。\r\n此操作無法復原。\r\n是否要繼續？" },
 
                 { LocalizationKey.PanelTitle, "行政區群組" },
                 { LocalizationKey.NewGroupButton, "新增群組" },
@@ -78,7 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsYet, "尚無群組。請使用「新增群組」按鈕建立一個。" },
                 { LocalizationKey.NoGroupsMatchFilter, "沒有符合此篩選條件的群組。" },
                 { LocalizationKey.DisplayDistrictAreasLabel, "顯示所有行政區" },
-                { LocalizationKey.ShowGroupOverlayLabel, "顯示群組疊加圖層" },
+                { LocalizationKey.ShowGroupOverlayLabel, "顯示群組覆蓋圖" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "永久刪除此群組。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "已指派的建築將失去其**行政區**。" },
