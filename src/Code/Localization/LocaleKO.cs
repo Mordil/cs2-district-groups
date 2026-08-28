@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "개발자" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "기본" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "오버레이 UI" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "문제 해결" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "테두리 너비" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "지도에 표시되는 지구 그룹 경계선의 너비입니다." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "오버레이에 표시되는 지구 경계선의 너비입니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "테두리 불투명도" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "지도에 표시되는 지구 그룹 경계선의 불투명도입니다.\n\n0%면 완전히 투명하고, 100%면 완전히 불투명합니다." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "오버레이에 표시되는 지구 경계선의 불투명도입니다.\n\n0%면 완전히 투명하고, 100%면 완전히 불투명합니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "장면 채도 감소" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "그룹 오버레이가 표시되는 동안 나머지 장면의 채도를 얼마나 낮출지 설정합니다.\n\n0%면 장면이 그대로 유지되고, 100%면 완전한 흑백이 됩니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "채우기 채도" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "색상이 있는 지구 그룹 채우기 영역의 채도입니다.\n\n100%면 그룹의 원래 색상이 되고, 값이 낮을수록 회색에 가까워집니다." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "그룹 오버레이 채우기 영역의 채도입니다.\n\n100%면 그룹의 원래 색상이 되고, 값이 낮을수록 회색에 가까워집니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "채우기 투명화" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "지구 그룹 채우기 영역을 완전히 불투명한 단색 대신 투명하게 표시합니다." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "채우기 투명화 사용" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "그룹 오버레이 채우기 영역의 투명화를 활성화합니다.\n\n비활성화하면 오버레이가 다른 모든 시각적 요소를 가리는 완전히 불투명한 단색으로 표시됩니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "디버그 로깅 사용" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "모드의 로그 파일에 상세한 디버그 수준 항목을 기록합니다.\n\n성능에 영향을 줄 수 있습니다." },

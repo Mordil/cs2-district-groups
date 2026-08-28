@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "開發者" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "預設" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "疊加圖層介面" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "疑難排解" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "邊框寬度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "地圖上繪製的行政區群組邊界線的寬度。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "疊加圖層上繪製的行政區邊界線的寬度。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "邊框不透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "地圖上繪製的行政區群組邊界線的不透明度。\n\n0% 為完全透明，100% 為完全不透明。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "疊加圖層上繪製的行政區邊界線的不透明度。\n\n0% 為完全透明，100% 為完全不透明。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "場景去飽和度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "顯示群組疊加圖層時，場景其他部分的去飽和程度。\n\n0% 表示場景不受影響，100% 表示變為灰階。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "填色飽和度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "行政區群組填色區域的飽和程度。\n\n100% 為群組的完整顏色，數值越低則越趨近灰色。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "群組疊加圖層填色區域的飽和程度。\n\n100% 為群組的完整顏色，數值越低則越趨近灰色。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "填色透明化" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "以透明方式呈現行政區群組填色區域，而非完全不透明的純色。" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "使用填色透明化" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "為群組疊加圖層的填色區域啟用透明化。\n\n停用時，疊加圖層會顯示完全不透明的純色，遮蔽所有其他視覺內容。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "啟用偵錯記錄" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "將詳細的偵錯層級項目寫入模組的記錄檔。\n\n這可能會影響效能。" },

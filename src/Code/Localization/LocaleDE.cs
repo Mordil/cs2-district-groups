@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Entwickler" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Standard" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Overlay-UI" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Fehlerbehebung" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Randbreite" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Breite der farbigen Grenzlinien der Bezirksgruppen, die auf der Karte gezeichnet werden." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Breite der Grenzlinien der Bezirke, die auf dem Overlay gezeichnet werden." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Randdeckkraft" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Deckkraft der farbigen Grenzlinien der Bezirksgruppen, die auf der Karte gezeichnet werden.\n\n0% ist vollständig transparent, 100% ist vollständig deckend." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Deckkraft der Grenzlinien der Bezirke, die auf dem Overlay gezeichnet werden.\n\n0% ist vollständig transparent, 100% ist vollständig deckend." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Szenenentsättigung" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Wie stark der Rest der Szene entsättigt wird, während das Gruppen-Overlay sichtbar ist.\n\n0% lässt die Szene unverändert, 100% ergibt eine Graustufendarstellung." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Füllsättigung" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Wie gesättigt die farbigen Füllflächen der Bezirksgruppen sind.\n\n100% entspricht der vollen Farbe der Gruppe; niedrigere Werte verblassen in Richtung Grau." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Wie gesättigt die Füllflächen des Gruppen-Overlays sind.\n\n100% entspricht der vollen Farbe der Gruppe; niedrigere Werte verblassen in Richtung Grau." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Fülltransparenz" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Stellt die Füllflächen der Bezirksgruppen transparent dar, statt in einer durchgehend deckenden Farbe." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Fülltransparenz verwenden" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Aktiviert Transparenz für die Füllflächen des Gruppen-Overlays.\n\nWenn deaktiviert, zeigt das Overlay eine durchgehend deckende Farbe an, die alle anderen visuellen Elemente verdeckt." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Debug-Protokollierung aktivieren" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Schreibt ausführliche Einträge der Debug-Ebene in die Protokolldatei des Mods.\n\nDies kann die Leistung beeinträchtigen." },

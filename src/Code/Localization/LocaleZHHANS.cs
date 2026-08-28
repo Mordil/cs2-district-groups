@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "开发者" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "默认" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "叠加层界面" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "故障排除" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "边框宽度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "地图上绘制的彩色市辖区组边界线的宽度。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "叠加层上绘制的市辖区边界线的宽度。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "边框不透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "地图上绘制的彩色市辖区组边界线的不透明度。\n\n0% 为完全透明，100% 为完全不透明。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "叠加层上绘制的市辖区边界线的不透明度。\n\n0% 为完全透明，100% 为完全不透明。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "场景去饱和度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "显示市辖区组叠加层时，场景其余部分的去饱和程度。\n\n0% 保持场景不变，100% 为完全灰度。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "填充饱和度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "彩色市辖区组填充区域的饱和程度。\n\n100% 为该市辖区组的完整颜色；数值越低，颜色越趋向灰色。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "市辖区组叠加层填充区域的饱和程度。\n\n100% 为该组的完整颜色；数值越低，颜色越趋向灰色。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "填充透明化" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "以透明方式呈现市辖区组填充区域，而不是完全不透明的纯色。" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "使用填充透明化" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "为市辖区组叠加层的填充区域启用透明化。\n\n禁用时，叠加层将显示完全不透明的纯色，遮盖所有其他视觉内容。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "启用调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "将详细的调试级别记录写入模组的日志文件。\n\n这可能会影响性能。" },

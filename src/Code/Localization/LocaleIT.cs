@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Sviluppatore" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Predefinito" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "UI Overlay" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Risoluzione problemi" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza del bordo" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza delle linee di confine colorate del gruppo di quartieri disegnate sulla mappa." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza delle linee di confine dei quartieri disegnate sull'overlay." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità del bordo" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità delle linee di confine colorate del gruppo di quartieri disegnate sulla mappa.\n\n0% è completamente trasparente, 100% è completamente opaco." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità delle linee di confine dei quartieri disegnate sull'overlay.\n\n0% è completamente trasparente, 100% è completamente opaco." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturazione della scena" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Quanto viene desaturato il resto della scena mentre l'overlay del gruppo è visibile.\n\n0% lascia la scena inalterata, 100% è in scala di grigi." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturazione del riempimento" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Quanto sono sature le aree di riempimento colorate del gruppo di quartieri.\n\n100% è il colore pieno del gruppo; valori più bassi sfumano verso il grigio." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Quanto sono sature le aree di riempimento dell'overlay del gruppo.\n\n100% è il colore pieno del gruppo; valori più bassi sfumano verso il grigio." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Trasparenza del riempimento" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Mostra le aree di riempimento del gruppo di quartieri con trasparenza invece di un colore solido e completamente opaco." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Usa la trasparenza del riempimento" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Attiva la trasparenza per le aree di riempimento dell'overlay del gruppo.\n\nSe disattivata, l'overlay mostrerà un colore solido e completamente opaco che nasconde tutti gli altri elementi visivi." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Attiva log di debug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Scrive voci dettagliate di livello Debug nel file di log della mod.\n\nQuesto potrebbe influire sulle prestazioni." },

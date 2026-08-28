@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Desenvolvedor" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Padrão" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Interface de Sobreposição" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Solução de Problemas" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Largura da borda" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Largura das linhas coloridas do contorno do grupo de distritos desenhadas no mapa." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Largura das linhas de contorno dos distritos desenhadas na sobreposição." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidade da borda" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidade das linhas coloridas do contorno do grupo de distritos desenhadas no mapa.\n\n0% é totalmente transparente, 100% é totalmente opaco." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidade das linhas de contorno dos distritos desenhadas na sobreposição.\n\n0% é totalmente transparente, 100% é totalmente opaco." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Dessaturação da cena" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "O quanto o restante da cena é dessaturado enquanto a sobreposição do grupo está visível.\n\n0% deixa a cena inalterada, 100% fica em escala de cinza." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturação do preenchimento" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "O quão saturadas são as áreas de preenchimento coloridas do grupo de distritos.\n\n100% é a cor completa do grupo; valores menores esmaecem em direção ao cinza." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "O quão saturadas são as áreas de preenchimento da sobreposição do grupo.\n\n100% é a cor completa do grupo; valores menores esmaecem em direção ao cinza." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Transparência do preenchimento" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Exibe as áreas de preenchimento do grupo de distritos com transparência em vez de uma cor sólida e totalmente opaca." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Usar transparência do preenchimento" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Ativa a transparência para as áreas de preenchimento da sobreposição do grupo.\n\nQuando desativada, a sobreposição exibirá uma cor sólida e totalmente opaca que oculta todos os outros elementos visuais." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Ativar registro de depuração" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Grava entradas detalhadas de nível Debug no arquivo de log do mod.\n\nIsso pode afetar o desempenho." },

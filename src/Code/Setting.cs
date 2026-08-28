@@ -13,7 +13,11 @@ namespace DistrictGroups
 {
     [FileLocation(nameof(DistrictGroups))]
     [SettingsUITabOrder(kTabGeneral, kTabOverlay, kTabDeveloper)]
-    [SettingsUIGroupOrder(kSectionDefault, kSectionOverlay, kSectionDebug, kSectionVersion)]
+    [SettingsUIGroupOrder(
+        kSectionDefault,
+        kSectionOverlayBorder, kSectionOverlayFill,
+        kSectionDebug, kSectionVersion
+    )]
     [SettingsUIShowGroupName(kSectionDebug)]
     public class Setting : ModSetting
     {
@@ -22,7 +26,8 @@ namespace DistrictGroups
         public const string kTabDeveloper = "Developer";
 
         public const string kSectionDefault = "Default";
-        public const string kSectionOverlay = "Overlay";
+        public const string kSectionOverlayBorder = "OverlayBorder";
+        public const string kSectionOverlayFill = "OverlayFill";
         public const string kSectionDebug = "Debug";
         public const string kSectionVersion = "Version";
 
@@ -63,27 +68,27 @@ namespace DistrictGroups
 
         // How much the rest of the scene is desaturated while the group overlay is visible
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabOverlay, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionDefault)]
         public int OverlayDesaturationPercent { get; set; }
 
         // Opacity of the group boundary overlay lines drawn by the overlay system; 0 is fully transparent, 100 fully opaque.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabOverlay, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionOverlayBorder)]
         public int OverlayBorderAlpha { get; set; }
 
         // Width (in world units) of the group boundary overlay lines drawn by the overlay system.
         [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]
-        [SettingsUISection(kTabOverlay, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionOverlayBorder)]
         public int OverlayBorderWidth { get; set; }
+
+        // Whether the group fill mesh/texture renders with transparency (blended over the scene) or as a solid, fully opaque color.
+        [SettingsUISection(kTabOverlay, kSectionOverlayFill)]
+        public bool OverlayFillUseTransparency { get; set; }
 
         // How saturated the group fill color is. The slider spans the full 0-100% range, but the value actually between 35-100%, scaled.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabOverlay, kSectionOverlay)]
+        [SettingsUISection(kTabOverlay, kSectionOverlayFill)]
         public int OverlayFillSaturationPercent { get; set; }
-
-        // Whether the group fill mesh/texture renders with transparency (blended over the scene) or as a solid, fully opaque color.
-        [SettingsUISection(kTabOverlay, kSectionOverlay)]
-        public bool OverlayFillUseTransparency { get; set; }
 
         // How often the mod recomputes aggregate district information
         [SettingsUISlider(min = 1, max = 30, step = 1, unit = Unit.kInteger)]

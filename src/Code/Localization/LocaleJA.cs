@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "開発者" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "デフォルト" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "オーバーレイUI" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "トラブルシューティング" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "境界線の幅" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "マップ上に描画される、色付きの特区グループ境界線の幅です。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "オーバーレイに描画される特区の境界線の幅です。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "境界線の不透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "マップ上に描画される、色付きの特区グループ境界線の不透明度です。\n\n0%で完全に透明、100%で完全に不透明になります。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "オーバーレイに描画される特区の境界線の不透明度です。\n\n0%で完全に透明、100%で完全に不透明になります。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "シーンの彩度低下" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "グループのオーバーレイが表示されている間、他のシーン全体の彩度をどれだけ下げるかを設定します。\n\n0%ではシーンはそのまま変化せず、100%では完全なグレースケールになります。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "塗りつぶしの彩度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "色付きの特区グループの塗りつぶし範囲の彩度を設定します。\n\n100%ではグループの色がそのまま表示され、値が低いほどグレーに近づきます。" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "グループのオーバーレイの塗りつぶし範囲の彩度を設定します。\n\n100%ではグループの色がそのまま表示され、値が低いほどグレーに近づきます。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "塗りつぶしの透明化" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "特区グループの塗りつぶし範囲を、完全に不透明な単色ではなく透明な表示にします。" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "塗りつぶしの透明化を使用" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "グループのオーバーレイの塗りつぶし範囲の透明化を有効にします。\n\n無効にすると、オーバーレイは他のすべての表示を隠す不透明な単色で表示されます。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "デバッグログを有効化" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "詳細なDebugレベルの情報をMODのログファイルに書き込みます。\n\nパフォーマンスに影響する場合があります。" },

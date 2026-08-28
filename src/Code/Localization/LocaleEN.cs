@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Developer" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Default" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Overlay UI" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Troubleshooting" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Border width" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the colored district-group boundary lines drawn on the map." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Width of the district boundary lines drawn on the overlay." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Border opacity" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacity of the colored district-group boundary lines drawn on the map.\n\n0% is fully transparent, 100% is fully opaque." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacity of the district boundary lines drawn on the overlay.\n\n0% is fully transparent, 100% is fully opaque." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Scene desaturation" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "How much the rest of the scene is desaturated while the group overlay is visible.\n\n0% leaves the scene untouched, 100% is grayscale." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Fill saturation" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "How saturated the colored district-group fill areas are.\n\n100% is the group's full color; lower values fade towards gray." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "How saturated the group overlay fill areas are.\n\n100% is the group's full color; lower values fade towards gray." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Fill transparency" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Renders the district-group fill areas with transparency instead of a solid, fully opaque color." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Use Fill transparency" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Enable transparency for the group overlay fill areas.\n\nWhen disabled, the overlay will display a solid, fully opaque color that masks all other visuals." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Enable debug logging" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Writes verbose Debug-level entries to the mod's log file.\n\nThis may affect performance." },

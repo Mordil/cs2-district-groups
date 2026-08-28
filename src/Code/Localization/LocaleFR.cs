@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Développeur" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Par défaut" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Interface de superposition" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Dépannage" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Épaisseur de la bordure" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Épaisseur des lignes de délimitation colorées des groupes de quartiers tracées sur la carte." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Épaisseur des lignes de délimitation des quartiers tracées sur la superposition." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacité de la bordure" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacité des lignes de délimitation colorées des groupes de quartiers tracées sur la carte.\n\n0 % est entièrement transparent, 100 % est entièrement opaque." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacité des lignes de délimitation des quartiers tracées sur la superposition.\n\n0 % est entièrement transparent, 100 % est entièrement opaque." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Désaturation de la scène" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "À quel point le reste de la scène est désaturé lorsque la superposition des groupes est visible.\n\n0 % laisse la scène inchangée, 100 % correspond à un rendu en niveaux de gris." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturation du remplissage" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "À quel point les zones de remplissage colorées des groupes de quartiers sont saturées.\n\n100 % correspond à la couleur pleine du groupe ; les valeurs plus faibles s'estompent vers le gris." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "À quel point les zones de remplissage de la superposition du groupe sont saturées.\n\n100 % correspond à la couleur pleine du groupe ; les valeurs plus faibles s'estompent vers le gris." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Transparence du remplissage" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Affiche les zones de remplissage des groupes de quartiers avec de la transparence plutôt qu'une couleur pleine et entièrement opaque." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Utiliser la transparence du remplissage" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Active la transparence pour les zones de remplissage de la superposition du groupe.\n\nLorsqu'elle est désactivée, la superposition affiche une couleur pleine et entièrement opaque qui masque tous les autres éléments visuels." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Activer la journalisation de débogage" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Écrit des entrées détaillées de niveau débogage dans le fichier journal du mod.\n\nCela peut affecter les performances." },

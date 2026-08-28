@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Deweloperskie" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Domyślne" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Interfejs nakładki" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Rozwiązywanie problemów" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Szerokość obramowania" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Szerokość kolorowych linii obramowania grup dzielnic rysowanych na mapie." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Szerokość linii obramowania dzielnic rysowanych na nakładce." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość obramowania" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość kolorowych linii obramowania grup dzielnic rysowanych na mapie.\n\n0% oznacza pełną przezroczystość, 100% pełną nieprzezroczystość." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość linii obramowania dzielnic rysowanych na nakładce.\n\n0% oznacza pełną przezroczystość, 100% pełną nieprzezroczystość." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturacja scenerii" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Jak silnie desaturowana jest pozostała część scenerii, gdy widoczna jest nakładka grupy.\n\n0% oznacza brak zmian, 100% to odcienie szarości." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Nasycenie wypełnienia" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Jak nasycone są kolorowe obszary wypełnienia grup dzielnic.\n\n100% to pełny kolor grupy; niższe wartości przechodzą w stronę szarości." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Jak nasycone są obszary wypełnienia nakładki grupy.\n\n100% to pełny kolor grupy; niższe wartości przechodzą w stronę szarości." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Przezroczystość wypełnienia" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Wyświetla obszary wypełnienia grup dzielnic z przezroczystością, a nie jako jednolity, w pełni nieprzezroczysty kolor." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Użyj przezroczystości wypełnienia" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Włącza przezroczystość obszarów wypełnienia nakładki grupy.\n\nGdy jest wyłączona, nakładka wyświetla jednolity, w pełni nieprzezroczysty kolor, który zasłania wszystkie inne elementy wizualne." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Włącz logi debugowania" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Zapisuje szczegółowe wpisy poziomu debugowania do pliku dziennika moda.\n\nMoże to wpłynąć na wydajność." },

@@ -26,23 +26,22 @@ namespace DistrictGroups
                 { m_Setting.GetOptionTabLocaleID(Setting.kTabDeveloper), "Разработчик" },
 
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDefault), "Общие" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSectionOverlay), "Оформление наложения" },
                 { m_Setting.GetOptionGroupLocaleID(Setting.kSectionDebug), "Устранение неполадок" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина границы" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина цветных линий границ группы районов, отображаемых на карте." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина линий границ районов, отображаемых на наложении." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность границы" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность цветных линий границ группы районов, отображаемых на карте.\n\n0% — полностью прозрачно, 100% — полностью непрозрачно." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность линий границ районов, отображаемых на наложении.\n\n0% — полностью прозрачно, 100% — полностью непрозрачно." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Обесцвечивание сцены" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Насколько обесцвечивается остальная часть сцены, когда отображается наложение группы.\n\n0% — сцена остаётся без изменений, 100% — полностью чёрно-белая." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насыщенность заливки" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насколько насыщена цветная заливка областей группы районов.\n\n100% — исходный цвет группы, при меньших значениях цвет становится более серым." },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насколько насыщена заливка областей наложения группы.\n\n100% — исходный цвет группы, при меньших значениях цвет становится более серым." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Прозрачность заливки" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Отображает заливку областей группы районов с прозрачностью вместо сплошного, полностью непрозрачного цвета." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Использовать прозрачность заливки" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Включает прозрачность для областей заливки наложения группы.\n\nЕсли отключено, наложение будет отображаться сплошным, полностью непрозрачным цветом, скрывающим все остальные визуальные элементы." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Включить отладочное логирование" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Записывает подробные отладочные записи в файл журнала мода.\n\nЭто может повлиять на производительность." },
