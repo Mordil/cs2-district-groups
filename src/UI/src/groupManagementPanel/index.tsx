@@ -1,4 +1,5 @@
 import { trigger, useValue } from "cs2/api"
+import { InputActionConsumer } from "cs2/input"
 import { Button, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 import { MouseEvent, useState } from "react"
@@ -67,78 +68,80 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     }
 
     return (
-        <div className={css.panel}>
-            <div className={css.header}>
-                <span className={css.title}>{t("panelTitle")}</span>
-                <VC.IconButton
-                    tinted={true}
-                    focusKey={VF.FOCUS_DISABLED}
-                    src={VT.panel.closeIcon}
-                    theme={VT.roundIconButton}
-                    className={VT.panel.closeButton}
-                    onSelect={onClose}
-                    onMouseDown={(e: MouseEvent) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                    }}
-                />
-            </div>
-
-            <div className={css.panelContent}>
-                <div className={css.actionSection}>
-                    <TypeFilterPicker
-                        value={filterType}
-                        onChange={onFilterChange}
-                        labels={typeLabels}
-                        allLabel={null}
-                        tooltip={filterTooltip}
+        <InputActionConsumer actions={{ Close: onClose, Back: onClose }} ignoreFocusState={true}>
+            <div className={css.panel}>
+                <div className={css.header}>
+                    <span className={css.title}>{t("panelTitle")}</span>
+                    <VC.IconButton
+                        tinted={true}
+                        focusKey={VF.FOCUS_DISABLED}
+                        src={VT.panel.closeIcon}
+                        theme={VT.roundIconButton}
+                        className={VT.panel.closeButton}
+                        onSelect={onClose}
+                        onMouseDown={(e: MouseEvent) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                        }}
                     />
-
-                    <Tooltip tooltip={t("newGroupButtonTooltip")}>
-                        <Button
-                            variant="primary"
-                            className={css.newGroupButton}
-                            onSelect={onCreateGroup}
-                        >
-                            {t("newGroupButton")}
-                        </Button>
-                    </Tooltip>
                 </div>
 
-                <Scrollable
-                    vertical={true}
-                    trackVisibility="reserve"
-                    className={css.list}
-                >
-                    {groups.length === 0 && (
-                        <div>{t("noGroupsYet")}</div>
-                    )}
-                    {groups.length > 0 && displayedGroups.length === 0 && (
-                        <div>{t("noGroupsMatchFilter")}</div>
-                    )}
-                    {displayedGroups.map((group) => (
-                        <GroupCard
-                            key={entityKey(group.entity)}
-                            group={group}
+                <div className={css.panelContent}>
+                    <div className={css.actionSection}>
+                        <TypeFilterPicker
+                            value={filterType}
+                            onChange={onFilterChange}
+                            labels={typeLabels}
+                            allLabel={null}
+                            tooltip={filterTooltip}
                         />
-                    ))}
-                </Scrollable>
-            </div>
 
-            <div className={css.footer}>
-                <Checkbox
-                    checked={showOverlay}
-                    onChange={onShowOverlayChange}
-                    label={t("showGroupOverlayLabel")}
-                    className={css.areasToggleRow}
-                />
-                <Checkbox
-                    checked={areasVisible}
-                    onChange={onAreasVisibleChange}
-                    label={t("displayDistrictAreasLabel")}
-                    className={css.areasToggleRow}
-                />
+                        <Tooltip tooltip={t("newGroupButtonTooltip")}>
+                            <Button
+                                variant="primary"
+                                className={css.newGroupButton}
+                                onSelect={onCreateGroup}
+                            >
+                                {t("newGroupButton")}
+                            </Button>
+                        </Tooltip>
+                    </div>
+
+                    <Scrollable
+                        vertical={true}
+                        trackVisibility="reserve"
+                        className={css.list}
+                    >
+                        {groups.length === 0 && (
+                            <div>{t("noGroupsYet")}</div>
+                        )}
+                        {groups.length > 0 && displayedGroups.length === 0 && (
+                            <div>{t("noGroupsMatchFilter")}</div>
+                        )}
+                        {displayedGroups.map((group) => (
+                            <GroupCard
+                                key={entityKey(group.entity)}
+                                group={group}
+                            />
+                        ))}
+                    </Scrollable>
+                </div>
+
+                <div className={css.footer}>
+                    <Checkbox
+                        checked={showOverlay}
+                        onChange={onShowOverlayChange}
+                        label={t("showGroupOverlayLabel")}
+                        className={css.areasToggleRow}
+                    />
+                    <Checkbox
+                        checked={areasVisible}
+                        onChange={onAreasVisibleChange}
+                        label={t("displayDistrictAreasLabel")}
+                        className={css.areasToggleRow}
+                    />
+                </div>
             </div>
-        </div>
+        </InputActionConsumer>
     )
 }
