@@ -128,8 +128,13 @@ export const GroupCard = (props: { group: Group }) => {
     }
 
     const toggleExpanded = () => {
-        logger.info(`Group card toggled; entity:${entityKey(group.entity)} expanded:${!expanded}`)
-        setExpanded(!expanded)
+        const next = !expanded
+
+        if (!next && selectingThisGroup) {
+            logger.info(`Collapsing group card with active district selection, toggling off; entity:${entityKey(group.entity)}`)
+            trigger(mod.id, "toggleDistrictSelection", group.entity)
+        }
+        setExpanded(next)
     }
 
     return (

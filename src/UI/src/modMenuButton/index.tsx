@@ -7,7 +7,7 @@ import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, overlayVisible$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, overlayVisible$, selectingGroup$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -34,6 +34,7 @@ export const GroupManager = () => {
     const { phase, mounted: contentMounted } = useEnterExitPhase(open, kFadeDurationMs)
     const areaToolActive = useValue(areaToolActive$)
     const overlayVisible = useValue(overlayVisible$)
+    const selectingGroup = useValue(selectingGroup$)
     const selectedEntity = useValue(selectedInfo.selectedEntity$)
     const activeGamePanel = useValue(game.activeGamePanel$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
@@ -51,6 +52,12 @@ export const GroupManager = () => {
         logger.info("Panel closed;")
         setOpen(false)
         trigger(mod.id, "setOverlay", false)
+
+        // we don't want to leave the player in a weird tool state after dismissing our UI
+        if (!entityEquals(selectingGroup, { index: 0, version: 0 })) {
+            logger.info("Dismissing UI with active district selection, toggling off;")
+            trigger(mod.id, "toggleDistrictSelection", selectingGroup)
+        }
     }
 
     const togglePanel = () => (open ? closePanel() : openPanel())

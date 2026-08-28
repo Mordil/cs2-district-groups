@@ -12,7 +12,7 @@ namespace DistrictGroups
     //
     // The vanilla tool only knows how to write into a ServiceDistrict buffer on
     // whatever entity is set as its selectionOwner. Rather than attach that
-    // buffer to our persisted group entities, give the tool one disposable scratch
+    // buffer to our persisted group entities, give the tool a disposable scratch
     // entity, and mirror its buffer contents into the real group's DistrictGroupMember
     public partial class DistrictGroupSelectionSystem : GameSystemBase
     {
@@ -21,7 +21,8 @@ namespace DistrictGroups
         private SelectionToolSystem m_SelectionToolSystem;
         private DistrictGroupSystem m_GroupSystem;
 
-        private Entity m_ScratchEntity;
+        // Needs to be recreated fresh for every selection session
+        private Entity m_ScratchEntity = Entity.Null;
         private Entity m_SelectingGroup = Entity.Null;
         public Entity SelectingGroup => m_SelectingGroup;
 
@@ -32,10 +33,6 @@ namespace DistrictGroups
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_SelectionToolSystem = World.GetOrCreateSystemManaged<SelectionToolSystem>();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
-
-            m_ScratchEntity = EntityManager.CreateEntity();
-            EntityManager.AddBuffer<ServiceDistrict>(m_ScratchEntity);
-            EntityManager.SetName(m_ScratchEntity, "DistrictGroups scratch selection owner");
 
             // if the player switches to a different tool, just toggle off
             m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Combine(
@@ -59,6 +56,7 @@ namespace DistrictGroups
                 Mod.log.Info($"Clearing in-progress district selection on load; group:{m_SelectingGroup}");
                 m_SelectingGroup = Entity.Null;
             }
+            DestroyScratchEntity();
         }
 
         private void OnActiveToolChanged(ToolBaseSystem tool)
@@ -68,6 +66,7 @@ namespace DistrictGroups
             {
                 FinalizeSelection(m_SelectingGroup);
                 m_SelectingGroup = Entity.Null;
+                DestroyScratchEntity();
             }
         }
 
@@ -76,20 +75,20 @@ namespace DistrictGroups
             if (m_SelectingGroup == group)
             {
                 Mod.log.Info($"Stopping district selection; group:{group}");
-                FinalizeSelection(group);
-                m_SelectingGroup = Entity.Null;
-                m_ToolSystem.activeTool = m_DefaultToolSystem;
+                StopSelection(group);
                 Mod.log.Info($"Finished stopping district selection; group:{group}");
                 return;
             }
 
             if (m_SelectingGroup != Entity.Null)
             {
-                FinalizeSelection(m_SelectingGroup);
+                Mod.log.Info($"Toggling off other group's district selection; group:{m_SelectingGroup}");
+                StopSelection(m_SelectingGroup);
             }
 
             Mod.log.Info($"Starting district selection; group:{group}");
             m_SelectingGroup = group;
+            CreateScratchEntity();
             SeedScratchFromGroup(group);
             m_SelectionToolSystem.selectionOwner = m_ScratchEntity;
             m_SelectionToolSystem.selectionType = SelectionType.ServiceDistrict;
@@ -97,10 +96,58 @@ namespace DistrictGroups
             Mod.log.Info($"Finished starting district selection; group:{group}");
         }
 
+        // Keeps the in-progress selection tool in sync when a member is removed through a path
+        // other than the tool itself
+        public void NotifyMemberRemoved(Entity group)
+        {
+            if (m_SelectingGroup != group)
+            {
+                return;
+            }
+
+            Mod.log.Info($"Refreshing in-progress selection tool state after external member removal; group:{group}");
+            SeedScratchFromGroup(group);
+            m_SelectionToolSystem.requestSelectionUpdate = true;
+        }
+
+        // Fully stop selection mode for a group
+        private void StopSelection(Entity group)
+        {
+            FinalizeSelection(group);
+            m_SelectingGroup = Entity.Null;
+            m_ToolSystem.activeTool = m_DefaultToolSystem;
+            m_SelectionToolSystem.selectionOwner = Entity.Null;
+            DestroyScratchEntity();
+        }
+
+        private void CreateScratchEntity()
+        {
+            m_ScratchEntity = EntityManager.CreateEntity();
+            EntityManager.AddBuffer<ServiceDistrict>(m_ScratchEntity);
+            EntityManager.SetName(m_ScratchEntity, "DistrictGroups scratch selection owner");
+        }
+
+        private void DestroyScratchEntity()
+        {
+            if (EntityManager.Exists(m_ScratchEntity))
+            {
+                EntityManager.DestroyEntity(m_ScratchEntity);
+            }
+            m_ScratchEntity = Entity.Null;
+        }
+
         protected override void OnUpdate()
         {
-            if (m_SelectingGroup == Entity.Null || !EntityManager.Exists(m_SelectingGroup))
+            if (m_SelectingGroup == Entity.Null)
             {
+                return;
+            }
+
+            if (!EntityManager.Exists(m_SelectingGroup))
+            {
+                Mod.log.Info($"Selected group no longer exists, stopping district selection; group:{m_SelectingGroup}");
+                StopSelection(m_SelectingGroup);
+                Mod.log.Info("Finished stopping district selection after group deletion;");
                 return;
             }
 

@@ -101,7 +101,11 @@ namespace DistrictGroups
             AddBinding(new TriggerBinding<Entity, Color>(kBindingGroup, "setGroupColor",
                 (group, color) => m_GroupSystem.SetGroupColor(group, color)));
             AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "removeMember",
-                (group, district) => m_GroupSystem.RemoveMember(group, district)));
+                (group, district) =>
+                {
+                    m_GroupSystem.RemoveMember(group, district);
+                    m_SelectionSystem.NotifyMemberRemoved(group);
+                }));
             AddBinding(new TriggerBinding<Entity>(kBindingGroup, "toggleDistrictSelection",
                 group => m_SelectionSystem.ToggleSelection(group)));
         }
