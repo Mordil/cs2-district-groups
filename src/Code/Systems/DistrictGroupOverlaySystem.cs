@@ -107,7 +107,9 @@ namespace DistrictGroups
         private bool m_FillBuiltTransparent;
         private bool m_FillActive;
 
-        private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
+        private bool IsOverlayActive =>
+            m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive &&
+            m_GameScreenUISystem.activeScreen != GameScreenUISystem.GameScreen.FreeCamera;
 
         // Keeps the border/fill a hair above the terrain it's drawn on.
         private const float kOverlayHeightOffset = 0.3f;
