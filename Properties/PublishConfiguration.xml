@@ -89,7 +89,7 @@ the groups are gone for good.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="0.9.0" />
+	<ModVersion Value="0.10.0" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -104,15 +104,9 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Added district group metadata to the Group Management panel: district, assigned building, and population counts
-- Added missing tooltips to UI
-- Fixed the background styling of the Group Management and Group Assignment panels when using the "default" UI theme
-- Added a Settings button to remove all mod data from a save
-- Moved the Reset Settings button
-- Added localization for languages officially supported by the game
-- Group assignment selection now always lists both group sections, the type matching the building and generic groups
-- Removing a service building from a district group now keeps the districts it was assigned while in the group
-- Operating Districts are now "read-only" on the Info Panel when a service building is assigned to a district group
+- Fixed accidentally shipping debug builds (thank you, Acord_Uch, for the report)
+- Fixed several bugs related to the "Select Districts" on Group Management
+- Removed dependency on Unified Icon Library
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
