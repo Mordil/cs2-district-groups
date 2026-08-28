@@ -7,3 +7,5 @@ obj/
 Library/
 
 **/node_modules
+
+.tools-scratch
