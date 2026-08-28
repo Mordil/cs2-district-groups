@@ -4,9 +4,9 @@
     Game UI assets are in Media/Game/<path>
 */
 
-const kUilStandard = "coui://uil/Standard/"
 const kModIcons = "coui://districtgroups/"
 const kGameIcons = "Media/Game/Icons/"
+const kGameGlyphs = "Media/Glyphs/"
 
 export interface IconProps {
     name: string
@@ -22,11 +22,11 @@ function icon(source: string, props: IconProps) {
     />
 }
 
-export const UilIcon = (props: IconProps) => icon(kUilStandard, props)
 export const GameIcon = (props: IconProps) => icon(kGameIcons, props)
+export const GlyphIcon = (props: IconProps) => icon(kGameGlyphs, props)
 export const ModIcon = (props: IconProps) => icon(kModIcons, props)
 
 // For consumers that need the raw coui:// path instead of a rendered <img>
-export const uilIconSrc = (name: string): string => `${kUilStandard}${name}.svg`
 export const gameIconSrc = (name: string): string => `${kGameIcons}${name}.svg`
+export const glyphIconSrc = (name: string): string => `${kGameGlyphs}${name}.svg`
 export const modIconSrc = (name: string): string => `${kModIcons}${name}.svg`

@@ -13,7 +13,7 @@ import {
 } from "cs2/ui"
 import { useContext, useState } from "react"
 import { VC, VT } from "../components/vanilla"
-import { uilIconSrc } from "../components/icons"
+import { glyphIconSrc } from "../components/icons"
 import { isDebugBuild$, markdownRenderer } from "../shared"
 import { buttonVariantSamples } from "./buttonVariants"
 import { colorTokenGroups } from "./colorTokens"
@@ -64,7 +64,7 @@ export const KitchenSinkDebugPanel = () => {
                             <div key={label} className={css.row}>
                                 <Button
                                     variant={variant}
-                                    src={uilIconSrc("ArrowRightThickStroke")}
+                                    src={glyphIconSrc("ThickStrokeArrowRight")}
                                     selected={selected}
                                     onSelect={() => {}}
                                 >
@@ -75,8 +75,8 @@ export const KitchenSinkDebugPanel = () => {
 
                         <div className={css.groupHeader}>Icon (tinted vs. untinted)</div>
                         <div className={css.row}>
-                            <Icon tinted={true} src={uilIconSrc("ArrowRightThickStroke")} />
-                            <Icon tinted={false} src={uilIconSrc("ArrowRightThickStroke")} />
+                            <Icon tinted={true} src={glyphIconSrc("ThickStrokeArrowRight")} />
+                            <Icon tinted={false} src={glyphIconSrc("ThickStrokeArrowRight")} />
                         </div>
 
                         <div className={css.groupHeader}>Dropdown</div>

@@ -1,6 +1,6 @@
 import { Dropdown, DropdownToggle, Tooltip } from "cs2/ui"
 import { CSSProperties, ReactNode } from "react"
-import { UilIcon } from "./icons"
+import { ModIcon } from "./icons"
 import selectorCss from "./selectorToggle.module.scss"
 import { VC, VT } from "./vanilla"
 
@@ -96,7 +96,7 @@ export const TypeFilterPicker = (props: {
                     className={selectorCss.selectorToggle}
                 >
                     <div style={{ display: "flex", alignItems: "center" }}>
-                        <UilIcon name="FunnelFilter"/>
+                        <ModIcon name="FunnelFilter"/>
                         <span style={{ marginLeft: "5rem" }}>
                             {props.value === kAllTypes && props.allLabel !== null
                                 ? props.allLabel

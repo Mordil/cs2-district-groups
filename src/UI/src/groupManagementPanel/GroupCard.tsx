@@ -5,7 +5,7 @@ import { entityEquals, entityKey } from "cs2/utils"
 import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
 import mod from "../../mod.json"
 import { ColorPicker } from "../components/ColorPicker"
-import { gameIconSrc, modIconSrc, uilIconSrc } from "../components/icons"
+import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
 import { TypePicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
 import css from "./GroupCard.module.scss"
@@ -138,7 +138,7 @@ export const GroupCard = (props: { group: Group }) => {
                 <VC.IconButton
                     tinted={true}
                     focusKey={VF.FOCUS_DISABLED}
-                    src={uilIconSrc(expanded ? "ArrowDownThickStroke" : "ArrowRightThickStroke")}
+                    src={glyphIconSrc(expanded ? "ThickStrokeArrowDown" : "ThickStrokeArrowRight")}
                     theme={VT.roundIconButton}
                     className={css.rowIconButton}
                     onSelect={toggleExpanded}
@@ -184,7 +184,7 @@ export const GroupCard = (props: { group: Group }) => {
                         <VC.IconButton
                             tinted={true}
                             focusKey={VF.FOCUS_DISABLED}
-                            src={uilIconSrc("Trash")}
+                            src={glyphIconSrc("Trash")}
                             className={VT.districtsSection.deleteButton}
                             style={dangerIconStyle}
                             onSelect={handleDeleteGroup}
@@ -224,7 +224,7 @@ export const GroupCard = (props: { group: Group }) => {
                                         <VC.IconButton
                                             tinted={true}
                                             focusKey={VF.FOCUS_DISABLED}
-                                            src={uilIconSrc("Trash")}
+                                            src={glyphIconSrc("Trash")}
                                             className={`${VT.districtsSection.deleteButton} ${css.memberDeleteButton}`}
                                             onSelect={() => {
                                                 logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
 import { useTranslation } from "../locale"
 import { logger } from "../log"
-import { uilIconSrc } from "../components/icons"
+import { glyphIconSrc } from "../components/icons"
 import { VT } from "../components/vanilla"
 import css from "./GroupSelector.module.scss"
 import { AnchorEdges, GroupSearchFlyout } from "./GroupSearchFlyout"
@@ -155,7 +155,7 @@ export const GroupSelector = (props: GroupSelectorProps) => {
                 <Icon
                     className={`${VT.sectionPrimaryButton.icon} ${css.chevron}`}
                     tinted={true}
-                    src={uilIconSrc("ArrowRightThickStroke")}
+                    src={glyphIconSrc("ThickStrokeArrowRight")}
                 />
             </button>
             {open && anchorEdges && (
