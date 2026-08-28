@@ -26,7 +26,6 @@ namespace DistrictGroups
 
             System.Diagnostics.Stopwatch stopwatch = shouldSample ? System.Diagnostics.Stopwatch.StartNew() : null;
 
-            float heightOffset = OverlayHeightOffset;
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
 
             OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
@@ -60,8 +59,8 @@ namespace DistrictGroups
                 DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
                 for (int j = 0; j < nodes.Length; j++)
                 {
-                    float3 a = nodes[j].m_Position + new float3(0f, heightOffset, 0f);
-                    float3 b = nodes[(j + 1) % nodes.Length].m_Position + new float3(0f, heightOffset, 0f);
+                    float3 a = nodes[j].m_Position + new float3(0f, kOverlayHeightOffset, 0f);
+                    float3 b = nodes[(j + 1) % nodes.Length].m_Position + new float3(0f, kOverlayHeightOffset, 0f);
                     buffer.DrawLine(
                         color,
                         color,

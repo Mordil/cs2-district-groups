@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacité de la bordure" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacité des lignes de délimitation colorées des groupes de quartiers tracées sur la carte.\n\n0 % est entièrement transparent, 100 % est entièrement opaque." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Décalage de hauteur" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Décalage par rapport à la hauteur du terrain à laquelle la superposition des groupes de quartiers est dessinée." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Désaturation de la scène" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "À quel point le reste de la scène est désaturé lorsque la superposition des groupes est visible.\n\n0 % laisse la scène inchangée, 100 % correspond à un rendu en niveaux de gris." },
 

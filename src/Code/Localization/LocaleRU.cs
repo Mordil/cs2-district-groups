@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность границы" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность цветных линий границ группы районов, отображаемых на карте.\n\n0% — полностью прозрачно, 100% — полностью непрозрачно." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Смещение по высоте" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Смещение относительно высоты рельефа, на которой отображается наложение группы районов." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Обесцвечивание сцены" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Насколько обесцвечивается остальная часть сцены, когда отображается наложение группы.\n\n0% — сцена остаётся без изменений, 100% — полностью чёрно-белая." },
 

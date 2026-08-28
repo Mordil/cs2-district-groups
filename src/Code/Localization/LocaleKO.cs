@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "테두리 불투명도" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "지도에 표시되는 지구 그룹 경계선의 불투명도입니다.\n\n0%면 완전히 투명하고, 100%면 완전히 불투명합니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "높이 오프셋" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "지구 그룹 오버레이가 그려지는 높이를 지형 높이로부터 얼마나 띄울지 설정합니다." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "장면 채도 감소" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "그룹 오버레이가 표시되는 동안 나머지 장면의 채도를 얼마나 낮출지 설정합니다.\n\n0%면 장면이 그대로 유지되고, 100%면 완전한 흑백이 됩니다." },
 

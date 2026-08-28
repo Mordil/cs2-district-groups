@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość obramowania" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość kolorowych linii obramowania grup dzielnic rysowanych na mapie.\n\n0% oznacza pełną przezroczystość, 100% pełną nieprzezroczystość." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Przesunięcie wysokości" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Przesunięcie względem wysokości terenu, na której rysowana jest nakładka grup dzielnic." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturacja scenerii" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Jak silnie desaturowana jest pozostała część scenerii, gdy widoczna jest nakładka grupy.\n\n0% oznacza brak zmian, 100% to odcienie szarości." },
 

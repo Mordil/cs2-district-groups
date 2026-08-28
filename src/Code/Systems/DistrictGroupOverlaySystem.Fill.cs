@@ -125,14 +125,13 @@ namespace DistrictGroups
             HDMaterial.SetRenderingPass(m_FillMaterial, HDMaterial.RenderingPass.AfterPostProcess);
         }
 
-        // Mesh vertices are baked with each district's raw node height, the user-tunable offset lives entirely on the root's transform instead,
+        // Mesh vertices are baked with each district's raw node height, the fixed offset lives entirely on the root's transform instead,
         private void ApplyFillHeightOffset()
         {
-            float heightOffset = OverlayHeightOffset;
             Vector3 position = m_FillRoot.transform.position;
-            if (!Mathf.Approximately(position.y, heightOffset))
+            if (!Mathf.Approximately(position.y, kOverlayHeightOffset))
             {
-                m_FillRoot.transform.position = new Vector3(position.x, heightOffset, position.z);
+                m_FillRoot.transform.position = new Vector3(position.x, kOverlayHeightOffset, position.z);
             }
         }
 

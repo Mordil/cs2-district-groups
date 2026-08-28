@@ -109,9 +109,8 @@ namespace DistrictGroups
 
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;
 
-        // +0.3 keeps the border/fill a hair above the terrain it's drawn on, on top of the user-tunable offset.
-        private float OverlayHeightOffset =>
-            (Mod.Settings?.OverlayBorderHeightOffset ?? Setting.kDefaultOverlayBorderHeightOffset) + 0.3f;
+        // Keeps the border/fill a hair above the terrain it's drawn on.
+        private const float kOverlayHeightOffset = 0.3f;
 
         protected override void OnCreate()
         {

@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "境界線の不透明度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "マップ上に描画される、色付きの特区グループ境界線の不透明度です。\n\n0%で完全に透明、100%で完全に不透明になります。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "高さオフセット" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "特区グループのオーバーレイが描画される、地形の高さからのオフセットです。" },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "シーンの彩度低下" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "グループのオーバーレイが表示されている間、他のシーン全体の彩度をどれだけ下げるかを設定します。\n\n0%ではシーンはそのまま変化せず、100%では完全なグレースケールになります。" },
 

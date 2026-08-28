@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Randdeckkraft" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Deckkraft der farbigen Grenzlinien der Bezirksgruppen, die auf der Karte gezeichnet werden.\n\n0% ist vollständig transparent, 100% ist vollständig deckend." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Höhenversatz" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Ein Versatz zur Geländehöhe, der die Höhe bestimmt, in der das Bezirksgruppen-Overlay gezeichnet wird." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Szenenentsättigung" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Wie stark der Rest der Szene entsättigt wird, während das Gruppen-Overlay sichtbar ist.\n\n0% lässt die Szene unverändert, 100% ergibt eine Graustufendarstellung." },
 

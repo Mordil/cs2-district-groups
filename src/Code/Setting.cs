@@ -30,7 +30,6 @@ namespace DistrictGroups
 
         public const int kDefaultOverlayBorderWidth = 15;
         public const int kDefaultOverlayBorderAlpha = 100;
-        public const int kDefaultOverlayBorderHeightOffset = 15;
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
         public const bool kDefaultOverlayFillUseTransparency = true;
@@ -55,18 +54,12 @@ namespace DistrictGroups
         {
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
             OverlayBorderAlpha = kDefaultOverlayBorderAlpha;
-            OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
             OverlayFillUseTransparency = kDefaultOverlayFillUseTransparency;
             RefreshRateSeconds = kDefaultRefreshRateSeconds;
             EnableDebugLogging = kDefaultEnableDebugLogging;
         }
-
-        // Height (in world units) the group boundary overlay lines are raised above the district node height.
-        [SettingsUISlider(min = 0, max = 250, step = 1, unit = Unit.kInteger)]
-        [SettingsUISection(kTabOverlay, kSectionDefault)]
-        public int OverlayBorderHeightOffset { get; set; }
 
         // How much the rest of the scene is desaturated while the group overlay is visible
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]

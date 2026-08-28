@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "邊框不透明度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "地圖上繪製的行政區群組邊界線的不透明度。\n\n0% 為完全透明，100% 為完全不透明。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "高度偏移" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "行政區群組疊加圖層繪製高度相對於地形高度的偏移量。" },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "場景去飽和度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "顯示群組疊加圖層時，場景其他部分的去飽和程度。\n\n0% 表示場景不受影響，100% 表示變為灰階。" },
 

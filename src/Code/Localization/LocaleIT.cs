@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità del bordo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità delle linee di confine colorate del gruppo di quartieri disegnate sulla mappa.\n\n0% è completamente trasparente, 100% è completamente opaco." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Scostamento in altezza" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Uno scostamento rispetto all'altezza del terreno a cui viene disegnato l'overlay del gruppo di quartieri." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturazione della scena" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Quanto viene desaturato il resto della scena mentre l'overlay del gruppo è visibile.\n\n0% lascia la scena inalterata, 100% è in scala di grigi." },
 

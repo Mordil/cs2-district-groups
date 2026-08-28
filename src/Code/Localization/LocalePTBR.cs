@@ -35,9 +35,6 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidade da borda" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidade das linhas coloridas do contorno do grupo de distritos desenhadas no mapa.\n\n0% é totalmente transparente, 100% é totalmente opaco." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Deslocamento de altura" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Um deslocamento em relação à altura do terreno no qual a sobreposição do grupo de distritos é desenhada." },
-
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Dessaturação da cena" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "O quanto o restante da cena é dessaturado enquanto a sobreposição do grupo está visível.\n\n0% deixa a cena inalterada, 100% fica em escala de cinza." },
 
