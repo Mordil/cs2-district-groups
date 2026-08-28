@@ -7,7 +7,7 @@ import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, overlayVisible$, selectingGroup$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, cameraModeActive$, overlayVisible$, selectingGroup$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -37,6 +37,7 @@ export const GroupManager = () => {
     const selectingGroup = useValue(selectingGroup$)
     const selectedEntity = useValue(selectedInfo.selectedEntity$)
     const activeGamePanel = useValue(game.activeGamePanel$)
+    const cameraModeActive = useValue(cameraModeActive$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
 
@@ -89,6 +90,13 @@ export const GroupManager = () => {
             closePanel()
         }
     }, [selectedEntity, activeGamePanel])
+
+    // Camera Mode, so dismiss and don't reopen after it ends
+    useEffect(() => {
+        if (open && cameraModeActive) {
+            closePanel()
+        }
+    }, [cameraModeActive])
 
     // If something happens code side that we need to close, respect it
     useEffect(() => {
