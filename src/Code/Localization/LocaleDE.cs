@@ -31,8 +31,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Randbreite" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Breite der Grenzlinien der Bezirke, die auf dem Overlay gezeichnet werden." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Randdeckkraft" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Deckkraft der Grenzlinien der Bezirke, die auf dem Overlay gezeichnet werden.\n\n0% ist vollständig transparent, 100% ist vollständig deckend." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderTransparency)), "Randtransparenz" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderTransparency)), "Transparenz der Grenzlinien der Bezirke, die auf dem Overlay gezeichnet werden.\n\n0% ist vollständig deckend, 100% ist vollständig transparent." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Szenenentsättigung" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Wie stark der Rest der Szene entsättigt wird, während das Gruppen-Overlay sichtbar ist.\n\n0% lässt die Szene unverändert, 100% ergibt eine Graustufendarstellung." },

@@ -34,7 +34,7 @@ namespace DistrictGroups
         private const string kIssueUrl = "https://github.com/Mordil/cs2-district-groups/issues/new";
 
         public const int kDefaultOverlayBorderWidth = 15;
-        public const int kDefaultOverlayBorderAlpha = 100;
+        public const int kDefaultOverlayBorderTransparency = 0;
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
         public const bool kDefaultOverlayFillUseTransparency = true;
@@ -58,7 +58,7 @@ namespace DistrictGroups
         public override void SetDefaults()
         {
             OverlayBorderWidth = kDefaultOverlayBorderWidth;
-            OverlayBorderAlpha = kDefaultOverlayBorderAlpha;
+            OverlayBorderTransparency = kDefaultOverlayBorderTransparency;
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
             OverlayFillUseTransparency = kDefaultOverlayFillUseTransparency;
@@ -71,10 +71,10 @@ namespace DistrictGroups
         [SettingsUISection(kTabOverlay, kSectionDefault)]
         public int OverlayDesaturationPercent { get; set; }
 
-        // Opacity of the group boundary overlay lines drawn by the overlay system; 0 is fully transparent, 100 fully opaque.
+        // Transparency of the group boundary overlay lines drawn by the overlay system; 0 is fully opaque, 100 fully transparent.
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
         [SettingsUISection(kTabOverlay, kSectionOverlayBorder)]
-        public int OverlayBorderAlpha { get; set; }
+        public int OverlayBorderTransparency { get; set; }
 
         // Width (in world units) of the group boundary overlay lines drawn by the overlay system.
         [SettingsUISlider(min = 5, max = 50, step = 1, unit = Unit.kInteger)]

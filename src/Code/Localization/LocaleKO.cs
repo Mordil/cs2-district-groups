@@ -31,8 +31,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "테두리 너비" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "오버레이에 표시되는 지구 경계선의 너비입니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "테두리 불투명도" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "오버레이에 표시되는 지구 경계선의 불투명도입니다.\n\n0%면 완전히 투명하고, 100%면 완전히 불투명합니다." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderTransparency)), "테두리 투명도" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderTransparency)), "오버레이에 표시되는 지구 경계선의 투명도입니다.\n\n0%면 완전히 불투명하고, 100%면 완전히 투명합니다." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "장면 채도 감소" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "그룹 오버레이가 표시되는 동안 나머지 장면의 채도를 얼마나 낮출지 설정합니다.\n\n0%면 장면이 그대로 유지되고, 100%면 완전한 흑백이 됩니다." },

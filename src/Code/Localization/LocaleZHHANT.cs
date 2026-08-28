@@ -31,8 +31,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "邊框寬度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "覆蓋圖上繪製的行政區邊界線的寬度。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "邊框不透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "覆蓋圖上繪製的行政區邊界線的不透明度。\n\n0% 為完全透明，100% 為完全不透明。" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderTransparency)), "邊框透明度" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderTransparency)), "覆蓋圖上繪製的行政區邊界線的透明度。\n\n0% 為完全不透明，100% 為完全透明。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "場景去飽和度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "顯示群組覆蓋圖時，場景其他部分的去飽和程度。\n\n0% 表示場景不受影響，100% 表示變為灰階。" },

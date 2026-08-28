@@ -14,12 +14,12 @@ namespace DistrictGroups
         private void DrawGroupOverlays(bool shouldSample)
         {
             // Fully transparent borders are invisible either way - skip drawing entirely.
-            float outlineAlpha = (Mod.Settings?.OverlayBorderAlpha ?? Setting.kDefaultOverlayBorderAlpha) / 100f;
+            float outlineAlpha = 1f - (Mod.Settings?.OverlayBorderTransparency ?? Setting.kDefaultOverlayBorderTransparency) / 100f;
             if (outlineAlpha <= 0f)
             {
                 if (shouldSample)
                 {
-                    Mod.log.Debug("Overlay draw skipped, border alpha is 0");
+                    Mod.log.Debug("Overlay draw skipped, border is fully transparent");
                 }
                 return;
             }

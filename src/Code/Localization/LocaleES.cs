@@ -31,8 +31,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Ancho del borde" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Ancho de las líneas de límite de los distritos que se dibujan en la superposición." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidad del borde" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacidad de las líneas de límite de los distritos que se dibujan en la superposición.\n\nEl 0% es totalmente transparente; el 100%, totalmente opaco." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderTransparency)), "Transparencia del borde" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderTransparency)), "Transparencia de las líneas de límite de los distritos que se dibujan en la superposición.\n\nEl 0% es totalmente opaco; el 100%, totalmente transparente." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturación de la escena" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Cuánto se desatura el resto de la escena mientras la superposición de grupos está visible.\n\nEl 0% deja la escena intacta; el 100% la deja en escala de grises." },

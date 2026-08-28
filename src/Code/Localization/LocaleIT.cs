@@ -31,8 +31,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza del bordo" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Larghezza delle linee di confine dei quartieri disegnate sulla sovrimpressione." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità del bordo" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Opacità delle linee di confine dei quartieri disegnate sulla sovrimpressione.\n\n0% è completamente trasparente, 100% è completamente opaco." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderTransparency)), "Trasparenza del bordo" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderTransparency)), "Trasparenza delle linee di confine dei quartieri disegnate sulla sovrimpressione.\n\n0% è completamente opaco, 100% è completamente trasparente." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Desaturazione della scena" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Quanto viene desaturato il resto della scena mentre la sovrimpressione del gruppo è visibile.\n\n0% lascia la scena inalterata, 100% è in scala di grigi." },

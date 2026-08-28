@@ -31,8 +31,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина границы" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Толщина линий границ районов, отображаемых на слое." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность границы" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Непрозрачность линий границ районов, отображаемых на слое.\n\n0% — полностью прозрачно, 100% — полностью непрозрачно." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderTransparency)), "Прозрачность границы" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderTransparency)), "Прозрачность линий границ районов, отображаемых на слое.\n\n0% — полностью непрозрачно, 100% — полностью прозрачно." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Обесцвечивание сцены" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayDesaturationPercent)), "Насколько обесцвечивается остальная часть сцены, когда отображается слой группы.\n\n0% — сцена остаётся без изменений, 100% — полностью чёрно-белая." },
