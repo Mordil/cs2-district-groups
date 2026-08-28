@@ -63,6 +63,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "Version" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "The installed version of the mod.\n\nInclude this when filing a bug report." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ReleaseChannel)), "Release channel" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "Remove mod data" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "Deletes every district group, service building assignment, and overlay asset the mod has added to the current save." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "All district groups, service building assignments, and overlay data will be permanently deleted from this save.\r\nThis cannot be undone.\r\nDo you want to proceed?" },

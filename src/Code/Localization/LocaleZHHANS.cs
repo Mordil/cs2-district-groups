@@ -63,6 +63,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "版本" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "已安装的模组版本。\n\n提交错误报告时请附上此信息。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ReleaseChannel)), "发布渠道" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "移除模组数据" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "删除模组在当前存档中添加的所有市辖区组、服务建筑分配和叠加层资源。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "此存档中的所有市辖区组、服务建筑分配和叠加层数据都将被永久删除。\r\n此操作无法撤销。\r\n是否继续？" },

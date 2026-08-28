@@ -63,6 +63,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ModVersion)), "バージョン" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ModVersion)), "インストールされているMODのバージョンです。\n\n不具合を報告する際に記載してください。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ReleaseChannel)), "リリースチャンネル" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ReleaseChannel)), "" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RemoveModData)), "MODデータを削除" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RemoveModData)), "現在のセーブデータにMODが追加したすべての特区グループ、公共施設の割り当て、オーバーレイ用リソースを削除します。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "このセーブデータからすべての特区グループ、公共施設の割り当て、オーバーレイデータが完全に削除されます。\r\nこの操作は元に戻せません。\r\n続行しますか?" },

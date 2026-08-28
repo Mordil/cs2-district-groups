@@ -164,6 +164,15 @@ namespace DistrictGroups
         [SettingsUISection(kTabGeneral, kSectionVersion)]
         public string ModVersion => Mod.Version;
 
+        // Read-only, so players can tell a shipped Release build apart from a Debug one.
+        [SettingsUISection(kTabGeneral, kSectionVersion)]
+        public string ReleaseChannel =>
+#if DEBUG
+            "Debug";
+#else
+            "Release";
+#endif
+
         // Wipes every group, building assignment, and overlay asset the mod has added to the current save.
         [SettingsUIButton]
         [SettingsUIConfirmation]
