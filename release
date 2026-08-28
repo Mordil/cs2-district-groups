@@ -237,11 +237,11 @@ fi
 mkdir -p "$LOG_DIR"
 LOG="$LOG_DIR/$MODE-$(date +%Y%m%d-%H%M%S).log"
 
-echo "Running: dotnet publish -p:PublishProfile=$PROFILE"
+echo "Running: dotnet publish -c Release -p:PublishProfile=$PROFILE"
 echo "Log:     $LOG"
 echo
 
-cmd.exe /c "dotnet publish -p:PublishProfile=$PROFILE" > "$LOG" 2>&1
+cmd.exe /c "dotnet publish -c Release -p:PublishProfile=$PROFILE" > "$LOG" 2>&1
 status=$?
 
 grep -E "User Mod Version|Access Control Level State|Publishing|Updating|Mod published|Could not|failed|successfully|error (CS|MSB)" "$LOG" \
