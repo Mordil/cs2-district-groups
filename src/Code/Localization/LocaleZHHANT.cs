@@ -44,6 +44,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "填色飽和度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "行政區群組填色區域的飽和程度。\n\n100% 為群組的完整顏色，數值越低則越趨近灰色。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "填色透明化" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "以透明方式呈現行政區群組填色區域，而非完全不透明的純色。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "啟用偵錯記錄" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "將詳細的偵錯層級項目寫入模組的記錄檔。\n\n這可能會影響效能。" },
 

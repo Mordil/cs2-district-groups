@@ -44,6 +44,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturación del relleno" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Cuán saturadas están las áreas de relleno de color de los grupos de distritos.\n\nEl 100% es el color completo del grupo; los valores más bajos se difuminan hacia el gris." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Transparencia del relleno" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Muestra las áreas de relleno de los grupos de distritos con transparencia en lugar de un color sólido y totalmente opaco." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Activar registro de depuración" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Escribe entradas detalladas de nivel de depuración en el archivo de registro del mod.\n\nEsto puede afectar al rendimiento." },
 

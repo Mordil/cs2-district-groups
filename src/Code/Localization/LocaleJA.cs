@@ -44,6 +44,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "塗りつぶしの彩度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "色付きの特区グループの塗りつぶし範囲の彩度を設定します。\n\n100%ではグループの色がそのまま表示され、値が低いほどグレーに近づきます。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "塗りつぶしの透明化" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "特区グループの塗りつぶし範囲を、完全に不透明な単色ではなく透明な表示にします。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "デバッグログを有効化" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "詳細なDebugレベルの情報をMODのログファイルに書き込みます。\n\nパフォーマンスに影響する場合があります。" },
 

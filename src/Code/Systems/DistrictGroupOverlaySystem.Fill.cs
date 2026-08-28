@@ -14,6 +14,13 @@ namespace DistrictGroups
             EnsureFillRoot();
             ApplyFillHeightOffset();
 
+            bool useTransparency = Mod.Settings?.OverlayFillUseTransparency ?? Setting.kDefaultOverlayFillUseTransparency;
+            if (useTransparency != m_FillBuiltTransparent)
+            {
+                ApplyFillTransparency(useTransparency);
+                m_FillBuiltTransparent = useTransparency;
+            }
+
             int saturationSetting = Mathf.Clamp(
                 Mod.Settings?.OverlayFillSaturationPercent ?? Setting.kDefaultOverlayFillSaturationPercent,
                 0,
@@ -86,11 +93,36 @@ namespace DistrictGroups
             Shader shader = Shader.Find("HDRP/Unlit");
             m_FillMaterial = new Material(shader) { name = "DistrictGroupsFillMaterial" };
 
+            bool useTransparency = Mod.Settings?.OverlayFillUseTransparency ?? Setting.kDefaultOverlayFillUseTransparency;
+            ApplyFillTransparency(useTransparency);
+            m_FillBuiltTransparent = useTransparency;
+
+            Mod.log.Info($"Group overlay, fill material ready; shader:{shader?.name ?? "<null>"} transparent:{useTransparency}");
+        }
+
+        private void ApplyFillTransparency(bool transparent)
+        {
+            HDMaterial.SetSurfaceType(m_FillMaterial, transparent);
+            if (transparent)
+            {
+                m_FillMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                m_FillMaterial.SetInt("_ZWrite", 0);
+                m_FillMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
+                m_FillMaterial.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
+                m_FillMaterial.SetInt("_AlphaSrcBlend", (int)BlendMode.Zero);
+                m_FillMaterial.SetInt("_AlphaDstBlend", (int)BlendMode.OneMinusSrcAlpha);
+            }
+            else
+            {
+                m_FillMaterial.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                m_FillMaterial.SetInt("_ZWrite", 1);
+                m_FillMaterial.SetInt("_SrcBlend", (int)BlendMode.One);
+                m_FillMaterial.SetInt("_DstBlend", (int)BlendMode.Zero);
+            }
+
             // Pushes the fill into HDRP's after-post-process render queue,
             // so it composites in after desaturation Volume instead of being subject to it
             HDMaterial.SetRenderingPass(m_FillMaterial, HDMaterial.RenderingPass.AfterPostProcess);
-
-            Mod.log.Info($"Group overlay, fill material ready; shader:{shader?.name ?? "<null>"}");
         }
 
         // Mesh vertices are baked with each district's raw node height, the user-tunable offset lives entirely on the root's transform instead,

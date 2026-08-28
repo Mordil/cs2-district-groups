@@ -44,6 +44,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Saturation du remplissage" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "À quel point les zones de remplissage colorées des groupes de quartiers sont saturées.\n\n100 % correspond à la couleur pleine du groupe ; les valeurs plus faibles s'estompent vers le gris." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Transparence du remplissage" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Affiche les zones de remplissage des groupes de quartiers avec de la transparence plutôt qu'une couleur pleine et entièrement opaque." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Activer la journalisation de débogage" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Écrit des entrées détaillées de niveau débogage dans le fichier journal du mod.\n\nCela peut affecter les performances." },
 

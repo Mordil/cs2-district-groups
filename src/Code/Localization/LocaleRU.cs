@@ -44,6 +44,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насыщенность заливки" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Насколько насыщена цветная заливка областей группы районов.\n\n100% — исходный цвет группы, при меньших значениях цвет становится более серым." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Прозрачность заливки" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Отображает заливку областей группы районов с прозрачностью вместо сплошного, полностью непрозрачного цвета." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Включить отладочное логирование" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Записывает подробные отладочные записи в файл журнала мода.\n\nЭто может повлиять на производительность." },
 

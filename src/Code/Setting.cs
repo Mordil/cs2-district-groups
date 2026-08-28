@@ -33,6 +33,7 @@ namespace DistrictGroups
         public const int kDefaultOverlayBorderHeightOffset = 15;
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
+        public const bool kDefaultOverlayFillUseTransparency = true;
         public const int kDefaultRefreshRateSeconds = 10;
 #if DEBUG
         public const bool kDefaultEnableDebugLogging = true;
@@ -57,6 +58,7 @@ namespace DistrictGroups
             OverlayBorderHeightOffset = kDefaultOverlayBorderHeightOffset;
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
+            OverlayFillUseTransparency = kDefaultOverlayFillUseTransparency;
             RefreshRateSeconds = kDefaultRefreshRateSeconds;
             EnableDebugLogging = kDefaultEnableDebugLogging;
         }
@@ -85,6 +87,10 @@ namespace DistrictGroups
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
         [SettingsUISection(kTabOverlay, kSectionOverlay)]
         public int OverlayFillSaturationPercent { get; set; }
+
+        // Whether the group fill mesh/texture renders with transparency (blended over the scene) or as a solid, fully opaque color.
+        [SettingsUISection(kTabOverlay, kSectionOverlay)]
+        public bool OverlayFillUseTransparency { get; set; }
 
         // How often the mod recomputes aggregate district information
         [SettingsUISlider(min = 1, max = 30, step = 1, unit = Unit.kInteger)]

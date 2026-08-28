@@ -32,8 +32,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "Szerokość obramowania" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "Szerokość kolorowych linii obramowania grup dzielnic rysowanych na mapie." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Krycie obramowania" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Krycie kolorowych linii obramowania grup dzielnic rysowanych na mapie.\n\n0% oznacza pełną przezroczystość, 100% pełną nieprzezroczystość." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość obramowania" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "Nieprzezroczystość kolorowych linii obramowania grup dzielnic rysowanych na mapie.\n\n0% oznacza pełną przezroczystość, 100% pełną nieprzezroczystość." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Przesunięcie wysokości" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "Przesunięcie względem wysokości terenu, na której rysowana jest nakładka grup dzielnic." },
@@ -43,6 +43,9 @@ namespace DistrictGroups
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Nasycenie wypełnienia" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Jak nasycone są kolorowe obszary wypełnienia grup dzielnic.\n\n100% to pełny kolor grupy; niższe wartości przechodzą w stronę szarości." },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Przezroczystość wypełnienia" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Wyświetla obszary wypełnienia grup dzielnic z przezroczystością, a nie jako jednolity, w pełni nieprzezroczysty kolor." },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Włącz logi debugowania" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Zapisuje szczegółowe wpisy poziomu debugowania do pliku dziennika moda.\n\nMoże to wpłynąć na wydajność." },

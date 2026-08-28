@@ -101,6 +101,10 @@ namespace DistrictGroups
         // Last (clamped) saturation percent the fill meshes were actually built with
         // a Settings change has to be caught to trigger a rebuild
         private int m_FillBuiltSaturationPercent = -1;
+
+        // Whether the fill material was last configured for transparency; a Settings change has to be
+        // caught to reconfigure the material's blend state (set once at creation, otherwise unchanged).
+        private bool m_FillBuiltTransparent;
         private bool m_FillActive;
 
         private bool IsOverlayActive => m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive;

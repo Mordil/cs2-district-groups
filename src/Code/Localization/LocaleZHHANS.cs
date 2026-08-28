@@ -32,8 +32,8 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderWidth)), "边框宽度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderWidth)), "地图上绘制的彩色市辖区组边界线的宽度。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "边框透明度" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "地图上绘制的彩色市辖区组边界线的透明度。\n\n0% 为完全透明，100% 为完全不透明。" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderAlpha)), "边框不透明度" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderAlpha)), "地图上绘制的彩色市辖区组边界线的不透明度。\n\n0% 为完全透明，100% 为完全不透明。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "高度偏移" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayBorderHeightOffset)), "市辖区组叠加层绘制高度相对于地形高度的偏移量。" },
@@ -43,6 +43,9 @@ namespace DistrictGroups
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "填充饱和度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "彩色市辖区组填充区域的饱和程度。\n\n100% 为该市辖区组的完整颜色；数值越低，颜色越趋向灰色。" },
+
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "填充透明化" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "以透明方式呈现市辖区组填充区域，而不是完全不透明的纯色。" },
 
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "启用调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "将详细的调试级别记录写入模组的日志文件。\n\n这可能会影响性能。" },

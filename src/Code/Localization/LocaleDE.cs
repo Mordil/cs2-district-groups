@@ -44,6 +44,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Füllsättigung" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillSaturationPercent)), "Wie gesättigt die farbigen Füllflächen der Bezirksgruppen sind.\n\n100% entspricht der vollen Farbe der Gruppe; niedrigere Werte verblassen in Richtung Grau." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Fülltransparenz" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Stellt die Füllflächen der Bezirksgruppen transparent dar, statt in einer durchgehend deckenden Farbe." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Debug-Protokollierung aktivieren" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Schreibt ausführliche Einträge der Debug-Ebene in die Protokolldatei des Mods.\n\nDies kann die Leistung beeinträchtigen." },
 
