@@ -79,6 +79,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchFilter, "没有市辖区组匹配此筛选条件。" },
                 { LocalizationKey.DisplayDistrictAreasLabel, "显示所有市辖区" },
                 { LocalizationKey.ShowGroupOverlayLabel, "显示市辖区组覆盖图" },
+                { LocalizationKey.ShowServiceBuildingsLabel, "显示服务建筑" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "永久删除该市辖区组。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "已分配的建筑将失去其**工作区**。" },

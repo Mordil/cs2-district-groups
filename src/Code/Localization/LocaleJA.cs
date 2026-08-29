@@ -79,6 +79,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchFilter, "このフィルターに一致するグループがありません。" },
                 { LocalizationKey.DisplayDistrictAreasLabel, "すべての特区を表示" },
                 { LocalizationKey.ShowGroupOverlayLabel, "グループのオーバーレイを表示" },
+                { LocalizationKey.ShowServiceBuildingsLabel, "公共施設を表示" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "グループを完全に削除します。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "割り当てられた施設は**稼働特区**を失います。" },

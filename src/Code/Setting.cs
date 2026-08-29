@@ -194,6 +194,7 @@ namespace DistrictGroups
             World world = World.DefaultGameObjectInjectionWorld;
             world?.GetExistingSystemManaged<DistrictGroupSystem>()?.RemoveAllData();
             world?.GetExistingSystemManaged<DistrictGroupOverlaySystem>()?.RemoveAllData();
+            world?.GetExistingSystemManaged<DistrictGroupServiceBuildingSystem>()?.RemoveAllData();
 
             Mod.log.Info("Finished removing all mod data");
         }

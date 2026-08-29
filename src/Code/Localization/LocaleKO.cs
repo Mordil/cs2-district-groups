@@ -79,6 +79,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchFilter, "이 필터에 일치하는 그룹이 없습니다." },
                 { LocalizationKey.DisplayDistrictAreasLabel, "모든 지구 표시" },
                 { LocalizationKey.ShowGroupOverlayLabel, "그룹 오버레이 표시" },
+                { LocalizationKey.ShowServiceBuildingsLabel, "서비스 건물 표시" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "그룹을 영구적으로 삭제합니다." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "할당된 건물은 **운영 지구**을 잃게 됩니다." },

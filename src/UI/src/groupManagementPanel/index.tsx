@@ -10,7 +10,7 @@ import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
-import { areasVisible$, groups$, showOverlay$ } from "./bindings"
+import { areasVisible$, groups$, showServiceBuildings$, showOverlay$ } from "./bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
 import { GroupCard } from "./GroupCard"
@@ -31,6 +31,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
     const showOverlay = useValue(showOverlay$)
+    const showServiceBuildings = useValue(showServiceBuildings$)
 
     const filterTooltip = (
         <FormattedParagraphs
@@ -65,6 +66,11 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const onShowOverlayChange = (checked: boolean) => {
         logger.info(`Show group overlay toggled; show:${checked}`)
         trigger(mod.id, "setShowOverlay", checked)
+    }
+
+    const onShowServiceBuildingsChange = (checked: boolean) => {
+        logger.info(`Show service buildings toggled; show:${checked}`)
+        trigger(mod.id, "setShowServiceBuildings", checked)
     }
 
     return (
@@ -134,6 +140,14 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                         label={t("showGroupOverlayLabel")}
                         className={css.areasToggleRow}
                     />
+
+                    <Checkbox
+                        checked={showServiceBuildings}
+                        onChange={onShowServiceBuildingsChange}
+                        label={t("showServiceBuildingsLabel")}
+                        className={css.areasToggleRow}
+                    />
+
                     <Checkbox
                         checked={areasVisible}
                         onChange={onAreasVisibleChange}

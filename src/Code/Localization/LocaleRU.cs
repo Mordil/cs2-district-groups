@@ -79,6 +79,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchFilter, "Нет групп, соответствующих этому фильтру." },
                 { LocalizationKey.DisplayDistrictAreasLabel, "Показать все районы" },
                 { LocalizationKey.ShowGroupOverlayLabel, "Показать слой группы" },
+                { LocalizationKey.ShowServiceBuildingsLabel, "Показать здания служб" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "Полностью удалить группу." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Назначенные здания потеряют свои **районы обслуживания**." },

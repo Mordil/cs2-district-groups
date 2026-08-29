@@ -16,6 +16,7 @@ export const kLocale = {
     noGroupsMatchFilter: id("NoGroupsMatchFilter"),
     displayDistrictAreasLabel: id("DisplayDistrictAreasLabel"),
     showGroupOverlayLabel: id("ShowGroupOverlayLabel"),
+    showServiceBuildingsLabel: id("ShowServiceBuildingsLabel"),
 
     deleteGroupTooltipLine1: id("DeleteGroupTooltipLine1"),
     deleteGroupTooltipLine2: id("DeleteGroupTooltipLine2"),
@@ -84,6 +85,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     noGroupsMatchFilter: "No groups match this filter.",
     displayDistrictAreasLabel: "Display District areas",
     showGroupOverlayLabel: "Show group overlay",
+    showServiceBuildingsLabel: "Show service buildings",
 
     deleteGroupTooltipLine1: "Permanently delete the group.",
     deleteGroupTooltipLine2: "Assigned buildings will lose their **operating districts**.",

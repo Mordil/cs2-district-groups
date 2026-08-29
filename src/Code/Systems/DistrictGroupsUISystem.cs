@@ -18,6 +18,7 @@ namespace DistrictGroups
 
         private DistrictGroupSystem m_GroupSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;
+        private DistrictGroupServiceBuildingSystem m_ServiceBuildingSystem;
         private DistrictGroupSelectionSystem m_SelectionSystem;
         private NameSystem m_NameSystem;
         private SelectedInfoUISystem m_SelectedInfoUISystem;
@@ -43,6 +44,7 @@ namespace DistrictGroups
 
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_OverlaySystem = World.GetOrCreateSystemManaged<DistrictGroupOverlaySystem>();
+            m_ServiceBuildingSystem = World.GetOrCreateSystemManaged<DistrictGroupServiceBuildingSystem>();
             m_SelectionSystem = World.GetOrCreateSystemManaged<DistrictGroupSelectionSystem>();
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
             m_SelectedInfoUISystem = World.GetOrCreateSystemManaged<SelectedInfoUISystem>();
@@ -89,6 +91,11 @@ namespace DistrictGroups
                 visible => m_OverlaySystem.SetAreasVisible(visible)));
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setShowOverlay",
                 show => m_OverlaySystem.SetShowOverlay(show)));
+
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "showServiceBuildings",
+                () => m_ServiceBuildingSystem.ShowServiceBuildings));
+            AddBinding(new TriggerBinding<bool>(kBindingGroup, "setShowServiceBuildings",
+                show => m_ServiceBuildingSystem.SetShowServiceBuildings(show)));
         }
 
         private void SetupGroupManagementPanelBindings()

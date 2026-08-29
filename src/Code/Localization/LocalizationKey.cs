@@ -17,6 +17,7 @@ namespace DistrictGroups
         public const string NoGroupsMatchFilter = "DistrictGroups.UI[NoGroupsMatchFilter]";
         public const string DisplayDistrictAreasLabel = "DistrictGroups.UI[DisplayDistrictAreasLabel]";
         public const string ShowGroupOverlayLabel = "DistrictGroups.UI[ShowGroupOverlayLabel]";
+        public const string ShowServiceBuildingsLabel = "DistrictGroups.UI[ShowServiceBuildingsLabel]";
 
         public const string DeleteGroupTooltipLine1 = "DistrictGroups.UI[DeleteGroupTooltipLine1]";
         public const string DeleteGroupTooltipLine2 = "DistrictGroups.UI[DeleteGroupTooltipLine2]";

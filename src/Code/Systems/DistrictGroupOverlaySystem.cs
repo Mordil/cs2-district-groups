@@ -72,6 +72,7 @@ namespace DistrictGroups
 
         // Defaults to Generic (0).
         private int m_TypeFilter = (int)GroupServiceType.Generic;
+        public int TypeFilter => m_TypeFilter;
 
         // Full-screen desaturation Volume shown alongside the border overlay
         private Volume m_DesaturationVolume;

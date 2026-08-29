@@ -79,6 +79,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchFilter, "Nessun gruppo corrisponde a questo filtro." },
                 { LocalizationKey.DisplayDistrictAreasLabel, "Mostra tutti i quartieri" },
                 { LocalizationKey.ShowGroupOverlayLabel, "Mostra sovrimpressione del gruppo" },
+                { LocalizationKey.ShowServiceBuildingsLabel, "Mostra gli edifici di servizio" },
 
                 { LocalizationKey.DeleteGroupTooltipLine1, "Elimina definitivamente il gruppo." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Gli edifici assegnati perderanno i loro **quartieri operativi**." },

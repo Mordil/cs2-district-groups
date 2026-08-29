@@ -69,6 +69,7 @@ namespace DistrictGroups
 
             updateSystem.UpdateAt<DistrictGroupSyncSystem>(SystemUpdatePhase.Modification5);
             updateSystem.UpdateAt<DistrictGroupOverlaySystem>(SystemUpdatePhase.ToolUpdate);
+            updateSystem.UpdateAt<DistrictGroupServiceBuildingSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictGroupSelectionSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictGroupsUISystem>(SystemUpdatePhase.UIUpdate);
             updateSystem.UpdateAt<DistrictGroupSection>(SystemUpdatePhase.UIUpdate);
