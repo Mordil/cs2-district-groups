@@ -1,7 +1,6 @@
 using System.Text;
 using Game.Areas;
 using Game.Prefabs;
-using Game.UI;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -12,7 +11,6 @@ namespace DistrictGroups
     {
         private EntityQuery m_ServiceBuildingQuery;
         private EntityQuery m_DistrictQuery;
-        private NameSystem m_NameSystem;
 
         private void InitializeDebugSupport()
         {
@@ -23,7 +21,6 @@ namespace DistrictGroups
                 ComponentType.ReadOnly<District>(),
                 ComponentType.Exclude<Game.Common.Deleted>(),
                 ComponentType.Exclude<Game.Tools.Temp>());
-            m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
         }
 
         // Shared with DistrictGroupSection, which detects the type of whatever

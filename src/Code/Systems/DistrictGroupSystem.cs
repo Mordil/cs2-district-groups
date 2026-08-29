@@ -3,6 +3,7 @@ using Colossal.Serialization.Entities;
 using Game;
 using Game.Areas;
 using Game.Buildings;
+using Game.UI;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -50,9 +51,19 @@ namespace DistrictGroups
         private float m_LastPopulationSampleTime = float.NegativeInfinity;
         private Dictionary<Entity, int> m_CachedDistrictPopulations = new Dictionary<Entity, int>();
 
+        private NameSystem m_NameSystem;
+
+        // This system's public methods run from whatever phase their caller is in
+        // 
+        // EndFrameBarrier's per-frame usage window may already be closed by then,
+        // so it has to be reopened via AllowUsage() before every NameSystem write below.
+        private EndFrameBarrier m_EndFrameBarrier;
+
         protected override void OnCreate()
         {
             base.OnCreate();
+            m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
+            m_EndFrameBarrier = World.GetOrCreateSystemManaged<EndFrameBarrier>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_AssignmentQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupAssignment>());
             m_AllAssignmentsQuery = GetEntityQuery(new EntityQueryDesc
@@ -84,6 +95,11 @@ namespace DistrictGroups
             if (count > 0)
             {
                 Mod.log.Info($"Purging leftover groups on preload; purpose:{purpose} mode:{mode} count:{count}");
+                using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
+                foreach (Entity group in groups)
+                {
+                    UnregisterGroupName(group);
+                }
                 EntityManager.DestroyEntity(m_GroupQuery);
             }
             m_NextColorIndex = 0;
@@ -135,6 +151,13 @@ namespace DistrictGroups
             }
 
             m_NextColorIndex = groups.Length;
+
+            // NameSystem's registration is runtime-only (this World instance), not part of the save -
+            // every loaded group needs its name (re-)registered before labels can resolve it.
+            foreach (Entity group in groups)
+            {
+                RegisterGroupName(group, GetGroupName(group));
+            }
         }
 
         public Entity CreateGroup(string name, GroupServiceType type)
@@ -144,6 +167,7 @@ namespace DistrictGroups
             Color color = kPalette[m_NextColorIndex++ % kPalette.Length];
             EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type, m_Color = color });
             EntityManager.AddBuffer<DistrictGroupMember>(group);
+            RegisterGroupName(group, name);
             Version++;
             GroupCompositionVersion++;
             Mod.log.Info($"Finished creating new group; type:{type}");
@@ -158,6 +182,7 @@ namespace DistrictGroups
             {
                 UnassignBuilding(building);
             }
+            UnregisterGroupName(group);
             EntityManager.DestroyEntity(group);
             Version++;
             GroupCompositionVersion++;
@@ -170,6 +195,7 @@ namespace DistrictGroups
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Name = name;
             EntityManager.SetComponentData(group, data);
+            RegisterGroupName(group, name);
             Version++;
             Mod.log.Info($"Finished renaming group; group:{group} name:{name}");
         }
@@ -440,6 +466,19 @@ namespace DistrictGroups
                 : "<missing>";
         }
 
+        // Keeps NameSystem's custom-name registration in sync with a group's current name.
+        private void RegisterGroupName(Entity group, string name)
+        {
+            m_EndFrameBarrier.AllowUsage();
+            m_NameSystem.SetCustomName(group, name);
+        }
+
+        private void UnregisterGroupName(Entity group)
+        {
+            m_EndFrameBarrier.AllowUsage();
+            m_NameSystem.SetCustomName(group, null);
+        }
+
         // Wipes every group and building assignment the mod has ever written
         public void RemoveAllData()
         {
@@ -452,6 +491,13 @@ namespace DistrictGroups
                 EntityManager.RemoveComponent<DistrictGroupAssignment>(building);
             }
 
+            using (NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp))
+            {
+                foreach (Entity group in groups)
+                {
+                    UnregisterGroupName(group);
+                }
+            }
             EntityManager.DestroyEntity(m_GroupQuery);
 
             m_NextColorIndex = 0;
