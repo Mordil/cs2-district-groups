@@ -7,7 +7,7 @@ import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, cameraModeActive$, overlayVisible$, selectingGroup$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, cameraModeActive$, otherToolActive$, overlayVisible$, selectingGroup$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -38,6 +38,7 @@ export const GroupManager = () => {
     const selectedEntity = useValue(selectedInfo.selectedEntity$)
     const activeGamePanel = useValue(game.activeGamePanel$)
     const cameraModeActive = useValue(cameraModeActive$)
+    const otherToolActive = useValue(otherToolActive$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
 
@@ -97,6 +98,13 @@ export const GroupManager = () => {
             closePanel()
         }
     }, [cameraModeActive])
+
+    // Some other vanilla tool came up with its own info panel in our screen corner - dismiss and don't reopen after it ends
+    useEffect(() => {
+        if (open && otherToolActive) {
+            closePanel()
+        }
+    }, [otherToolActive])
 
     // If something happens code side that we need to close, respect it
     useEffect(() => {

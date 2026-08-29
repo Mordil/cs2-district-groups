@@ -10,4 +10,5 @@ export const showServiceBuildings$ = bindValue<boolean>(mod.id, "showServiceBuil
 export const areaToolActive$ = bindValue<boolean>(mod.id, "areaToolActive", false)
 export const overlayVisible$ = bindValue<boolean>(mod.id, "overlayVisible", false)
 export const cameraModeActive$ = bindValue<boolean>(mod.id, "cameraModeActive", false)
+export const otherToolActive$ = bindValue<boolean>(mod.id, "otherToolActive", false)
 export const selectingGroup$ = bindValue<Entity>(mod.id, "selectingGroup", { index: 0, version: 0 })

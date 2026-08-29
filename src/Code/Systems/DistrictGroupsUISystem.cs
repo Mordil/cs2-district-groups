@@ -23,6 +23,10 @@ namespace DistrictGroups
         private NameSystem m_NameSystem;
         private SelectedInfoUISystem m_SelectedInfoUISystem;
         private CameraUpdateSystem m_CameraUpdateSystem;
+        private ToolSystem m_ToolSystem;
+        private DefaultToolSystem m_DefaultToolSystem;
+        private AreaToolSystem m_AreaToolSystem;
+        private SelectionToolSystem m_SelectionToolSystem;
         private EntityQuery m_GroupQuery;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
@@ -49,6 +53,10 @@ namespace DistrictGroups
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
             m_SelectedInfoUISystem = World.GetOrCreateSystemManaged<SelectedInfoUISystem>();
             m_CameraUpdateSystem = World.GetOrCreateSystemManaged<CameraUpdateSystem>();
+            m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();
+            m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
+            m_AreaToolSystem = World.GetOrCreateSystemManaged<AreaToolSystem>();
+            m_SelectionToolSystem = World.GetOrCreateSystemManaged<SelectionToolSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
 
             SetupRootBindings();
@@ -83,6 +91,12 @@ namespace DistrictGroups
             // camera controller instead of the normal gameplay one - our panel doesn't belong on screen then.
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "cameraModeActive",
                 () => !ReferenceEquals(m_CameraUpdateSystem.activeCameraController, m_CameraUpdateSystem.gamePlayController)));
+            // True while some other vanilla tool is active
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "otherToolActive",
+                () => m_ToolSystem.activeTool != null
+                    && m_ToolSystem.activeTool != m_DefaultToolSystem
+                    && m_ToolSystem.activeTool != m_AreaToolSystem
+                    && m_ToolSystem.activeTool != m_SelectionToolSystem));
 
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setOverlay", OnPanelOpenChanged));
             AddBinding(new TriggerBinding<int>(kBindingGroup, "setOverlayFilter",
