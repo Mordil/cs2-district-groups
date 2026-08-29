@@ -1,5 +1,5 @@
 import { trigger, useValue } from "cs2/api"
-import { game, infoview, selectedInfo } from "cs2/bindings"
+import { infoview } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals } from "cs2/utils"
 import { useEffect, useRef, useState } from "react"
@@ -7,7 +7,7 @@ import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, cameraModeActive$, otherToolActive$, overlayVisible$, selectingGroup$, GroupManagementPanel } from "groupManagementPanel"
+import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$, GroupManagementPanel } from "groupManagementPanel"
 import { logger } from "../log"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -35,10 +35,7 @@ export const GroupManager = () => {
     const areaToolActive = useValue(areaToolActive$)
     const overlayVisible = useValue(overlayVisible$)
     const selectingGroup = useValue(selectingGroup$)
-    const selectedEntity = useValue(selectedInfo.selectedEntity$)
-    const activeGamePanel = useValue(game.activeGamePanel$)
-    const cameraModeActive = useValue(cameraModeActive$)
-    const otherToolActive = useValue(otherToolActive$)
+    const shouldDismissPanel = useValue(shouldDismissPanel$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
 
@@ -64,9 +61,9 @@ export const GroupManager = () => {
 
     const togglePanel = () => (open ? closePanel() : openPanel())
 
-    // The district area tool shares the same screen space our panel occupies
-    // when it comes up, we dismiss our UI
-    // then afterwards, we show our UI
+    // The district area tool shares the same screen space our panel occupies.
+    // If it opens while we're displaying our UI, we want to dismiss until the player is done.
+    // Then restore our UI, because they may want to do something with the areas they just painted.
     useEffect(() => {
         if (areaToolActive) {
             if (open) {
@@ -79,39 +76,13 @@ export const GroupManager = () => {
         }
     }, [areaToolActive])
 
-    // We occupy the same area as other game panels, so if they open, dismiss ourselves
-    // Because these actions are entirely different concerns from users from what we do, don't reopen after they close
+    // Every other reason our panel doesn't belong on screen right now
+    // Unlike the area tool, this is likely not a temporary detour worth restoring our panel after.
     useEffect(() => {
-        if (!open) {
-            return
-        }
-        const infoviewMenuOpen = activeGamePanel?.__Type === game.GamePanelType.InfoviewMenu
-        const entitySelected = !entityEquals(selectedEntity, { index: 0, version: 0 })
-        if (entitySelected || infoviewMenuOpen) {
+        if (open && (shouldDismissPanel || !overlayVisible)) {
             closePanel()
         }
-    }, [selectedEntity, activeGamePanel])
-
-    // Camera Mode, so dismiss and don't reopen after it ends
-    useEffect(() => {
-        if (open && cameraModeActive) {
-            closePanel()
-        }
-    }, [cameraModeActive])
-
-    // Some other vanilla tool came up with its own info panel in our screen corner - dismiss and don't reopen after it ends
-    useEffect(() => {
-        if (open && otherToolActive) {
-            closePanel()
-        }
-    }, [otherToolActive])
-
-    // If something happens code side that we need to close, respect it
-    useEffect(() => {
-        if (open && !overlayVisible) {
-            closePanel()
-        }
-    }, [overlayVisible])
+    }, [shouldDismissPanel, overlayVisible])
 
     const panelToggleTooltip = (
         <FormattedParagraphs

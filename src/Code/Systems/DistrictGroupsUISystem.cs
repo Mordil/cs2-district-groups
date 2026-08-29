@@ -27,6 +27,7 @@ namespace DistrictGroups
         private DefaultToolSystem m_DefaultToolSystem;
         private AreaToolSystem m_AreaToolSystem;
         private SelectionToolSystem m_SelectionToolSystem;
+        private GamePanelUISystem m_GamePanelUISystem;
         private EntityQuery m_GroupQuery;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
@@ -57,6 +58,7 @@ namespace DistrictGroups
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_AreaToolSystem = World.GetOrCreateSystemManaged<AreaToolSystem>();
             m_SelectionToolSystem = World.GetOrCreateSystemManaged<SelectionToolSystem>();
+            m_GamePanelUISystem = World.GetOrCreateSystemManaged<GamePanelUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
 
             SetupRootBindings();
@@ -87,16 +89,15 @@ namespace DistrictGroups
                 () => m_OverlaySystem.IsAreaToolActive));
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "overlayVisible",
                 () => m_OverlaySystem.Visible));
-            // True while the "Camera Mode" hotkey (default .) has swapped in the orbit/cinematic
-            // camera controller instead of the normal gameplay one - our panel doesn't belong on screen then.
-            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "cameraModeActive",
-                () => !ReferenceEquals(m_CameraUpdateSystem.activeCameraController, m_CameraUpdateSystem.gamePlayController)));
-            // True while some other vanilla tool is active
-            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "otherToolActive",
-                () => m_ToolSystem.activeTool != null
-                    && m_ToolSystem.activeTool != m_DefaultToolSystem
-                    && m_ToolSystem.activeTool != m_AreaToolSystem
-                    && m_ToolSystem.activeTool != m_SelectionToolSystem));
+            // Everything that means our panel doesn't belong on screen right now
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "shouldDismissPanel",
+                () => m_GamePanelUISystem.activePanel is InfoviewMenu
+                    || m_SelectedInfoUISystem.selectedEntity != Entity.Null
+                    || !ReferenceEquals(m_CameraUpdateSystem.activeCameraController, m_CameraUpdateSystem.gamePlayController)
+                    || (m_ToolSystem.activeTool != null
+                        && m_ToolSystem.activeTool != m_DefaultToolSystem
+                        && m_ToolSystem.activeTool != m_AreaToolSystem
+                        && m_ToolSystem.activeTool != m_SelectionToolSystem)));
 
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setOverlay", OnPanelOpenChanged));
             AddBinding(new TriggerBinding<int>(kBindingGroup, "setOverlayFilter",
