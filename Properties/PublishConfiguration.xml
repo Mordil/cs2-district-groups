@@ -18,6 +18,10 @@ mind, you have to edit every building again.
 
 District Groups makes this easier.
 
+**NOTE**
+
+This mod DOES NOT change how the game works. It only fills in the "districts served" list for you.
+
 # BETA
 **This mod is in BETA.** The intial mod feature set is complete and highly optimized.
 
@@ -33,7 +37,9 @@ Please, if you find bugs, [report them on GitHub](https://github.com/Mordil/cs2-
 The building now serves every district in that group. Later, when you add or
 remove a district, every building that uses the group updates by itself.
 
-**NOTE** It takes a few seconds after assigning a group to a building for the UI to show the change.
+**NOTE**
+
+It takes a few seconds after assigning a group to a building for the UI to show the change.
 This is the game simulation catching up.
 
 ## Localization
@@ -44,15 +50,6 @@ Translations are provided by AI tooling, extracting from CSII localization data 
 
 If there are incorrect translations, please [report them on GitHub](https://github.com/Mordil/cs2-district-groups/issues/new).
 
-## Things to Know
-
-- One district can be in many groups.
-- A building only sees groups that match its own service type.
-- This mod does not change how the game works. It only fills in the
-  "districts served" list for you.
-- While a building uses a group, the mod controls its district list. If you
-  edit that list by hand, your change will be replaced.
-
 ## Mod Compatability
 This mod is INCOMPATIBLE with any other mod that modifies the "Operating Districts" section of a building's Info Panel.
 
@@ -61,6 +58,8 @@ This mod is INCOMPATIBLE with any other mod that modifies the "Operating Distric
 Your buildings keep serving their districts. Only the groups are lost. Loading a
 save without the mod is safe. But if you save the game while the mod is removed,
 the groups are gone for good.
+
+In Settings, there is a button to safely remove all mod data from your save.
 
 ## Roadmap
 
@@ -89,7 +88,7 @@ the groups are gone for good.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="0.10.0" />
+	<ModVersion Value="0.11.0" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -104,9 +103,12 @@ the groups are gone for good.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-- Fixed accidentally shipping debug builds (thank you, Acord_Uch, for the report)
-- Fixed several bugs related to the "Select Districts" on Group Management
-- Removed dependency on Unified Icon Library
+- Added a new "Show service buildings" option in Group Management to place an icon over matching service buildings in the city
+- The mod UI should now properly respond to events from the player like Camera Mode, opening the info panel, placing buildings, etc.
+- Updated translations to more closely align with what CSII uses for certain phrases
+- Re-organized Overlay Settings tab and updated descriptions
+- Removed the overlay height setting
+- Added support for displaying the Overlay fill with transparency. This is on by default and can be turned off in Settings.
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
