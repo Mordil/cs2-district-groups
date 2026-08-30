@@ -138,12 +138,14 @@ placeholder = "This is a"
 if placeholder in (value("ShortDescription") or "") or placeholder in (root.find("LongDescription").text or ""):
     fail.append("template placeholder text is still in a description")
 
-# --- images: exist, and under the server's 2.1 MB cap ----------------------
+# --- images: count, exist, and under the server's 2.1 MB cap ---------------
 HARD = int(2.1 * 1024 * 1024)   # reject above 2.1 MiB
 SOFT = 2_100_000                # warn above 2.1 MB decimal - which unit the
                                 # server means is unverified, so flag the gap
-print("IMAGES (server rejects anything over 2.1 MB)")
-images = [("Thumbnail", value("Thumbnail"))] + [("Screenshot", e.get("Value")) for e in root.findall("Screenshot")]
+MAX_SHOTS = 10                  # Paradox Mods caps a listing at 10 screenshots
+screenshots = [e.get("Value") for e in root.findall("Screenshot")]
+print(f"IMAGES (server rejects anything over 2.1 MB; max {MAX_SHOTS} screenshots)")
+images = [("Thumbnail", value("Thumbnail"))] + [("Screenshot", p) for p in screenshots]
 for kind, path in images:
     if not path:
         warn.append(f"{kind} entry is empty")
@@ -171,6 +173,11 @@ for kind, path in images:
         label = "BORDERLN"
         warn.append(f"{os.path.basename(path)} is {size/1024/1024:.2f} MB - right at the cap")
     print(f"    {label} {kind:<11} {size/1024/1024:>5.2f} MB  {dims:<10} {path}")
+if len(screenshots) > MAX_SHOTS:
+    print(f"    TOO MANY screenshots  {len(screenshots)} declared, {MAX_SHOTS} allowed")
+    fail.append(f"{len(screenshots)} Screenshot entries - Paradox accepts at most {MAX_SHOTS}")
+else:
+    print(f"    {len(screenshots)}/{MAX_SHOTS} screenshot slots used")
 print()
 
 # --- mode-specific ---------------------------------------------------------
