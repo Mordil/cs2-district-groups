@@ -13,7 +13,7 @@
 	    element's body even when empty, so keep the attribute form deleted.-->
 	<LongDescription>
 In the base game you pick which districts a service building serves. You do this
-for every building, one at a time. If you paint a new district or change your
+for every building, one at a time. If you make a new district or change your
 mind, you have to edit every building again.
 
 District Groups makes this easier.
@@ -21,11 +21,6 @@ District Groups makes this easier.
 **NOTE**
 
 This mod DOES NOT change how the game works. It only fills in the "districts served" list for you.
-
-# BETA
-**This mod is in BETA.** The intial mod feature set is complete and highly optimized.
-
-Please, if you find bugs, [report them on GitHub](https://github.com/Mordil/cs2-district-groups/issues/new).
 
 ## How to use it
 
@@ -55,9 +50,9 @@ This mod is INCOMPATIBLE with any other mod that modifies the "Operating Distric
 
 ## Uninstalling the mod
 
-Your buildings keep serving their districts. Only the groups are lost. Loading a
-save without the mod is safe. But if you save the game while the mod is removed,
-the groups are gone for good.
+Loading a save without the mod is generally safe. But if you save the game while the mod is removed, the groups are gone for good.
+
+Service buildings will continue serving the districts as they were assigned before removing the mod. Only the groups are lost. 
 
 In Settings, there is a button to safely remove all mod data from your save.
 
@@ -69,14 +64,14 @@ In Settings, there is a button to safely remove all mod data from your save.
 	</LongDescription>
 
 	<!--Thumbnail-->
-	<Thumbnail Value="Properties/Thumbnail.beta.png" />
+	<Thumbnail Value="Properties/Thumbnail-1.0.png" />
 
 	<!--Screenshot, can be set multiple times-->
-	<Screenshot Value="Properties/Screenshots/Preview1.png" />
-	<Screenshot Value="Properties/Screenshots/Preview2.png" />
-	<Screenshot Value="Properties/Screenshots/Preview3.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview4.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview5.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview1-1.0.png" />
+	<Screenshot Value="Properties/Screenshots/Preview2-1.0.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview3-1.0.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview4-1.0.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview5-1.0.jpg" />
 
 	<!--Tag, can be set multiple times. The server validates against a fixed list and
 	    rejects anything else; the UI label "Areas" is the tag id "UIAreas". Other likely
@@ -88,7 +83,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="0.11.0" />
+	<ModVersion Value="1.0.0" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -102,13 +97,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
-	<ChangeLog>
-- Added a new "Show service buildings" option in Group Management to place an icon over matching service buildings in the city
-- The mod UI should now properly respond to events from the player like Camera Mode, opening the info panel, placing buildings, etc.
-- Updated translations to more closely align with what CSII uses for certain phrases
-- Re-organized Overlay Settings tab and updated descriptions
-- Removed the overlay height setting
-- Added support for displaying the Overlay fill with transparency. This is on by default and can be turned off in Settings.
+	<ChangeLog Value="">
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
