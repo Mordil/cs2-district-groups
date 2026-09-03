@@ -40,6 +40,14 @@ namespace DistrictGroups
         private GroupServiceType m_SampledServiceType = GroupServiceType.Generic;
         private float m_LastServiceBuildingSampleTime = float.NegativeInfinity;
 
+        private RawValueBinding m_GroupsBinding;
+        private RawValueBinding m_ServiceBuildingsBinding;
+        private RawValueBinding m_SelectingGroupBinding;
+        private int m_LastSeenGroupVersion = -1;
+        private int m_LastSeenTypeFilter = -1;
+        private Entity m_LastSeenSelectingGroup = Entity.Null;
+        private float m_LastPanelRefreshTime = float.NegativeInfinity;
+
         // Lets the UI know if we're in a debug build
         public static bool IsDebugBuild =>
 #if DEBUG
@@ -69,6 +77,49 @@ namespace DistrictGroups
             SetupRootBindings();
             SetupOverlayBindings();
             SetupGroupManagementPanelBindings();
+        }
+
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
+
+            /*
+            Update UI bindings with the latest data if it's been mutated or if the refresh interval says it's time to update
+
+            This is to avoid writing data to the UI that hasn't changed, every single frame...
+            */
+
+            int groupVersion = m_GroupSystem.Version;
+            int typeFilter = m_OverlaySystem.TypeFilter;
+            Entity selectingGroup = m_SelectionSystem.SelectingGroup;
+            float refreshRateSeconds = Mod.Settings?.RefreshRateSeconds ?? Setting.kDefaultRefreshRateSeconds;
+
+            bool mutated = groupVersion != m_LastSeenGroupVersion;
+            bool filterChanged = typeFilter != m_LastSeenTypeFilter;
+            bool refreshDue = UnityEngine.Time.realtimeSinceStartup - m_LastPanelRefreshTime >= refreshRateSeconds;
+
+            m_LastSeenGroupVersion = groupVersion;
+            m_LastSeenTypeFilter = typeFilter;
+            if (refreshDue)
+            {
+                m_LastPanelRefreshTime = UnityEngine.Time.realtimeSinceStartup;
+            }
+
+            if (mutated || refreshDue)
+            {
+                m_GroupsBinding.Update();
+            }
+
+            if (mutated || filterChanged || refreshDue)
+            {
+                m_ServiceBuildingsBinding.Update();
+            }
+
+            if (selectingGroup != m_LastSeenSelectingGroup)
+            {
+                m_LastSeenSelectingGroup = selectingGroup;
+                m_SelectingGroupBinding.Update();
+            }
         }
 
         // Global bindings not scoped to any one panel
@@ -120,10 +171,16 @@ namespace DistrictGroups
 
         private void SetupGroupManagementPanelBindings()
         {
-            AddUpdateBinding(new RawValueBinding(kBindingGroup, "groups", WriteGroups));
-            AddUpdateBinding(new RawValueBinding(kBindingGroup, "serviceBuildings", WriteServiceBuildings));
-            AddUpdateBinding(new RawValueBinding(kBindingGroup, "selectingGroup",
-                writer => WriteEntity(writer, m_SelectionSystem.SelectingGroup)));
+            // AddBinding, not AddUpdateBinding: OnUpdate decides when each of these
+            // has something new to write. They still push their first payload on
+            // their own, when the panel subscribes.
+            m_GroupsBinding = new RawValueBinding(kBindingGroup, "groups", WriteGroups);
+            m_ServiceBuildingsBinding = new RawValueBinding(kBindingGroup, "serviceBuildings", WriteServiceBuildings);
+            m_SelectingGroupBinding = new RawValueBinding(kBindingGroup, "selectingGroup",
+                writer => WriteEntity(writer, m_SelectionSystem.SelectingGroup));
+            AddBinding(m_GroupsBinding);
+            AddBinding(m_ServiceBuildingsBinding);
+            AddBinding(m_SelectingGroupBinding);
 
             AddBinding(new TriggerBinding<string, int>(kBindingGroup, "createGroup",
                 (name, type) => m_GroupSystem.CreateGroup(name, (GroupServiceType)type)));
