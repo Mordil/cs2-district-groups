@@ -317,7 +317,9 @@ namespace DistrictGroups
         protected override void OnUpdate()
         {
             // we don't want to flood the logs with rendering breadcrumbs, so we sample instead
-            bool shouldSample = UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
+            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            bool shouldSample = debugLogging &&
+                UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
             if (shouldSample)
             {
                 m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
