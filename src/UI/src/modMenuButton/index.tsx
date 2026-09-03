@@ -41,8 +41,15 @@ export const GroupManager = () => {
 
     const openPanel = () => {
         logger.info("Panel opened;")
+
+        // An explicit open supersedes any pending area-tool restore, and the setOverlay
+        // below cancels the area tool anyway - which would otherwise trip that restore.
+        dismissedByAreaTool.current = false
         setOpen(true)
+
+        // Also what stands down the active tool and the vanilla info panel on the C# side
         trigger(mod.id, "setOverlay", true)
+
         // We occupy the same corner as the Info Views menu - dismiss it so they don't overlap.
         infoview.closeInfoviewMenu()
     }
@@ -78,8 +85,17 @@ export const GroupManager = () => {
 
     // Every other reason our panel doesn't belong on screen right now
     // Unlike the area tool, this is likely not a temporary detour worth restoring our panel after.
+    const wasDismissRequested = useRef(shouldDismissPanel)
+    const wasOverlayVisible = useRef(overlayVisible)
     useEffect(() => {
-        if (open && (shouldDismissPanel || !overlayVisible)) {
+        const dismissRequested = shouldDismissPanel && !wasDismissRequested.current
+        // C# forced the overlay off out from under us, e.g. loading into another city
+        const overlayForcedOff = !overlayVisible && wasOverlayVisible.current
+
+        wasDismissRequested.current = shouldDismissPanel
+        wasOverlayVisible.current = overlayVisible
+
+        if (open && (dismissRequested || overlayForcedOff)) {
             closePanel()
         }
     }, [shouldDismissPanel, overlayVisible])

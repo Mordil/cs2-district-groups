@@ -19,14 +19,22 @@ namespace DistrictGroups
             }
         }
 
-        // "setOverlay" fires exactly at our panel's open/close, so it doubles
-        // as the signal for closing/restoring the vanilla selected-info panel.
+        // "setOverlay" fires exactly at our panel's open/close, so it also signals to close something competing for the screen
         private void OnPanelOpenChanged(bool open)
         {
             m_OverlaySystem.SetVisible(open);
 
             if (open)
             {
+                // Our panel and an active tool can't share the screen
+                // the panel is what the player just asked for - so cancel the tool
+                // Picking a tool again dismisses our panel
+                if (m_ToolSystem.activeTool != null && m_ToolSystem.activeTool != m_DefaultToolSystem)
+                {
+                    Mod.log.Info($"Cancelling active tool for panel open; tool:{m_ToolSystem.activeTool.toolID}");
+                    m_ToolSystem.activeTool = m_DefaultToolSystem;
+                }
+
                 m_SavedSelection = m_SelectedInfoUISystem.selectedEntity;
                 if (m_SavedSelection != Entity.Null)
                 {
@@ -35,7 +43,11 @@ namespace DistrictGroups
             }
             else
             {
-                if (m_SavedSelection != Entity.Null && EntityManager.Exists(m_SavedSelection))
+                // Selecting something else is one of the things that dismisses our panel, so by the
+                // time we get here the player may already have a newer selection - theirs wins.
+                if (m_SavedSelection != Entity.Null
+                    && m_SelectedInfoUISystem.selectedEntity == Entity.Null
+                    && EntityManager.Exists(m_SavedSelection))
                 {
                     m_SelectedInfoUISystem.SetSelection(m_SavedSelection);
                 }
