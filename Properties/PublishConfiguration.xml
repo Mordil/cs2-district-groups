@@ -98,14 +98,9 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-**1.0 release**
+**CHANGED**
 
-- Fixed UX bug where trying to open the Group Management UI while using a tool would immediately close the mod UI
-- Significant optimization of the overlay to reduce how often work was being done by caching more data and by considering what's currently on screen
-- Minor performance improvement when looking at the Info Panel of service buildings
-- Improved performance by not doing certain debug operations with debug logging disabled
-- Added group labels to the overlay. This can be disabled in Settings.
-- Group entities are now registered in the game's core NameSystem.
+- Increased the font size of the group type selector
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
