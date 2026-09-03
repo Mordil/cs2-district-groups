@@ -2,12 +2,12 @@ import { Color } from "cs2/bindings"
 import { Button, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import { MouseEvent, RefObject, useState } from "react"
-import { useTranslation } from "../locale"
-import { useTypeLabels, kUITopOffset } from "../constants"
-import { VC, VF, VT } from "../components/vanilla"
+import { useTranslation } from "../../locale"
+import { useTypeLabels, kUITopOffset } from "../../constants"
+import { VC, VF, VT } from "../vanilla"
 import css from "./GroupSearchFlyout.module.scss"
-import { GroupOption, groupCandidatesByType, kGenericGroupType } from "./GroupSelector"
-import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
+import { GroupOption, groupCandidatesByType, kGenericGroupType } from "./candidates"
+import { useEnterExitPhase } from "../../hooks/useEnterExitPhase"
 
 const kFlyoutWidthPx = 580
 const kGapPx = 24

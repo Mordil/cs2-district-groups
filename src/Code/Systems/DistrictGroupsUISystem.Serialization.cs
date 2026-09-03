@@ -67,9 +67,33 @@ namespace DistrictGroups
             writer.ArrayBegin(m_ServiceBuildingSample.Count);
             foreach (Entity building in m_ServiceBuildingSample)
             {
-                WriteNamedEntity(writer, building);
+                WriteServiceBuilding(writer, building);
             }
             writer.ArrayEnd();
+        }
+
+        // Sampled buildings all come from the filtered type's own query,
+        // so the sampled type IS every listed building's type
+        private void WriteServiceBuilding(IJsonWriter writer, Entity building)
+        {
+            Entity assignedGroup = EntityManager.HasComponent<DistrictGroupAssignment>(building)
+                ? EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group
+                : Entity.Null;
+
+            writer.TypeBegin("ServiceBuilding");
+            writer.PropertyName("entity");
+            WriteEntity(writer, building);
+            writer.PropertyName("name");
+            writer.Write(m_NameSystem.GetRenderedLabelName(building));
+            writer.PropertyName("type");
+            writer.Write((int)m_SampledServiceType);
+            writer.PropertyName("hasAssignment");
+            writer.Write(assignedGroup != Entity.Null);
+            writer.PropertyName("assignedGroup");
+            WriteEntity(writer, assignedGroup);
+            writer.PropertyName("assignedGroupName");
+            writer.Write(assignedGroup != Entity.Null ? m_GroupSystem.GetGroupName(assignedGroup) : "");
+            writer.TypeEnd();
         }
 
         private void SampleServiceBuildings(GroupServiceType type)

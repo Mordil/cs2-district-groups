@@ -143,6 +143,14 @@ namespace DistrictGroups
                 }));
             AddBinding(new TriggerBinding<Entity>(kBindingGroup, "toggleDistrictSelection",
                 group => m_SelectionSystem.ToggleSelection(group)));
+
+            // The info-panel section's own "assignGroup"/"unassignGroup" always mean
+            // the selected building; these name the building instead, since the
+            // panel assigns buildings it never selects.
+            AddBinding(new TriggerBinding<Entity, Entity>(kBindingGroup, "assignBuildingGroup",
+                (building, group) => m_GroupSystem.AssignBuilding(building, group)));
+            AddBinding(new TriggerBinding<Entity>(kBindingGroup, "unassignBuildingGroup",
+                building => m_GroupSystem.UnassignBuilding(building)));
         }
     }
 }

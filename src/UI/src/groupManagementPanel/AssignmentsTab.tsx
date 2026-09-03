@@ -1,8 +1,12 @@
-import { useValue } from "cs2/api"
+import { trigger, useValue } from "cs2/api"
 import { Scrollable } from "cs2/ui"
-import { entityKey } from "cs2/utils"
+import { Entity, entityKey } from "cs2/utils"
+import mod from "../../mod.json"
+import { eligibleGroups, GroupSelector } from "../components/groupSelector"
 import { useTranslation } from "../locale"
-import { serviceBuildings$ } from "./bindings"
+import { logger } from "../log"
+import { ServiceBuilding } from "../types"
+import { groups$, serviceBuildings$ } from "./bindings"
 import css from "./AssignmentsTab.module.scss"
 
 const kGenericType = 0
@@ -17,6 +21,17 @@ interface AssignmentsTabProps {
 export const AssignmentsTab = ({ filterType, className }: AssignmentsTabProps) => {
     const t = useTranslation()
     const buildings = useValue(serviceBuildings$)
+    const groups = useValue(groups$)
+
+    const onSelect = (building: ServiceBuilding, group: Entity) => {
+        logger.info(`Assign group clicked; building:${entityKey(building.entity)} group:${entityKey(group)}`)
+        trigger(mod.id, "assignBuildingGroup", building.entity, group)
+    }
+
+    const onUnassign = (building: ServiceBuilding) => {
+        logger.info(`Unassign group clicked; building:${entityKey(building.entity)}`)
+        trigger(mod.id, "unassignBuildingGroup", building.entity)
+    }
 
     return (
         <Scrollable
@@ -39,7 +54,17 @@ export const AssignmentsTab = ({ filterType, className }: AssignmentsTabProps) =
             {filterType !== kGenericType &&
                 buildings.map((building) => (
                     <div key={entityKey(building.entity)} className={css.row}>
-                        {building.name}
+                        <div className={css.buildingName}>{building.name}</div>
+
+                        <GroupSelector
+                            buildingType={building.type}
+                            candidates={eligibleGroups(groups, building.type, building.assignedGroup)}
+                            hasAssignment={building.hasAssignment}
+                            assignedGroupName={building.assignedGroupName}
+                            onSelect={(group) => onSelect(building, group)}
+                            onUnassign={() => onUnassign(building)}
+                            className={css.groupSelector}
+                        />
                     </div>
                 ))}
         </Scrollable>

@@ -6,6 +6,16 @@ export interface NamedEntity {
     name: string
 }
 
+// A service building of the currently filtered type, with the assignment state its row needs
+export interface ServiceBuilding {
+    entity: Entity
+    name: string
+    type: number
+    hasAssignment: boolean
+    assignedGroup: Entity
+    assignedGroupName: string
+}
+
 export interface Group {
     entity: Entity
     name: string

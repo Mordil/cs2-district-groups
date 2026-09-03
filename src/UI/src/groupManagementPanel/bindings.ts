@@ -1,10 +1,10 @@
 import { bindValue } from "cs2/api"
 import { Entity } from "cs2/utils"
 import mod from "../../mod.json"
-import { Group, NamedEntity } from "../types"
+import { Group, ServiceBuilding } from "../types"
 
 export const groups$ = bindValue<Group[]>(mod.id, "groups", [])
-export const serviceBuildings$ = bindValue<NamedEntity[]>(mod.id, "serviceBuildings", [])
+export const serviceBuildings$ = bindValue<ServiceBuilding[]>(mod.id, "serviceBuildings", [])
 export const areasVisible$ = bindValue<boolean>(mod.id, "areasVisible", false)
 export const showOverlay$ = bindValue<boolean>(mod.id, "showOverlay", true)
 export const showServiceBuildings$ = bindValue<boolean>(mod.id, "showServiceBuildings", false)
