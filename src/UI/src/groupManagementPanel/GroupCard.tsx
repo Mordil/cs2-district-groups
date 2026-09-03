@@ -23,6 +23,7 @@ const kExpandDurationMs = 250
 // Tints the trash icon on the group-level delete action to flag it as the
 // harder-to-reverse one; the per-member remove below stays neutral.
 const dangerIconStyle = { "--iconColor": "var(--negativeColor)" } as CSSProperties
+const removeButtonStyle = { "height": "24rem", "width": "24rem" } as CSSProperties
 
 const stopMouseDown = (e: MouseEvent) => {
     e.preventDefault()
@@ -191,7 +192,7 @@ export const GroupCard = (props: { group: Group }) => {
                             focusKey={VF.FOCUS_DISABLED}
                             src={glyphIconSrc("Trash")}
                             className={VT.districtsSection.deleteButton}
-                            style={dangerIconStyle}
+                            style={{ ...dangerIconStyle, ...removeButtonStyle }}
                             onSelect={handleDeleteGroup}
                             onMouseDown={stopMouseDown}
                         />
@@ -231,6 +232,7 @@ export const GroupCard = (props: { group: Group }) => {
                                             focusKey={VF.FOCUS_DISABLED}
                                             src={glyphIconSrc("Trash")}
                                             className={`${VT.districtsSection.deleteButton} ${css.memberDeleteButton}`}
+                                            style={removeButtonStyle}
                                             onSelect={() => {
                                                 logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
                                                 trigger(mod.id, "removeMember", group.entity, member.entity)
