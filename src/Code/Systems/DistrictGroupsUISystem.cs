@@ -5,7 +5,6 @@ using Game.Rendering;
 using Game.Tools;
 using Game.UI;
 using Game.UI.InGame;
-using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using static DistrictGroups.EntityJson;
@@ -36,17 +35,13 @@ namespace DistrictGroups
         // the two panels share the same screen corner and shouldn't compete.
         private Entity m_SavedSelection = Entity.Null;
 
-        private readonly List<Entity> m_ServiceBuildingSample = new List<Entity>();
-        private GroupServiceType m_SampledServiceType = GroupServiceType.Generic;
-        private float m_LastServiceBuildingSampleTime = float.NegativeInfinity;
-
         private RawValueBinding m_GroupsBinding;
         private RawValueBinding m_ServiceBuildingsBinding;
         private RawValueBinding m_SelectingGroupBinding;
         private int m_LastSeenGroupVersion = -1;
         private int m_LastSeenTypeFilter = -1;
         private Entity m_LastSeenSelectingGroup = Entity.Null;
-        private float m_LastPanelRefreshTime = float.NegativeInfinity;
+        private int m_LastSeenRefreshVersion = RefreshClock.kNeverRefreshed;
 
         // Lets the UI know if we're in a debug build
         public static bool IsDebugBuild =>
@@ -92,17 +87,20 @@ namespace DistrictGroups
             int groupVersion = m_GroupSystem.Version;
             int typeFilter = m_OverlaySystem.TypeFilter;
             Entity selectingGroup = m_SelectionSystem.SelectingGroup;
-            float refreshRateSeconds = Mod.Settings?.RefreshRateSeconds ?? Setting.kDefaultRefreshRateSeconds;
+            int refreshVersion = RefreshClock.Version;
 
             bool mutated = groupVersion != m_LastSeenGroupVersion;
             bool filterChanged = typeFilter != m_LastSeenTypeFilter;
-            bool refreshDue = UnityEngine.Time.realtimeSinceStartup - m_LastPanelRefreshTime >= refreshRateSeconds;
+            bool refreshDue = refreshVersion != m_LastSeenRefreshVersion;
 
             m_LastSeenGroupVersion = groupVersion;
             m_LastSeenTypeFilter = typeFilter;
+            m_LastSeenRefreshVersion = refreshVersion;
+
+            // Populations are cached usually, so we want to force a fresh update
             if (refreshDue)
             {
-                m_LastPanelRefreshTime = UnityEngine.Time.realtimeSinceStartup;
+                m_GroupSystem.InvalidateDistrictPopulations();
             }
 
             if (mutated || refreshDue)
@@ -171,9 +169,6 @@ namespace DistrictGroups
 
         private void SetupGroupManagementPanelBindings()
         {
-            // AddBinding, not AddUpdateBinding: OnUpdate decides when each of these
-            // has something new to write. They still push their first payload on
-            // their own, when the panel subscribes.
             m_GroupsBinding = new RawValueBinding(kBindingGroup, "groups", WriteGroups);
             m_ServiceBuildingsBinding = new RawValueBinding(kBindingGroup, "serviceBuildings", WriteServiceBuildings);
             m_SelectingGroupBinding = new RawValueBinding(kBindingGroup, "selectingGroup",

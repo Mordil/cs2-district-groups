@@ -48,33 +48,18 @@ namespace DistrictGroups
         private void WriteServiceBuildings(IJsonWriter writer)
         {
             GroupServiceType type = (GroupServiceType)m_OverlaySystem.TypeFilter;
-            float refreshRateSeconds = Mod.Settings?.RefreshRateSeconds ?? Setting.kDefaultRefreshRateSeconds;
-            if (type != m_SampledServiceType
-                || UnityEngine.Time.realtimeSinceStartup - m_LastServiceBuildingSampleTime >= refreshRateSeconds)
+            using NativeArray<Entity> buildings = m_ServiceBuildingSystem.GetTargetBuildings(type, Allocator.Temp);
+            writer.ArrayBegin(buildings.Length);
+            foreach (Entity building in buildings)
             {
-                SampleServiceBuildings(type);
-            }
-
-            // the list is sampled at an interval, so check for deleted buildings since the last sampling
-            for (int i = m_ServiceBuildingSample.Count - 1; i >= 0; i--)
-            {
-                if (!EntityManager.Exists(m_ServiceBuildingSample[i]))
-                {
-                    m_ServiceBuildingSample.RemoveAt(i);
-                }
-            }
-
-            writer.ArrayBegin(m_ServiceBuildingSample.Count);
-            foreach (Entity building in m_ServiceBuildingSample)
-            {
-                WriteServiceBuilding(writer, building);
+                WriteServiceBuilding(writer, type, building);
             }
             writer.ArrayEnd();
         }
 
-        // Sampled buildings all come from the filtered type's own query,
-        // so the sampled type IS every listed building's type
-        private void WriteServiceBuilding(IJsonWriter writer, Entity building)
+        // Listed buildings all come from the filtered type's own query,
+        // so that type IS every listed building's type
+        private void WriteServiceBuilding(IJsonWriter writer, GroupServiceType type, Entity building)
         {
             Entity assignedGroup = EntityManager.HasComponent<DistrictGroupAssignment>(building)
                 ? EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group
@@ -86,7 +71,7 @@ namespace DistrictGroups
             writer.PropertyName("name");
             writer.Write(m_NameSystem.GetRenderedLabelName(building));
             writer.PropertyName("type");
-            writer.Write((int)m_SampledServiceType);
+            writer.Write((int)type);
             writer.PropertyName("hasAssignment");
             writer.Write(assignedGroup != Entity.Null);
             writer.PropertyName("assignedGroup");
@@ -94,19 +79,6 @@ namespace DistrictGroups
             writer.PropertyName("assignedGroupName");
             writer.Write(assignedGroup != Entity.Null ? m_GroupSystem.GetGroupName(assignedGroup) : "");
             writer.TypeEnd();
-        }
-
-        private void SampleServiceBuildings(GroupServiceType type)
-        {
-            m_SampledServiceType = type;
-            m_LastServiceBuildingSampleTime = UnityEngine.Time.realtimeSinceStartup;
-
-            m_ServiceBuildingSample.Clear();
-            using NativeArray<Entity> buildings = m_ServiceBuildingSystem.GetTargetBuildings(type, Allocator.Temp);
-            foreach (Entity building in buildings)
-            {
-                m_ServiceBuildingSample.Add(building);
-            }
         }
 
         private void WriteNamedEntity(IJsonWriter writer, Entity entity)

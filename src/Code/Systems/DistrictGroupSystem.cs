@@ -48,8 +48,8 @@ namespace DistrictGroups
         // Next palette index to hand out to a newly created group.
         private int m_NextColorIndex;
 
-        private float m_LastPopulationSampleTime = float.NegativeInfinity;
         private Dictionary<Entity, int> m_CachedDistrictPopulations = new Dictionary<Entity, int>();
+        private bool m_DistrictPopulationsStale = true;
 
         // Read-only usage only (GetRenderedLabelName in the Debug partial) - group labels read the
         // name directly off DistrictGroupData each rebuild, no NameSystem registration needed.
@@ -94,7 +94,7 @@ namespace DistrictGroups
             }
             m_NextColorIndex = 0;
             m_CachedDistrictPopulations.Clear();
-            m_LastPopulationSampleTime = float.NegativeInfinity;
+            m_DistrictPopulationsStale = true;
         }
 
         // Safety net for saves that already contain corrupted groups: drop member entries whose district no longer exists.
@@ -386,15 +386,19 @@ namespace DistrictGroups
             return result.ToArray(allocator);
         }
 
+        public void InvalidateDistrictPopulations()
+        {
+            m_DistrictPopulationsStale = true;
+        }
+
         // District -> total population, summed from every residential building's renter households
         public Dictionary<Entity, int> GetDistrictPopulations()
         {
-            float refreshRateSeconds = Mod.Settings?.RefreshRateSeconds ?? Setting.kDefaultRefreshRateSeconds;
-            if (UnityEngine.Time.realtimeSinceStartup - m_LastPopulationSampleTime < refreshRateSeconds)
+            if (!m_DistrictPopulationsStale)
             {
                 return m_CachedDistrictPopulations;
             }
-            m_LastPopulationSampleTime = UnityEngine.Time.realtimeSinceStartup;
+            m_DistrictPopulationsStale = false;
 
             Dictionary<Entity, int> populations = new Dictionary<Entity, int>();
             using NativeArray<Entity> buildings = m_ResidentialBuildingQuery.ToEntityArray(Allocator.Temp);
