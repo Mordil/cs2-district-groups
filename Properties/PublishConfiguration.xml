@@ -101,6 +101,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 **1.0 release**
 
 - Significant optimization of the overlay to reduce how often work was being done by caching more data and by considering what's currently on screen
+- Minor performance improvement when looking at the Info Panel of service buildings
 - Improved performance by not doing certain debug operations with debug logging disabled
 - Added group labels to the overlay. This can be disabled in Settings.
 - Group entities are now registered in the game's core NameSystem.

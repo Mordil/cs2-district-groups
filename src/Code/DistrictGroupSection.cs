@@ -86,7 +86,7 @@ namespace DistrictGroups
 
         protected override void OnUpdate()
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             try
             {
                 base.OnUpdate();
@@ -114,7 +114,7 @@ namespace DistrictGroups
             {
                 // Diagnostic only: flags a slow frame so we can tell whether a UI stall is inside
                 // our own code (an EntityManager call forced to wait on an in-flight job) or elsewhere.
-                double elapsedMs = stopwatch.Elapsed.TotalMilliseconds;
+                double elapsedMs = ElapsedMilliseconds(startTimestamp);
                 if (elapsedMs > 5.0)
                 {
                     Mod.log.Debug($"DistrictGroupSection.OnUpdate slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
@@ -124,7 +124,7 @@ namespace DistrictGroups
 
         public override void OnWriteProperties(IJsonWriter writer)
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
             writer.PropertyName("buildingType");
             writer.Write((int)m_BuildingType);
             writer.PropertyName("hasAssignment");
@@ -164,11 +164,16 @@ namespace DistrictGroups
             }
             writer.ArrayEnd();
 
-            double elapsedMs = stopwatch.Elapsed.TotalMilliseconds;
+            double elapsedMs = ElapsedMilliseconds(startTimestamp);
             if (elapsedMs > 5.0)
             {
                 Mod.log.Debug($"DistrictGroupSection.OnWriteProperties slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
             }
+        }
+
+        private static double ElapsedMilliseconds(long startTimestamp)
+        {
+            return (System.Diagnostics.Stopwatch.GetTimestamp() - startTimestamp) * 1000.0 / System.Diagnostics.Stopwatch.Frequency;
         }
     }
 }
