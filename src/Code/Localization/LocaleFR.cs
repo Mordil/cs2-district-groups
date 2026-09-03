@@ -115,7 +115,7 @@ namespace DistrictGroups
                 { LocalizationKey.SectionLabel, "GROUPE DE QUARTIERS" },
                 { LocalizationKey.OperatingDistrictsLabel, "Quartiers d'exploitation" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Ce bâtiment est actuellement affecté à un groupe de quartiers." },
-                { LocalizationKey.ReadOnlySectionTooltipLine2, "Les affectations de **quartier** seront gérées par le **groupe de quartiers affecté**." },
+                { LocalizationKey.ReadOnlySectionTooltipLine2, "Les affectations de **quartier** sont gérées par le **groupe de quartiers affecté**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Si le **groupe de quartiers** ne comporte aucun **quartier**, ce bâtiment fournira ses services partout dans son **rayon d'action**." },
                 { LocalizationKey.UnassignOption, "Désassigner" },
                 { LocalizationKey.UnassignTooltipDisabled, "Aucun groupe n'est assigné." },

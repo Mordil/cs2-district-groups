@@ -102,6 +102,10 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 - Increased the size of the delete group and remove district icons
 - Increased the font size of the group type selector
+
+**FIXED**
+
+- Localization of the service building Operating Districts tooltip in Spanish, French, Italian, Polish, Brazilian Portuguese, and Russian.
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

@@ -115,7 +115,7 @@ namespace DistrictGroups
                 { LocalizationKey.SectionLabel, "ГРУППА РАЙОНОВ" },
                 { LocalizationKey.OperatingDistrictsLabel, "Районы обслуживания" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Это здание сейчас назначено группе районов." },
-                { LocalizationKey.ReadOnlySectionTooltipLine2, "Назначением **района города** будет управлять **назначенная группа районов**." },
+                { LocalizationKey.ReadOnlySectionTooltipLine2, "Назначением **района города** управляет **назначенная группа районов**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Если **группа районов** не содержит ни одного **района города**, это здание будет предоставлять свои услуги везде в пределах своего **радиуса действия**." },
                 { LocalizationKey.UnassignOption, "Отменить назначение" },
                 { LocalizationKey.UnassignTooltipDisabled, "Группа не назначена." },

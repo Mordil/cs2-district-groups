@@ -115,7 +115,7 @@ namespace DistrictGroups
                 { LocalizationKey.SectionLabel, "GRUPA DZIELNIC" },
                 { LocalizationKey.OperatingDistrictsLabel, "Obsługiwane dzielnice" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Ten budynek jest obecnie przypisany do grupy dzielnic." },
-                { LocalizationKey.ReadOnlySectionTooltipLine2, "Przypisania **dzielnicy** będą zarządzane przez **przypisaną grupę dzielnic**." },
+                { LocalizationKey.ReadOnlySectionTooltipLine2, "Przypisania **dzielnicy** są zarządzane przez **przypisaną grupę dzielnic**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Jeśli **grupa dzielnic** nie zawiera żadnej **dzielnicy**, budynek będzie świadczyć usługi wszędzie w swoim **zasięgu operacyjnym**." },
                 { LocalizationKey.UnassignOption, "Usuń przypisanie" },
                 { LocalizationKey.UnassignTooltipDisabled, "Brak przypisanej grupy." },
