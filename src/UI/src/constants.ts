@@ -11,6 +11,9 @@ export const kIconStylePaths = [
 // The constant that any UI panels that should be offset from the top of the screen, as REM units.
 export const kUITopOffset = 60;
 
+// GroupServiceType.Generic - the "no type selected" sentinel for the type filter.
+export const kGenericType = 0
+
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {

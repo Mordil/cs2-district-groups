@@ -77,6 +77,7 @@ namespace DistrictGroups
                 { LocalizationKey.AssignmentsTabLabel, "Edificios de servicio" },
                 { LocalizationKey.SelectTypeForAssignments, "Selecciona un tipo de servicio para ver sus edificios de servicio." },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "Ningún edificio de servicio coincide con este filtro." },
+                { LocalizationKey.HideAssignedBuildingsLabel, "Ocultar edificios asignados" },
                 { LocalizationKey.NewGroupButton, "Nuevo grupo" },
                 { LocalizationKey.NewGroupButtonTooltip, "Añade un nuevo grupo sin distritos asignados." },
                 { LocalizationKey.NewGroupDefaultName, "Nuevo grupo {NUMBER}" },

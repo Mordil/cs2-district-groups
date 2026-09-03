@@ -77,6 +77,7 @@ namespace DistrictGroups
                 { LocalizationKey.AssignmentsTabLabel, "服務建築" },
                 { LocalizationKey.SelectTypeForAssignments, "選擇一種服務類型以列出對應的服務建築。" },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "沒有符合此篩選條件的服務建築。" },
+                { LocalizationKey.HideAssignedBuildingsLabel, "隱藏已指派的建築" },
                 { LocalizationKey.NewGroupButton, "新增群組" },
                 { LocalizationKey.NewGroupButtonTooltip, "新增一個沒有任何成員行政區的群組。" },
                 { LocalizationKey.NewGroupDefaultName, "新群組 {NUMBER}" },

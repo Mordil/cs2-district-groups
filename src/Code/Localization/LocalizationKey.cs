@@ -12,6 +12,7 @@ namespace DistrictGroups
         public const string AssignmentsTabLabel = "DistrictGroups.UI[AssignmentsTabLabel]";
         public const string SelectTypeForAssignments = "DistrictGroups.UI[SelectTypeForAssignments]";
         public const string NoServiceBuildingsMatchFilter = "DistrictGroups.UI[NoServiceBuildingsMatchFilter]";
+        public const string HideAssignedBuildingsLabel = "DistrictGroups.UI[HideAssignedBuildingsLabel]";
         public const string NewGroupButton = "DistrictGroups.UI[NewGroupButton]";
         public const string NewGroupButtonTooltip = "DistrictGroups.UI[NewGroupButtonTooltip]";
         public const string NewGroupDefaultName = "DistrictGroups.UI[NewGroupDefaultName]";

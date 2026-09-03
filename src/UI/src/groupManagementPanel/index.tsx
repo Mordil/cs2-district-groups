@@ -8,7 +8,7 @@ import { Checkbox } from "../components/Checkbox"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { TypeFilterPicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
-import { useTypeLabels } from "../constants"
+import { kGenericType, useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
 import { areasVisible$, groups$, showServiceBuildings$, showOverlay$ } from "./bindings"
@@ -38,6 +38,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const typeLabels = useTypeLabels()
     const [filterType, setFilterType] = useState(lastFilterType)
     const [activeTab, setActiveTab] = useState(PanelTab.Groups)
+    const [hideAssigned, setHideAssigned] = useState(false)
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
     const showOverlay = useValue(showOverlay$)
@@ -74,6 +75,11 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
             return
         }
 
+        // Opening the tab always starts from the full building list.
+        if (activeTab !== PanelTab.Assignments) {
+            setHideAssigned(false)
+        }
+
         if (!showServiceBuildings) {
             logger.info("Forcing service buildings on for the assignments tab;")
             forcedShowServiceBuildings.current = true
@@ -99,6 +105,11 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
         // groups.length (not displayedGroups.length) so the suggested name
         // reflects every group, regardless of the active filter.
         trigger(mod.id, "createGroup", t("newGroupDefaultName", { number: groups.length + 1 }), filterType)
+    }
+
+    const onHideAssignedChange = (checked: boolean) => {
+        logger.info(`Hide assigned buildings toggled; hide:${checked}`)
+        setHideAssigned(checked)
     }
 
     const onAreasVisibleChange = (checked: boolean) => {
@@ -188,6 +199,15 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                                 </Button>
                             </Tooltip>
                         )}
+
+                        {activeTab === PanelTab.Assignments && (
+                            <Checkbox
+                                checked={hideAssigned}
+                                onChange={onHideAssignedChange}
+                                label={t("hideAssignedBuildingsLabel")}
+                                className={css.hideAssignedToggle}
+                            />
+                        )}
                     </div>
 
                     <VC.TabNav
@@ -217,6 +237,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                         ) : (
                             <AssignmentsTab
                                 filterType={filterType}
+                                hideAssigned={hideAssigned}
                                 className={css.list}
                             />
                         )}

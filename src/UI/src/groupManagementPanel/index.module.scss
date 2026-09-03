@@ -84,6 +84,11 @@ $horizontal-padding: 16rem;
     background-color: rgba(19, 28, 48, 0.75)
 }
 
+.hideAssignedToggle {
+    font-size: var(--fontSizeM);
+    color: var(--textColorDim);
+}
+
 .newGroupButton {
     font-size: var(--fontSizeM);
     padding-top: var(--gap4);
