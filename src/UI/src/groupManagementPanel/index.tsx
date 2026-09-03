@@ -1,5 +1,5 @@
 import { trigger, useValue } from "cs2/api"
-import { InputActionConsumer } from "cs2/input"
+import { AutoNavigationScope, InputActionConsumer, NavigationDirection } from "cs2/input"
 import { Button, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 import { MouseEvent, useEffect, useRef, useState } from "react"
@@ -8,7 +8,7 @@ import { Checkbox } from "../components/Checkbox"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { TypeFilterPicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
-import { kGenericType, useTypeLabels } from "../constants"
+import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
 import { areasVisible$, groups$, showServiceBuildings$, showOverlay$ } from "./bindings"
@@ -215,32 +215,37 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                         selectedTab={activeTab}
                         onSelect={onTabSelect}
                     >
-                        {activeTab === PanelTab.Groups ? (
-                            <Scrollable
-                                vertical={true}
-                                trackVisibility="reserve"
-                                className={css.list}
-                            >
-                                {groups.length === 0 && (
-                                    <div>{t("noGroupsYet")}</div>
-                                )}
-                                {groups.length > 0 && displayedGroups.length === 0 && (
-                                    <div>{t("noGroupsMatchFilter")}</div>
-                                )}
-                                {displayedGroups.map((group) => (
-                                    <GroupCard
-                                        key={entityKey(group.entity)}
-                                        group={group}
-                                    />
-                                ))}
-                            </Scrollable>
-                        ) : (
-                            <AssignmentsTab
-                                filterType={filterType}
-                                hideAssigned={hideAssigned}
-                                className={css.list}
-                            />
-                        )}
+                        <AutoNavigationScope
+                            direction={NavigationDirection.Vertical}
+                            allowLooping={true}
+                        >
+                            {activeTab === PanelTab.Groups ? (
+                                <Scrollable
+                                    vertical={true}
+                                    trackVisibility="reserve"
+                                    className={css.list}
+                                >
+                                    {groups.length === 0 && (
+                                        <div>{t("noGroupsYet")}</div>
+                                    )}
+                                    {groups.length > 0 && displayedGroups.length === 0 && (
+                                        <div>{t("noGroupsMatchFilter")}</div>
+                                    )}
+                                    {displayedGroups.map((group) => (
+                                        <GroupCard
+                                            key={entityKey(group.entity)}
+                                            group={group}
+                                        />
+                                    ))}
+                                </Scrollable>
+                            ) : (
+                                <AssignmentsTab
+                                    filterType={filterType}
+                                    hideAssigned={hideAssigned}
+                                    className={css.list}
+                                />
+                            )}
+                        </AutoNavigationScope>
                     </VC.TabNav>
                 </div>
 
