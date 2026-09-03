@@ -1,0 +1,4 @@
+build text eol=lf
+clean text eol=lf
+release text eol=lf
+*.sh text eol=lf
