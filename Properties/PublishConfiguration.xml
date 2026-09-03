@@ -97,7 +97,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
-	<ChangeLog Value="">
+	<ChangeLog>
 **1.0 release**
 
 - Fixed UX bug where trying to open the Group Management UI while using a tool would immediately close the mod UI
