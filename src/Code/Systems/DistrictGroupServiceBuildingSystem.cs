@@ -229,7 +229,7 @@ namespace DistrictGroups
                 $"create_ms:{createMs:F3} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
         }
 
-        private NativeArray<Entity> GetTargetBuildings(GroupServiceType type, Allocator allocator)
+        public NativeArray<Entity> GetTargetBuildings(GroupServiceType type, Allocator allocator)
         {
             if (!m_TypeQueries.TryGetValue(type, out EntityQuery query))
             {

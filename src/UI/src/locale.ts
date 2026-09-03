@@ -7,6 +7,10 @@ const id = (key: string) => `DistrictGroups.UI[${key}]`
 
 export const kLocale = {
     panelTitle: id("PanelTitle"),
+    groupsTabLabel: id("GroupsTabLabel"),
+    assignmentsTabLabel: id("AssignmentsTabLabel"),
+    selectTypeForAssignments: id("SelectTypeForAssignments"),
+    noServiceBuildingsMatchFilter: id("NoServiceBuildingsMatchFilter"),
     newGroupButton: id("NewGroupButton"),
     newGroupButtonTooltip: id("NewGroupButtonTooltip"),
     newGroupDefaultName: id("NewGroupDefaultName"),
@@ -76,6 +80,10 @@ export const kLocale = {
 // used to fill in translate()'s own fallback parameter.
 const kFallback: Record<keyof typeof kLocale, string> = {
     panelTitle: "District Groups",
+    groupsTabLabel: "Groups",
+    assignmentsTabLabel: "Service Buildings",
+    selectTypeForAssignments: "Select a service type to list its service buildings.",
+    noServiceBuildingsMatchFilter: "No service buildings match this filter.",
     newGroupButton: "New Group",
     newGroupButtonTooltip: "Adds a new group with no member districts.",
     newGroupDefaultName: "New Group {NUMBER}",

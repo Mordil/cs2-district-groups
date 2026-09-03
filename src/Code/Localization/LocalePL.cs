@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Wszystkie grupy dzielnic, przypisania budynków usługowych i dane nakładki zostaną bezpowrotnie usunięte z tego zapisu gry.\r\nTej operacji nie można odwrócić.\r\nCzy chcesz kontynuować?" },
 
                 { LocalizationKey.PanelTitle, "Grupy Dzielnic" },
+                { LocalizationKey.GroupsTabLabel, "Grupy" },
+                { LocalizationKey.AssignmentsTabLabel, "Budynki usługowe" },
+                { LocalizationKey.SelectTypeForAssignments, "Wybierz typ usługi, aby wyświetlić jej budynki usługowe." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "Brak budynków usługowych zgodnych z tym filtrem." },
                 { LocalizationKey.NewGroupButton, "Nowa grupa" },
                 { LocalizationKey.NewGroupButtonTooltip, "Dodaje nową grupę bez przypisanych dzielnic." },
                 { LocalizationKey.NewGroupDefaultName, "Nowa grupa {NUMBER}" },

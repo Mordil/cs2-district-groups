@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "このセーブデータからすべての特区グループ、公共施設の割り当て、オーバーレイデータが完全に削除されます。\r\nこの操作は元に戻せません。\r\n続行しますか?" },
 
                 { LocalizationKey.PanelTitle, "District Groups" },
+                { LocalizationKey.GroupsTabLabel, "グループ" },
+                { LocalizationKey.AssignmentsTabLabel, "公共施設" },
+                { LocalizationKey.SelectTypeForAssignments, "サービスの種類を選択すると、該当する公共施設が一覧表示されます。" },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "このフィルターに一致する公共施設がありません。" },
                 { LocalizationKey.NewGroupButton, "新規グループ" },
                 { LocalizationKey.NewGroupButtonTooltip, "所属する特区がない新しいグループを追加します。" },
                 { LocalizationKey.NewGroupDefaultName, "新規グループ {NUMBER}" },

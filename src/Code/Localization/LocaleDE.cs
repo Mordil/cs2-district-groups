@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Alle Bezirksgruppen, Diensteinrichtungszuweisungen und Overlay-Daten werden endgültig aus diesem Spielstand gelöscht.\r\nDies kann nicht rückgängig gemacht werden.\r\nMöchtest du fortfahren?" },
 
                 { LocalizationKey.PanelTitle, "District Groups" },
+                { LocalizationKey.GroupsTabLabel, "Gruppen" },
+                { LocalizationKey.AssignmentsTabLabel, "Diensteinrichtungen" },
+                { LocalizationKey.SelectTypeForAssignments, "Wähle einen Diensttyp, um dessen Diensteinrichtungen aufzulisten." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "Keine Diensteinrichtungen entsprechen diesem Filter." },
                 { LocalizationKey.NewGroupButton, "Neue Gruppe" },
                 { LocalizationKey.NewGroupButtonTooltip, "Fügt eine neue Gruppe ohne Mitgliedsbezirke hinzu." },
                 { LocalizationKey.NewGroupDefaultName, "Neue Gruppe {NUMBER}" },

@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "이 세이브에서 모든 지구 그룹, 서비스 건물 할당, 오버레이 데이터가 영구적으로 삭제됩니다.\r\n이 작업은 되돌릴 수 없습니다.\r\n계속하시겠습니까?" },
 
                 { LocalizationKey.PanelTitle, "지구 그룹" },
+                { LocalizationKey.GroupsTabLabel, "그룹" },
+                { LocalizationKey.AssignmentsTabLabel, "서비스 건물" },
+                { LocalizationKey.SelectTypeForAssignments, "서비스 유형을 선택하면 해당 서비스 건물이 표시됩니다." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "이 필터에 일치하는 서비스 건물이 없습니다." },
                 { LocalizationKey.NewGroupButton, "새 그룹" },
                 { LocalizationKey.NewGroupButtonTooltip, "소속 지구이 없는 새 그룹을 추가합니다." },
                 { LocalizationKey.NewGroupDefaultName, "새 그룹 {NUMBER}" },

@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Tous les groupes de quartiers, les affectations de bâtiments de service et les données de surimpression seront définitivement supprimés de cette partie.\r\nCette action est irréversible.\r\nVoulez-vous continuer ?" },
 
                 { LocalizationKey.PanelTitle, "Groupes de quartiers" },
+                { LocalizationKey.GroupsTabLabel, "Groupes" },
+                { LocalizationKey.AssignmentsTabLabel, "Bâtiments de service" },
+                { LocalizationKey.SelectTypeForAssignments, "Sélectionnez un type de service pour afficher ses bâtiments de service." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "Aucun bâtiment de service ne correspond à ce filtre." },
                 { LocalizationKey.NewGroupButton, "Nouveau groupe" },
                 { LocalizationKey.NewGroupButtonTooltip, "Ajoute un nouveau groupe sans quartier membre." },
                 { LocalizationKey.NewGroupDefaultName, "Nouveau groupe {NUMBER}" },

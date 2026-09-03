@@ -1,0 +1,9 @@
+.row {
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    color: var(--textColor);
+    font-size: var(--fontSizeM);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

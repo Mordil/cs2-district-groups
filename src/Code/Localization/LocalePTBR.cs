@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Todos os grupos de distritos, atribuições de edifícios de serviço e dados de sobreposição serão permanentemente excluídos desta partida.\r\nEsta ação não pode ser desfeita.\r\nDeseja continuar?" },
 
                 { LocalizationKey.PanelTitle, "Grupos de Distritos" },
+                { LocalizationKey.GroupsTabLabel, "Grupos" },
+                { LocalizationKey.AssignmentsTabLabel, "Edifícios de serviço" },
+                { LocalizationKey.SelectTypeForAssignments, "Selecione um tipo de serviço para listar seus edifícios de serviço." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "Nenhum edifício de serviço corresponde a este filtro." },
                 { LocalizationKey.NewGroupButton, "Novo Grupo" },
                 { LocalizationKey.NewGroupButtonTooltip, "Adiciona um novo grupo sem distritos membros." },
                 { LocalizationKey.NewGroupDefaultName, "Novo Grupo {NUMBER}" },

@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "此存檔中的所有行政區群組、服務建築指派及覆蓋圖資料將被永久刪除。\r\n此操作無法復原。\r\n是否要繼續？" },
 
                 { LocalizationKey.PanelTitle, "行政區群組" },
+                { LocalizationKey.GroupsTabLabel, "群組" },
+                { LocalizationKey.AssignmentsTabLabel, "服務建築" },
+                { LocalizationKey.SelectTypeForAssignments, "選擇一種服務類型以列出對應的服務建築。" },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "沒有符合此篩選條件的服務建築。" },
                 { LocalizationKey.NewGroupButton, "新增群組" },
                 { LocalizationKey.NewGroupButtonTooltip, "新增一個沒有任何成員行政區的群組。" },
                 { LocalizationKey.NewGroupDefaultName, "新群組 {NUMBER}" },

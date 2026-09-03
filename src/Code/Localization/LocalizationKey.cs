@@ -8,6 +8,10 @@ namespace DistrictGroups
     public static class LocalizationKey
     {
         public const string PanelTitle = "DistrictGroups.UI[PanelTitle]";
+        public const string GroupsTabLabel = "DistrictGroups.UI[GroupsTabLabel]";
+        public const string AssignmentsTabLabel = "DistrictGroups.UI[AssignmentsTabLabel]";
+        public const string SelectTypeForAssignments = "DistrictGroups.UI[SelectTypeForAssignments]";
+        public const string NoServiceBuildingsMatchFilter = "DistrictGroups.UI[NoServiceBuildingsMatchFilter]";
         public const string NewGroupButton = "DistrictGroups.UI[NewGroupButton]";
         public const string NewGroupButtonTooltip = "DistrictGroups.UI[NewGroupButtonTooltip]";
         public const string NewGroupDefaultName = "DistrictGroups.UI[NewGroupDefaultName]";

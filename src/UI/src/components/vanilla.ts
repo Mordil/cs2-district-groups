@@ -28,6 +28,10 @@ export const VC = {
         "game-ui/game/components/selected-info-panel/shared-components/info-link/info-link.tsx",
         "InfoLink"
     ) as any,
+    TabBar: getModule("game-ui/common/tabs/tabs.tsx", "TabBar") as any,
+    Tab: getModule("game-ui/common/tabs/tabs.tsx", "Tab") as any,
+    TabNav: getModule("game-ui/common/tabs/tabs.tsx", "TabNav") as any,
+    TintedIcon: getModule("game-ui/common/image/tinted-icon.tsx", "TintedIcon") as any,
 }
 
 const iconButtonClasses = getModule(

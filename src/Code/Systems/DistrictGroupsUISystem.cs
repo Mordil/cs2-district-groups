@@ -5,6 +5,7 @@ using Game.Rendering;
 using Game.Tools;
 using Game.UI;
 using Game.UI.InGame;
+using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using static DistrictGroups.EntityJson;
@@ -34,6 +35,10 @@ namespace DistrictGroups
         // at the moment our panel opened, so closing our panel restores it —
         // the two panels share the same screen corner and shouldn't compete.
         private Entity m_SavedSelection = Entity.Null;
+
+        private readonly List<Entity> m_ServiceBuildingSample = new List<Entity>();
+        private GroupServiceType m_SampledServiceType = GroupServiceType.Generic;
+        private float m_LastServiceBuildingSampleTime = float.NegativeInfinity;
 
         // Lets the UI know if we're in a debug build
         public static bool IsDebugBuild =>
@@ -116,6 +121,7 @@ namespace DistrictGroups
         private void SetupGroupManagementPanelBindings()
         {
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "groups", WriteGroups));
+            AddUpdateBinding(new RawValueBinding(kBindingGroup, "serviceBuildings", WriteServiceBuildings));
             AddUpdateBinding(new RawValueBinding(kBindingGroup, "selectingGroup",
                 writer => WriteEntity(writer, m_SelectionSystem.SelectingGroup)));
 

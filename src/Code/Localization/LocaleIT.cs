@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Tutti i gruppi di quartieri, le assegnazioni degli edifici di servizio e i dati di sovrimpressione verranno eliminati definitivamente da questa partita.\r\nQuesta azione non può essere annullata.\r\nVuoi procedere?" },
 
                 { LocalizationKey.PanelTitle, "Gruppi di Quartieri" },
+                { LocalizationKey.GroupsTabLabel, "Gruppi" },
+                { LocalizationKey.AssignmentsTabLabel, "Edifici di servizio" },
+                { LocalizationKey.SelectTypeForAssignments, "Seleziona un tipo di servizio per elencare i suoi edifici di servizio." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "Nessun edificio di servizio corrisponde a questo filtro." },
                 { LocalizationKey.NewGroupButton, "Nuovo Gruppo" },
                 { LocalizationKey.NewGroupButtonTooltip, "Aggiunge un nuovo gruppo senza quartieri membri." },
                 { LocalizationKey.NewGroupDefaultName, "Nuovo Gruppo {NUMBER}" },

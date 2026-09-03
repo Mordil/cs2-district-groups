@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "Все группы районов, привязки зданий служб и данные слоя будут безвозвратно удалены из этого сохранения.\r\nЭто действие невозможно отменить.\r\nВы хотите продолжить?" },
 
                 { LocalizationKey.PanelTitle, "Группы районов" },
+                { LocalizationKey.GroupsTabLabel, "Группы" },
+                { LocalizationKey.AssignmentsTabLabel, "Здания служб" },
+                { LocalizationKey.SelectTypeForAssignments, "Выберите тип службы, чтобы увидеть её здания служб." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "Нет зданий служб, соответствующих этому фильтру." },
                 { LocalizationKey.NewGroupButton, "Новая группа" },
                 { LocalizationKey.NewGroupButtonTooltip, "Добавляет новую группу без районов-участников." },
                 { LocalizationKey.NewGroupDefaultName, "Новая группа {NUMBER}" },

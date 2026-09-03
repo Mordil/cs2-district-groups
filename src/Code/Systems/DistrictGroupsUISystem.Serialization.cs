@@ -45,6 +45,46 @@ namespace DistrictGroups
             writer.ArrayEnd();
         }
 
+        private void WriteServiceBuildings(IJsonWriter writer)
+        {
+            GroupServiceType type = (GroupServiceType)m_OverlaySystem.TypeFilter;
+            float refreshRateSeconds = Mod.Settings?.RefreshRateSeconds ?? Setting.kDefaultRefreshRateSeconds;
+            if (type != m_SampledServiceType
+                || UnityEngine.Time.realtimeSinceStartup - m_LastServiceBuildingSampleTime >= refreshRateSeconds)
+            {
+                SampleServiceBuildings(type);
+            }
+
+            // the list is sampled at an interval, so check for deleted buildings since the last sampling
+            for (int i = m_ServiceBuildingSample.Count - 1; i >= 0; i--)
+            {
+                if (!EntityManager.Exists(m_ServiceBuildingSample[i]))
+                {
+                    m_ServiceBuildingSample.RemoveAt(i);
+                }
+            }
+
+            writer.ArrayBegin(m_ServiceBuildingSample.Count);
+            foreach (Entity building in m_ServiceBuildingSample)
+            {
+                WriteNamedEntity(writer, building);
+            }
+            writer.ArrayEnd();
+        }
+
+        private void SampleServiceBuildings(GroupServiceType type)
+        {
+            m_SampledServiceType = type;
+            m_LastServiceBuildingSampleTime = UnityEngine.Time.realtimeSinceStartup;
+
+            m_ServiceBuildingSample.Clear();
+            using NativeArray<Entity> buildings = m_ServiceBuildingSystem.GetTargetBuildings(type, Allocator.Temp);
+            foreach (Entity building in buildings)
+            {
+                m_ServiceBuildingSample.Add(building);
+            }
+        }
+
         private void WriteNamedEntity(IJsonWriter writer, Entity entity)
         {
             writer.TypeBegin("NamedEntity");

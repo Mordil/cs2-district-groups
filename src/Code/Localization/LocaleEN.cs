@@ -73,6 +73,10 @@ namespace DistrictGroups
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.RemoveModData)), "All district groups, service building assignments, and overlay data will be permanently deleted from this save.\r\nThis cannot be undone.\r\nDo you want to proceed?" },
 
                 { LocalizationKey.PanelTitle, "District Groups" },
+                { LocalizationKey.GroupsTabLabel, "Groups" },
+                { LocalizationKey.AssignmentsTabLabel, "Service Buildings" },
+                { LocalizationKey.SelectTypeForAssignments, "Select a service type to list its service buildings." },
+                { LocalizationKey.NoServiceBuildingsMatchFilter, "No service buildings match this filter." },
                 { LocalizationKey.NewGroupButton, "New Group" },
                 { LocalizationKey.NewGroupButtonTooltip, "Adds a new group with no member districts." },
                 { LocalizationKey.NewGroupDefaultName, "New Group {NUMBER}" },
