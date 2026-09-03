@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Use Fill transparency" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Enable transparency for the group overlay fill areas.\n\nWhen disabled, the overlay will display a solid, fully opaque color that masks all other visuals." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Show group labels" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "When enabled, group names will be displayed with the overlay on the map.\n\nThis may affect performance." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Enable debug logging" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Writes verbose Debug-level entries to the mod's log file.\n\nThis may affect performance." },
 

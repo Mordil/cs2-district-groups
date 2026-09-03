@@ -15,7 +15,7 @@ namespace DistrictGroups
     [SettingsUITabOrder(kTabGeneral, kTabOverlay, kTabDeveloper)]
     [SettingsUIGroupOrder(
         kSectionDefault,
-        kSectionOverlayBorder, kSectionOverlayFill,
+        kSectionOverlayScene, kSectionOverlayBorder, kSectionOverlayFill,
         kSectionDebug, kSectionVersion
     )]
     [SettingsUIShowGroupName(kSectionDebug)]
@@ -26,6 +26,7 @@ namespace DistrictGroups
         public const string kTabDeveloper = "Developer";
 
         public const string kSectionDefault = "Default";
+        public const string kSectionOverlayScene = "OverlayScene";
         public const string kSectionOverlayBorder = "OverlayBorder";
         public const string kSectionOverlayFill = "OverlayFill";
         public const string kSectionDebug = "Debug";
@@ -38,6 +39,7 @@ namespace DistrictGroups
         public const int kDefaultOverlayDesaturationPercent = 80;
         public const int kDefaultOverlayFillSaturationPercent = 60;
         public const bool kDefaultOverlayFillUseTransparency = true;
+        public const bool kDefaultOverlayEnableGroupLabels = true;
         public const int kDefaultRefreshRateSeconds = 10;
 #if DEBUG
         public const bool kDefaultEnableDebugLogging = true;
@@ -62,13 +64,18 @@ namespace DistrictGroups
             OverlayDesaturationPercent = kDefaultOverlayDesaturationPercent;
             OverlayFillSaturationPercent = kDefaultOverlayFillSaturationPercent;
             OverlayFillUseTransparency = kDefaultOverlayFillUseTransparency;
+            OverlayEnableGroupLabels = kDefaultOverlayEnableGroupLabels;
             RefreshRateSeconds = kDefaultRefreshRateSeconds;
             EnableDebugLogging = kDefaultEnableDebugLogging;
         }
 
+        // Whether each group's name is drawn as text above its overlay.
+        [SettingsUISection(kTabOverlay, kSectionDefault)]
+        public bool OverlayEnableGroupLabels { get; set; }
+
         // How much the rest of the scene is desaturated while the group overlay is visible
         [SettingsUISlider(min = 0, max = 100, step = 1, unit = Unit.kPercentage)]
-        [SettingsUISection(kTabOverlay, kSectionDefault)]
+        [SettingsUISection(kTabOverlay, kSectionOverlayScene)]
         public int OverlayDesaturationPercent { get; set; }
 
         // Transparency of the group boundary overlay lines drawn by the overlay system; 0 is fully opaque, 100 fully transparent.

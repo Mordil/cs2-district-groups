@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Usar transparencia de relleno" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Activa la transparencia en las áreas de relleno de la superposición del grupo.\n\nSi está desactivada, la superposición mostrará un color sólido y totalmente opaco que oculta todos los demás elementos visuales." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Mostrar etiquetas de grupos" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Si está activada, los nombres de los grupos se mostrarán con la superposición en el mapa.\n\nEsto puede afectar al rendimiento." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Activar registro de depuración" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Escribe entradas detalladas de nivel de depuración en el archivo de registro del mod.\n\nEsto puede afectar al rendimiento." },
 

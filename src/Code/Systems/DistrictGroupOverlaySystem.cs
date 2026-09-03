@@ -3,11 +3,14 @@ using System.Reflection;
 using Colossal.Serialization.Entities;
 using Game;
 using Game.Areas;
+using Game.Prefabs;
 using Game.Rendering;
 using Game.Tools;
 using Game.UI.InGame;
+using TMPro;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
@@ -53,7 +56,8 @@ namespace DistrictGroups
             None = 0,
             DistrictColors = 1 << 0,   // m_DistrictGroupColors
             FillGeometry = 1 << 1,     // fill meshes (full rebuild)
-            All = DistrictColors | FillGeometry,
+            Labels = 1 << 2,           // label text/positions (m_LabelEntries)
+            All = DistrictColors | FillGeometry | Labels,
         }
 
         private OverlayDirtyFlags m_DirtyFlags = OverlayDirtyFlags.All; // All = never built
@@ -61,6 +65,11 @@ namespace DistrictGroups
         // Last GroupCompositionVersion already folded into m_DirtyFlags; advanced only
         // inside DetectChanges, so drift during inactive frames is caught on reactivation.
         private int m_LastSeenCompositionVersion = -1;
+
+        // Last DistrictGroupSystem.Version already folded into m_DirtyFlags; renames bump Version but
+        // not GroupCompositionVersion, so labels (which show the current name) need this coarser gate
+        // in addition to m_LastSeenCompositionVersion above.
+        private int m_LastSeenVersion = -1;
 
         // Master on/off for the border+fill overlay. In-session only, like m_TypeFilter below -
         // resets to the default each time the game starts.
@@ -108,6 +117,120 @@ namespace DistrictGroups
         private bool m_FillBuiltTransparent;
         private bool m_FillActive;
 
+        // Nothing in HDRP's own render path draws TMP's SDF shader at the AfterPostProcess queue
+        // HDMaterial.SetRenderingPass routes the label material into (the native after-post-process
+        // object pass only draws ForwardOnly-tagged passes, which TMP's shader lacks) - this mod's own
+        // Custom Pass at the AfterPostProcess injection point is what actually issues the labels' draw
+        // call. DrawRenderersCustomPass finds renderers to draw by LayerMask (+ shader-tag filtering
+        // broad enough to include TMP's SDF shader - confirmed via ildasm dump of
+        // Unity.RenderPipelines.HighDefinition.Runtime.dll: forwardShaderTags includes
+        // HDShaderPassNames.s_SRPDefaultUnlitName and s_EmptyName, not just HDRP-authored passes).
+        // Draw order against the vanilla border and the opaque fill is decided by CustomPassVolume
+        // priority against the game's own "Outlines Pass" volume at the same injection point - see
+        // EnsureOverlayCompositePass in DistrictGroupOverlaySystem.CompositePass.cs.
+        //
+        // Deliberately label-only, NOT also used for the fill mesh: HDRP already has its own native,
+        // always-on mechanism that draws AfterPostProcessOpaque/Transparent-queued renderers every frame
+        // - that's what was already drawing the fill correctly (just without any depth test) before any
+        // of this custom-pass machinery existed. Registering the fill's renderer on a
+        // DrawRenderersCustomPass too drew it a SECOND time on top of that - confirmed by trying it: the
+        // fill broke (progressively, worse after camera movement - consistent with two independently
+        // depth-tested draws of the same geometry) and transparency stopped working (consistent with two
+        // stacked alpha-blends of the same quad converging toward opaque). TMP's shader apparently isn't
+        // picked up by whatever narrower shader-tag filter that same native mechanism uses (it never drew
+        // labels at all, hence labels needing this pass in the first place), so no such conflict exists
+        // for labels specifically.
+        private const int kOverlayLabelLayer = 30;
+
+        private GameObject m_OverlayPassVolumeObject;
+        private CustomPassVolume m_OverlayPassVolume;
+        private DrawRenderersCustomPass m_LabelCustomPass;
+
+        // Small additional lift above the border/fill so the label never shares a height with them; tweak freely.
+        private const float kLabelHeightOffset = 40f;
+
+        // Matches vanilla district-name glyph generation (fontSize = 200f) - the baked mesh is scaled
+        // down per-frame via AreaUtils.CalculateLabelScale instead of being generated at a smaller size.
+        private const float kLabelFontSize = 400f;
+
+        // One child GameObject per distinct font/atlas TMP actually used to render a name - a name
+        // mixing e.g. Latin and CJK glyphs needs one of these per script, since each font asset owns
+        // its own atlas texture and a single mesh/material can only sample one. Mirrors how TMP's own
+        // TMP_SubMesh children (and OverlayRenderSystem.GetTextRenderItems' per-meshInfo items) work.
+        private sealed class LabelSubMesh
+        {
+            public GameObject Object;
+            public MeshFilter Filter;
+            public MeshRenderer Renderer;
+            public Mesh Mesh; // owned snapshot, not shared with the baker/its TMP_SubMesh children
+            public Material Material; // null for submesh 0, which just reuses the shared m_LabelMaterial
+
+            // Pristine uv2 captured at bake time (implicitly at scale 1, since the baker GameObject
+            // itself never scales) and a same-length scratch buffer reused across rescales - see
+            // ApplyLabelSdfScale for why these exist and why BakedUv2 must never be mutated in place.
+            public Vector2[] BakedUv2;
+            public Vector2[] ScaledUv2;
+        }
+
+        // One entry per visible group's name label, keyed by the group entity.
+        private sealed class LabelEntry
+        {
+            public GameObject Object;
+            public Transform Transform; // cached so the per-frame path never pays a .transform lookup
+            public List<LabelSubMesh> SubMeshes;
+            public string Name;
+
+            // The label's world position (group center plus the root's height offset), tracked here
+            // so DrawGroupLabels' distance math never reads Transform.position back from native code.
+            public float3 Position;
+
+            // The scale DrawGroupLabels last actually applied (transform + uv2 SDF recalibration,
+            // always together so they can't drift apart). 0 means "uv2 is at baked, unscaled
+            // calibration" - guaranteed below any real scale (CalculateLabelScale floors at 0.01),
+            // so a fresh or re-baked entry always gets scaled on its next draw.
+            public float LastAppliedScale;
+        }
+
+        // Camera pose DrawGroupLabels last applied to the label transforms.
+        private float3 m_LastLabelCameraPosition;
+        private Quaternion m_LastLabelCameraRotation;
+
+        private bool m_LabelTransformsDirty = true;
+
+        // below this, neither the transform scale nor the uv2 rewrite is worth re-applying.
+        private const float kLabelScaleRescaleEpsilon = 1e-4f;
+
+        // Scratch collections reused across RebuildLabelEntries calls.
+        private readonly HashSet<Entity> m_LabelSeenGroupsScratch = new HashSet<Entity>();
+        private readonly List<Entity> m_LabelStaleGroupsScratch = new List<Entity>();
+
+        // Whether the composite pass's undercut-everyone priority scan has run since the last city load
+        private bool m_CompositePassPriorityRefreshed;
+
+        // Supplies the current camera position each frame for AreaUtils.CalculateLabelScale, the same
+        // public helper vanilla district-name rendering uses to stay legible at any zoom level.
+        private CameraUpdateSystem m_CameraUpdateSystem;
+
+        // Resolves OverlayConfigurationPrefab (the same singleton settings prefab
+        // OverlayRenderSystem itself reads) so label font creation can match its m_FontInfos exactly.
+        private PrefabSystem m_PrefabSystem;
+        private EntityQuery m_OverlayConfigQuery;
+
+        private GameObject m_LabelRoot;
+        private readonly Dictionary<Entity, LabelEntry> m_LabelEntries = new Dictionary<Entity, LabelEntry>();
+        private bool m_LabelsActive;
+
+        // Hidden, never-rendered TextMeshPro used purely to bake glyph meshes (layout/kerning/wrapping)
+        // for every label - the actual per-group GameObjects render a baked copy of its mesh through
+        // m_LabelMaterial (cloned from the baker font's own TMP SDF material) instead of through the
+        // baker's live TMP_Text component.
+        private GameObject m_LabelBakerObject;
+        private TextMeshPro m_LabelBaker;
+        private Material m_LabelMaterial;
+
+        // Logged once (not per-label) the first time the label font/material is resolved.
+        private bool m_LoggedLabelFontDiagnostics;
+
         private bool IsOverlayActive =>
             m_Visible && m_ShowOverlay && !m_GameScreenUISystem.isMenuActive &&
             m_GameScreenUISystem.activeScreen != GameScreenUISystem.GameScreen.FreeCamera;
@@ -122,6 +245,9 @@ namespace DistrictGroups
             m_DefaultToolSystem = World.GetOrCreateSystemManaged<DefaultToolSystem>();
             m_GameScreenUISystem = World.GetOrCreateSystemManaged<GameScreenUISystem>();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
+            m_CameraUpdateSystem = World.GetOrCreateSystemManaged<CameraUpdateSystem>();
+            m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
+            m_OverlayConfigQuery = GetEntityQuery(ComponentType.ReadOnly<OverlayConfigurationData>());
             ApplyAreasVisibility();
 
             m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();
@@ -136,6 +262,8 @@ namespace DistrictGroups
                 m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
             DestroyDesaturationVolume();
             DestroyFillRoot();
+            DestroyLabelRoot();
+            DestroyOverlayCompositePass();
             base.OnDestroy();
         }
 
@@ -146,6 +274,10 @@ namespace DistrictGroups
             // We need to reset the overlay entirely in between cities because otherwise we'd display the last city's
             // cached overlay
             m_DirtyFlags = OverlayDirtyFlags.All;
+
+            // Label entries are keyed by the previous city's group entities - drop them outright
+            // rather than letting their GameObjects linger (hidden) until the first rebuild sweep.
+            DestroyLabelEntries();
 
             // the system doesn't get refreshed in between save-game loads, so we need to make sure we're in a clean enough state
             if (m_Visible)
@@ -162,6 +294,24 @@ namespace DistrictGroups
             {
                 DisableFill();
             }
+            if (m_LabelsActive)
+            {
+                DisableLabels();
+            }
+
+            // Front-load the label subsystem's one-time costs here instead of paying a mid-gameplay hitch
+            // on the first overlay open. Gated so saves that can never show labels
+            // (no groups, or the feature disabled) never pay the atlas memory for it.
+            bool labelsEnabled = Mod.Settings?.OverlayEnableGroupLabels ?? Setting.kDefaultOverlayEnableGroupLabels;
+            if (mode == GameMode.Game && labelsEnabled && m_GroupSystem.HasGroups)
+            {
+                PrewarmLabelAssets();
+            }
+
+            // Cleared after the prewarm, which may have just created the composite pass, so the
+            // first label activation this load re-runs the priority undercut and still sorts after
+            // any AfterPostProcess volume registered between now and the overlay actually opening.
+            m_CompositePassPriorityRefreshed = false;
         }
 
         protected override void OnUpdate()
@@ -181,6 +331,7 @@ namespace DistrictGroups
                 UpdateDesaturation();
                 UpdateFill(shouldSample);
                 DrawGroupOverlays(shouldSample);
+                UpdateGroupLabels(shouldSample);
             }
             else
             {
@@ -191,6 +342,10 @@ namespace DistrictGroups
                 if (m_FillActive)
                 {
                     DisableFill();
+                }
+                if (m_LabelsActive)
+                {
+                    DisableLabels();
                 }
             }
         }
@@ -203,6 +358,15 @@ namespace DistrictGroups
             {
                 m_LastSeenCompositionVersion = compositionVersion;
                 m_DirtyFlags |= OverlayDirtyFlags.All;
+            }
+
+            // Coarser than the composition version above - catches renames, which labels need to
+            // reflect but which don't otherwise touch colors/fill/geometry.
+            int version = m_GroupSystem.Version;
+            if (version != m_LastSeenVersion)
+            {
+                m_LastSeenVersion = version;
+                m_DirtyFlags |= OverlayDirtyFlags.Labels;
             }
         }
 
@@ -344,6 +508,11 @@ namespace DistrictGroups
             DestroyFillRoot();
             m_FillActive = false;
 
+            DestroyLabelRoot();
+            m_LabelsActive = false;
+
+            DestroyOverlayCompositePass();
+
             m_DistrictGroupColors.Clear();
             m_DirtyFlags = OverlayDirtyFlags.All;
 
@@ -356,8 +525,8 @@ namespace DistrictGroups
             bool isAreaToolActive = tool == m_AreaToolSystem;
             if (m_WasAreaToolActive && !isAreaToolActive)
             {
-                Mod.log.Info("Area tool closed, forcing fill rebuild");
-                m_DirtyFlags |= OverlayDirtyFlags.FillGeometry;
+                Mod.log.Info("Area tool closed, forcing fill and label rebuild");
+                m_DirtyFlags |= OverlayDirtyFlags.FillGeometry | OverlayDirtyFlags.Labels;
             }
             m_WasAreaToolActive = isAreaToolActive;
         }

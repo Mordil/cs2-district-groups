@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "使用填色透明化" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "為群組覆蓋圖的填色區域啟用透明化。\n\n停用時，覆蓋圖會顯示完全不透明的純色，遮蔽所有其他視覺內容。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "顯示群組名稱" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "啟用後，群組名稱將與覆蓋圖一同顯示在地圖上。\n\n這可能會影響效能。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "啟用偵錯記錄" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "將詳細的偵錯層級項目寫入模組的記錄檔。\n\n這可能會影響效能。" },
 

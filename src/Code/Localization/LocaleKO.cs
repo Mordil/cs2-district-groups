@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "채우기 투명화 사용" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "그룹 오버레이 채우기 영역의 투명화를 활성화합니다.\n\n비활성화하면 오버레이가 다른 모든 시각적 요소를 가리는 완전히 불투명한 단색으로 표시됩니다." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "그룹 이름 표시" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "활성화하면 지도의 오버레이와 함께 그룹 이름이 표시됩니다.\n\n성능에 영향을 줄 수 있습니다." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "디버그 로깅 사용" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "모드의 로그 파일에 상세한 디버그 수준 항목을 기록합니다.\n\n성능에 영향을 줄 수 있습니다." },
 

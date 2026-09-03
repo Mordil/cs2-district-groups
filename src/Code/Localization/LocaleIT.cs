@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Usa la trasparenza del riempimento" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Attiva la trasparenza per le aree di riempimento della sovrimpressione del gruppo.\n\nSe disattivata, la sovrimpressione mostrerà un colore solido e completamente opaco che nasconde tutti gli altri elementi visivi." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Mostra etichette dei gruppi" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Se attivata, i nomi dei gruppi verranno visualizzati con la sovrimpressione sulla mappa.\n\nQuesto potrebbe influire sulle prestazioni." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Attiva log di debug" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Scrive voci dettagliate di livello Debug nel file di log della mod.\n\nQuesto potrebbe influire sulle prestazioni." },
 

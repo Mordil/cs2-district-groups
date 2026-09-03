@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Fülltransparenz verwenden" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Aktiviert Transparenz für die Füllflächen des Gruppen-Overlays.\n\nWenn deaktiviert, zeigt das Overlay eine durchgehend deckende Farbe an, die alle anderen visuellen Elemente verdeckt." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Gruppenbeschriftungen anzeigen" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Wenn aktiviert, werden die Gruppennamen zusammen mit dem Overlay auf der Karte angezeigt.\n\nDies kann die Leistung beeinträchtigen." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Debug-Protokollierung aktivieren" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Schreibt ausführliche Einträge der Debug-Ebene in die Protokolldatei des Mods.\n\nDies kann die Leistung beeinträchtigen." },
 

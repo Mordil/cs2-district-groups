@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Użyj przezroczystości wypełnienia" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Włącza przezroczystość obszarów wypełnienia nakładki grupy.\n\nGdy jest wyłączona, nakładka wyświetla jednolity, w pełni nieprzezroczysty kolor, który zasłania wszystkie inne elementy wizualne." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Pokaż etykiety grup" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Gdy jest włączona, nazwy grup będą wyświetlane wraz z nakładką na mapie.\n\nMoże to wpłynąć na wydajność." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Włącz logi debugowania" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Zapisuje szczegółowe wpisy poziomu debugowania do pliku dziennika moda.\n\nMoże to wpłynąć na wydajność." },
 

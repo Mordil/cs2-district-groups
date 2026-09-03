@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "塗りつぶしの透明化を使用" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "グループのオーバーレイの塗りつぶし範囲の透明化を有効にします。\n\n無効にすると、オーバーレイは他のすべての表示を隠す不透明な単色で表示されます。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "グループ名を表示" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "有効にすると、地図上のオーバーレイと共にグループ名が表示されます。\n\nパフォーマンスに影響する場合があります。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "デバッグログを有効化" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "詳細なDebugレベルの情報をMODのログファイルに書き込みます。\n\nパフォーマンスに影響する場合があります。" },
 

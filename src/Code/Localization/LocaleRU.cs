@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Использовать прозрачность заливки" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "Включает прозрачность для областей заливки слоя группы.\n\nЕсли отключено, слой будет отображаться сплошным, полностью непрозрачным цветом, скрывающим все остальные визуальные элементы." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Показывать подписи групп" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "Если включено, названия групп будут отображаться вместе со слоем на карте.\n\nЭто может повлиять на производительность." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "Включить отладочное логирование" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "Записывает подробные отладочные записи в файл журнала мода.\n\nЭто может повлиять на производительность." },
 

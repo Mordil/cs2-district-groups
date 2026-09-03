@@ -43,6 +43,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayFillUseTransparency)), "使用填充透明化" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayFillUseTransparency)), "为市辖区组覆盖图的填充区域启用透明化。\n\n禁用时，覆盖图将显示完全不透明的纯色，遮盖所有其他视觉内容。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "显示组名称" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OverlayEnableGroupLabels)), "启用后，组名称将与覆盖图一同显示在地图上。\n\n这可能会影响性能。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnableDebugLogging)), "启用调试日志" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnableDebugLogging)), "将详细的调试级别记录写入模组的日志文件。\n\n这可能会影响性能。" },
 

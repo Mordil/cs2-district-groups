@@ -63,6 +63,18 @@
         <Reference Include="Unity.RenderPipelines.Core.Runtime">
             <Private>false</Private>
         </Reference>
+        <Reference Include="Unity.TextMeshPro">
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="UnityEngine.TextCoreFontEngineModule">
+            <Private>false</Private>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
