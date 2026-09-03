@@ -98,6 +98,11 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog Value="">
+**1.0 release**
+
+- Improved performance by not doing certain debug operations with debug logging disabled
+- Added group labels to the overlay. This can be disabled in Settings.
+- Group entities are now registered in the game's core NameSystem.
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
