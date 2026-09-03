@@ -12,7 +12,6 @@ namespace DistrictGroups
         private void UpdateFill(bool shouldSample)
         {
             EnsureFillRoot();
-            ApplyFillHeightOffset();
 
             bool useTransparency = Mod.Settings?.OverlayFillUseTransparency ?? Setting.kDefaultOverlayFillUseTransparency;
             if (useTransparency != m_FillBuiltTransparent)
@@ -89,6 +88,8 @@ namespace DistrictGroups
             }
 
             m_FillRoot = new GameObject("DistrictGroupsFillRoot");
+            // Nothing else ever writes this transform, so the height offset is applied once here
+            ApplyFillHeightOffset();
 
             Shader shader = Shader.Find("HDRP/Unlit");
             m_FillMaterial = new Material(shader) { name = "DistrictGroupsFillMaterial" };
@@ -135,35 +136,117 @@ namespace DistrictGroups
             }
         }
 
+        // Keyed incremental diff of m_FillEntries against the snapshot
         private void RebuildFillObjects(int saturationSetting)
         {
-            DestroyFillObjects();
-
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
             float saturation = actualSaturationPercent / 100f;
+            bool saturationDirty = saturationSetting != m_FillBuiltSaturationPercent;
 
-            int totalVertices = 0;
-            foreach (KeyValuePair<Entity, List<Color>> entry in m_DistrictGroupColors)
+            // Districts that left the snapshot
+            m_FillStaleDistrictsScratch.Clear();
+            foreach (Entity district in m_FillEntries.Keys)
             {
-                // Lighter (desaturated/vibrancy-scaled) variant of each raw group color
-                var lightened = new List<Color>(entry.Value.Count);
-                foreach (Color baseColor in entry.Value)
+                if (!m_DistrictSnapshots.ContainsKey(district))
                 {
-                    lightened.Add(Lighten(baseColor, saturation, kFillVibrancy));
+                    m_FillStaleDistrictsScratch.Add(district);
                 }
-                totalVertices += CreateFillObject(entry.Key, lightened);
+            }
+            foreach (Entity district in m_FillStaleDistrictsScratch)
+            {
+                DestroyFillEntry(district);
             }
 
-            stopwatch.Stop();
-            Mod.log.Debug($"Group overlay, rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} fill_count:{m_FillEntries.Count} vertex_count:{totalVertices} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            int totalVertices = 0;
+            int createdCount = 0;
+            int recoloredCount = 0;
+            foreach (KeyValuePair<Entity, DistrictSnapshot> row in m_DistrictSnapshots)
+            {
+                Entity district = row.Key;
+                DistrictSnapshot snapshot = row.Value;
+                List<Color> lightened = GetLightenedColors(snapshot.Colors, saturationSetting, saturation);
+
+                if (m_FillEntries.TryGetValue(district, out FillEntry entry))
+                {
+                    // A color-count change flips the texture-vs-flat-tint path, so it recreates the entry like a polygon change does
+                    if (entry.PolygonHash == snapshot.PolygonHash && entry.BuiltColors.Count == snapshot.Colors.Count)
+                    {
+                        bool colorsChanged = !ColorsMatch(entry.BuiltColors, snapshot.Colors);
+                        if (colorsChanged || saturationDirty)
+                        {
+                            ApplyFillColors(entry, lightened);
+                            if (colorsChanged)
+                            {
+                                entry.BuiltColors.Clear();
+                                entry.BuiltColors.AddRange(snapshot.Colors);
+                            }
+                            recoloredCount++;
+                        }
+                        continue;
+                    }
+                    DestroyFillEntry(district);
+                }
+
+                totalVertices += CreateFillObject(district, snapshot, lightened);
+                createdCount++;
+            }
+
+            if (debugLogging)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Group overlay, rebuilt fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+                    $"fill_count:{m_FillEntries.Count} created_count:{createdCount} recolored_count:{recoloredCount} " +
+                    $"stale_count:{m_FillStaleDistrictsScratch.Count} vertex_count:{totalVertices} " +
+                    $"saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            }
+        }
+
+        // Lightened variants of a district's raw colors via m_LightenedColorCache
+        private List<Color> GetLightenedColors(List<Color> baseColors, int saturationSetting, float saturation)
+        {
+            if (m_LightenedCacheSaturationPercent != saturationSetting)
+            {
+                m_LightenedColorCache.Clear();
+                m_LightenedCacheSaturationPercent = saturationSetting;
+            }
+
+            var lightened = new List<Color>(baseColors.Count);
+            foreach (Color baseColor in baseColors)
+            {
+                if (!m_LightenedColorCache.TryGetValue(baseColor, out Color lightenedColor))
+                {
+                    lightenedColor = Lighten(baseColor, saturation, kFillVibrancy);
+                    m_LightenedColorCache[baseColor] = lightenedColor;
+                }
+                lightened.Add(lightenedColor);
+            }
+            return lightened;
+        }
+
+        private static bool ColorsMatch(List<Color> a, List<Color> b)
+        {
+            if (a.Count != b.Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < a.Count; i++)
+            {
+                if (a[i] != b[i])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         // Updates the colors applied to fill textures
         private void RecolorFillObjects(int saturationSetting)
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
             float saturation = actualSaturationPercent / 100f;
@@ -171,22 +254,20 @@ namespace DistrictGroups
             int recoloredCount = 0;
             foreach (KeyValuePair<Entity, FillEntry> entry in m_FillEntries)
             {
-                if (!m_DistrictGroupColors.TryGetValue(entry.Key, out List<Color> baseColors))
+                if (!m_DistrictSnapshots.TryGetValue(entry.Key, out DistrictSnapshot snapshot))
                 {
                     continue;
                 }
 
-                var lightened = new List<Color>(baseColors.Count);
-                foreach (Color baseColor in baseColors)
-                {
-                    lightened.Add(Lighten(baseColor, saturation, kFillVibrancy));
-                }
-                ApplyFillColors(entry.Value, lightened);
+                ApplyFillColors(entry.Value, GetLightenedColors(snapshot.Colors, saturationSetting, saturation));
                 recoloredCount++;
             }
 
-            stopwatch.Stop();
-            Mod.log.Debug($"Group overlay, recolored fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} recolored_count:{recoloredCount} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            if (debugLogging)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Group overlay, recolored fill meshes; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} recolored_count:{recoloredCount} saturation_setting:{saturationSetting} saturation_actual_percent:{actualSaturationPercent:F1}");
+            }
         }
 
         // Applies a district's colors to an already-built mesh/renderer
@@ -230,31 +311,40 @@ namespace DistrictGroups
             return lightened;
         }
 
-        private int CreateFillObject(Entity district, List<Color> colors)
+        private int CreateFillObject(Entity district, DistrictSnapshot snapshot, List<Color> colors)
         {
-            DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
-            if (nodes.Length < 3)
+            Vector3[] vertices = snapshot.FillVertices;
+            if (vertices.Length < 3)
             {
                 return 0;
             }
 
-            Vector3[] vertices = new Vector3[nodes.Length];
-            for (int i = 0; i < nodes.Length; i++)
+            // Prefer the vanilla triangulation captured in the snapshot
+            // if empty, then it is missing or invalid, so fallback to our own
+            int[] triangleIndices = snapshot.TriangleIndices;
+            List<int> fallbackTriangles = null;
+            if (triangleIndices.Length == 0)
             {
-                float3 pos = nodes[i].m_Position;
-                vertices[i] = new Vector3(pos.x, pos.y, pos.z);
-            }
+                Mod.log.Debug($"Group overlay, no vanilla triangulation, using ear-clip fallback; district:{district} node_count:{vertices.Length}");
 
-            List<int> triangles = Triangulate(vertices);
-            if (triangles.Count == 0)
-            {
-                Mod.log.Warn($"Group overlay, fill triangulation produced no triangles; district:{district} nodeCount:{nodes.Length}");
-                return 0;
+                fallbackTriangles = Triangulate(vertices);
+                if (fallbackTriangles.Count == 0)
+                {
+                    Mod.log.Warn($"Group overlay, fill triangulation produced no triangles; district:{district} node_count:{vertices.Length}");
+                    return 0;
+                }
             }
 
             Mesh mesh = new Mesh { name = $"DistrictGroupsFillMesh_{district.Index}" };
             mesh.SetVertices(vertices);
-            mesh.SetTriangles(triangles, 0);
+            if (fallbackTriangles != null)
+            {
+                mesh.SetTriangles(fallbackTriangles, 0);
+            }
+            else
+            {
+                mesh.SetTriangles(triangleIndices, 0);
+            }
 
             // A textured, UV-mapped fill is only needed when there's more than one group color to cycle through
             // a single-color district is cheaper as a flat _UnlitColor tint with no texture at all.
@@ -293,8 +383,36 @@ namespace DistrictGroups
                 Mesh = mesh,
                 Texture = fillTexture,
                 Renderer = renderer,
+                PolygonHash = snapshot.PolygonHash,
+                BuiltColors = new List<Color>(snapshot.Colors),
             };
             return vertices.Length;
+        }
+
+        private void DestroyFillEntry(Entity district)
+        {
+            if (!m_FillEntries.TryGetValue(district, out FillEntry entry))
+            {
+                return;
+            }
+
+            if (entry.Object != null)
+            {
+                Object.Destroy(entry.Object);
+            }
+
+            // Destroying a GameObject doesn't destroy the assets its components merely reference
+            if (entry.Mesh != null)
+            {
+                Object.Destroy(entry.Mesh);
+            }
+
+            if (entry.Texture != null)
+            {
+                Object.Destroy(entry.Texture);
+            }
+
+            m_FillEntries.Remove(district);
         }
 
         // a deliberately rough estimate; good enough to track relative CPU/memory impact over time.

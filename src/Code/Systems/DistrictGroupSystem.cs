@@ -191,6 +191,13 @@ namespace DistrictGroups
             Mod.log.Info($"Finished setting group type; group:{group} type:{type}");
         }
 
+        // Notifies the system that the composition has changed from external systems.
+        public void NotifyCompositionChanged()
+        {
+            Version++;
+            GroupCompositionVersion++;
+        }
+
         public void SetGroupColor(Entity group, Color color)
         {
             Mod.log.Info($"Setting group color; group:{group}");

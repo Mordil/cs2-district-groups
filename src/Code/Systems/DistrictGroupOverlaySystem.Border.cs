@@ -28,18 +28,45 @@ namespace DistrictGroups
 
             float outlineWidth = Mod.Settings?.OverlayBorderWidth ?? Setting.kDefaultOverlayBorderWidth;
 
-            OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle _);
-            int districtCount = 0;
-            int segmentCount = 0;
-            foreach (KeyValuePair<Entity, List<Color>> entry in m_DistrictGroupColors)
+            // Vanilla writers may still be filling this buffer
+            OverlayRenderSystem.Buffer buffer = m_OverlayRenderSystem.GetBuffer(out JobHandle dependencies);
+            dependencies.Complete();
+            int districtCount;
+            int segmentCount;
+
+            // While any non-default tool is active, area geometry may be changing under the cached snapshot
+            // read nodes live so the border tracks the edit
+            bool liveNodes = m_ToolSystem.activeTool != m_DefaultToolSystem;
+            if (liveNodes)
+            {
+                DrawLiveNodeBorders(buffer, outlineAlpha, outlineWidth, out districtCount, out segmentCount);
+            }
+            else
+            {
+                DrawSnapshotBorders(buffer, outlineAlpha, outlineWidth, out districtCount, out segmentCount);
+            }
+
+            if (shouldSample)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} district_count:{districtCount} segment_count:{segmentCount} live_nodes:{liveNodes}");
+            }
+        }
+
+        private void DrawLiveNodeBorders(OverlayRenderSystem.Buffer buffer, float outlineAlpha, float outlineWidth, out int districtCount, out int segmentCount)
+        {
+            districtCount = 0;
+            segmentCount = 0;
+
+            foreach (KeyValuePair<Entity, DistrictSnapshot> entry in m_DistrictSnapshots)
             {
                 // Only single-group districts get a border; multi-group districts get a striped fill instead.
-                if (entry.Value.Count > 1)
+                if (entry.Value.Colors.Count > 1)
                 {
                     continue;
                 }
 
-                // A cached district can still die (or lose its Node buffer) between color-cache rebuilds
+                // A cached district can still die (or lose its Node buffer) between snapshot rebuilds
                 Entity district = entry.Key;
                 if (!EntityManager.Exists(district)
                     || EntityManager.HasComponent<Deleted>(district)
@@ -49,13 +76,9 @@ namespace DistrictGroups
                 }
                 districtCount++;
 
-                Color color = entry.Value[0];
+                Color color = entry.Value.Colors[0];
                 color.a = outlineAlpha;
 
-                // roundness=(1,1) bakes rounded end caps into each
-                // segment's own quad, so adjacent segments' caps
-                // overlap exactly at the shared node and cover the
-                // corner notch without a separate draw call per node.
                 DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
                 for (int j = 0; j < nodes.Length; j++)
                 {
@@ -68,16 +91,74 @@ namespace DistrictGroups
                         (OverlayRenderSystem.StyleFlags)0,
                         new Line3.Segment(a, b),
                         outlineWidth,
-                        new float2(1f, 1f)
+                        new float2(1f, 1f) // make the end caps overlap so it looks like 1 line
                     );
                     segmentCount++;
                 }
             }
+        }
 
-            if (shouldSample)
+        private void DrawSnapshotBorders(OverlayRenderSystem.Buffer buffer, float outlineAlpha, float outlineWidth, out int districtCount, out int segmentCount)
+        {
+            districtCount = 0;
+            segmentCount = 0;
+
+            Camera camera = m_CameraUpdateSystem.activeCamera;
+            bool cull = camera != null; // no camera => skip culling, draw everything
+            if (cull)
             {
-                stopwatch.Stop();
-                Mod.log.Debug($"Overlay draw sample; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} district_count:{districtCount} segment_count:{segmentCount}");
+                GeometryUtility.CalculateFrustumPlanes(camera, m_BorderFrustumPlanes);
+            }
+
+            foreach (KeyValuePair<Entity, DistrictSnapshot> entry in m_DistrictSnapshots)
+            {
+                DistrictSnapshot row = entry.Value;
+
+                // Only single-group districts get a border
+                if (row.Colors.Count != 1)
+                {
+                    continue;
+                }
+
+                // Same-frame disappearance insurance
+                Entity district = entry.Key;
+                if (!EntityManager.Exists(district) || EntityManager.HasComponent<Deleted>(district))
+                {
+                    continue;
+                }
+
+                if (cull)
+                {
+                    Bounds bounds = row.BorderBounds;
+                    bounds.Expand(outlineWidth * 2f); // segments extend half a width past the ring's AABB
+                    if (!GeometryUtility.TestPlanesAABB(m_BorderFrustumPlanes, bounds))
+                    {
+                        continue;
+                    }
+                }
+                districtCount++;
+
+                Color color = row.Colors[0];
+                color.a = outlineAlpha;
+
+                // BorderPositions already carry the height offset
+                float3[] positions = row.BorderPositions;
+                int positionCount = positions.Length;
+                for (int j = 0; j < positionCount; j++)
+                {
+                    float3 a = positions[j];
+                    float3 b = positions[j + 1 == positionCount ? 0 : j + 1];
+                    buffer.DrawLine(
+                        color,
+                        color,
+                        0f,
+                        (OverlayRenderSystem.StyleFlags)0,
+                        new Line3.Segment(a, b),
+                        outlineWidth,
+                        new float2(1f, 1f)
+                    );
+                    segmentCount++;
+                }
             }
         }
     }

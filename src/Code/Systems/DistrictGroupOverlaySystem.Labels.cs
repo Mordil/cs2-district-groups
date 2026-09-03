@@ -31,7 +31,7 @@ namespace DistrictGroups
 
             if ((m_DirtyFlags & OverlayDirtyFlags.Labels) != 0)
             {
-                RebuildLabelEntries(shouldSample);
+                RebuildLabelEntries();
                 m_DirtyFlags &= ~OverlayDirtyFlags.Labels;
             }
 
@@ -200,29 +200,28 @@ namespace DistrictGroups
             Mod.log.Info($"Prewarmed group label assets; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F1} name_count:{nameCount}");
         }
 
-        // Rebuilds one label entry per visible group:
-        private void RebuildLabelEntries(bool shouldSample)
+        // Rebuilds one label entry per snapshot group
+        private void RebuildLabelEntries()
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             m_LabelSeenGroupsScratch.Clear();
-            using NativeArray<Entity> groups = m_GroupSystem.GetGroups(Allocator.Temp);
-            for (int i = 0; i < groups.Length; i++)
+            foreach (KeyValuePair<Entity, GroupSnapshot> row in m_GroupSnapshots)
             {
-                Entity group = groups[i];
-                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
-                if (m_TypeFilter >= 0 && (int)data.m_Type != m_TypeFilter)
+                Entity group = row.Key;
+
+                // A group deletion bumps the composition version, this guard is same-frame disappearance insurance
+                if (!EntityManager.Exists(group) || !EntityManager.HasComponent<DistrictGroupData>(group))
                 {
                     continue;
                 }
 
-                if (!TryComputeGroupCenter(group, out float3 center, shouldSample))
-                {
-                    continue;
-                }
+                // The name is deliberately read live so renames show up from a Labels-only rebuild
+                DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
 
                 m_LabelSeenGroupsScratch.Add(group);
-                ApplyLabelEntry(group, data.m_Name.ToString(), center);
+                ApplyLabelEntry(group, data.m_Name.ToString(), row.Value.Center);
             }
 
             m_LabelStaleGroupsScratch.Clear();
@@ -241,47 +240,11 @@ namespace DistrictGroups
             // New/moved/re-baked entries need a pose from DrawGroupLabels even if the camera is idle
             m_LabelTransformsDirty = true;
 
-            stopwatch.Stop();
-            Mod.log.Debug($"Overlay labels rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} label_count:{m_LabelEntries.Count}");
-        }
-
-        // Area-weighted average of a group's member districts' Geometry.m_CenterPosition.
-        private bool TryComputeGroupCenter(Entity group, out float3 center, bool shouldSample)
-        {
-            center = float3.zero;
-            if (!EntityManager.HasBuffer<DistrictGroupMember>(group))
+            if (debugLogging)
             {
-                return false;
+                stopwatch.Stop();
+                Mod.log.Debug($"Overlay labels rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} label_count:{m_LabelEntries.Count}");
             }
-
-            DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
-            float3 weightedSum = float3.zero;
-            float totalArea = 0f;
-            foreach (DistrictGroupMember member in members)
-            {
-                Entity district = member.m_District;
-                if (!EntityManager.Exists(district) || !EntityManager.HasComponent<Geometry>(district))
-                {
-                    continue;
-                }
-                Geometry geometry = EntityManager.GetComponentData<Geometry>(district);
-                float area = math.max(geometry.m_SurfaceArea, 0.01f); // guards a degenerate/zero-area district
-                weightedSum += geometry.m_CenterPosition * area;
-                totalArea += area;
-            }
-
-            if (totalArea <= 0f)
-            {
-                return false;
-            }
-
-            center = weightedSum / totalArea;
-            if (shouldSample)
-            {
-                Mod.log.Debug($"Overlay label center sample; group:{group} member_count:{members.Length} " +
-                    $"total_area:{totalArea:F1} center_x:{center.x:F1} center_y:{center.y:F1} center_z:{center.z:F1}");
-            }
-            return true;
         }
 
         // Creates the label GameObject the first time a group is seen; otherwise updates existing instances
@@ -591,8 +554,8 @@ namespace DistrictGroups
 
                 float scale = AreaUtils.CalculateLabelScale(cameraPosition, entry.Position);
 
-                // The transform scale and the uv2 SDF recalibration are gated together so they can never drift apart
-                if (math.abs(scale - entry.LastAppliedScale) > kLabelScaleRescaleEpsilon)
+                // The transform scale and the uv2 SDF recalibration are gated together so they can never drift apart.
+                if (math.abs(scale - entry.LastAppliedScale) > kLabelScaleRescaleEpsilon * entry.LastAppliedScale)
                 {
                     entry.Transform.localScale = new Vector3(scale, scale, scale);
                     ApplyLabelSdfScale(entry, scale);

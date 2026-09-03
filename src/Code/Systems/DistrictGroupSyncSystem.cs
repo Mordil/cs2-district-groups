@@ -51,6 +51,7 @@ namespace DistrictGroups
                 {
                     Mod.log.Info($"Sync removed deleted districts from group, re-expanding; group:{m_GroupSystem.GetGroupName(group)} count:{removed}");
                     m_GroupSystem.ReexpandGroup(group);
+                    m_GroupSystem.NotifyCompositionChanged();
                 }
             }
         }

@@ -44,9 +44,50 @@ namespace DistrictGroups
         private bool m_WasAreaToolActive;
         public bool IsAreaToolActive => m_WasAreaToolActive;
 
-        // Raw per-district colors of every visible group that claims that district (0..n colors each).
-        // Rebuilt whenever the DistrictColors dirty bit is set.
-        private readonly Dictionary<Entity, List<Color>> m_DistrictGroupColors = new Dictionary<Entity, List<Color>>();
+        // Any non-default tool can mutate area geometry, so the snapshot is recaptured whenever one closes.
+        private bool m_WasNonDefaultToolActive;
+
+        // One row per district, captured once per Snapshot rebuild
+        private sealed class DistrictSnapshot
+        {
+            // raw group colors, group-iteration order
+            public List<Color> Colors;
+            // node positions with kOverlayHeightOffset added to Y
+            public float3[] BorderPositions;
+            // AABB over BorderPositions, for frustum culling
+            public Bounds BorderBounds;
+            // raw node positions (fill root transform supplies the lift)
+            public Vector3[] FillVertices;
+            // flattened vanilla Game.Areas.Triangle indices; empty => ear-clip fallback     
+            public int[] TriangleIndices;
+            // content hash of node positions (count + folded math.hash)    
+            public int PolygonHash;
+            // whether the district carried a Geometry component at capture            
+            public bool HasGeometry;
+            // Geometry.m_SurfaceArea (0 if no Geometry component)
+            public float SurfaceArea;
+            // Geometry.m_CenterPosition (zero if no Geometry component)
+            public float3 GeometryCenter;      
+        }
+
+        // Area-weighted member centroid of each visible group with >=1 Geometry-carrying member.
+        private sealed class GroupSnapshot
+        {
+            public float3 Center;
+        }
+
+        private readonly Dictionary<Entity, DistrictSnapshot> m_DistrictSnapshots = new Dictionary<Entity, DistrictSnapshot>();
+        private readonly Dictionary<Entity, GroupSnapshot> m_GroupSnapshots = new Dictionary<Entity, GroupSnapshot>();
+
+        // Scratch for the cached border path's culling.
+        private readonly Plane[] m_BorderFrustumPlanes = new Plane[6];
+
+        // Lighten() results keyed by raw group color
+        private readonly Dictionary<Color, Color> m_LightenedColorCache = new Dictionary<Color, Color>();
+        private int m_LightenedCacheSaturationPercent = -1;
+
+        // Scratch for RebuildFillObjects' stale-key sweep.
+        private readonly List<Entity> m_FillStaleDistrictsScratch = new List<Entity>();
 
         // What overlay-derived state needs rebuilding; bits are set by DetectChanges and
         // the explicit invalidation sites, cleared by each consumer after it rebuilds.
@@ -54,10 +95,10 @@ namespace DistrictGroups
         private enum OverlayDirtyFlags : byte
         {
             None = 0,
-            DistrictColors = 1 << 0,   // m_DistrictGroupColors
-            FillGeometry = 1 << 1,     // fill meshes (full rebuild)
+            Snapshot = 1 << 0,         // m_DistrictSnapshots + m_GroupSnapshots
+            FillGeometry = 1 << 1,     // fill meshes (keyed diff against the snapshot)
             Labels = 1 << 2,           // label text/positions (m_LabelEntries)
-            All = DistrictColors | FillGeometry | Labels,
+            All = Snapshot | FillGeometry | Labels,
         }
 
         private OverlayDirtyFlags m_DirtyFlags = OverlayDirtyFlags.All; // All = never built
@@ -88,6 +129,9 @@ namespace DistrictGroups
         private ColorAdjustments m_ColorAdjustments;
         private bool m_DesaturationActive;
 
+        // Last saturation percent actually written to m_ColorAdjustments; int.MinValue = never written
+        private int m_AppliedDesaturationPercent = int.MinValue;
+
         private const float kFillVibrancy = 0.75f;
         private const float kMinFillSaturationPercent = 35f;
 
@@ -102,6 +146,8 @@ namespace DistrictGroups
             public Mesh Mesh;
             public Texture2D Texture; // null for single-color districts (flat _UnlitColor tint, no texture)
             public MeshRenderer Renderer; // cached so recoloring doesn't need GetComponent
+            public int PolygonHash; // DistrictSnapshot.PolygonHash the mesh was built from
+            public List<Color> BuiltColors; // raw (pre-Lighten) group colors at build time
         }
 
         private GameObject m_FillRoot;
@@ -197,8 +243,8 @@ namespace DistrictGroups
 
         private bool m_LabelTransformsDirty = true;
 
-        // below this, neither the transform scale nor the uv2 rewrite is worth re-applying.
-        private const float kLabelScaleRescaleEpsilon = 1e-4f;
+        // Below this relative scale change, neither the transform scale nor the uv2 rewrite is worth re-applying
+        private const float kLabelScaleRescaleEpsilon = 0.002f;
 
         // Scratch collections reused across RebuildLabelEntries calls.
         private readonly HashSet<Entity> m_LabelSeenGroupsScratch = new HashSet<Entity>();
@@ -275,6 +321,10 @@ namespace DistrictGroups
             // cached overlay
             m_DirtyFlags = OverlayDirtyFlags.All;
 
+            // Snapshot rows are keyed by the previous city's entities - drop them outright.
+            m_DistrictSnapshots.Clear();
+            m_GroupSnapshots.Clear();
+
             // Label entries are keyed by the previous city's group entities - drop them outright
             // rather than letting their GameObjects linger (hidden) until the first rebuild sweep.
             DestroyLabelEntries();
@@ -329,7 +379,7 @@ namespace DistrictGroups
             if (active)
             {
                 DetectChanges();
-                EnsureDistrictGroupColors();
+                EnsureOverlaySnapshot();
                 UpdateDesaturation();
                 UpdateFill(shouldSample);
                 DrawGroupOverlays(shouldSample);
@@ -445,17 +495,19 @@ namespace DistrictGroups
             m_DirtyFlags |= OverlayDirtyFlags.All;
         }
 
-        // Rebuilds the district <-> color list cache based on membership if it has been marked dirty
-        private void EnsureDistrictGroupColors()
+        // Rebuilds the shared snapshot every overlay subsystem consumes
+        private void EnsureOverlaySnapshot()
         {
-            if ((m_DirtyFlags & OverlayDirtyFlags.DistrictColors) == 0)
+            if ((m_DirtyFlags & OverlayDirtyFlags.Snapshot) == 0)
             {
                 return;
             }
 
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
-            m_DistrictGroupColors.Clear();
+            m_DistrictSnapshots.Clear();
+            m_GroupSnapshots.Clear();
 
             using NativeArray<Entity> groups = m_GroupSystem.GetGroups(Allocator.Temp);
             for (int i = 0; i < groups.Length; i++)
@@ -466,6 +518,9 @@ namespace DistrictGroups
                     continue;
                 }
 
+                float3 weightedSum = float3.zero;
+                float totalArea = 0f;
+
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(groups[i], isReadOnly: true);
                 foreach (DistrictGroupMember member in members)
                 {
@@ -474,20 +529,137 @@ namespace DistrictGroups
                     {
                         continue;
                     }
-                    if (!m_DistrictGroupColors.TryGetValue(district, out List<Color> colors))
+                    if (!m_DistrictSnapshots.TryGetValue(district, out DistrictSnapshot snapshot))
                     {
-                        colors = new List<Color>();
-                        m_DistrictGroupColors[district] = colors;
+                        snapshot = CaptureDistrictSnapshot(district);
+                        m_DistrictSnapshots[district] = snapshot;
                     }
-                    colors.Add(data.m_Color);
+                    snapshot.Colors.Add(data.m_Color);
+
+                    // Area-weighted centroid; a Geometry-less district still gets colors but contributes 0.
+                    if (snapshot.HasGeometry)
+                    {
+                        float area = math.max(snapshot.SurfaceArea, 0.01f); // guards a degenerate/zero-area district
+                        weightedSum += snapshot.GeometryCenter * area;
+                        totalArea += area;
+                    }
+                }
+
+                if (totalArea > 0f)
+                {
+                    m_GroupSnapshots[groups[i]] = new GroupSnapshot { Center = weightedSum / totalArea };
                 }
             }
 
-            m_DirtyFlags &= ~OverlayDirtyFlags.DistrictColors;
+            m_DirtyFlags &= ~OverlayDirtyFlags.Snapshot;
 
-            stopwatch.Stop();
-            Mod.log.Debug($"Overlay district colors rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
-                $"group_count:{groups.Length} district_count:{m_DistrictGroupColors.Count}");
+            if (debugLogging)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Overlay snapshot rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+                    $"group_count:{groups.Length} district_count:{m_DistrictSnapshots.Count} label_group_count:{m_GroupSnapshots.Count}");
+            }
+        }
+
+        // Copies everything the overlay needs from one district's ECS data
+        private DistrictSnapshot CaptureDistrictSnapshot(Entity district)
+        {
+            DistrictSnapshot snapshot = new DistrictSnapshot { Colors = new List<Color>() };
+
+            DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
+            int nodeCount = nodes.Length;
+            snapshot.BorderPositions = new float3[nodeCount];
+            snapshot.FillVertices = new Vector3[nodeCount];
+
+            float3 min = new float3(float.MaxValue);
+            float3 max = new float3(float.MinValue);
+            uint hash = (uint)nodeCount;
+            for (int i = 0; i < nodeCount; i++)
+            {
+                float3 position = nodes[i].m_Position;
+                float3 lifted = position + new float3(0f, kOverlayHeightOffset, 0f);
+                snapshot.BorderPositions[i] = lifted;
+                snapshot.FillVertices[i] = new Vector3(position.x, position.y, position.z);
+                min = math.min(min, lifted);
+                max = math.max(max, lifted);
+                hash = math.hash(new uint2(hash, math.hash(position)));
+            }
+            snapshot.PolygonHash = (int)hash;
+            if (nodeCount > 0)
+            {
+                Bounds bounds = new Bounds();
+                bounds.SetMinMax(new Vector3(min.x, min.y, min.z), new Vector3(max.x, max.y, max.z));
+                snapshot.BorderBounds = bounds;
+            }
+
+            snapshot.TriangleIndices = ReadVanillaTriangles(district, snapshot.FillVertices);
+
+            if (EntityManager.HasComponent<Geometry>(district))
+            {
+                Geometry geometry = EntityManager.GetComponentData<Geometry>(district);
+                snapshot.HasGeometry = true;
+                snapshot.SurfaceArea = geometry.m_SurfaceArea;
+                snapshot.GeometryCenter = geometry.m_CenterPosition;
+            }
+
+            return snapshot;
+        }
+
+        // Flattens the district's Game.Areas.Triangle buffer into index triples matching the fill's own winding convention.
+        private int[] ReadVanillaTriangles(Entity district, Vector3[] vertices)
+        {
+            if (!EntityManager.HasBuffer<Game.Areas.Triangle>(district))
+            {
+                return System.Array.Empty<int>();
+            }
+
+            DynamicBuffer<Game.Areas.Triangle> triangles = EntityManager.GetBuffer<Game.Areas.Triangle>(district, isReadOnly: true);
+            if (triangles.Length == 0)
+            {
+                return System.Array.Empty<int>();
+            }
+
+            int[] indices = new int[triangles.Length * 3];
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                int3 triangle = triangles[i].m_Indices;
+                if (triangle.x < 0 || triangle.x >= vertices.Length
+                    || triangle.y < 0 || triangle.y >= vertices.Length
+                    || triangle.z < 0 || triangle.z >= vertices.Length)
+                {
+                    return System.Array.Empty<int>();
+                }
+                indices[i * 3] = triangle.x;
+                indices[i * 3 + 1] = triangle.y;
+                indices[i * 3 + 2] = triangle.z;
+            }
+
+            // The game triangulates with uniform winding, but it may be the reverse of the fill's
+            // convention (clockwise in the XZ plane, matching Triangulate/IsConvex). Check the
+            // first non-degenerate triangle and swap two indices per triangle if reversed.
+            for (int i = 0; i < indices.Length; i += 3)
+            {
+                Vector3 a = vertices[indices[i]];
+                Vector3 b = vertices[indices[i + 1]];
+                Vector3 c = vertices[indices[i + 2]];
+                float cross = (b.x - a.x) * (c.z - a.z) - (b.z - a.z) * (c.x - a.x);
+                if (math.abs(cross) < 1e-3f)
+                {
+                    continue;
+                }
+                if (cross > 0f)
+                {
+                    for (int j = 0; j < indices.Length; j += 3)
+                    {
+                        int swap = indices[j + 1];
+                        indices[j + 1] = indices[j + 2];
+                        indices[j + 2] = swap;
+                    }
+                }
+                break;
+            }
+
+            return indices;
         }
 
         // Tears down every runtime asset the overlay owns and forces the panel closed.
@@ -515,7 +687,8 @@ namespace DistrictGroups
 
             DestroyOverlayCompositePass();
 
-            m_DistrictGroupColors.Clear();
+            m_DistrictSnapshots.Clear();
+            m_GroupSnapshots.Clear();
             m_DirtyFlags = OverlayDirtyFlags.All;
 
             Mod.log.Info("Finished removing all group overlay state from the world");
@@ -531,6 +704,16 @@ namespace DistrictGroups
                 m_DirtyFlags |= OverlayDirtyFlags.FillGeometry | OverlayDirtyFlags.Labels;
             }
             m_WasAreaToolActive = isAreaToolActive;
+
+            // Any transition away from a non-default tool recaptures the whole snapshot: area-tool
+            // edits change polygons, terrain tools re-sample area node heights, and the cached
+            // border would otherwise keep drawing the stale capture. User-paced, and the fill
+            // diff no-ops on rows whose PolygonHash is unchanged.
+            if (m_WasNonDefaultToolActive)
+            {
+                m_DirtyFlags |= OverlayDirtyFlags.All;
+            }
+            m_WasNonDefaultToolActive = tool != null && tool != m_DefaultToolSystem;
         }
     }
 }

@@ -9,7 +9,11 @@ namespace DistrictGroups
         {
             EnsureDesaturationVolume();
             int percent = Mod.Settings?.OverlayDesaturationPercent ?? Setting.kDefaultOverlayDesaturationPercent;
-            m_ColorAdjustments.saturation.Override(-percent);
+            if (percent != m_AppliedDesaturationPercent)
+            {
+                m_ColorAdjustments.saturation.Override(-percent);
+                m_AppliedDesaturationPercent = percent;
+            }
 
             if (!m_DesaturationActive)
             {
@@ -42,6 +46,7 @@ namespace DistrictGroups
             m_DesaturationVolume.isGlobal = true;
             VolumeHelper.GetOrCreateVolumeComponent(m_DesaturationVolume, ref m_ColorAdjustments);
             m_ColorAdjustments.active = true;
+            m_AppliedDesaturationPercent = int.MinValue; // fresh component, force the first write
 
             stopwatch.Stop();
             Mod.log.Debug($"Group overlay desaturation volume created; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
