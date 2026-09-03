@@ -91,7 +91,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     allGroupsLabel: "All Groups",
     noGroupsYet: "No groups yet. Create one with the NEW GROUP button.",
     noGroupsMatchFilter: "No groups match this filter.",
-    displayDistrictAreasLabel: "Display District areas",
+    displayDistrictAreasLabel: "Show all districts",
     showGroupOverlayLabel: "Show group overlay",
     showServiceBuildingsLabel: "Show service buildings",
 
@@ -119,15 +119,15 @@ const kFallback: Record<keyof typeof kLocale, string> = {
 
     sectionTooltipLine1: "Service buildings can be assigned to a **district group**.",
     sectionTooltipLine2: "When assigned, the group will manage the **operating districts** for the building.",
-    sectionTooltipLine3: "When unassigned, **operating districts** are managed manually.",
+    sectionTooltipLine3: "When unassigned, **operating districts** are controlled manually.",
     sectionTooltipLine4: "NOTE: The Info Panel can take a few seconds to visually update after changing the assignment.",
     sectionLabel: "DISTRICT GROUP",
     operatingDistrictsLabel: "Operating Districts",
     readOnlySectionTooltipLine1: "This building is currently assigned to a district group.",
     readOnlySectionTooltipLine2:
-        "**City district** assignments will be managed by the **assigned district group**.",
+        "**City district** assignments are controlled by the **assigned district group**.",
     readOnlySectionTooltipLine3:
-        "If no **city district** is in the **district group**, this building will provide their services everywhere within their **operational radius**.",
+        "If the **district group** does not have **city districts**, this building will provide services everywhere within their **operational radius**.",
     unassignOption: "Unassign",
     unassignTooltipDisabled: "No group is assigned.",
     unassignTooltipEnabled: "Removes the current group assignment.",
