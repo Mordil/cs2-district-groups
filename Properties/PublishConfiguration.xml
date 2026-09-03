@@ -105,6 +105,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **FIXED**
 
+- Localization of service building terminology in the mod UI to align with game translations
 - Localization of the service building Operating Districts tooltip in Spanish, French, Italian, Polish, Brazilian Portuguese, and Russian.
 	</ChangeLog>
 
