@@ -33,6 +33,8 @@ export const AssignmentsTab = ({ filterType, className }: AssignmentsTabProps) =
         trigger(mod.id, "unassignBuildingGroup", building.entity)
     }
 
+    const sortedBuildings = [...buildings].sort((a, b) => a.name.localeCompare(b.name))
+
     return (
         <Scrollable
             vertical={true}
@@ -52,7 +54,7 @@ export const AssignmentsTab = ({ filterType, className }: AssignmentsTabProps) =
             )}
 
             {filterType !== kGenericType &&
-                buildings.map((building) => (
+                sortedBuildings.map((building) => (
                     <div key={entityKey(building.entity)} className={css.row}>
                         <div className={css.buildingName}>{building.name}</div>
 
