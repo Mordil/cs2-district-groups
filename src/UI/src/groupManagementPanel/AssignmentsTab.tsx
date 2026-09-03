@@ -7,6 +7,8 @@ import css from "./AssignmentsTab.module.scss"
 
 const kGenericType = 0
 
+const emptyTextStyle = { fontSize: "var(--fontSizeM)" }
+
 interface AssignmentsTabProps {
     filterType: number
     className?: string
@@ -23,11 +25,15 @@ export const AssignmentsTab = ({ filterType, className }: AssignmentsTabProps) =
             className={className}
         >
             {filterType === kGenericType && (
-                <div>{t("selectTypeForAssignments")}</div>
+                <div style={emptyTextStyle}>
+                    {t("selectTypeForAssignments")}
+                </div>
             )}
 
             {filterType !== kGenericType && buildings.length === 0 && (
-                <div>{t("noServiceBuildingsMatchFilter")}</div>
+                <div style={emptyTextStyle}>
+                    {t("noServiceBuildingsMatchFilter")}
+                </div>
             )}
 
             {filterType !== kGenericType &&
