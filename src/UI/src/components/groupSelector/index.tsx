@@ -11,6 +11,10 @@ import { AnchorEdges, GroupSearchFlyout } from "./GroupSearchFlyout"
 export { eligibleGroups, groupCandidatesByType, kGenericGroupType } from "./candidates"
 export type { GroupOption, GroupSection } from "./candidates"
 
+// A flyout is a screen-level popup, so at most one may ever be on screen:
+// opening one closes whichever selector was already showing its flyout.
+let closeOpenFlyout: (() => void) | null = null
+
 interface GroupSelectorProps {
     buildingType: number
     candidates: GroupOption[]
@@ -36,11 +40,19 @@ export const GroupSelector = (props: GroupSelectorProps) => {
     }
 
     const openFlyout = () => {
+        closeOpenFlyout?.()
+
         measureAnchor()
         setOpen(true)
+
+        closeOpenFlyout = () => setOpen(false)
     }
 
-    const closeFlyout = () => setOpen(false)
+    const closeFlyout = () => {
+        setOpen(false)
+
+        closeOpenFlyout = null
+    }
 
     useEffect(() => {
         if (!open) {
