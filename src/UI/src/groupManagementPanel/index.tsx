@@ -2,7 +2,7 @@ import { trigger, useValue } from "cs2/api"
 import { InputActionConsumer } from "cs2/input"
 import { Button, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
-import { MouseEvent, useState } from "react"
+import { MouseEvent, useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
@@ -43,6 +43,10 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
 
+    // The Assignments tab is useless without the service-building markers on screen, so opening it forces them on.
+    // True only while that override is ours to undo a manual toggle by the player replaces it, and never gets overridden back.
+    const forcedShowServiceBuildings = useRef(false)
+
     const filterTooltip = (
         <FormattedParagraphs
             renderer={markdownRenderer}
@@ -64,7 +68,31 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const onTabSelect = (tab: PanelTab) => {
         logger.info(`Panel tab changed; tab:${PanelTab[tab]}`)
         setActiveTab(tab)
+
+        if (tab !== PanelTab.Assignments) {
+            clearForcedShowServiceBuildings()
+            return
+        }
+
+        if (!showServiceBuildings) {
+            logger.info("Forcing service buildings on for the assignments tab;")
+            forcedShowServiceBuildings.current = true
+            trigger(mod.id, "setShowServiceBuildings", true)
+        }
     }
+
+    // Puts back what the player had before the assignments tab forced the markers on.
+    const clearForcedShowServiceBuildings = () => {
+        if (!forcedShowServiceBuildings.current) {
+            return
+        }
+        logger.info("Restoring service buildings off after leaving the assignments tab;")
+        forcedShowServiceBuildings.current = false
+        trigger(mod.id, "setShowServiceBuildings", false)
+    }
+
+    // Closing the panel unmounts us, which counts as leaving the tab.
+    useEffect(() => clearForcedShowServiceBuildings, [])
 
     const onCreateGroup = () => {
         logger.info("New group clicked;")
@@ -85,6 +113,8 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
 
     const onShowServiceBuildingsChange = (checked: boolean) => {
         logger.info(`Show service buildings toggled; show:${checked}`)
+        // The player's own choice outlives the assignments tab's override.
+        forcedShowServiceBuildings.current = false
         trigger(mod.id, "setShowServiceBuildings", checked)
     }
 
