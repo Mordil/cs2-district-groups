@@ -1,5 +1,21 @@
 # District Groups — Project Notes
 
+## JavaScript and TypeScript imports
+
+These should be grouped by classification, and then alphabetical in the classification.
+
+There should be a single empty newline between each group of import statements.
+
+```
+<react imports>
+
+<cs2 imports>
+
+<project shared imports, such as constants, utils, etc>
+
+<sibling directory imports such as style sheets>
+```
+
 ## Comments
 
 Use the following comment styles
