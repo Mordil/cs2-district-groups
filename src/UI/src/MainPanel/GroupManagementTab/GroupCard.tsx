@@ -11,10 +11,10 @@ import { VC, VF, VT } from "../../components/vanilla"
 import css from "./GroupCard.module.scss"
 import { Group } from "../../types"
 import { useTypeLabels } from "../../constants"
-import { useTranslation } from "../../locale"
+import { useTranslation } from "../../utils/locale"
 import { markdownRenderer } from "../../shared"
-import { logger } from "../../log"
-import { useEnterExitPhase } from "../../hooks/useEnterExitPhase"
+import { logger } from "../../utils/log"
+import { useEnterExitPhase } from "../../utils/useEnterExitPhase"
 
 // Matches the mixin's own transition duration in GroupCard.module.scss.
 const kExpandDurationMs = 250

@@ -1,4 +1,4 @@
-import { useTranslation } from "./locale"
+import { useTranslation } from "./utils/locale"
 
 export const kAssetPath = 'coui://districtgroups/'
 

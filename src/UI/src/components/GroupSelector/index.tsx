@@ -1,7 +1,7 @@
 import { Icon, Portal, Tooltip } from "cs2/ui"
 import { Entity } from "cs2/utils"
 import { ReactNode, useEffect, useRef, useState } from "react"
-import { useTranslation } from "../../locale"
+import { useTranslation } from "../../utils/locale"
 import { glyphIconSrc } from "../icons"
 import { VT } from "../vanilla"
 import css from "./index.module.scss"

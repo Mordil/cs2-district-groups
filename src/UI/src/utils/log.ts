@@ -1,5 +1,5 @@
 import { trigger } from "cs2/api"
-import mod from "../mod.json"
+import mod from "../../mod.json"
 
 type LogLevel = "debug" | "info" | "warn" | "error" | "critical"
 

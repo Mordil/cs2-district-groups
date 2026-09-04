@@ -3,7 +3,7 @@ import { LocalizedEntityName, LocalizedString, Name } from "cs2/l10n"
 import { Entity } from "cs2/utils"
 import { FormattedParagraphs } from "cs2/ui"
 import { VC } from "../../components/vanilla"
-import { VanillaLocale, useTranslation } from "../../locale"
+import { VanillaLocale, useTranslation } from "../../utils/locale"
 import { markdownRenderer } from "../../shared"
 
 interface VanillaDistrictEntry {

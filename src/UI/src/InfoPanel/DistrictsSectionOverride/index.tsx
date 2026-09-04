@@ -1,5 +1,5 @@
 import { useValue } from "cs2/api"
-import { logger } from "../../log"
+import { logger } from "../../utils/log"
 import { selectedBuildingHasGroupAssignment$ } from "../../bindings"
 import { ReadOnlyDistrictsSection, VanillaDistrictsSectionProps } from "./ReadOnlyDistrictsSection"
 
