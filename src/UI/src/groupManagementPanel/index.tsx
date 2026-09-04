@@ -19,9 +19,6 @@ import { AssignmentsTab } from "./AssignmentsTab"
 
 export { groups$, areaToolActive$, shouldDismissPanel$, overlayVisible$, selectingGroup$ } from "./bindings"
 
-// temporarily persisted value between UI mounting; 0 = Generic
-let lastFilterType = 0
-
 enum PanelTab {
     Groups = 0,
     Assignments = 1,
@@ -33,18 +30,20 @@ interface GroupManagementPanelProps {
     onClose: () => void
 }
 
+let lastFilterType = 0
+let lastPanelTab = PanelTab.Groups
 export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const [filterType, setFilterType] = useState(lastFilterType)
-    const [activeTab, setActiveTab] = useState(PanelTab.Groups)
+    const [activeTab, setActiveTab] = useState(lastPanelTab)
     const [hideAssigned, setHideAssigned] = useState(false)
     const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
 
-    // The Assignments tab is useless without the service-building markers on screen, so opening it forces them on.
+    // The Assignments tab is useless without the service-building markers on screen, so being on it forces them on.
     // True only while that override is ours to undo a manual toggle by the player replaces it, and never gets overridden back.
     const forcedShowServiceBuildings = useRef(false)
 
@@ -75,23 +74,8 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
 
     const onTabSelect = (tab: PanelTab) => {
         logger.info(`Panel tab changed; tab:${PanelTab[tab]}`)
+        lastPanelTab = tab
         setActiveTab(tab)
-
-        if (tab !== PanelTab.Assignments) {
-            clearForcedShowServiceBuildings()
-            return
-        }
-
-        // Opening the tab always starts from the full building list.
-        if (activeTab !== PanelTab.Assignments) {
-            setHideAssigned(false)
-        }
-
-        if (!showServiceBuildings) {
-            logger.info("Forcing service buildings on for the assignments tab;")
-            forcedShowServiceBuildings.current = true
-            trigger(mod.id, "setShowServiceBuildings", true)
-        }
     }
 
     // Puts back what the player had before the assignments tab forced the markers on.
@@ -103,6 +87,21 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
         forcedShowServiceBuildings.current = false
         trigger(mod.id, "setShowServiceBuildings", false)
     }
+
+    useEffect(() => {
+        if (activeTab !== PanelTab.Assignments) {
+            clearForcedShowServiceBuildings()
+            return
+        }
+
+        setHideAssigned(false)
+
+        if (!showServiceBuildings) {
+            logger.info("Forcing service buildings on for the assignments tab;")
+            forcedShowServiceBuildings.current = true
+            trigger(mod.id, "setShowServiceBuildings", true)
+        }
+    }, [activeTab])
 
     // Closing the panel unmounts us, which counts as leaving the tab.
     useEffect(() => clearForcedShowServiceBuildings, [])
