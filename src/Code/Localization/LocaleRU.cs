@@ -78,6 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectTypeForAssignments, "Выберите тип службы, чтобы увидеть её здания служб." },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "Нет зданий служб, соответствующих этому фильтру." },
                 { LocalizationKey.HideAssignedBuildingsLabel, "Скрыть назначенные здания" },
+                { LocalizationKey.HideAssignedBuildingsTooltip, "Скрывает здания служб, которым уже назначена **группа районов**." },
                 { LocalizationKey.NewGroupButton, "Новая группа" },
                 { LocalizationKey.NewGroupButtonTooltip, "Добавляет новую группу без районов-участников." },
                 { LocalizationKey.NewGroupDefaultName, "Новая группа {NUMBER}" },

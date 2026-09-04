@@ -78,6 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectTypeForAssignments, "Wybierz typ usługi, aby wyświetlić jej budynki usługowe." },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "Brak budynków usługowych zgodnych z tym filtrem." },
                 { LocalizationKey.HideAssignedBuildingsLabel, "Ukryj przypisane budynki" },
+                { LocalizationKey.HideAssignedBuildingsTooltip, "Ukrywa budynki usługowe już przypisane do **grupy dzielnic**." },
                 { LocalizationKey.NewGroupButton, "Nowa grupa" },
                 { LocalizationKey.NewGroupButtonTooltip, "Dodaje nową grupę bez przypisanych dzielnic." },
                 { LocalizationKey.NewGroupDefaultName, "Nowa grupa {NUMBER}" },

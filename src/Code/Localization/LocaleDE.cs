@@ -78,6 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectTypeForAssignments, "Wähle einen Diensttyp, um dessen Dienstleistungsgebäude aufzulisten." },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "Keine Dienstleistungsgebäude entsprechen diesem Filter." },
                 { LocalizationKey.HideAssignedBuildingsLabel, "Zugewiesene Gebäude verbergen" },
+                { LocalizationKey.HideAssignedBuildingsTooltip, "Verbirgt Dienstleistungsgebäude, die bereits einer **Bezirksgruppe** zugewiesen sind." },
                 { LocalizationKey.NewGroupButton, "Neue Gruppe" },
                 { LocalizationKey.NewGroupButtonTooltip, "Fügt eine neue Gruppe ohne Mitgliedsbezirke hinzu." },
                 { LocalizationKey.NewGroupDefaultName, "Neue Gruppe {NUMBER}" },

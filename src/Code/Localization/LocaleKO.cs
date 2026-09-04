@@ -78,6 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectTypeForAssignments, "서비스 유형을 선택하면 해당 서비스 건물이 표시됩니다." },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "이 필터에 일치하는 서비스 건물이 없습니다." },
                 { LocalizationKey.HideAssignedBuildingsLabel, "할당된 건물 숨기기" },
+                { LocalizationKey.HideAssignedBuildingsTooltip, "이미 **지구 그룹**에 할당된 서비스 건물을 숨깁니다." },
                 { LocalizationKey.NewGroupButton, "새 그룹" },
                 { LocalizationKey.NewGroupButtonTooltip, "소속 지구이 없는 새 그룹을 추가합니다." },
                 { LocalizationKey.NewGroupDefaultName, "새 그룹 {NUMBER}" },

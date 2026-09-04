@@ -56,6 +56,14 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
         />
     )
 
+    const hideAssignedTooltip = (
+        <FormattedParagraphs
+            renderer={markdownRenderer}
+            text={[t("hideAssignedBuildingsTooltip")]}
+            nonInline
+        />
+    )
+
     // Groups matching the filtered type, in creation order (the binding's own order).
     const displayedGroups = groups.filter((g) => g.type === filterType)
 
@@ -205,6 +213,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                                 checked={hideAssigned}
                                 onChange={onHideAssignedChange}
                                 label={t("hideAssignedBuildingsLabel")}
+                                tooltip={hideAssignedTooltip}
                                 className={css.hideAssignedToggle}
                             />
                         )}

@@ -78,6 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectTypeForAssignments, "选择一种服务类型以列出相应的服务建筑。" },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "没有服务建筑匹配此筛选条件。" },
                 { LocalizationKey.HideAssignedBuildingsLabel, "隐藏已分配的建筑" },
+                { LocalizationKey.HideAssignedBuildingsTooltip, "隐藏已分配**市辖区组**的服务建筑。" },
                 { LocalizationKey.NewGroupButton, "新建市辖区组" },
                 { LocalizationKey.NewGroupButtonTooltip, "添加一个不包含任何成员市辖区的新市辖区组。" },
                 { LocalizationKey.NewGroupDefaultName, "新市辖区组 {NUMBER}" },

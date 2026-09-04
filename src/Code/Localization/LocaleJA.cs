@@ -78,6 +78,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectTypeForAssignments, "サービスの種類を選択すると、該当するサービス施設が一覧表示されます。" },
                 { LocalizationKey.NoServiceBuildingsMatchFilter, "このフィルターに一致するサービス施設がありません。" },
                 { LocalizationKey.HideAssignedBuildingsLabel, "割り当て済みの建物を非表示" },
+                { LocalizationKey.HideAssignedBuildingsTooltip, "すでに**特区グループ**に割り当てられているサービス施設を非表示にします。" },
                 { LocalizationKey.NewGroupButton, "新規グループ" },
                 { LocalizationKey.NewGroupButtonTooltip, "所属する特区がない新しいグループを追加します。" },
                 { LocalizationKey.NewGroupDefaultName, "新規グループ {NUMBER}" },
