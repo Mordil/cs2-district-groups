@@ -1,7 +1,6 @@
 import { trigger, useValue } from "cs2/api"
 import { AutoNavigationScope, InputActionConsumer, NavigationDirection } from "cs2/input"
-import { Button, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
-import { entityKey } from "cs2/utils"
+import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { MouseEvent, useEffect, useRef, useState } from "react"
 import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
@@ -11,13 +10,11 @@ import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
-import { areasVisible$, groups$, showServiceBuildings$, showOverlay$ } from "./bindings"
+import { areasVisible$, groups$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
-import { GroupCard } from "./GroupCard"
-import { AssignmentsTab } from "./AssignmentsTab"
-
-export { groups$, areaToolActive$, shouldDismissPanel$, overlayVisible$, selectingGroup$ } from "./bindings"
+import { GroupManagementTab } from "./GroupManagementTab"
+import { BuildingAssignmentsTab } from "./BuildingAssignmentsTab"
 
 enum PanelTab {
     Groups = 0,
@@ -26,13 +23,13 @@ enum PanelTab {
 
 const kTabOrder = [PanelTab.Groups, PanelTab.Assignments]
 
-interface GroupManagementPanelProps {
+interface MainPanelProps {
     onClose: () => void
 }
 
 let lastFilterType = 0
 let lastPanelTab = PanelTab.Groups
-export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => {
+export const MainPanel = ({ onClose }: MainPanelProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const [filterType, setFilterType] = useState(lastFilterType)
@@ -61,9 +58,6 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
             text={[t("hideAssignedBuildingsTooltip")]}
         />
     )
-
-    // Groups matching the filtered type, in creation order (the binding's own order).
-    const displayedGroups = groups.filter((g) => g.type === filterType)
 
     const onFilterChange = (type: number) => {
         logger.info(`Filter changed; type:${type}`)
@@ -108,7 +102,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
 
     const onCreateGroup = () => {
         logger.info("New group clicked;")
-        // groups.length (not displayedGroups.length) so the suggested name
+        // groups.length (not the filtered count) so the suggested name
         // reflects every group, regardless of the active filter.
         trigger(mod.id, "createGroup", t("newGroupDefaultName", { number: groups.length + 1 }), filterType)
     }
@@ -227,26 +221,12 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
                             allowLooping={true}
                         >
                             {activeTab === PanelTab.Groups ? (
-                                <Scrollable
-                                    vertical={true}
-                                    trackVisibility="reserve"
+                                <GroupManagementTab
+                                    filterType={filterType}
                                     className={css.list}
-                                >
-                                    {groups.length === 0 && (
-                                        <div>{t("noGroupsYet")}</div>
-                                    )}
-                                    {groups.length > 0 && displayedGroups.length === 0 && (
-                                        <div>{t("noGroupsMatchFilter")}</div>
-                                    )}
-                                    {displayedGroups.map((group) => (
-                                        <GroupCard
-                                            key={entityKey(group.entity)}
-                                            group={group}
-                                        />
-                                    ))}
-                                </Scrollable>
+                                />
                             ) : (
-                                <AssignmentsTab
+                                <BuildingAssignmentsTab
                                     filterType={filterType}
                                     hideAssigned={hideAssigned}
                                     className={css.list}

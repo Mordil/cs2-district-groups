@@ -1,21 +1,20 @@
-import { trigger, useValue } from "cs2/api"
+import { trigger } from "cs2/api"
 import { LocalizedNumber, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
-import { entityEquals, entityKey } from "cs2/utils"
+import { entityKey } from "cs2/utils"
 import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
-import mod from "../../mod.json"
-import { ColorPicker } from "../components/ColorPicker"
-import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
-import { TypePicker } from "../components/TypePicker"
-import { VC, VF, VT } from "../components/vanilla"
+import mod from "../../../mod.json"
+import { ColorPicker } from "../../components/ColorPicker"
+import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
+import { TypePicker } from "../../components/TypePicker"
+import { VC, VF, VT } from "../../components/vanilla"
 import css from "./GroupCard.module.scss"
-import { Group } from "../types"
-import { useTypeLabels } from "../constants"
-import { useTranslation } from "../locale"
-import { selectingGroup$ } from "./bindings"
-import { markdownRenderer } from "../shared"
-import { logger } from "../log"
-import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
+import { Group } from "../../types"
+import { useTypeLabels } from "../../constants"
+import { useTranslation } from "../../locale"
+import { markdownRenderer } from "../../shared"
+import { logger } from "../../log"
+import { useEnterExitPhase } from "../../hooks/useEnterExitPhase"
 
 // Matches the mixin's own transition duration in GroupCard.module.scss.
 const kExpandDurationMs = 250
@@ -43,8 +42,12 @@ const MetadataItem = (props: { icon: string; value: number; tooltip: string }) =
     </Tooltip>
 )
 
-export const GroupCard = (props: { group: Group }) => {
-    const { group } = props
+interface GroupCardProps {
+    group: Group
+    selectingDistricts: boolean
+}
+
+export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const [expanded, setExpanded] = useState(false)
@@ -54,8 +57,6 @@ export const GroupCard = (props: { group: Group }) => {
     )
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
-    const selectingGroup = useValue(selectingGroup$)
-    const selectingThisGroup = entityEquals(selectingGroup, group.entity)
     const dialogStack = useContext(DialogStack)
 
     const deleteGroupTooltip = (
@@ -131,7 +132,7 @@ export const GroupCard = (props: { group: Group }) => {
     const toggleExpanded = () => {
         const next = !expanded
 
-        if (!next && selectingThisGroup) {
+        if (!next && selectingDistricts) {
             logger.info(`Collapsing group card with active district selection, toggling off; entity:${entityKey(group.entity)}`)
             trigger(mod.id, "toggleDistrictSelection", group.entity)
         }
@@ -246,7 +247,7 @@ export const GroupCard = (props: { group: Group }) => {
                     </div>
 
                     <button
-                        className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, selectingThisGroup ? "selected" : ""]
+                        className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, selectingDistricts ? "selected" : ""]
                             .filter(Boolean).join(" ")}
                         onClick={() => {
                             logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)

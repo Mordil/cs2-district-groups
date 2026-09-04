@@ -7,7 +7,8 @@ import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../locale"
-import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$, GroupManagementPanel } from "groupManagementPanel"
+import { MainPanel } from "MainPanel"
+import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
 import { logger } from "../log"
 import { useEnterExitPhase } from "../hooks/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -18,9 +19,8 @@ const kFadeDurationMs = 150
 /*
 
     The panel shell stays permanently mounted for the fade transition, but
-    GroupManagementPanel (and the Dropdown/Tooltip it contains) is
-    unmounted after the fade-out completes and freshly remounted on every
-    open.
+    MainPanel (and the Dropdown/Tooltip it contains) is unmounted after
+    the fade-out completes and freshly remounted on every open.
 
     This avoids Dropdown/Tooltip ever initializing their hover
     wiring while an ancestor is opacity:0/pointer-events:none — the state
@@ -121,7 +121,7 @@ export const GroupManager = () => {
 
             <div className={`${css.panelShell} ${css[phase]}`}>
                 {contentMounted &&
-                    <GroupManagementPanel onClose={closePanel} />
+                    <MainPanel onClose={closePanel} />
                 }
             </div>
         </>

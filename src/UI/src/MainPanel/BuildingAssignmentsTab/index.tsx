@@ -4,17 +4,17 @@ import { LocalizedString } from "cs2/l10n"
 import { FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import { MouseEvent } from "react"
-import mod from "../../mod.json"
-import { eligibleGroups, GroupSelector } from "../components/groupSelector"
-import { gameIconSrc } from "../components/icons"
-import { VC, VF, VT } from "../components/vanilla"
-import { kGenericType } from "../constants"
-import { VanillaLocale, useTranslation } from "../locale"
-import { logger } from "../log"
-import { Group, ServiceBuilding } from "../types"
-import { groups$, serviceBuildings$ } from "./bindings"
-import { markdownRenderer } from "../shared"
-import css from "./AssignmentsTab.module.scss"
+import mod from "../../../mod.json"
+import { eligibleGroups, GroupSelector } from "../../components/groupSelector"
+import { gameIconSrc } from "../../components/icons"
+import { VC, VF, VT } from "../../components/vanilla"
+import { kGenericType } from "../../constants"
+import { VanillaLocale, useTranslation } from "../../locale"
+import { logger } from "../../log"
+import { Group, ServiceBuilding } from "../../types"
+import { groups$, serviceBuildings$ } from "../../bindings"
+import { markdownRenderer } from "../../shared"
+import css from "./index.module.scss"
 
 const emptyTextStyle = { fontSize: "var(--fontSizeM)" }
 
@@ -23,7 +23,7 @@ const stopMouseDown = (e: MouseEvent) => {
     e.stopPropagation()
 }
 
-interface AssignmentsTabProps {
+interface BuildingAssignmentsTabProps {
     filterType: number
     hideAssigned: boolean
     className?: string
@@ -113,7 +113,7 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails, on
     )
 }
 
-export const AssignmentsTab = ({ filterType, hideAssigned, className }: AssignmentsTabProps) => {
+export const BuildingAssignmentsTab = ({ filterType, hideAssigned, className }: BuildingAssignmentsTabProps) => {
     const t = useTranslation()
     const buildings = useValue(serviceBuildings$)
     const groups = useValue(groups$)
