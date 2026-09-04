@@ -154,6 +154,11 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     typeWelfare: "Welfare",
 }
 
+// Locale ids owned by the game rather than the mod.
+export const VanillaLocale = {
+    details: { id: "SelectedInfoPanel.DETAILS", fallback: "View Details" },
+}
+
 type LocaleKey = keyof typeof kLocale
 
 // translate() has no built-in {PLACEHOLDER} substitution (that's only wired

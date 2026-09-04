@@ -1,9 +1,9 @@
 import { trigger } from "cs2/api"
-import { LocalizedEntityName, Name } from "cs2/l10n"
+import { LocalizedEntityName, LocalizedString, Name } from "cs2/l10n"
 import { Entity } from "cs2/utils"
 import { FormattedParagraphs } from "cs2/ui"
 import { VC } from "../components/vanilla"
-import { useTranslation } from "../locale"
+import { VanillaLocale, useTranslation } from "../locale"
 import { markdownRenderer } from "../shared"
 
 interface VanillaDistrictEntry {
@@ -43,7 +43,7 @@ export const ReadOnlyDistrictsSection = (props: VanillaDistrictsSectionProps) =>
                     left={<LocalizedEntityName value={district.name} />}
                     link={
                         <VC.InfoLink onSelect={() => trigger("selectedInfo", "selectEntity", district.entity)}>
-                            Details
+                            <LocalizedString id={VanillaLocale.details.id} fallback={VanillaLocale.details.fallback}/>
                         </VC.InfoLink>
                     }
                 />
