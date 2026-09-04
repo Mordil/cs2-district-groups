@@ -17,6 +17,8 @@ namespace DistrictGroups
         private const float kSampleIntervalSeconds = 4f;
         private float m_LastSampleTime = float.NegativeInfinity;
 
+        private const int kUnfilteredTargetVersion = -1;
+
         // Which existing vanilla NotificationIconPrefab category
         private static readonly Dictionary<GroupServiceType, string> kTypeIconPrefabNames = new Dictionary<GroupServiceType, string>
         {
@@ -34,6 +36,7 @@ namespace DistrictGroups
             { GroupServiceType.Welfare, "Welfare Office" },
         };
 
+        private DistrictGroupSystem m_GroupSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;
         private GameScreenUISystem m_GameScreenUISystem;
         private PrefabSystem m_PrefabSystem;
@@ -47,7 +50,15 @@ namespace DistrictGroups
         private bool m_ShowServiceBuildings;
         public bool ShowServiceBuildings => m_ShowServiceBuildings;
 
+        private bool m_HideAssignedBuildings;
+
+        // Identifies the set GetTargetBuildings currently answers with, changing whenever that answer could have.
+        // Assignments only add or drop buildings from that set while assigned ones are being hidden.
+        public int TargetVersion => m_HideAssignedBuildings ? m_GroupSystem.Version : kUnfilteredTargetVersion;
+
+        // What the markers on screen right now were built from
         private GroupServiceType m_MarkedType = GroupServiceType.Generic;
+        private int m_MarkedTargetVersion = kUnfilteredTargetVersion;
 
         private readonly Dictionary<Entity, Entity> m_Markers = new Dictionary<Entity, Entity>();
 
@@ -62,6 +73,7 @@ namespace DistrictGroups
         protected override void OnCreate()
         {
             base.OnCreate();
+            m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_OverlaySystem = World.GetOrCreateSystemManaged<DistrictGroupOverlaySystem>();
             m_GameScreenUISystem = World.GetOrCreateSystemManaged<GameScreenUISystem>();
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
@@ -109,6 +121,8 @@ namespace DistrictGroups
             // clear ours explicitly, so a marker from the previous city doesn't survive as a dangling ghost.
             ClearAllMarkers();
             m_MarkedType = GroupServiceType.Generic;
+            m_HideAssignedBuildings = false;
+            m_MarkedTargetVersion = kUnfilteredTargetVersion;
             m_LastSampleTime = float.NegativeInfinity;
         }
 
@@ -122,10 +136,12 @@ namespace DistrictGroups
 
             GroupServiceType desiredType = IsActive ? (GroupServiceType)m_OverlaySystem.TypeFilter : GroupServiceType.Generic;
             bool typeChanged = desiredType != m_MarkedType;
+            bool targetsChanged = TargetVersion != m_MarkedTargetVersion;
 
-            // Even with no type change, re-sample periodically while a real category is showing so
+            // Even with nothing else changing, re-sample periodically while a real category is showing so
             // newly-constructed or demolished matching buildings get picked up/dropped.
-            if (typeChanged || (desiredType != GroupServiceType.Generic && shouldSample))
+            if (typeChanged || targetsChanged
+                || (desiredType != GroupServiceType.Generic && shouldSample))
             {
                 RebuildMarkers(desiredType);
             }
@@ -142,11 +158,23 @@ namespace DistrictGroups
             Mod.log.Info($"Show service buildings toggled; show:{m_ShowServiceBuildings}");
         }
 
+        // The assignments tab's own "Hide assigned buildings" checkbox.
+        public void SetHideAssignedBuildings(bool hide)
+        {
+            if (m_HideAssignedBuildings == hide)
+            {
+                return;
+            }
+            m_HideAssignedBuildings = hide;
+            Mod.log.Info($"Hide assigned buildings toggled; hide:{m_HideAssignedBuildings}");
+        }
+
         // Wipes every marker this system has ever added to the world.
         public void RemoveAllData()
         {
             Mod.log.Info("Removing all service-building marker state from the world");
             m_ShowServiceBuildings = false;
+            m_HideAssignedBuildings = false;
             RebuildMarkers(GroupServiceType.Generic);
             Mod.log.Info("Finished removing all service-building marker state from the world");
         }
@@ -222,13 +250,16 @@ namespace DistrictGroups
             }
 
             m_MarkedType = type;
+            m_MarkedTargetVersion = TargetVersion;
 
             stopwatch.Stop();
-            Mod.log.Info($"Service building markers rebuilt; type:{type} added_count:{added} removed_count:{removed} " +
+            Mod.log.Info($"Service building markers rebuilt; type:{type} hide_assigned:{m_HideAssignedBuildings} " +
+                $"added_count:{added} removed_count:{removed} " +
                 $"total_count:{m_Markers.Count} query_ms:{queryMs:F3} diff_ms:{diffMs:F3} destroy_ms:{destroyMs:F3} " +
                 $"create_ms:{createMs:F3} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
         }
 
+        // Every building of `type` the panel is currently listing, which both the markers and the panel's own rows are built from.
         public NativeArray<Entity> GetTargetBuildings(GroupServiceType type, Allocator allocator)
         {
             if (!m_TypeQueries.TryGetValue(type, out EntityQuery query))
@@ -236,7 +267,8 @@ namespace DistrictGroups
                 return new NativeArray<Entity>(0, allocator);
             }
 
-            if (!m_SchoolEducationLevels.TryGetValue(type, out byte requiredLevel))
+            bool isSchoolType = m_SchoolEducationLevels.TryGetValue(type, out byte requiredLevel);
+            if (!isSchoolType && !m_HideAssignedBuildings)
             {
                 return query.ToEntityArray(allocator);
             }
@@ -245,14 +277,25 @@ namespace DistrictGroups
             using NativeList<Entity> filtered = new NativeList<Entity>(candidates.Length, Allocator.Temp);
             foreach (Entity building in candidates)
             {
-                Entity prefab = EntityManager.GetComponentData<PrefabRef>(building).m_Prefab;
-                if (EntityManager.HasComponent<SchoolData>(prefab)
-                    && EntityManager.GetComponentData<SchoolData>(prefab).m_EducationLevel == requiredLevel)
+                if (isSchoolType && !MatchesEducationLevel(building, requiredLevel))
                 {
-                    filtered.Add(building);
+                    continue;
                 }
+                if (m_HideAssignedBuildings && m_GroupSystem.IsBuildingAssigned(building))
+                {
+                    continue;
+                }
+                filtered.Add(building);
             }
             return filtered.ToArray(allocator);
+        }
+
+        // Every school tier shares one query, so the prefab's education level is what separates them.
+        private bool MatchesEducationLevel(Entity building, byte requiredLevel)
+        {
+            Entity prefab = EntityManager.GetComponentData<PrefabRef>(building).m_Prefab;
+            return EntityManager.HasComponent<SchoolData>(prefab)
+                && EntityManager.GetComponentData<SchoolData>(prefab).m_EducationLevel == requiredLevel;
         }
 
         // Finds the entity of the existing NotificationIconPrefab named for this type

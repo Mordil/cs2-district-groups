@@ -14,6 +14,7 @@ import { markdownRenderer } from "../shared"
 import {
     createGroup as createGroupTrigger,
     setAreasVisible,
+    setHideAssignedBuildings,
     setOverlayFilter,
     setShowOverlay,
     setShowServiceBuildings,
@@ -105,8 +106,19 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         }
     }, [activeTab])
 
-    // Closing the panel unmounts us, which counts as leaving the tab.
-    useEffect(() => clearForcedShowServiceBuildings, [])
+    useEffect(() => {
+        // Only the Assignments tab does anything with this field
+        setHideAssignedBuildings(activeTab === PanelTab.Assignments && hideAssigned)
+    }, [activeTab, hideAssigned])
+
+    useEffect(
+        () => () => {
+            // Closing the panel unmounts us, which counts as leaving the tab.
+            clearForcedShowServiceBuildings()
+            setHideAssignedBuildings(false)
+        },
+        []
+    )
 
     const onCreateGroup = () => {
         logger.info("New group clicked;")
@@ -234,7 +246,6 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
                             ) : (
                                 <BuildingAssignmentsTab
                                     filterType={filterType}
-                                    hideAssigned={hideAssigned}
                                     className={css.list}
                                 />
                             )}

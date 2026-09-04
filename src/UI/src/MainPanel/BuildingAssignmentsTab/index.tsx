@@ -28,7 +28,6 @@ const stopMouseDown = (e: MouseEvent) => {
 
 interface BuildingAssignmentsTabProps {
     filterType: number
-    hideAssigned: boolean
     className?: string
 }
 
@@ -116,7 +115,7 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails, on
     )
 }
 
-export const BuildingAssignmentsTab = ({ filterType, hideAssigned, className }: BuildingAssignmentsTabProps) => {
+export const BuildingAssignmentsTab = ({ filterType, className }: BuildingAssignmentsTabProps) => {
     const t = useTranslation()
     const buildings = useValue(serviceBuildings$)
     const groups = useValue(groups$)
@@ -141,10 +140,7 @@ export const BuildingAssignmentsTab = ({ filterType, hideAssigned, className }: 
         camera.focusEntity(building.entity)
     }
 
-    // filter() already copies the array, so sorting the result in place is safe.
-    const displayedBuildings = buildings
-        .filter((building) => !hideAssigned || !building.hasAssignment)
-        .sort((a, b) => a.name.localeCompare(b.name))
+    const displayedBuildings = [...buildings].sort((a, b) => a.name.localeCompare(b.name))
 
     return (
         <Scrollable

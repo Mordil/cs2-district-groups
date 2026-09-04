@@ -43,6 +43,7 @@ namespace DistrictGroups
         private RawValueBinding m_SelectingGroupBinding;
         private int m_LastSeenGroupVersion = -1;
         private int m_LastSeenTypeFilter = -1;
+        private int m_LastSeenTargetVersion;
         private Entity m_LastSeenSelectingGroup = Entity.Null;
         private int m_LastSeenRefreshVersion = RefreshClock.kNeverRefreshed;
 
@@ -91,15 +92,18 @@ namespace DistrictGroups
 
             int groupVersion = m_GroupSystem.Version;
             int typeFilter = m_OverlaySystem.TypeFilter;
+            int targetVersion = m_ServiceBuildingSystem.TargetVersion;
             Entity selectingGroup = m_SelectionSystem.SelectingGroup;
             int refreshVersion = RefreshClock.Version;
 
             bool mutated = groupVersion != m_LastSeenGroupVersion;
             bool filterChanged = typeFilter != m_LastSeenTypeFilter;
+            bool targetsChanged = targetVersion != m_LastSeenTargetVersion;
             bool refreshDue = refreshVersion != m_LastSeenRefreshVersion;
 
             m_LastSeenGroupVersion = groupVersion;
             m_LastSeenTypeFilter = typeFilter;
+            m_LastSeenTargetVersion = targetVersion;
             m_LastSeenRefreshVersion = refreshVersion;
 
             // Populations are cached usually, so we want to force a fresh update
@@ -113,7 +117,7 @@ namespace DistrictGroups
                 m_GroupsBinding.Update();
             }
 
-            if (mutated || filterChanged || refreshDue)
+            if (mutated || filterChanged || targetsChanged || refreshDue)
             {
                 m_ServiceBuildingsBinding.Update();
             }
@@ -183,6 +187,8 @@ namespace DistrictGroups
                 () => m_ServiceBuildingSystem.ShowServiceBuildings));
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setShowServiceBuildings",
                 show => m_ServiceBuildingSystem.SetShowServiceBuildings(show)));
+            AddBinding(new TriggerBinding<bool>(kBindingGroup, "setHideAssignedBuildings",
+                hide => m_ServiceBuildingSystem.SetHideAssignedBuildings(hide)));
         }
 
         private void SetupGroupManagementPanelBindings()

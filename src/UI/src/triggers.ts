@@ -16,6 +16,7 @@ export const setOverlayFilter = createTrigger<[type: number]>("setOverlayFilter"
 export const setAreasVisible = createTrigger<[visible: boolean]>("setAreasVisible")
 export const setShowOverlay = createTrigger<[show: boolean]>("setShowOverlay")
 export const setShowServiceBuildings = createTrigger<[show: boolean]>("setShowServiceBuildings")
+export const setHideAssignedBuildings = createTrigger<[hide: boolean]>("setHideAssignedBuildings")
 
 // Group management tab
 export const createGroup = createTrigger("createGroup")
