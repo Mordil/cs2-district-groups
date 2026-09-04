@@ -1,6 +1,7 @@
 using Colossal.UI.Binding;
 using Game.Areas;
 using Game.Common;
+using Game.Prefabs;
 using Game.Rendering;
 using Game.Tools;
 using Game.UI;
@@ -21,6 +22,8 @@ namespace DistrictGroups
         private DistrictGroupServiceBuildingSystem m_ServiceBuildingSystem;
         private DistrictGroupSelectionSystem m_SelectionSystem;
         private NameSystem m_NameSystem;
+        private PrefabSystem m_PrefabSystem;
+        private PrefabUISystem m_PrefabUISystem;
         private SelectedInfoUISystem m_SelectedInfoUISystem;
         private CameraUpdateSystem m_CameraUpdateSystem;
         private ToolSystem m_ToolSystem;
@@ -60,6 +63,8 @@ namespace DistrictGroups
             m_ServiceBuildingSystem = World.GetOrCreateSystemManaged<DistrictGroupServiceBuildingSystem>();
             m_SelectionSystem = World.GetOrCreateSystemManaged<DistrictGroupSelectionSystem>();
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
+            m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
+            m_PrefabUISystem = World.GetOrCreateSystemManaged<PrefabUISystem>();
             m_SelectedInfoUISystem = World.GetOrCreateSystemManaged<SelectedInfoUISystem>();
             m_CameraUpdateSystem = World.GetOrCreateSystemManaged<CameraUpdateSystem>();
             m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();

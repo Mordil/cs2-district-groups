@@ -1,4 +1,5 @@
 using Colossal.UI.Binding;
+using Game.Prefabs;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -78,7 +79,32 @@ namespace DistrictGroups
             WriteEntity(writer, assignedGroup);
             writer.PropertyName("assignedGroupName");
             writer.Write(assignedGroup != Entity.Null ? m_GroupSystem.GetGroupName(assignedGroup) : "");
+            WriteAssetName(writer, building);
             writer.TypeEnd();
+        }
+
+        // The building's asset name, as opposed to its instance name
+        private void WriteAssetName(IJsonWriter writer, Entity building)
+        {
+            Entity prefab = EntityManager.HasComponent<PrefabRef>(building)
+                ? EntityManager.GetComponentData<PrefabRef>(building).m_Prefab
+                : Entity.Null;
+
+            if (prefab == Entity.Null)
+            {
+                writer.PropertyName("assetNameId");
+                writer.Write("");
+                writer.PropertyName("assetName");
+                writer.Write("");
+                return;
+            }
+
+            m_PrefabUISystem.GetTitleAndDescription(prefab, out string titleId, out _);
+
+            writer.PropertyName("assetNameId");
+            writer.Write(titleId ?? "");
+            writer.PropertyName("assetName");
+            writer.Write(m_PrefabSystem.GetPrefabName(prefab));
         }
 
         private void WriteNamedEntity(IJsonWriter writer, Entity entity)

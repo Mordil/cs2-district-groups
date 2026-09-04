@@ -1,4 +1,5 @@
 import { trigger, useValue } from "cs2/api"
+import { LocalizedString } from "cs2/l10n"
 import { Scrollable } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import { MouseEvent } from "react"
@@ -9,7 +10,7 @@ import { VC, VF, VT } from "../components/vanilla"
 import { kGenericType } from "../constants"
 import { useTranslation } from "../locale"
 import { logger } from "../log"
-import { ServiceBuilding } from "../types"
+import { Group, ServiceBuilding } from "../types"
 import { groups$, serviceBuildings$ } from "./bindings"
 import css from "./AssignmentsTab.module.scss"
 
@@ -24,6 +25,44 @@ interface AssignmentsTabProps {
     filterType: number
     hideAssigned: boolean
     className?: string
+}
+
+interface BuildingRowProps {
+    building: ServiceBuilding
+    groups: Group[]
+    onSelect: (building: ServiceBuilding, group: Entity) => void
+    onUnassign: (building: ServiceBuilding) => void
+}
+
+const BuildingRow = ({ building, groups, onSelect, onUnassign }: BuildingRowProps) => {
+    const hasAssetName = Boolean(building.assetNameId || building.assetName)
+
+    return (
+        <div className={css.row}>
+            <div className={css.buildingDetails}>
+                <div className={css.buildingName}>{building.name}</div>
+
+                {hasAssetName && (
+                    <div className={css.assetName}>
+                        <LocalizedString
+                            id={building.assetNameId}
+                            fallback={building.assetName}
+                        />
+                    </div>
+                )}
+            </div>
+
+            <GroupSelector
+                buildingType={building.type}
+                candidates={eligibleGroups(groups, building.type, building.assignedGroup)}
+                hasAssignment={building.hasAssignment}
+                assignedGroupName={building.assignedGroupName}
+                onSelect={(group) => onSelect(building, group)}
+                onUnassign={() => onUnassign(building)}
+                className={css.groupSelector}
+            />
+        </div>
+    )
 }
 
 export const AssignmentsTab = ({ filterType, hideAssigned, className }: AssignmentsTabProps) => {
@@ -66,21 +105,13 @@ export const AssignmentsTab = ({ filterType, hideAssigned, className }: Assignme
 
             {filterType !== kGenericType &&
                 displayedBuildings.map((building) => (
-                    <div key={entityKey(building.entity)} className={css.row}>
-                        <div className={css.buildingDetails}>
-                            <div className={css.buildingName}>{building.name}</div>
-                        </div>
-
-                        <GroupSelector
-                            buildingType={building.type}
-                            candidates={eligibleGroups(groups, building.type, building.assignedGroup)}
-                            hasAssignment={building.hasAssignment}
-                            assignedGroupName={building.assignedGroupName}
-                            onSelect={(group) => onSelect(building, group)}
-                            onUnassign={() => onUnassign(building)}
-                            className={css.groupSelector}
-                        />
-                    </div>
+                    <BuildingRow
+                        key={entityKey(building.entity)}
+                        building={building}
+                        groups={groups}
+                        onSelect={onSelect}
+                        onUnassign={onUnassign}
+                    />
                 ))}
         </Scrollable>
     )

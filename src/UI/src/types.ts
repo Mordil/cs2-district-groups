@@ -14,6 +14,10 @@ export interface ServiceBuilding {
     hasAssignment: boolean
     assignedGroup: Entity
     assignedGroupName: string
+    // Locale id for the asset's display name (e.g. "Assets.NAME[PoliceStation01]"),
+    // with the raw prefab name as the fallback when nothing resolves it.
+    assetNameId: string
+    assetName: string
 }
 
 export interface Group {
