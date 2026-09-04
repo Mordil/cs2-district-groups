@@ -1,5 +1,34 @@
 # District Groups — Project Notes
 
+## Comments
+
+Use the following comment styles
+
+```
+// I am an API description
+```
+
+The `//` comments are reserved for documenting code symbols like methods, properties, etc. They can be multiline, with `//` for each line.
+These should ideally be no more than 1 sentence long.
+
+
+```
+/*
+    I am historical context that is extremely evergreen.
+    I explain things that are external that I do not control, like 3rd party quirks or bugs.
+*/
+```
+
+The `/* */` C-style block comments are reserved for greater context that should be evergreen without things such as dependencies changing.
+These should exist at the top of lexical blocks that explains several lines of code, as their WHY.
+
+### Rules
+
+1. After the end of each coding iteration, ask for a review of comments.
+2. Do not include overly technical details, such as "mirrors the FooSystem"
+3. Do not include development iteration details "This previously used to do... but we changed it when doing..."
+4. All `public` API should have at least a single line of `//` documentation.
+
 ## Logging
 
 Every log call — C# (`Mod.log.Info/Warn/Error/Debug`) and TypeScript (`logger.info/warn/error/debug`) alike — follows this shape:
