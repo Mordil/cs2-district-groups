@@ -1,10 +1,16 @@
 .row {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: flex-start;
 }
 .row + .row {
-    padding-top: 16rem;
+    margin-top: 16rem;
+}
+
+.buildingDetails {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-left: var(--gap8)
 }
 
 .buildingName {
@@ -19,6 +25,7 @@
 
 .groupSelector {
     flex-shrink: 0;
-    max-width: 50%;
+    width: 35%;
     margin-left: var(--gap8);
+    text-align: left;
 }

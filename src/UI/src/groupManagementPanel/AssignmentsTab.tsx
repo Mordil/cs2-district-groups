@@ -1,8 +1,11 @@
 import { trigger, useValue } from "cs2/api"
 import { Scrollable } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
+import { MouseEvent } from "react"
 import mod from "../../mod.json"
 import { eligibleGroups, GroupSelector } from "../components/groupSelector"
+import { gameIconSrc } from "../components/icons"
+import { VC, VF, VT } from "../components/vanilla"
 import { kGenericType } from "../constants"
 import { useTranslation } from "../locale"
 import { logger } from "../log"
@@ -11,6 +14,11 @@ import { groups$, serviceBuildings$ } from "./bindings"
 import css from "./AssignmentsTab.module.scss"
 
 const emptyTextStyle = { fontSize: "var(--fontSizeM)" }
+
+const stopMouseDown = (e: MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+}
 
 interface AssignmentsTabProps {
     filterType: number
@@ -59,7 +67,9 @@ export const AssignmentsTab = ({ filterType, hideAssigned, className }: Assignme
             {filterType !== kGenericType &&
                 displayedBuildings.map((building) => (
                     <div key={entityKey(building.entity)} className={css.row}>
-                        <div className={css.buildingName}>{building.name}</div>
+                        <div className={css.buildingDetails}>
+                            <div className={css.buildingName}>{building.name}</div>
+                        </div>
 
                         <GroupSelector
                             buildingType={building.type}
