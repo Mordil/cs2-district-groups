@@ -1,6 +1,6 @@
 import { trigger, useValue } from "cs2/api"
 import { LocalizedString } from "cs2/l10n"
-import { Scrollable } from "cs2/ui"
+import { FormattedParagraphs, Scrollable } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import { MouseEvent } from "react"
 import mod from "../../mod.json"
@@ -12,6 +12,7 @@ import { useTranslation } from "../locale"
 import { logger } from "../log"
 import { Group, ServiceBuilding } from "../types"
 import { groups$, serviceBuildings$ } from "./bindings"
+import { markdownRenderer } from "../shared"
 import css from "./AssignmentsTab.module.scss"
 
 const emptyTextStyle = { fontSize: "var(--fontSizeM)" }
@@ -35,7 +36,19 @@ interface BuildingRowProps {
 }
 
 const BuildingRow = ({ building, groups, onSelect, onUnassign }: BuildingRowProps) => {
+    const t = useTranslation()
     const hasAssetName = Boolean(building.assetNameId || building.assetName)
+
+    const sectionTooltip = (
+        <FormattedParagraphs
+            renderer={markdownRenderer}
+            text={[
+                t("sectionTooltipLine1"),
+                t("sectionTooltipLine2"),
+                t("sectionTooltipLine3"),
+            ]}
+        />
+    )
 
     return (
         <div className={css.row}>
@@ -59,6 +72,7 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign }: BuildingRowProp
                 assignedGroupName={building.assignedGroupName}
                 onSelect={(group) => onSelect(building, group)}
                 onUnassign={() => onUnassign(building)}
+                tooltip={sectionTooltip}
                 className={css.groupSelector}
             />
         </div>

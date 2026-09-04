@@ -1,6 +1,6 @@
-import { Icon, Portal } from "cs2/ui"
+import { Icon, Portal, Tooltip } from "cs2/ui"
 import { Entity } from "cs2/utils"
-import { useEffect, useRef, useState } from "react"
+import { ReactNode, useEffect, useRef, useState } from "react"
 import { useTranslation } from "../../locale"
 import { glyphIconSrc } from "../icons"
 import { VT } from "../vanilla"
@@ -22,6 +22,7 @@ interface GroupSelectorProps {
     assignedGroupName: string
     onSelect: (group: Entity) => void
     onUnassign: () => void
+    tooltip?: ReactNode
     className?: string
 }
 
@@ -101,26 +102,28 @@ export const GroupSelector = (props: GroupSelectorProps) => {
 
     return (
         <>
-            <button
-                ref={toggleRef}
-                className={[
-                    VT.sectionPrimaryButton.button,
-                    css.toggle,
-                    props.className ?? "",
-                    open ? "selected" : "",
-                ].filter(Boolean).join(" ")}
-                onClick={() => (open ? closeFlyout() : openFlyout())}
-            >
-                <div className={css.label}>
-                    {props.hasAssignment ? props.assignedGroupName : t("unassignedLabel")}
-                </div>
+            <Tooltip tooltip={props.tooltip}>
+                <button
+                    ref={toggleRef}
+                    className={[
+                        VT.sectionPrimaryButton.button,
+                        css.toggle,
+                        props.className ?? "",
+                        open ? "selected" : "",
+                    ].filter(Boolean).join(" ")}
+                    onClick={() => (open ? closeFlyout() : openFlyout())}
+                >
+                    <div className={css.label}>
+                        {props.hasAssignment ? props.assignedGroupName : t("unassignedLabel")}
+                    </div>
 
-                <Icon
-                    className={`${VT.sectionPrimaryButton.icon} ${css.chevron}`}
-                    tinted={true}
-                    src={glyphIconSrc("ThickStrokeArrowRight")}
-                />
-            </button>
+                    <Icon
+                        className={`${VT.sectionPrimaryButton.icon} ${css.chevron}`}
+                        tinted={true}
+                        src={glyphIconSrc("ThickStrokeArrowRight")}
+                    />
+                </button>
+            </Tooltip>
 
             {open && anchorEdges && (
                 <Portal>
