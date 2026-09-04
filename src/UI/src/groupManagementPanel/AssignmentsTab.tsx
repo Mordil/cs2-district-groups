@@ -66,8 +66,30 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails, on
                         />
                     </div>
                 )}
+            </div>
+
+            <div className={css.controlColumn}>
+                <GroupSelector
+                    buildingType={building.type}
+                    candidates={eligibleGroups(groups, building.type, building.assignedGroup)}
+                    hasAssignment={building.hasAssignment}
+                    assignedGroupName={building.assignedGroupName}
+                    onSelect={(group) => onSelect(building, group)}
+                    onUnassign={() => onUnassign(building)}
+                    tooltip={sectionTooltip}
+                    className={css.groupSelector}
+                />
 
                 <div className={css.buildingLinksContainer}>
+                    <div className={css.buildingLink}>
+                        <VC.InfoLink onSelect={() => onViewDetails(building)}>
+                            <LocalizedString
+                                id={VanillaLocale.details.id}
+                                fallback={VanillaLocale.details.fallback}
+                            />
+                        </VC.InfoLink>
+                    </div>
+
                     <Tooltip
                         tooltip={
                             <LocalizedString
@@ -85,28 +107,8 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails, on
                             onMouseDown={stopMouseDown}
                         />
                     </Tooltip>
-
-                    <div className={css.buildingLink}>
-                        <VC.InfoLink onSelect={() => onViewDetails(building)}>
-                            <LocalizedString
-                                id={VanillaLocale.details.id}
-                                fallback={VanillaLocale.details.fallback}
-                            />
-                        </VC.InfoLink>
-                    </div>
                 </div>
             </div>
-
-            <GroupSelector
-                buildingType={building.type}
-                candidates={eligibleGroups(groups, building.type, building.assignedGroup)}
-                hasAssignment={building.hasAssignment}
-                assignedGroupName={building.assignedGroupName}
-                onSelect={(group) => onSelect(building, group)}
-                onUnassign={() => onUnassign(building)}
-                tooltip={sectionTooltip}
-                className={css.groupSelector}
-            />
         </div>
     )
 }
