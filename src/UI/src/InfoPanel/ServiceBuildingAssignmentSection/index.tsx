@@ -1,12 +1,11 @@
-import { trigger } from "cs2/api"
 import { FormattedParagraphs } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
-import mod from "../../../mod.json"
 import { GroupSelector } from "../../components/GroupSelector"
 import { VC } from "../../components/vanilla"
 import { useTranslation } from "../../utils/locale"
 import { logger } from "../../utils/log"
 import { markdownRenderer } from "../../shared"
+import { assignGroup, unassignGroup } from "../../triggers"
 import css from "./index.module.scss"
 
 const kGenericType = 0
@@ -32,12 +31,12 @@ const Section = (props: any) => {
     // Both triggers act on whatever building the info panel has selected, so the section never has to name it
     const onSelect = (group: Entity) => {
         logger.info(`Assign group clicked; group:${entityKey(group)}`)
-        trigger(mod.id, "assignGroup", group)
+        assignGroup(group)
     }
 
     const onUnassign = () => {
         logger.info("Unassign group clicked;")
-        trigger(mod.id, "unassignGroup")
+        unassignGroup()
     }
 
     return (

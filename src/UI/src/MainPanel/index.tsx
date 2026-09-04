@@ -1,8 +1,7 @@
-import { trigger, useValue } from "cs2/api"
+import { useValue } from "cs2/api"
 import { AutoNavigationScope, InputActionConsumer, NavigationDirection } from "cs2/input"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { MouseEvent, useEffect, useRef, useState } from "react"
-import mod from "../../mod.json"
 import { Checkbox } from "../components/Checkbox"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { TypeFilterPicker } from "../components/TypePicker"
@@ -12,6 +11,13 @@ import { useTranslation } from "../utils/locale"
 import css from "./index.module.scss"
 import { areasVisible$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { markdownRenderer } from "../shared"
+import {
+    createGroup as createGroupTrigger,
+    setAreasVisible,
+    setOverlayFilter,
+    setShowOverlay,
+    setShowServiceBuildings,
+} from "../triggers"
 import { logger } from "../utils/log"
 import { GroupManagementTab } from "./GroupManagementTab"
 import { BuildingAssignmentsTab } from "./BuildingAssignmentsTab"
@@ -62,7 +68,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         logger.info(`Filter changed; type:${type}`)
         lastFilterType = type
         setFilterType(type)
-        trigger(mod.id, "setOverlayFilter", type)
+        setOverlayFilter(type)
     }
 
     const onTabSelect = (tab: PanelTab) => {
@@ -78,7 +84,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         }
         logger.info("Restoring service buildings off after leaving the assignments tab;")
         forcedShowServiceBuildings.current = false
-        trigger(mod.id, "setShowServiceBuildings", false)
+        setShowServiceBuildings(false)
     }
 
     useEffect(() => {
@@ -92,7 +98,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         if (!showServiceBuildings) {
             logger.info("Forcing service buildings on for the assignments tab;")
             forcedShowServiceBuildings.current = true
-            trigger(mod.id, "setShowServiceBuildings", true)
+            setShowServiceBuildings(true)
         }
     }, [activeTab])
 
@@ -101,7 +107,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
 
     const onCreateGroup = () => {
         logger.info("New group clicked;")
-        trigger(mod.id, "createGroup")
+        createGroupTrigger()
     }
 
     const onHideAssignedChange = (checked: boolean) => {
@@ -111,19 +117,19 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
 
     const onAreasVisibleChange = (checked: boolean) => {
         logger.info(`Areas visible toggled; visible:${checked}`)
-        trigger(mod.id, "setAreasVisible", checked)
+        setAreasVisible(checked)
     }
 
     const onShowOverlayChange = (checked: boolean) => {
         logger.info(`Show group overlay toggled; show:${checked}`)
-        trigger(mod.id, "setShowOverlay", checked)
+        setShowOverlay(checked)
     }
 
     const onShowServiceBuildingsChange = (checked: boolean) => {
         logger.info(`Show service buildings toggled; show:${checked}`)
         // The player's own choice outlives the assignments tab's override.
         forcedShowServiceBuildings.current = false
-        trigger(mod.id, "setShowServiceBuildings", checked)
+        setShowServiceBuildings(checked)
     }
 
     return (

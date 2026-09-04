@@ -1,10 +1,9 @@
-import { trigger } from "cs2/api"
-import mod from "../../mod.json"
+import { log as logTrigger } from "../triggers"
 
 type LogLevel = "debug" | "info" | "warn" | "error" | "critical"
 
 function log(level: LogLevel, message: string): void {
-    trigger(mod.id, "log", level, message)
+    logTrigger(level, message)
 }
 
 export const logger = {

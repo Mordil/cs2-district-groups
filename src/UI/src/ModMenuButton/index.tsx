@@ -1,14 +1,14 @@
-import { trigger, useValue } from "cs2/api"
+import { useValue } from "cs2/api"
 import { infoview } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals } from "cs2/utils"
 import { useEffect, useRef, useState } from "react"
-import mod from "../../mod.json"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
 import { useTranslation } from "../utils/locale"
 import { MainPanel } from "MainPanel"
 import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
+import { setOverlay, toggleDistrictSelection } from "../triggers"
 import { logger } from "../utils/log"
 import { useEnterExitPhase } from "../utils/useEnterExitPhase"
 import css from "./index.module.scss"
@@ -48,7 +48,7 @@ export const GroupManager = () => {
         setOpen(true)
 
         // Also what stands down the active tool and the vanilla info panel on the C# side
-        trigger(mod.id, "setOverlay", true)
+        setOverlay(true)
 
         // We occupy the same corner as the Info Views menu - dismiss it so they don't overlap.
         infoview.closeInfoviewMenu()
@@ -57,12 +57,12 @@ export const GroupManager = () => {
     const closePanel = () => {
         logger.info("Panel closed;")
         setOpen(false)
-        trigger(mod.id, "setOverlay", false)
+        setOverlay(false)
 
         // we don't want to leave the player in a weird tool state after dismissing our UI
         if (!entityEquals(selectingGroup, { index: 0, version: 0 })) {
             logger.info("Dismissing UI with active district selection, toggling off;")
-            trigger(mod.id, "toggleDistrictSelection", selectingGroup)
+            toggleDistrictSelection(selectingGroup)
         }
     }
 

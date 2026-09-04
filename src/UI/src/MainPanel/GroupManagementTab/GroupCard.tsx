@@ -1,9 +1,7 @@
-import { trigger } from "cs2/api"
 import { LocalizedNumber, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
-import mod from "../../../mod.json"
 import { ColorPicker } from "../../components/ColorPicker"
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
 import { TypePicker } from "../../components/TypePicker"
@@ -13,6 +11,14 @@ import { Group } from "../../types"
 import { useTypeLabels } from "../../constants"
 import { useTranslation } from "../../utils/locale"
 import { markdownRenderer } from "../../shared"
+import {
+    deleteGroup,
+    removeMember,
+    renameGroup,
+    setGroupColor,
+    setGroupType,
+    toggleDistrictSelection,
+} from "../../triggers"
 import { logger } from "../../utils/log"
 import { useEnterExitPhase } from "../../utils/useEnterExitPhase"
 
@@ -82,7 +88,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
     const handleDeleteGroup = () => {
         logger.info(`Delete group clicked; entity:${entityKey(group.entity)}`)
         if (group.assignedBuildingCount === 0) {
-            trigger(mod.id, "deleteGroup", group.entity)
+            deleteGroup(group.entity)
             return
         }
         const deleteGroupMessage = t("deleteGroupConfirmMessage", {
@@ -98,7 +104,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                 cancel={t("deleteGroupCancel")}
                 onConfirm={() => {
                     logger.info(`Delete group confirmed; entity:${entityKey(group.entity)}`)
-                    trigger(mod.id, "deleteGroup", group.entity)
+                    deleteGroup(group.entity)
                     dialogStack.closeAll()
                 }}
                 onCancel={() => {
@@ -125,7 +131,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
             setNameDraft(group.name)
         } else if (trimmed !== group.name) {
             logger.info(`Group renamed; entity:${entityKey(group.entity)} name:${trimmed}`)
-            trigger(mod.id, "renameGroup", group.entity, trimmed)
+            renameGroup(group.entity, trimmed)
         }
     }
 
@@ -134,7 +140,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
 
         if (!next && selectingDistricts) {
             logger.info(`Collapsing group card with active district selection, toggling off; entity:${entityKey(group.entity)}`)
-            trigger(mod.id, "toggleDistrictSelection", group.entity)
+            toggleDistrictSelection(group.entity)
         }
         setExpanded(next)
     }
@@ -155,7 +161,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                     value={group.color}
                     onChange={(color) => {
                         logger.info(`Group color changed; entity:${entityKey(group.entity)}`)
-                        trigger(mod.id, "setGroupColor", group.entity, color)
+                        setGroupColor(group.entity, color)
                     }}
                     tooltip={t("groupColorTooltip")}
                     className={css.colorSwatch}
@@ -179,7 +185,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                     value={group.type}
                     onChange={(newType) => {
                         logger.info(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
-                        trigger(mod.id, "setGroupType", group.entity, newType)
+                        setGroupType(group.entity, newType)
                     }}
                     labels={typeLabels}
                     tooltip={typePickerTooltip}
@@ -236,7 +242,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                                             style={removeButtonStyle}
                                             onSelect={() => {
                                                 logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
-                                                trigger(mod.id, "removeMember", group.entity, member.entity)
+                                                removeMember(group.entity, member.entity)
                                             }}
                                             onMouseDown={stopMouseDown}
                                         />
@@ -251,7 +257,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                             .filter(Boolean).join(" ")}
                         onClick={() => {
                             logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
-                            trigger(mod.id, "toggleDistrictSelection", group.entity)
+                            toggleDistrictSelection(group.entity)
                         }}
                     >
                         <Icon className={VT.sectionPrimaryButton.icon} src={gameIconSrc("Districts")} />

@@ -4,7 +4,6 @@ import { LocalizedString } from "cs2/l10n"
 import { FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import { MouseEvent } from "react"
-import mod from "../../../mod.json"
 import { eligibleGroups, GroupSelector } from "../../components/GroupSelector"
 import { gameIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
@@ -14,6 +13,7 @@ import { logger } from "../../utils/log"
 import { Group, ServiceBuilding } from "../../types"
 import { groups$, serviceBuildings$ } from "../../bindings"
 import { markdownRenderer } from "../../shared"
+import { assignBuildingGroup, unassignBuildingGroup } from "../../triggers"
 import css from "./index.module.scss"
 
 const emptyTextStyle = { fontSize: "var(--fontSizeM)" }
@@ -120,12 +120,12 @@ export const BuildingAssignmentsTab = ({ filterType, hideAssigned, className }: 
 
     const onSelect = (building: ServiceBuilding, group: Entity) => {
         logger.info(`Assign group clicked; building:${entityKey(building.entity)} group:${entityKey(group)}`)
-        trigger(mod.id, "assignBuildingGroup", building.entity, group)
+        assignBuildingGroup(building.entity, group)
     }
 
     const onUnassign = (building: ServiceBuilding) => {
         logger.info(`Unassign group clicked; building:${entityKey(building.entity)}`)
-        trigger(mod.id, "unassignBuildingGroup", building.entity)
+        unassignBuildingGroup(building.entity)
     }
 
     const onViewDetails = (building: ServiceBuilding) => {
