@@ -60,7 +60,6 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
         <FormattedParagraphs
             renderer={markdownRenderer}
             text={[t("hideAssignedBuildingsTooltip")]}
-            nonInline
         />
     )
 
