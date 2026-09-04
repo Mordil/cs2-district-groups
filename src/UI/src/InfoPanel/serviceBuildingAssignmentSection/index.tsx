@@ -1,12 +1,12 @@
 import { trigger } from "cs2/api"
 import { FormattedParagraphs } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
-import mod from "../../mod.json"
-import { GroupSelector } from "../components/groupSelector"
-import { VC } from "../components/vanilla"
-import { useTranslation } from "../locale"
-import { logger } from "../log"
-import { markdownRenderer } from "../shared"
+import mod from "../../../mod.json"
+import { GroupSelector } from "../../components/groupSelector"
+import { VC } from "../../components/vanilla"
+import { useTranslation } from "../../locale"
+import { logger } from "../../log"
+import { markdownRenderer } from "../../shared"
 import css from "./index.module.scss"
 
 const kGenericType = 0
