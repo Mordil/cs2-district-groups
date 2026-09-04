@@ -1,6 +1,7 @@
 import { trigger, useValue } from "cs2/api"
+import { camera } from "cs2/bindings"
 import { LocalizedString } from "cs2/l10n"
-import { FormattedParagraphs, Scrollable } from "cs2/ui"
+import { FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 import { MouseEvent } from "react"
 import mod from "../../mod.json"
@@ -34,9 +35,10 @@ interface BuildingRowProps {
     onSelect: (building: ServiceBuilding, group: Entity) => void
     onUnassign: (building: ServiceBuilding) => void
     onViewDetails: (building: ServiceBuilding) => void
+    onFocusBuilding: (building: ServiceBuilding) => void
 }
 
-const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails }: BuildingRowProps) => {
+const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails, onFocusBuilding }: BuildingRowProps) => {
     const t = useTranslation()
     const hasAssetName = Boolean(building.assetNameId || building.assetName)
 
@@ -65,13 +67,33 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails }: 
                     </div>
                 )}
 
-                <div className={css.buildingLink}>
-                    <VC.InfoLink onSelect={() => onViewDetails(building)}>
-                        <LocalizedString
-                            id={VanillaLocale.details.id}
-                            fallback={VanillaLocale.details.fallback}
+                <div className={css.buildingLinksContainer}>
+                    <Tooltip
+                        tooltip={
+                            <LocalizedString
+                                id={VanillaLocale.focusTooltip.id}
+                                fallback={VanillaLocale.focusTooltip.fallback}
+                            />
+                        }
+                    >
+                        <VC.IconButton
+                            tinted={false}
+                            focusKey={VF.FOCUS_DISABLED}
+                            theme={VT.actionButton}
+                            src={gameIconSrc("MapMarker")}
+                            onSelect={() => onFocusBuilding(building)}
+                            onMouseDown={stopMouseDown}
                         />
-                    </VC.InfoLink>
+                    </Tooltip>
+
+                    <div className={css.buildingLink}>
+                        <VC.InfoLink onSelect={() => onViewDetails(building)}>
+                            <LocalizedString
+                                id={VanillaLocale.details.id}
+                                fallback={VanillaLocale.details.fallback}
+                            />
+                        </VC.InfoLink>
+                    </div>
                 </div>
             </div>
 
@@ -109,6 +131,11 @@ export const AssignmentsTab = ({ filterType, hideAssigned, className }: Assignme
         trigger("selectedInfo", "selectEntity", building.entity)
     }
 
+    const onFocusBuilding = (building: ServiceBuilding) => {
+        logger.info(`Focus building clicked; building:${entityKey(building.entity)}`)
+        camera.focusEntity(building.entity)
+    }
+
     // filter() already copies the array, so sorting the result in place is safe.
     const displayedBuildings = buildings
         .filter((building) => !hideAssigned || !building.hasAssignment)
@@ -141,6 +168,7 @@ export const AssignmentsTab = ({ filterType, hideAssigned, className }: Assignme
                         onSelect={onSelect}
                         onUnassign={onUnassign}
                         onViewDetails={onViewDetails}
+                        onFocusBuilding={onFocusBuilding}
                     />
                 ))}
         </Scrollable>

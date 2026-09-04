@@ -31,9 +31,15 @@
     white-space: nowrap;
 }
 
+.buildingLinksContainer {
+    display: flex;
+}
+
 .buildingLink {
-    align-self: flex-start;
+    display: flex;
+    align-items: center;
     border-radius: 3rem;
+    margin-left: var(--gap4);
     padding-top: var(--gap6);
     padding-bottom: var(--gap6);
     padding-left: var(--gap6);

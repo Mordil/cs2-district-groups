@@ -125,6 +125,19 @@ namespace DistrictGroups
             }
         }
 
+        private bool IsCameraBlockingPanel()
+        {
+            IGameCameraController active = m_CameraUpdateSystem.activeCameraController;
+
+            if (ReferenceEquals(active, m_CameraUpdateSystem.gamePlayController))
+            {
+                return false;
+            }
+
+            return !ReferenceEquals(active, m_CameraUpdateSystem.orbitCameraController)
+                || m_CameraUpdateSystem.orbitCameraController.mode != Game.OrbitCameraController.Mode.Follow;
+        }
+
         // Global bindings not scoped to any one panel
         private void SetupRootBindings()
         {
@@ -152,7 +165,7 @@ namespace DistrictGroups
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "shouldDismissPanel",
                 () => m_GamePanelUISystem.activePanel is InfoviewMenu
                     || m_SelectedInfoUISystem.selectedEntity != Entity.Null
-                    || !ReferenceEquals(m_CameraUpdateSystem.activeCameraController, m_CameraUpdateSystem.gamePlayController)
+                    || IsCameraBlockingPanel()
                     || (m_ToolSystem.activeTool != null
                         && m_ToolSystem.activeTool != m_DefaultToolSystem
                         && m_ToolSystem.activeTool != m_AreaToolSystem

@@ -159,6 +159,10 @@ const kFallback: Record<keyof typeof kLocale, string> = {
 // Locale ids owned by the game rather than the mod.
 export const VanillaLocale = {
     details: { id: "SelectedInfoPanel.DETAILS", fallback: "View Details" },
+    focusTooltip: {
+        id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
+        fallback: "Center the camera on the selected item.",
+    },
 }
 
 type LocaleKey = keyof typeof kLocale

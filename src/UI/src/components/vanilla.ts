@@ -63,6 +63,10 @@ export const VT = {
         button: `${iconButtonClasses.button} ${roundHighlightButtonClasses.button}`,
         icon: iconButtonClasses.icon,
     },
+    actionButton: getModule(
+        "game-ui/game/components/selected-info-panel/selected-info-sections/shared-sections/actions-section/action-button.module.scss",
+        "classes"
+    ) as any,
     panel: getModule("game-ui/common/panel/panel.module.scss", "classes") as any,
     districtsSection: getModule(
         "game-ui/game/components/selected-info-panel/selected-info-sections/building-sections/districts-section/districts-section.module.scss",
