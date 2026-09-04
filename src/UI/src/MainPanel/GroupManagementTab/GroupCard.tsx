@@ -192,7 +192,7 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                     }}
                     labels={typeLabels}
                     tooltip={typePickerTooltip}
-                    style={{ marginRight: "4rem" }}
+                    style={{ marginRight: "4rem", maxWidth: "35%" }}
                 />
 
                 <Tooltip tooltip={deleteGroupTooltip}>

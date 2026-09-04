@@ -47,7 +47,7 @@ export const TypePicker = (props: {
                     ...props.style,
                 }}
             >
-                <div>{props.labels[props.value] ?? "?"}</div>
+                <div className={selectorCss.pickerLabel}>{props.labels[props.value] ?? "?"}</div>
             </DropdownToggle>
         </Dropdown>
     </Tooltip>
@@ -68,45 +68,46 @@ export const TypeFilterPicker = (props: {
 }) => {
     const options = props.allLabel !== null ? [props.allLabel, ...props.labels] : props.labels
     return (
-        // See TypePicker's identical key comment above — same fix, same reason.
-        <Tooltip key={props.value} tooltip={props.tooltip}>
-            <Dropdown
-                theme={VT.editorDropdown}
-                content={options.map((label, i) => {
-                    const value = props.allLabel !== null ? i - 1 : i
-                    return (
-                        <VC.DropdownItem
-                            key={value}
-                            value={value}
-                            className={VT.editorDropdown.dropdownItem}
-                            selected={value === props.value}
-                            closeOnSelect={true}
-                            onChange={() => props.onChange(value)}
-                        >
-                            <div style={{
-                                paddingLeft: "8rem",
-                                paddingRight: "8rem"
-                            }}>{label}</div>
-                        </VC.DropdownItem>
-                    )
-                })}
-            >
-                <DropdownToggle
-                    disabled={false}
-                    openIconComponent={<></>}
-                    closeIconComponent={<></>}
-                    className={selectorCss.selectorToggle}
+        <div className={selectorCss.filterToggleContainer}>
+            <Tooltip key={props.value} tooltip={props.tooltip}>
+                <Dropdown
+                    theme={VT.editorDropdown}
+                    content={options.map((label, i) => {
+                        const value = props.allLabel !== null ? i - 1 : i
+                        return (
+                            <VC.DropdownItem
+                                key={value}
+                                value={value}
+                                className={VT.editorDropdown.dropdownItem}
+                                selected={value === props.value}
+                                closeOnSelect={true}
+                                onChange={() => props.onChange(value)}
+                            >
+                                <div style={{
+                                    paddingLeft: "8rem",
+                                    paddingRight: "8rem"
+                                }}>{label}</div>
+                            </VC.DropdownItem>
+                        )
+                    })}
                 >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                        <ModIcon name="FunnelFilter"/>
-                        <span style={{ marginLeft: "5rem" }}>
-                            {props.value === kAllTypes && props.allLabel !== null
-                                ? props.allLabel
-                                : props.labels[props.value] ?? "?"}
-                        </span>
-                    </div>
-                </DropdownToggle>
-            </Dropdown>
-        </Tooltip>
+                    <DropdownToggle
+                        disabled={false}
+                        openIconComponent={<></>}
+                        closeIconComponent={<></>}
+                        className={`${selectorCss.selectorToggle}`}
+                    >
+                        <div className={selectorCss.filterToggleRow}>
+                            <ModIcon name="FunnelFilter"/>
+                            <span className={selectorCss.filterToggleLabel}>
+                                {props.value === kAllTypes && props.allLabel !== null
+                                    ? props.allLabel
+                                    : props.labels[props.value] ?? "?"}
+                            </span>
+                        </div>
+                    </DropdownToggle>
+                </Dropdown>
+            </Tooltip>
+        </div>
     )
 }

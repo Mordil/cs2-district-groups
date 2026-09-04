@@ -9,3 +9,31 @@
 .selectorToggle:hover {
     background-color: var(--activeColorBright);
 }
+
+.filterToggleContainer {
+    max-width: 50%;
+}
+
+.filterToggleRow {
+    display: flex;
+    align-items: center;
+}
+
+.pickerLabel {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filterToggleLabel {
+    display: block;
+    flex: 1;
+    margin-left: 5rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
