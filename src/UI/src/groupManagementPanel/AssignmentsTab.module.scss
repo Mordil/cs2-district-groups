@@ -31,6 +31,21 @@
     white-space: nowrap;
 }
 
+.buildingLink {
+    align-self: flex-start;
+    border-radius: 3rem;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: var(--gap6);
+    padding-right: var(--gap6);
+}
+.buildingLink:hover {
+    background-color: var(--hoverColorNormal);
+}
+.buildingLink:active {
+    background-color: var(--activeColorNormal);
+}
+
 .groupSelector {
     flex-shrink: 0;
     width: 35%;

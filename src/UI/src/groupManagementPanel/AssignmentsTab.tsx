@@ -8,7 +8,7 @@ import { eligibleGroups, GroupSelector } from "../components/groupSelector"
 import { gameIconSrc } from "../components/icons"
 import { VC, VF, VT } from "../components/vanilla"
 import { kGenericType } from "../constants"
-import { useTranslation } from "../locale"
+import { VanillaLocale, useTranslation } from "../locale"
 import { logger } from "../log"
 import { Group, ServiceBuilding } from "../types"
 import { groups$, serviceBuildings$ } from "./bindings"
@@ -33,9 +33,10 @@ interface BuildingRowProps {
     groups: Group[]
     onSelect: (building: ServiceBuilding, group: Entity) => void
     onUnassign: (building: ServiceBuilding) => void
+    onViewDetails: (building: ServiceBuilding) => void
 }
 
-const BuildingRow = ({ building, groups, onSelect, onUnassign }: BuildingRowProps) => {
+const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails }: BuildingRowProps) => {
     const t = useTranslation()
     const hasAssetName = Boolean(building.assetNameId || building.assetName)
 
@@ -63,6 +64,15 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign }: BuildingRowProp
                         />
                     </div>
                 )}
+
+                <div className={css.buildingLink}>
+                    <VC.InfoLink onSelect={() => onViewDetails(building)}>
+                        <LocalizedString
+                            id={VanillaLocale.details.id}
+                            fallback={VanillaLocale.details.fallback}
+                        />
+                    </VC.InfoLink>
+                </div>
             </div>
 
             <GroupSelector
@@ -92,6 +102,11 @@ export const AssignmentsTab = ({ filterType, hideAssigned, className }: Assignme
     const onUnassign = (building: ServiceBuilding) => {
         logger.info(`Unassign group clicked; building:${entityKey(building.entity)}`)
         trigger(mod.id, "unassignBuildingGroup", building.entity)
+    }
+
+    const onViewDetails = (building: ServiceBuilding) => {
+        logger.info(`View details clicked; building:${entityKey(building.entity)}`)
+        trigger("selectedInfo", "selectEntity", building.entity)
     }
 
     // filter() already copies the array, so sorting the result in place is safe.
@@ -125,6 +140,7 @@ export const AssignmentsTab = ({ filterType, hideAssigned, className }: Assignme
                         groups={groups}
                         onSelect={onSelect}
                         onUnassign={onUnassign}
+                        onViewDetails={onViewDetails}
                     />
                 ))}
         </Scrollable>
