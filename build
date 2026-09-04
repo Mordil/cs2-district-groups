@@ -18,6 +18,10 @@
 #   -r     Build the C# side with `-c Release`, for locally testing release
 #          builds. No effect on the UI - webpack already always builds in
 #          production mode (see `mode: "production"` in webpack.config.js).
+#
+# Whenever a deploy actually happens (i.e. -n wasn't passed), the script
+# verifies afterwards that the game's Mods folder ended up with both the
+# DLL and the UI bundle files - see verify_deploy below.
 set -euo pipefail
 
 MODE=""
@@ -85,8 +89,43 @@ build_ui() {
     cmd.exe /c "cd src\\UI && build-ui.bat"
 }
 
+# Deploying wipes and recreates the whole Mods folder (see DeployWIP's
+# RemoveDir in district-groups.csproj) - `code` mode reuses that step but
+# skips the webpack rebuild, so a deploy can silently leave the UI bundle
+# missing. Confirm the DLL and UI bundle actually landed in the folder the
+# game reads from before calling the build done.
+verify_deploy() {
+    echo "==> Verifying deploy output"
+    local target_name
+    target_name="$(basename "$(ls "$SCRIPT_DIR"/*.csproj | head -n1)" .csproj)"
+    local mod_id
+    mod_id="$(grep -o '"id"[[:space:]]*:[[:space:]]*"[^"]*"' "$SCRIPT_DIR/src/UI/mod.json" | sed -E 's/.*"([^"]*)"$/\1/')"
+    local local_mods_path_win
+    local_mods_path_win="$(cmd.exe /c "echo %CSII_LOCALMODSPATH%" 2>/dev/null | tr -d '\r\n')"
+    local deploy_dir
+    deploy_dir="$(wslpath -u "$local_mods_path_win")/$target_name"
+
+    local missing=0
+    for expected in "$target_name.dll" "$mod_id.mjs" "$mod_id.css"; do
+        if [[ ! -f "$deploy_dir/$expected" ]]; then
+            echo "MISSING: $deploy_dir/$expected" >&2
+            missing=1
+        fi
+    done
+
+    if [[ "$missing" -eq 1 ]]; then
+        echo "Deploy verification failed - see missing files above" >&2
+        exit 1
+    fi
+    echo "Deploy verified: $deploy_dir"
+}
+
 case "$MODE" in
     code) build_code ;;
     ui) build_ui ;;
     full) build_full ;;
 esac
+
+if [[ "$NO_DEPLOY" -eq 0 ]]; then
+    verify_deploy
+fi
