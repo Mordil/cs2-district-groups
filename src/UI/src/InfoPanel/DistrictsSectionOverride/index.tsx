@@ -1,6 +1,8 @@
 import { useValue } from "cs2/api"
-import { logger } from "../../utils/log"
+
 import { selectedBuildingHasGroupAssignment$ } from "../../bindings"
+import { logger } from "../../utils/log"
+
 import { ReadOnlyDistrictsSection, VanillaDistrictsSectionProps } from "./ReadOnlyDistrictsSection"
 
 // Sections are keyed by the full C# type name of the InfoSectionBase system that writes the section's data

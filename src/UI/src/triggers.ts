@@ -1,6 +1,7 @@
 import { trigger } from "cs2/api"
 import { Color } from "cs2/bindings"
 import { Entity } from "cs2/utils"
+
 import mod from "../mod.json"
 
 function createTrigger<Args extends any[] = []>(name: string): (...args: Args) => void {

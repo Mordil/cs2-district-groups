@@ -1,3 +1,5 @@
+import { useContext, useState } from "react"
+
 import { useValue } from "cs2/api"
 import {
     Button,
@@ -11,11 +13,12 @@ import {
     Scrollable,
     Tooltip,
 } from "cs2/ui"
-import { useContext, useState } from "react"
-import { VC, VT } from "../../components/vanilla"
-import { glyphIconSrc } from "../../components/icons"
+
 import { isDebugBuild$ } from "../../bindings"
+import { glyphIconSrc } from "../../components/icons"
+import { VC, VT } from "../../components/vanilla"
 import { markdownRenderer } from "../../shared"
+
 import { buttonVariantSamples } from "./buttonVariants"
 import { colorTokenGroups } from "./colorTokens"
 import css from "./index.module.scss"

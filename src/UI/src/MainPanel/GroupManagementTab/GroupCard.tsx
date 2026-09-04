@@ -1,15 +1,14 @@
+import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
+
 import { LocalizedNumber, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
-import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
+
 import { ColorPicker } from "../../components/ColorPicker"
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
 import { TypePicker } from "../../components/TypePicker"
 import { VC, VF, VT } from "../../components/vanilla"
-import css from "./GroupCard.module.scss"
-import { Group } from "../../types"
 import { useTypeLabels } from "../../constants"
-import { useTranslation } from "../../utils/locale"
 import { markdownRenderer } from "../../shared"
 import {
     deleteGroup,
@@ -19,8 +18,12 @@ import {
     setGroupType,
     toggleDistrictSelection,
 } from "../../triggers"
+import { Group } from "../../types"
+import { useTranslation } from "../../utils/locale"
 import { logger } from "../../utils/log"
 import { useEnterExitPhase } from "../../utils/useEnterExitPhase"
+
+import css from "./GroupCard.module.scss"
 
 // Matches the mixin's own transition duration in GroupCard.module.scss.
 const kExpandDurationMs = 250

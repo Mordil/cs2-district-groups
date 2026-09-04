@@ -1,16 +1,19 @@
+import { useEffect, useRef, useState } from "react"
+
 import { useValue } from "cs2/api"
 import { infoview } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals } from "cs2/utils"
-import { useEffect, useRef, useState } from "react"
+
+import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
 import { kIconStylePaths, kUITopOffset } from "../constants"
 import { markdownRenderer } from "../shared"
-import { useTranslation } from "../utils/locale"
-import { MainPanel } from "MainPanel"
-import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
 import { setOverlay, toggleDistrictSelection } from "../triggers"
+import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
 import { useEnterExitPhase } from "../utils/useEnterExitPhase"
+import { MainPanel } from "MainPanel"
+
 import css from "./index.module.scss"
 
 // Matches the mixin's own transition duration in index.module.scss.

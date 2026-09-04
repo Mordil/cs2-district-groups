@@ -1,10 +1,11 @@
 import { trigger } from "cs2/api"
 import { LocalizedEntityName, LocalizedString, Name } from "cs2/l10n"
-import { Entity } from "cs2/utils"
 import { FormattedParagraphs } from "cs2/ui"
+import { Entity } from "cs2/utils"
+
 import { VC } from "../../components/vanilla"
-import { VanillaLocale, useTranslation } from "../../utils/locale"
 import { markdownRenderer } from "../../shared"
+import { VanillaLocale, useTranslation } from "../../utils/locale"
 
 interface VanillaDistrictEntry {
     entity: Entity

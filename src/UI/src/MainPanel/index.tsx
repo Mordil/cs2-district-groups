@@ -1,15 +1,15 @@
+import { MouseEvent, useEffect, useRef, useState } from "react"
+
 import { useValue } from "cs2/api"
 import { AutoNavigationScope, InputActionConsumer, NavigationDirection } from "cs2/input"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
-import { MouseEvent, useEffect, useRef, useState } from "react"
+
+import { areasVisible$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { TypeFilterPicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
-import { useTranslation } from "../utils/locale"
-import css from "./index.module.scss"
-import { areasVisible$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { markdownRenderer } from "../shared"
 import {
     createGroup as createGroupTrigger,
@@ -18,9 +18,12 @@ import {
     setShowOverlay,
     setShowServiceBuildings,
 } from "../triggers"
+import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
-import { GroupManagementTab } from "./GroupManagementTab"
+
 import { BuildingAssignmentsTab } from "./BuildingAssignmentsTab"
+import { GroupManagementTab } from "./GroupManagementTab"
+import css from "./index.module.scss"
 
 enum PanelTab {
     Groups = 0,

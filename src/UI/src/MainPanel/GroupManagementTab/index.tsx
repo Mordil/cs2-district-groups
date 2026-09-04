@@ -1,8 +1,10 @@
 import { useValue } from "cs2/api"
 import { Scrollable } from "cs2/ui"
 import { entityEquals, entityKey } from "cs2/utils"
-import { useTranslation } from "../../utils/locale"
+
 import { groups$, selectingGroup$ } from "../../bindings"
+import { useTranslation } from "../../utils/locale"
+
 import { GroupCard } from "./GroupCard"
 
 interface GroupManagementTabProps {

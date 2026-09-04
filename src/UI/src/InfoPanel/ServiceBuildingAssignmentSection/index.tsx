@@ -1,11 +1,13 @@
 import { FormattedParagraphs } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
+
 import { GroupSelector } from "../../components/GroupSelector"
 import { VC } from "../../components/vanilla"
-import { useTranslation } from "../../utils/locale"
-import { logger } from "../../utils/log"
 import { markdownRenderer } from "../../shared"
 import { assignGroup, unassignGroup } from "../../triggers"
+import { useTranslation } from "../../utils/locale"
+import { logger } from "../../utils/log"
+
 import css from "./index.module.scss"
 
 const kGenericType = 0

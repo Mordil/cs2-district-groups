@@ -1,19 +1,22 @@
+import { MouseEvent } from "react"
+
 import { trigger, useValue } from "cs2/api"
 import { camera } from "cs2/bindings"
 import { LocalizedString } from "cs2/l10n"
 import { FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
-import { MouseEvent } from "react"
+
+import { groups$, serviceBuildings$ } from "../../bindings"
 import { eligibleGroups, GroupSelector } from "../../components/GroupSelector"
 import { gameIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
 import { kGenericType } from "../../constants"
-import { VanillaLocale, useTranslation } from "../../utils/locale"
-import { logger } from "../../utils/log"
-import { Group, ServiceBuilding } from "../../types"
-import { groups$, serviceBuildings$ } from "../../bindings"
 import { markdownRenderer } from "../../shared"
 import { assignBuildingGroup, unassignBuildingGroup } from "../../triggers"
+import { Group, ServiceBuilding } from "../../types"
+import { VanillaLocale, useTranslation } from "../../utils/locale"
+import { logger } from "../../utils/log"
+
 import css from "./index.module.scss"
 
 const emptyTextStyle = { fontSize: "var(--fontSizeM)" }

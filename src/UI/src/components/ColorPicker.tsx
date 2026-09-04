@@ -1,6 +1,8 @@
+import { CSSProperties, ReactNode } from "react"
+
 import { Color } from "cs2/bindings"
 import { Tooltip } from "cs2/ui"
-import { CSSProperties, ReactNode } from "react"
+
 import { VC, VF } from "./vanilla"
 
 // The game's own color swatch + click-to-open picker, wired to a Color value.

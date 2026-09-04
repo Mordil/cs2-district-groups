@@ -1,12 +1,15 @@
+import { ReactNode, useEffect, useRef, useState } from "react"
+
 import { Icon, Portal, Tooltip } from "cs2/ui"
 import { Entity } from "cs2/utils"
-import { ReactNode, useEffect, useRef, useState } from "react"
+
 import { useTranslation } from "../../utils/locale"
 import { glyphIconSrc } from "../icons"
 import { VT } from "../vanilla"
-import css from "./index.module.scss"
+
 import { GroupOption } from "./candidates"
 import { AnchorEdges, GroupSearchFlyout } from "./GroupSearchFlyout"
+import css from "./index.module.scss"
 
 export { eligibleGroups, groupCandidatesByType, kGenericGroupType } from "./candidates"
 export type { GroupOption, GroupSection } from "./candidates"

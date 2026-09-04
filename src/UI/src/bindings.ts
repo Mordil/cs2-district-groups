@@ -1,6 +1,8 @@
 import { bindValue } from "cs2/api"
 import { Entity } from "cs2/utils"
+
 import mod from "../mod.json"
+
 import { Group, ServiceBuilding } from "./types"
 
 // Every binding the C# side exposes to the UI.

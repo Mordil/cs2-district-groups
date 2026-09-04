@@ -1,5 +1,7 @@
-import { Tooltip } from "cs2/ui"
 import { CSSProperties, ReactNode } from "react"
+
+import { Tooltip } from "cs2/ui"
+
 import { VT } from "./vanilla"
 
 export const Checkbox = (props: {

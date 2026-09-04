@@ -1,5 +1,7 @@
-import { Dropdown, DropdownToggle, Tooltip } from "cs2/ui"
 import { CSSProperties, ReactNode } from "react"
+
+import { Dropdown, DropdownToggle, Tooltip } from "cs2/ui"
+
 import { ModIcon } from "./icons"
 import selectorCss from "./selectorToggle.module.scss"
 import { VC, VT } from "./vanilla"

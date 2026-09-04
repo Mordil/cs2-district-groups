@@ -1,8 +1,9 @@
 import { ModRegistrar } from "cs2/modding"
-import { DistrictGroupSectionComponent } from "InfoPanel/ServiceBuildingAssignmentSection"
-import { GroupManager } from "ModMenuButton"
+
 import { KitchenSinkDebugPanel } from "Debug/KitchenSink"
 import { wrapVanillaDistrictsSection } from "InfoPanel/DistrictsSectionOverride"
+import { DistrictGroupSectionComponent } from "InfoPanel/ServiceBuildingAssignmentSection"
+import { GroupManager } from "ModMenuButton"
 
 const register: ModRegistrar = (moduleRegistry) => {
     moduleRegistry.append("GameTopRight", KitchenSinkDebugPanel)
