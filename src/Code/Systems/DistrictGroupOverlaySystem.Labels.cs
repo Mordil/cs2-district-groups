@@ -164,7 +164,11 @@ namespace DistrictGroups
             m_LabelMaterial.SetFloat("_ScaleRatioB", 1f);
             m_LabelMaterial.SetFloat("_ScaleRatioC", 1f);
 
-            HDMaterial.SetRenderingPass(m_LabelMaterial, HDMaterial.RenderingPass.AfterPostProcess);
+            // TMP's SDF shader doesn't have a _SurfaceType property, so borrow it from a scratch material
+            Material scratchMaterial = new Material(Shader.Find("HDRP/Unlit"));
+            HDMaterial.SetRenderingPass(scratchMaterial, HDMaterial.RenderingPass.AfterPostProcess);
+            m_LabelMaterial.renderQueue = scratchMaterial.renderQueue;
+            Object.Destroy(scratchMaterial);
 
             Mod.log.Info($"Group overlay, label material ready; shader:{m_LabelMaterial.shader?.name ?? "<null>"}");
         }

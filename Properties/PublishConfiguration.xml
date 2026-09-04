@@ -106,6 +106,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **FIXED**
 
+- Fixed a shader log error caused by the overlay labels added in v1.0
 - The read-only version of the service building Operating Districts link button is now correctly localized
 - Localization of service building terminology in the mod UI to align with game translations
 - Localization of the service building Operating Districts tooltip in Spanish, French, Italian, Polish, Brazilian Portuguese, and Russian.
