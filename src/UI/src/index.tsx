@@ -1,7 +1,7 @@
 import { ModRegistrar } from "cs2/modding"
 import { DistrictGroupSectionComponent } from "InfoPanel/ServiceBuildingAssignmentSection"
 import { GroupManager } from "ModMenuButton"
-import { KitchenSinkDebugPanel } from "DebugKitchenSink"
+import { KitchenSinkDebugPanel } from "Debug/KitchenSink"
 import { wrapVanillaDistrictsSection } from "InfoPanel/DistrictsSectionOverride"
 
 const register: ModRegistrar = (moduleRegistry) => {
