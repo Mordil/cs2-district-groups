@@ -10,7 +10,7 @@ import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { useTranslation } from "../locale"
 import css from "./index.module.scss"
-import { areasVisible$, groups$, showOverlay$, showServiceBuildings$ } from "../bindings"
+import { areasVisible$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { markdownRenderer } from "../shared"
 import { logger } from "../log"
 import { GroupManagementTab } from "./GroupManagementTab"
@@ -35,7 +35,6 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
     const [filterType, setFilterType] = useState(lastFilterType)
     const [activeTab, setActiveTab] = useState(lastPanelTab)
     const [hideAssigned, setHideAssigned] = useState(false)
-    const groups = useValue(groups$)
     const areasVisible = useValue(areasVisible$)
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
@@ -102,9 +101,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
 
     const onCreateGroup = () => {
         logger.info("New group clicked;")
-        // groups.length (not the filtered count) so the suggested name
-        // reflects every group, regardless of the active filter.
-        trigger(mod.id, "createGroup", t("newGroupDefaultName", { number: groups.length + 1 }), filterType)
+        trigger(mod.id, "createGroup")
     }
 
     const onHideAssignedChange = (checked: boolean) => {

@@ -143,6 +143,14 @@ namespace DistrictGroups
             m_NextColorIndex = groups.Length;
         }
 
+        // Creates a group of the given type under the next default name.
+        public Entity CreateGroup(GroupServiceType type)
+        {
+            string template = LocalizedText.Get(LocalizationKey.NewGroupDefaultName, "New Group {NUMBER}");
+            string name = template.Replace("{NUMBER}", (m_GroupQuery.CalculateEntityCount() + 1).ToString());
+            return CreateGroup(name, type);
+        }
+
         public Entity CreateGroup(string name, GroupServiceType type)
         {
             Mod.log.Info($"Creating new group; type:{type}");

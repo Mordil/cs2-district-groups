@@ -195,8 +195,8 @@ namespace DistrictGroups
             AddBinding(m_ServiceBuildingsBinding);
             AddBinding(m_SelectingGroupBinding);
 
-            AddBinding(new TriggerBinding<string, int>(kBindingGroup, "createGroup",
-                (name, type) => m_GroupSystem.CreateGroup(name, (GroupServiceType)type)));
+            AddBinding(new TriggerBinding(kBindingGroup, "createGroup",
+                () => m_GroupSystem.CreateGroup((GroupServiceType)m_OverlaySystem.TypeFilter)));
             AddBinding(new TriggerBinding<Entity>(kBindingGroup, "deleteGroup",
                 group => m_GroupSystem.DeleteGroup(group)));
             AddBinding(new TriggerBinding<Entity, string>(kBindingGroup, "renameGroup",
