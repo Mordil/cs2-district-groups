@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "Добавляет новую группу без районов-участников." },
                 { LocalizationKey.NewGroupDefaultName, "Новая группа {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "Фильтровать список групп по их **типу**." },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "Фильтровать список зданий служб по их **типу**." },
                 { LocalizationKey.AllGroupsLabel, "Все группы" },
                 { LocalizationKey.NoGroupsYet, "Групп пока нет. Создайте новую с помощью кнопки НОВАЯ ГРУППА." },
                 { LocalizationKey.NoGroupsMatchFilter, "Нет групп, соответствующих этому фильтру." },

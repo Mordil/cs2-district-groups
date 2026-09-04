@@ -18,6 +18,7 @@
         public const string NewGroupButtonTooltip = "DistrictGroups.UI[NewGroupButtonTooltip]";
         public const string NewGroupDefaultName = "DistrictGroups.UI[NewGroupDefaultName]";
         public const string FilterTooltipLine1 = "DistrictGroups.UI[FilterTooltipLine1]";
+        public const string FilterTooltipAssignmentsLine1 = "DistrictGroups.UI[FilterTooltipAssignmentsLine1]";
         public const string AllGroupsLabel = "DistrictGroups.UI[AllGroupsLabel]";
         public const string NoGroupsYet = "DistrictGroups.UI[NoGroupsYet]";
         public const string NoGroupsMatchFilter = "DistrictGroups.UI[NoGroupsMatchFilter]";

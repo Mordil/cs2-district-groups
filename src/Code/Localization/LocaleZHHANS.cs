@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "添加一个不包含任何成员市辖区的新市辖区组。" },
                 { LocalizationKey.NewGroupDefaultName, "新市辖区组 {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "按**类型**筛选市辖区组列表。" },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "按**类型**筛选服务建筑列表。" },
                 { LocalizationKey.AllGroupsLabel, "所有市辖区组" },
                 { LocalizationKey.NoGroupsYet, "尚无市辖区组，点击「新建市辖区组」按钮创建一个。" },
                 { LocalizationKey.NoGroupsMatchFilter, "没有市辖区组匹配此筛选条件。" },

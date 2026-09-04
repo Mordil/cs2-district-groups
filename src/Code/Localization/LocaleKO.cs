@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "소속 지구이 없는 새 그룹을 추가합니다." },
                 { LocalizationKey.NewGroupDefaultName, "새 그룹 {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "**유형**별로 그룹 목록을 필터링합니다." },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "**유형**별로 서비스 건물 목록을 필터링합니다." },
                 { LocalizationKey.AllGroupsLabel, "모든 그룹" },
                 { LocalizationKey.NoGroupsYet, "아직 그룹이 없습니다. 새 그룹 버튼으로 그룹을 만들어 보세요." },
                 { LocalizationKey.NoGroupsMatchFilter, "이 필터에 일치하는 그룹이 없습니다." },

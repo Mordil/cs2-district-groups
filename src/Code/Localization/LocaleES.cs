@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "Añade un nuevo grupo sin distritos asignados." },
                 { LocalizationKey.NewGroupDefaultName, "Nuevo grupo {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "Filtra la lista de grupos por su **tipo**." },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "Filtra la lista de edificios de servicio por su **tipo**." },
                 { LocalizationKey.AllGroupsLabel, "Todos los grupos" },
                 { LocalizationKey.NoGroupsYet, "Aún no hay grupos. Crea uno con el botón NUEVO GRUPO." },
                 { LocalizationKey.NoGroupsMatchFilter, "Ningún grupo coincide con este filtro." },

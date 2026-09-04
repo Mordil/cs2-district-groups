@@ -51,7 +51,7 @@ export const GroupManagementPanel = ({ onClose }: GroupManagementPanelProps) => 
     const filterTooltip = (
         <FormattedParagraphs
             renderer={markdownRenderer}
-            text={[t("filterTooltipLine1")]}
+            text={[activeTab === PanelTab.Groups ? t("filterTooltipLine1") : t("filterTooltipAssignmentsLine1")]}
             nonInline
         />
     )

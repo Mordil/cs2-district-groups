@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "所属する特区がない新しいグループを追加します。" },
                 { LocalizationKey.NewGroupDefaultName, "新規グループ {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "グループの一覧を**タイプ**で絞り込みます。" },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "サービス施設の一覧を**タイプ**で絞り込みます。" },
                 { LocalizationKey.AllGroupsLabel, "すべてのグループ" },
                 { LocalizationKey.NoGroupsYet, "グループがまだありません。「新規グループ」ボタンで作成してください。" },
                 { LocalizationKey.NoGroupsMatchFilter, "このフィルターに一致するグループがありません。" },

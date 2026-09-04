@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "Adds a new group with no member districts." },
                 { LocalizationKey.NewGroupDefaultName, "New Group {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "Filter the list of groups by their **type**." },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "Filter the list of service buildings by their **type**." },
                 { LocalizationKey.AllGroupsLabel, "All Groups" },
                 { LocalizationKey.NoGroupsYet, "No groups yet. Create one with the NEW GROUP button." },
                 { LocalizationKey.NoGroupsMatchFilter, "No groups match this filter." },

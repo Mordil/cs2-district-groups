@@ -83,6 +83,7 @@ namespace DistrictGroups
                 { LocalizationKey.NewGroupButtonTooltip, "新增一個沒有任何成員行政區的群組。" },
                 { LocalizationKey.NewGroupDefaultName, "新群組 {NUMBER}" },
                 { LocalizationKey.FilterTooltipLine1, "依**類型**篩選群組清單。" },
+                { LocalizationKey.FilterTooltipAssignmentsLine1, "依**類型**篩選服務建築清單。" },
                 { LocalizationKey.AllGroupsLabel, "所有群組" },
                 { LocalizationKey.NoGroupsYet, "尚無群組。請使用「新增群組」按鈕建立一個。" },
                 { LocalizationKey.NoGroupsMatchFilter, "沒有符合此篩選條件的群組。" },
