@@ -41,13 +41,9 @@ export const TypePicker = (props: {
                 openIconComponent={<></>}
                 closeIconComponent={<></>}
                 className={selectorCss.selectorToggle}
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    ...props.style,
-                }}
+                style={props.style}
             >
-                <div className={selectorCss.pickerLabel}>{props.labels[props.value] ?? "?"}</div>
+                {props.labels[props.value] ?? "?"}
             </DropdownToggle>
         </Dropdown>
     </Tooltip>
