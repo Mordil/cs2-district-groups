@@ -498,7 +498,8 @@ namespace DistrictGroups
         // Rebuilds the shared snapshot every overlay subsystem consumes
         private void EnsureOverlaySnapshot()
         {
-            if ((m_DirtyFlags & OverlayDirtyFlags.Snapshot) == 0)
+            bool snapshotIsDirty = (m_DirtyFlags & OverlayDirtyFlags.Snapshot) != 0;
+            if (!RefreshClock.CanClean(RefreshPhase.OverlaySnapshot, snapshotIsDirty))
             {
                 return;
             }

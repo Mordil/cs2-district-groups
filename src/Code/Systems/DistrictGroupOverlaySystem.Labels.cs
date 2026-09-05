@@ -29,7 +29,9 @@ namespace DistrictGroups
 
             EnsureLabelRoot();
 
-            if ((m_DirtyFlags & OverlayDirtyFlags.Labels) != 0)
+
+            bool labelsAreDirty = (m_DirtyFlags & OverlayDirtyFlags.Labels) != 0;
+            if (RefreshClock.CanClean(RefreshPhase.OverlayLabels, labelsAreDirty))
             {
                 RebuildLabelEntries();
                 m_DirtyFlags &= ~OverlayDirtyFlags.Labels;

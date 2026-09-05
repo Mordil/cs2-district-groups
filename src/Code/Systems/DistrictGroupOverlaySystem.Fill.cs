@@ -24,15 +24,16 @@ namespace DistrictGroups
                 Mod.Settings?.OverlayFillSaturationPercent ?? Setting.kDefaultOverlayFillSaturationPercent,
                 0,
                 100);
+
             bool geometryDirty = (m_DirtyFlags & OverlayDirtyFlags.FillGeometry) != 0;
             bool saturationDirty = saturationSetting != m_FillBuiltSaturationPercent;
-            if (geometryDirty)
+            if (RefreshClock.CanClean(RefreshPhase.OverlayFill, geometryDirty))
             {
                 RebuildFillObjects(saturationSetting);
                 m_DirtyFlags &= ~OverlayDirtyFlags.FillGeometry;
                 m_FillBuiltSaturationPercent = saturationSetting;
             }
-            else if (saturationDirty)
+            else if (saturationDirty && !geometryDirty)
             {
                 RecolorFillObjects(saturationSetting);
                 m_FillBuiltSaturationPercent = saturationSetting;

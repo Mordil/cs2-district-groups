@@ -45,7 +45,8 @@ namespace DistrictGroups
         private int m_LastSeenTypeFilter = -1;
         private int m_LastSeenTargetVersion;
         private Entity m_LastSeenSelectingGroup = Entity.Null;
-        private int m_LastSeenRefreshVersion = RefreshClock.kNeverRefreshed;
+        private int m_LastSeenGroupsRefreshVersion = RefreshClock.kNeverRefreshed;
+        private int m_LastSeenServiceBuildingsRefreshVersion = RefreshClock.kNeverRefreshed;
 
         // Lets the UI know if we're in a debug build
         public static bool IsDebugBuild =>
@@ -94,30 +95,33 @@ namespace DistrictGroups
             int typeFilter = m_OverlaySystem.TypeFilter;
             int targetVersion = m_ServiceBuildingSystem.TargetVersion;
             Entity selectingGroup = m_SelectionSystem.SelectingGroup;
-            int refreshVersion = RefreshClock.Version;
 
             bool mutated = groupVersion != m_LastSeenGroupVersion;
             bool filterChanged = typeFilter != m_LastSeenTypeFilter;
             bool targetsChanged = targetVersion != m_LastSeenTargetVersion;
-            bool refreshDue = refreshVersion != m_LastSeenRefreshVersion;
 
             m_LastSeenGroupVersion = groupVersion;
             m_LastSeenTypeFilter = typeFilter;
             m_LastSeenTargetVersion = targetVersion;
-            m_LastSeenRefreshVersion = refreshVersion;
+
+            // To avoid heavy UI updates on a single frame, they're staggered into different phases
+            bool groupsRefreshDue = RefreshClock.IsDue(RefreshPhase.Groups, ref m_LastSeenGroupsRefreshVersion);
+            bool serviceBuildingsRefreshDue = RefreshClock.IsDue(
+                RefreshPhase.ServiceBuildings,
+                ref m_LastSeenServiceBuildingsRefreshVersion);
 
             // Populations are cached usually, so we want to force a fresh update
-            if (refreshDue)
+            if (groupsRefreshDue)
             {
                 m_GroupSystem.InvalidateDistrictPopulations();
             }
 
-            if (mutated || refreshDue)
+            if (mutated || groupsRefreshDue)
             {
                 m_GroupsBinding.Update();
             }
 
-            if (mutated || filterChanged || targetsChanged || refreshDue)
+            if (mutated || filterChanged || targetsChanged || serviceBuildingsRefreshDue)
             {
                 m_ServiceBuildingsBinding.Update();
             }
