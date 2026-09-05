@@ -37,6 +37,14 @@ remove a district, every building that uses the group updates by itself.
 It takes a few seconds after assigning a group to a building for the UI to show the change.
 This is the game simulation catching up.
 
+## Features
+
+1. District Groups: Link several districts together to gain data aggregation and assign to buildings
+2. Building assignments: Assign a building to a group to service the districts within the group, and to keep district lists in sync
+3. Localized UI
+4. Overlay UI: Visualize your district groups with drawn colored areas to see your city coverage of services, as well as spotting your service buildings
+5. Service Building Index: See a full list of service buildings by type, to quickly modify their group assignments or fully inspect the building
+
 ## Localization
 
 This mod supports all the official languages that CSII does.
@@ -58,20 +66,21 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 ## Roadmap
 
-1. Service Building panel: See a list of all service buildings, and quickly assign them.
-2. Group Info panel: View an aggregate of wealth, population, etc. of districts in the group.
-3. District policy quality of life: Enable/disable district policies for all districts in a group.
+1. Group Info panel: View an aggregate of wealth, population, etc. of districts in the group.
+2. District policy quality of life: Enable/disable district policies for all districts in a group.
 	</LongDescription>
 
 	<!--Thumbnail-->
 	<Thumbnail Value="Properties/Thumbnail-1.0.png" />
 
 	<!--Screenshot, can be set multiple times-->
-	<Screenshot Value="Properties/Screenshots/Preview1-1.0.png" />
-	<Screenshot Value="Properties/Screenshots/Preview2-1.0.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview1-1.1.png" />
+	<Screenshot Value="Properties/Screenshots/Preview2-1.1.jpg" />
 	<Screenshot Value="Properties/Screenshots/Preview3-1.0.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview4-1.0.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview5-1.0.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview4-1.1.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview5-1.1.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview6-1.1.png" />
+	<Screenshot Value="Properties/Screenshots/Preview7-1.1.jpg" />
 
 	<!--Tag, can be set multiple times. The server validates against a fixed list and
 	    rejects anything else; the UI label "Areas" is the tag id "UIAreas". Other likely
@@ -83,7 +92,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="1.0.0" />
+	<ModVersion Value="1.1.0" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -98,6 +107,17 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
+**NEW**
+
+Added a new tab to the District Group panel: Service Buildings.
+
+In this view, you can see a list of all service buildings in your city matching the selected filter type.
+From here, you can quickly change the district group assignment.
+
+With quick actions you can fully inspect the building or jump to where it is in the city.
+
+Looking to update your prior buildings? Click on "hide assigned buildings" to get a smaller list of unassigned buildings.
+
 **CHANGED**
 
 - Optimized mod performance in general, by spreading work across multiple frames
