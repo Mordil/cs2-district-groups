@@ -108,6 +108,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **FIXED**
 
+- Fixed district selection in Group Management not ending when you select a different filter option
 - Fixed the service building filter and selector UI growing too large in certain languages like French
 - Fixed a shader log error caused by the overlay labels added in v1.0
 - The read-only version of the service building Operating Districts link button is now correctly localized

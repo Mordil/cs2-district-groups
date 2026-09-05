@@ -3,8 +3,9 @@ import { MouseEvent, useEffect, useRef, useState } from "react"
 import { useValue } from "cs2/api"
 import { AutoNavigationScope, InputActionConsumer, NavigationDirection } from "cs2/input"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
+import { entityEquals } from "cs2/utils"
 
-import { areasVisible$, showOverlay$, showServiceBuildings$ } from "../bindings"
+import { areasVisible$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { TypeFilterPicker } from "../components/TypePicker"
@@ -18,6 +19,7 @@ import {
     setOverlayFilter,
     setShowOverlay,
     setShowServiceBuildings,
+    toggleDistrictSelection,
 } from "../triggers"
 import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
@@ -48,6 +50,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
     const areasVisible = useValue(areasVisible$)
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
+    const selectingGroup = useValue(selectingGroup$)
 
     // The Assignments tab is useless without the service-building markers on screen, so being on it forces them on.
     // True only while that override is ours to undo a manual toggle by the player replaces it, and never gets overridden back.
@@ -68,17 +71,36 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         />
     )
 
+    // Navigating away from a group's card leaves district selection mode with no way back to close it.
+    const cancelActiveDistrictSelection = () => {
+        if (entityEquals(selectingGroup, { index: 0, version: 0 })) {
+            return
+        }
+        logger.info("Navigating away with active district selection, toggling off;")
+        toggleDistrictSelection(selectingGroup)
+    }
+
     const onFilterChange = (type: number) => {
         logger.info(`Filter changed; type:${type}`)
         lastFilterType = type
         setFilterType(type)
         setOverlayFilter(type)
+        console.log("FIZZ")
+
+        if (type !== filterType) {
+            cancelActiveDistrictSelection()
+        }
     }
 
     const onTabSelect = (tab: PanelTab) => {
         logger.info(`Panel tab changed; tab:${PanelTab[tab]}`)
         lastPanelTab = tab
         setActiveTab(tab)
+        console.log("FIZZ")
+
+        if (tab !== activeTab) {
+            cancelActiveDistrictSelection()
+        }
     }
 
     // Puts back what the player had before the assignments tab forced the markers on.
