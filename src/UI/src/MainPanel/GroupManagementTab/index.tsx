@@ -17,8 +17,9 @@ export const GroupManagementTab = ({ filterType, className }: GroupManagementTab
     const groups = useValue(groups$)
     const selectingGroup = useValue(selectingGroup$)
 
-    // Groups matching the filtered type, in creation order (the binding's own order).
-    const displayedGroups = groups.filter((g) => g.type === filterType)
+    const displayedGroups = groups
+        .filter((g) => g.type === filterType)
+        .sort((a, b) => a.name.localeCompare(b.name))
 
     return (
         <Scrollable
