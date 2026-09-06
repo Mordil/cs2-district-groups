@@ -1,9 +1,7 @@
 import { LocalizedString } from "cs2/l10n"
 
 import { VanillaLabel } from "../utils/locale"
-
-// Stands in for a band with nothing behind it, when a group or district has no residents to average.
-const kNoValue = "–"
+import { kNoValue } from "../constants"
 
 interface ThresholdValueProps {
     label: VanillaLabel | null

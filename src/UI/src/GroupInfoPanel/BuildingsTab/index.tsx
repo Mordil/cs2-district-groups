@@ -6,7 +6,7 @@ import { entityKey } from "cs2/utils"
 
 import { glyphIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
-import { kUnknownEfficiency } from "../../constants"
+import { kUnknownEfficiency, kNoValue } from "../../constants"
 import { AssignedBuilding, Group } from "../../types"
 import { VanillaLocale } from "../../utils/locale"
 import { logger } from "../../utils/log"
@@ -15,9 +15,6 @@ import css from "./index.module.scss"
 
 const kTable = VT.table
 const kTableRow = VT.tableRow
-
-// Stands in for an efficiency the game doesn't report.
-const kNoValue = "—"
 
 // The columns the building list can be ranked by.
 enum BuildingsColumn {

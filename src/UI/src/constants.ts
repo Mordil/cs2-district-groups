@@ -26,6 +26,9 @@ export const kPanelWidth = 490
 // How wide the group info panel is allowed to grow to fit longer content, in rem CSS units
 export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.25
 
+// Stands in for a district stat that is unreported.
+export const kNoValue = "—"
+
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {
