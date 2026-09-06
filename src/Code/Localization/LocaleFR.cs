@@ -105,6 +105,7 @@ namespace DistrictGroups
                 { LocalizationKey.GroupColorTooltip, "Couleur du groupe" },
                 { LocalizationKey.NameInputTooltip, "Sélectionner pour modifier le nom." },
                 { LocalizationKey.OverviewTabLabel, "Vue d'ensemble" },
+                { LocalizationKey.BuildingsTabLabel, "Bâtiments" },
                 { LocalizationKey.MetadataDistrictsTooltip, "Quartiers" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Bâtiments assignés" },
                 { LocalizationKey.MetadataPopulationTooltip, "Population" },

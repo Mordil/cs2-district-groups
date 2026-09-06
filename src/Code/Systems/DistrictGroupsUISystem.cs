@@ -17,6 +17,9 @@ namespace DistrictGroups
         /* This needs to be the same as in mod.json */
         public const string kBindingGroup = "district-groups";
 
+        // Sent as a building's efficiency when the game has none to report for it, so the UI can show a placeholder instead of a misleading zero.
+        public const int kUnknownEfficiency = -1;
+
         private DistrictGroupSystem m_GroupSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;
         private DistrictGroupServiceBuildingSystem m_ServiceBuildingSystem;

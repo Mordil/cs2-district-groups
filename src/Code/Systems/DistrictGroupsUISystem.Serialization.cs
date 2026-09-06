@@ -1,8 +1,11 @@
+using Colossal.Entities;
 using Colossal.UI.Binding;
+using Game.Buildings;
 using Game.Prefabs;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using static DistrictGroups.EntityJson;
 
 namespace DistrictGroups
@@ -19,6 +22,7 @@ namespace DistrictGroups
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
                 DistrictStats groupStats = m_GroupSystem.GetGroupStats(group, districtStats);
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
+                using NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp);
                 writer.TypeBegin("Group");
                 writer.PropertyName("entity");
                 WriteEntity(writer, group);
@@ -29,16 +33,20 @@ namespace DistrictGroups
                 writer.PropertyName("color");
                 writer.Write(data.m_Color);
                 writer.PropertyName("assignedBuildingCount");
-                using (NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp))
-                {
-                    writer.Write(assignedBuildings.Length);
-                }
+                writer.Write(assignedBuildings.Length);
                 WriteResidentStats(writer, groupStats);
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)
                 {
                     WriteDistrictMember(writer, member.m_District, districtStats);
+                }
+                writer.ArrayEnd();
+                writer.PropertyName("buildings");
+                writer.ArrayBegin(assignedBuildings.Length);
+                foreach (Entity building in assignedBuildings)
+                {
+                    WriteAssignedBuilding(writer, building);
                 }
                 writer.ArrayEnd();
                 writer.TypeEnd();
@@ -105,6 +113,37 @@ namespace DistrictGroups
             writer.Write(titleId ?? "");
             writer.PropertyName("assetName");
             writer.Write(m_PrefabSystem.GetPrefabName(prefab));
+        }
+
+        // An assigned service building, carrying the per-building numbers its buildings row reads
+        private void WriteAssignedBuilding(IJsonWriter writer, Entity building)
+        {
+            writer.TypeBegin("AssignedBuilding");
+            writer.PropertyName("entity");
+            WriteEntity(writer, building);
+            writer.PropertyName("name");
+            writer.Write(EntityManager.Exists(building) ? m_NameSystem.GetRenderedLabelName(building) : "<missing>");
+            writer.PropertyName("efficiency");
+            writer.Write(GetEfficiencyPercent(building));
+            writer.TypeEnd();
+        }
+
+        // A building's efficiency as the whole percent the game's own info panel shows, or kUnknownEfficiency when the game reports none for it.
+        private int GetEfficiencyPercent(Entity building)
+        {
+            if (!EntityManager.TryGetBuffer(building, isReadOnly: true, out DynamicBuffer<Efficiency> efficiencies))
+            {
+                return kUnknownEfficiency;
+            }
+
+            float efficiency = 1f;
+            foreach (Efficiency factor in efficiencies)
+            {
+                efficiency *= math.max(0f, factor.m_Efficiency);
+            }
+
+            // Anything still running reads as at least 1%, the same floor the info panel puts under it.
+            return efficiency > 0f ? math.max(1, (int)math.round(100f * efficiency)) : 0;
         }
 
         // A member district, carrying the per-district numbers its overview row reads

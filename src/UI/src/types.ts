@@ -19,6 +19,14 @@ export interface ResidentStats {
     wealth: number
 }
 
+// A service building assigned to a group, with the per-building numbers its buildings row shows
+export interface AssignedBuilding {
+    entity: Entity
+    name: string
+    // Whole-percent efficiency, or kUnknownEfficiency when the building reports none
+    efficiency: number
+}
+
 // A service building of the currently filtered type, with the assignment state its row needs
 export interface ServiceBuilding {
     entity: Entity
@@ -40,4 +48,5 @@ export interface Group extends ResidentStats {
     color: Color
     assignedBuildingCount: number
     members: DistrictMember[]
+    buildings: AssignedBuilding[]
 }

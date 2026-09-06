@@ -19,6 +19,7 @@ import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
 import { TransitionPhase } from "../utils/useEnterExitPhase"
 
+import { BuildingsTab } from "./BuildingsTab"
 import { OverviewTab } from "./OverviewTab"
 import css from "./index.module.scss"
 
@@ -34,9 +35,10 @@ const stopMouseDown = (e: MouseEvent) => {
 
 enum GroupInfoTab {
     Overview = 0,
+    Buildings = 1,
 }
 
-const kTabOrder = [GroupInfoTab.Overview]
+const kTabOrder = [GroupInfoTab.Overview, GroupInfoTab.Buildings]
 
 interface GroupInfoPanelProps {
     group: Group
@@ -232,6 +234,15 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                         >
                             {t("overviewTabLabel")}
                         </VC.Tab>
+
+                        <VC.Tab
+                            id={GroupInfoTab.Buildings}
+                            selectedId={activeTab}
+                            className={css.tab}
+                            onSelect={onTabSelect}
+                        >
+                            {t("buildingsTabLabel")}
+                        </VC.Tab>
                     </VC.TabBar>
 
                     <VC.TabNav
@@ -239,7 +250,11 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                         selectedTab={activeTab}
                         onSelect={onTabSelect}
                     >
-                        <OverviewTab group={group} className={css.tabContent} />
+                        {activeTab === GroupInfoTab.Overview ? (
+                            <OverviewTab group={group} className={css.tabContent} />
+                        ) : (
+                            <BuildingsTab group={group} className={css.tabContent} />
+                        )}
                     </VC.TabNav>
                 </div>
             </div>

@@ -105,6 +105,7 @@ namespace DistrictGroups
                 { LocalizationKey.GroupColorTooltip, "市辖区组颜色" },
                 { LocalizationKey.NameInputTooltip, "选择以修改名称。" },
                 { LocalizationKey.OverviewTabLabel, "概览" },
+                { LocalizationKey.BuildingsTabLabel, "建筑" },
                 { LocalizationKey.MetadataDistrictsTooltip, "市辖区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已分配建筑" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },
