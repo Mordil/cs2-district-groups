@@ -2,11 +2,12 @@ import { CSSProperties, MouseEvent, useContext, useState } from "react"
 
 import { trigger } from "cs2/api"
 import { LocalizedString } from "cs2/l10n"
-import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
+import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
 import { MetadataItem } from "../../components/MetadataItem"
+import { SelectDistrictsButton } from "../../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../../components/vanilla"
 import { colorToCss, markdownRenderer } from "../../shared"
 import { deleteGroup, removeMember, toggleDistrictSelection } from "../../triggers"
@@ -212,17 +213,13 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                             ))}
                         </div>
 
-                        <button
-                            className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, selectingDistricts ? "selected" : ""]
-                                .filter(Boolean).join(" ")}
-                            onClick={() => {
+                        <SelectDistrictsButton
+                            selected={selectingDistricts}
+                            onSelect={() => {
                                 logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                                 toggleDistrictSelection(group.entity)
                             }}
-                        >
-                            <Icon className={VT.sectionPrimaryButton.icon} src={gameIconSrc("Districts")} />
-                            <span className={VT.sectionPrimaryButton.label}>{t("selectDistrictsButton")}</span>
-                        </button>
+                        />
                     </div>
                 )}
             </div>
