@@ -104,6 +104,8 @@ $horizontal-padding: 16rem;
 }
 
 .content {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     min-height: 0;
     background-image: linear-gradient(var(--panelGradientStart), var(--panelGradientEnd));
@@ -114,46 +116,29 @@ $horizontal-padding: 16rem;
     background-image: none;
 }
 
-.scrollableContent {
+.tabBar {
+    --minTabWidth: 0rem;
+    align-items: stretch;
+    padding-left: calc($horizontal-padding / 2);
+    padding-right: calc($horizontal-padding / 2);
+    background-color: rgba(19, 28, 48, 0.75);
+}
+
+.tabBar button {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+.tab {
+    white-space: normal;
+    text-overflow: clip;
+    font-size: var(--fontSizeM)
+}
+
+.tabContent {
+    flex: 1;
+    min-height: 0;
     padding-top: $horizontal-padding;
     padding-bottom: $horizontal-padding;
-}
-
-.listSectionHeader {
-    color: var(--textColorDimmer);
-    font-size: var(--fontSizeS);
-    text-transform: uppercase;
-    line-height: 130%;
-    letter-spacing: 0.5rem;
-    margin-top: var(--gap8);
-    padding-left: $horizontal-padding;
-    padding-right: $horizontal-padding;
-}
-.listSectionHeader:first-child {
-    margin-top: 0;
-}
-
-.listItem {
-    color: var(--textColorDim);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: var(--gap6);
-    padding-bottom: var(--gap6);
-    padding-left: $horizontal-padding;
-    padding-right: $horizontal-padding;
-}
-.listItem:hover {
-    color: var(--textColor);
-    background-color: var(--menuHoverColor);
-}
-
-.listItemName {
-    display: block;
-    flex: 1;
-    min-width: 0;
-    margin-right: var(--gap8);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }

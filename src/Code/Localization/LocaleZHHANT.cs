@@ -104,6 +104,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "選擇行政區" },
                 { LocalizationKey.GroupColorTooltip, "群組顏色" },
                 { LocalizationKey.NameInputTooltip, "選取以修改名稱。" },
+                { LocalizationKey.OverviewTabLabel, "總覽" },
                 { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },

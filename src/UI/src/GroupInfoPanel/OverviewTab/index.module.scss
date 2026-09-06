@@ -1,0 +1,26 @@
+$horizontal-padding: 16rem;
+
+.listItem {
+    color: var(--textColorDim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+}
+.listItem:hover {
+    color: var(--textColor);
+    background-color: var(--menuHoverColor);
+}
+
+.listItemName {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--gap8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -104,6 +104,7 @@ namespace DistrictGroups
                 { LocalizationKey.SelectDistrictsButton, "Wybierz dzielnice" },
                 { LocalizationKey.GroupColorTooltip, "Kolor grupy" },
                 { LocalizationKey.NameInputTooltip, "Wybierz, aby edytować nazwę." },
+                { LocalizationKey.OverviewTabLabel, "Przegląd" },
                 { LocalizationKey.MetadataDistrictsTooltip, "Dzielnice" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Przypisane budynki" },
                 { LocalizationKey.MetadataPopulationTooltip, "Populacja" },

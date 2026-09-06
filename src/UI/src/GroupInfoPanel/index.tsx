@@ -1,13 +1,11 @@
 import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
 
 import { useValue } from "cs2/api"
-import { camera } from "cs2/bindings"
 import { InputActionConsumer } from "cs2/input"
-import { LocalizedString } from "cs2/l10n"
-import { ConfirmationDialog, DialogStack, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
-import { Entity, entityEquals, entityKey } from "cs2/utils"
+import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
+import { entityEquals, entityKey } from "cs2/utils"
 
-import { selectingGroup$, serviceBuildings$ } from "../bindings"
+import { selectingGroup$ } from "../bindings"
 import { ColorPicker } from "../components/ColorPicker"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc } from "../components/icons"
@@ -17,10 +15,11 @@ import { useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import { deleteGroup, renameGroup, setGroupColor, setGroupType, toggleDistrictSelection } from "../triggers"
 import { Group } from "../types"
-import { VanillaLocale, useTranslation } from "../utils/locale"
+import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
 import { TransitionPhase } from "../utils/useEnterExitPhase"
 
+import { OverviewTab } from "./OverviewTab"
 import css from "./index.module.scss"
 
 // Tints the header delete action to flag it as the harder-to-reverse one.
@@ -32,20 +31,11 @@ const stopMouseDown = (e: MouseEvent) => {
     e.stopPropagation()
 }
 
-const focusTooltip = (
-    <LocalizedString id={VanillaLocale.focusTooltip.id} fallback={VanillaLocale.focusTooltip.fallback} />
-)
-
-interface EntityRowProps {
-    entity: Entity
-    name: string
+enum GroupInfoTab {
+    Overview = 0,
 }
 
-const EntityRow = ({ entity, name }: EntityRowProps) => (
-    <div className={css.listItem}>
-        <span className={css.listItemName}>{name}</span>
-    </div>
-)
+const kTabOrder = [GroupInfoTab.Overview]
 
 interface GroupInfoPanelProps {
     group: Group
@@ -54,17 +44,16 @@ interface GroupInfoPanelProps {
 }
 
 // Detail view for a single district group; the name and identity color are editable here.
+let lastGroupInfoTab = GroupInfoTab.Overview
 export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
-    const serviceBuildings = useValue(serviceBuildings$)
     const selectingGroup = useValue(selectingGroup$)
     const selectingDistricts = entityEquals(selectingGroup, group.entity)
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
+    const [activeTab, setActiveTab] = useState(lastGroupInfoTab)
     const dialogStack = useContext(DialogStack)
-
-    const assignedBuildings = serviceBuildings.filter((b) => entityEquals(b.assignedGroup, group.entity))
 
     const deleteGroupTooltip = (
         <FormattedParagraphs
@@ -137,6 +126,12 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
             logger.info(`Group renamed; entity:${entityKey(group.entity)} name:${trimmed}`)
             renameGroup(group.entity, trimmed)
         }
+    }
+
+    const onTabSelect = (tab: GroupInfoTab) => {
+        logger.info(`Group info tab changed; tab:${GroupInfoTab[tab]}`)
+        lastGroupInfoTab = tab
+        setActiveTab(tab)
     }
 
     const handleClose = () => {
@@ -227,19 +222,24 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                         />
                     </div>
 
-                    <Scrollable vertical={true} trackVisibility="reserve" className={css.scrollableContent}>
-                        <div className={css.listSectionHeader}>{t("metadataDistrictsTooltip")}</div>
+                    <VC.TabBar className={css.tabBar}>
+                        <VC.Tab
+                            id={GroupInfoTab.Overview}
+                            selectedId={activeTab}
+                            className={css.tab}
+                            onSelect={onTabSelect}
+                        >
+                            {t("overviewTabLabel")}
+                        </VC.Tab>
+                    </VC.TabBar>
 
-                        {group.members.map((member) => (
-                            <EntityRow key={entityKey(member.entity)} entity={member.entity} name={member.name} />
-                        ))}
-
-                        <div className={css.listSectionHeader}>{t("metadataBuildingsTooltip")}</div>
-
-                        {assignedBuildings.map((building) => (
-                            <EntityRow key={entityKey(building.entity)} entity={building.entity} name={building.name} />
-                        ))}
-                    </Scrollable>
+                    <VC.TabNav
+                        tabs={kTabOrder}
+                        selectedTab={activeTab}
+                        onSelect={onTabSelect}
+                    >
+                        <OverviewTab group={group} className={css.tabContent} />
+                    </VC.TabNav>
                 </div>
             </div>
         </InputActionConsumer>
