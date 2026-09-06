@@ -95,6 +95,14 @@ $horizontal-padding: 16rem;
     background-color: rgba(19, 28, 48, 0.75);
 }
 
+.typeSelector {
+    margin-right: var(--gap8);
+}
+
+.selectDistrictButton {
+    font-size: var(--fontSizeXS);
+}
+
 .content {
     flex: 1;
     min-height: 0;

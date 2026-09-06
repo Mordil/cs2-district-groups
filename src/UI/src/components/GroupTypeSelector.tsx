@@ -1,31 +1,21 @@
-import { CSSProperties, ReactNode } from "react"
+import { ReactNode } from "react"
 
-import { Dropdown, DropdownToggle, Tooltip } from "cs2/ui"
+import { Dropdown, Tooltip } from "cs2/ui"
 
 import css from "./GroupTypeSelector.module.scss"
 import { ModIcon } from "./icons"
 import { VC, VT } from "./vanilla"
 
-// A labeled-option dropdown picker over a district group's service type; `value` is an index into `labels`.
-// Pass `icon` to render it as a filter-style toggle instead of a plain label.
+// A labeled-option dropdown picker over a district group's service type, shown as an icon + ellipsized label toggle; `value` is an index into `labels`.
 export const GroupTypeSelector = (props: {
     value: number
     onChange: (value: number) => void
     labels: string[]
-    icon?: string
+    icon: string
     tooltip?: ReactNode
-    style?: CSSProperties
+    className?: string
 }) => {
     const label = props.labels[props.value] ?? "?"
-
-    const toggleContent = props.icon ? (
-        <div className={css.filterToggleRow}>
-            <ModIcon name={props.icon} />
-            <span className={css.filterToggleLabel}>{label}</span>
-        </div>
-    ) : (
-        label
-    )
 
     const selector = (
         // key forces a full remount on every selection: closeOnSelect closing the
@@ -50,18 +40,18 @@ export const GroupTypeSelector = (props: {
                     </VC.DropdownItem>
                 ))}
             >
-                <DropdownToggle
+                <VC.DropdownToggleBase
                     disabled={false}
-                    openIconComponent={<></>}
-                    closeIconComponent={<></>}
-                    className={css.selectorToggle}
-                    style={props.style}
+                    className={[css.selectorToggle, props.className].filter(Boolean).join(" ")}
                 >
-                    {toggleContent}
-                </DropdownToggle>
+                    <div className={css.iconSlot}>
+                        <ModIcon name={props.icon} />
+                    </div>
+                    <div className={css.selectorLabel}>{label}</div>
+                </VC.DropdownToggleBase>
             </Dropdown>
         </Tooltip>
     )
 
-    return props.icon ? <div className={css.filterToggleContainer}>{selector}</div> : selector
+    return selector
 }

@@ -11,6 +11,10 @@ export const VC = {
         "game-ui/common/input/dropdown/items/dropdown-item.tsx",
         "DropdownItem"
     ) as any,
+    DropdownToggleBase: getModule(
+        "game-ui/common/input/dropdown/dropdown-toggle.tsx",
+        "DropdownToggleBase"
+    ) as any,
     ColorField: getModule(
         "game-ui/common/input/color-picker/color-field/color-field.tsx",
         "ColorField"

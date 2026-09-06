@@ -206,18 +206,20 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                 <div className={css.content}>
                     <div className={css.actionSection}>
                         <GroupTypeSelector
+                            className={css.typeSelector}
                             value={group.type}
                             onChange={(newType) => {
                                 logger.info(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
                                 setGroupType(group.entity, newType)
                             }}
                             labels={typeLabels}
+                            icon="tag"
                             tooltip={typePickerTooltip}
-                            style={{ height: "100%", boxSizing: "border-box" }}
                         />
 
                         <SelectDistrictsButton
                             selected={selectingDistricts}
+                            className={css.selectDistrictButton}
                             onSelect={() => {
                                 logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                                 toggleDistrictSelection(group.entity)
