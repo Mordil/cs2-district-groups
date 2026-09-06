@@ -2,6 +2,9 @@ $horizontal-padding: 16rem;
 
 $row-inset: $horizontal-padding;
 
+$row-cell-padding: 6rem;
+$header-label-padding: 6rem;
+
 .table {
     display: flex;
     flex-direction: column;
@@ -10,10 +13,15 @@ $row-inset: $horizontal-padding;
 }
 
 .columnHeaders {
-    padding-left: $horizontal-padding;
-    padding-right: $horizontal-padding;
+    padding-left: $horizontal-padding + $row-cell-padding;
+    padding-right: $horizontal-padding + $row-cell-padding;
     background-color: var(--sectionHeaderColor);
     font-size: var(--fontSizeS);
+}
+
+.columnHeaderButton {
+    margin-left: -$header-label-padding;
+    margin-right: -$header-label-padding;
 }
 
 .list {

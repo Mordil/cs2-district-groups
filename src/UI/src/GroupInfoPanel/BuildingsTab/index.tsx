@@ -122,7 +122,7 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
                     <VC.Button
                         disableHint={true}
                         focusKey={VF.FOCUS_DISABLED}
-                        className={kTable.button}
+                        className={`${kTable.button} ${css.columnHeaderButton}`}
                         onSelect={() => sortBy(column)}
                     >
                         <div className={kTable.buttonLabel}>{column.label}</div>
