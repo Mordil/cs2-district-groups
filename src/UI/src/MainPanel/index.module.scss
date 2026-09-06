@@ -26,17 +26,14 @@ $horizontal-padding: 16rem;
     flex-direction: column;
     align-items: stretch;
     padding-top: var(--gap8);
-    padding-left: $horizontal-padding;
-    padding-right: $horizontal-padding;
     color: var(--accentColorNormal);
     background-color: var(--panelColorDark);
     backdrop-filter: var(--panelBlur);
-    border-bottom-style: solid;
-    border-bottom-width: var(--stroke2);
-    border-bottom-color: var(--accentColorDark);
 }
 
 .titleRow {
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -44,10 +41,10 @@ $horizontal-padding: 16rem;
 }
 
 .tabBar {
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
     --minTabWidth: 0rem;
     justify-content: flex-start;
-    padding-left: 0;
-    padding-right: 0;
 }
 
 .tabBar button {

@@ -32,9 +32,6 @@ $horizontal-padding: 16rem;
     color: var(--accentColorNormal);
     background-color: var(--panelColorDark);
     backdrop-filter: var(--panelBlur);
-    border-bottom-style: solid;
-    border-bottom-width: var(--stroke2);
-    border-bottom-color: var(--accentColorDark);
 }
 
 .titleRow {
@@ -119,8 +116,8 @@ $horizontal-padding: 16rem;
 .tabBar {
     --minTabWidth: 0rem;
     align-items: stretch;
-    padding-left: calc($horizontal-padding / 2);
-    padding-right: calc($horizontal-padding / 2);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
     background-color: rgba(19, 28, 48, 0.75);
 }
 

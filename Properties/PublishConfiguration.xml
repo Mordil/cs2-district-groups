@@ -116,6 +116,8 @@ In Settings, there is a button to safely remove all mod data from your save.
 - The list in Group Management is now read-only data. To change details, open the Group Info Panel using the "View Details" button
 
 **FIXED**
+
+- Fixed tab bar styling when in legacy interface styles
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
