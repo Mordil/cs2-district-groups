@@ -7,6 +7,7 @@ $accent-tint: rgba(75, 195, 241, 0.1);
     display: flex;
     flex-direction: column;
     min-height: 0;
+    background-color: var(--sectionBackgroundColor);
 }
 
 .columnHeaders {
@@ -21,7 +22,6 @@ $accent-tint: rgba(75, 195, 241, 0.1);
     --hoverColorNormal: var(--normalColor);
     margin-left: $row-inset;
     margin-right: $row-inset;
-    color: var(--textColor);
     border-bottom-style: solid;
     border-bottom-width: var(--stroke2);
     border-bottom-color: var(--accentColorDark);
@@ -32,7 +32,7 @@ $accent-tint: rgba(75, 195, 241, 0.1);
     --scrollbarPadding: #{$row-inset};
     flex: 1;
     min-height: 0;
-    color: var(--textColorDim);
+    color: var(--textColorHighlightDim);
 }
 
 .name {
