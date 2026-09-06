@@ -7,8 +7,8 @@ import { Entity, entityEquals } from "cs2/utils"
 
 import { areasVisible$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
+import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
-import { TypeFilterPicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
@@ -223,11 +223,11 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
 
                 <div className={css.panelContent}>
                     <div className={css.actionSection}>
-                        <TypeFilterPicker
+                        <GroupTypeSelector
                             value={filterType}
                             onChange={onFilterChange}
                             labels={typeLabels}
-                            allLabel={null}
+                            icon="FunnelFilter"
                             tooltip={filterTooltip}
                         />
 

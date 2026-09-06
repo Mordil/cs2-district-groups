@@ -1,13 +1,13 @@
-
 .selectorToggle {
     background-color: var(--activeColor);
     color: var(--textColor);
     border-radius: 3rem;
     padding: 4rem 10rem;
     font-size: var(--fontSizeM);
-}
-.selectorToggle:hover {
-    background-color: var(--activeColorBright);
+
+    &:hover {
+        background-color: var(--activeColorBright);
+    }
 }
 
 .filterToggleContainer {

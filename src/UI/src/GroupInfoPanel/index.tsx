@@ -9,9 +9,9 @@ import { Entity, entityEquals, entityKey } from "cs2/utils"
 
 import { selectingGroup$, serviceBuildings$ } from "../bindings"
 import { ColorPicker } from "../components/ColorPicker"
+import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc } from "../components/icons"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
-import { TypePicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
@@ -205,7 +205,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
 
                 <div className={css.content}>
                     <div className={css.actionSection}>
-                        <TypePicker
+                        <GroupTypeSelector
                             value={group.type}
                             onChange={(newType) => {
                                 logger.info(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
