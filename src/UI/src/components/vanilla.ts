@@ -27,6 +27,7 @@ export const VC = {
         "game-ui/game/components/selected-info-panel/shared-components/info-row/info-row.tsx",
         "InfoRow"
     ) as any,
+    Button: getModule("game-ui/common/input/button/button.tsx", "Button") as any,
     IconButton: getModule("game-ui/common/input/button/icon-button.tsx", "IconButton") as any,
     InfoLink: getModule(
         "game-ui/game/components/selected-info-panel/shared-components/info-link/info-link.tsx",
@@ -74,6 +75,14 @@ export const VT = {
     panel: getModule("game-ui/common/panel/panel.module.scss", "classes") as any,
     districtsSection: getModule(
         "game-ui/game/components/selected-info-panel/selected-info-sections/building-sections/districts-section/districts-section.module.scss",
+        "classes"
+    ) as any,
+    table: getModule(
+        "game-ui/game/components/transportation-overview-panel/transportation-overview-page.module.scss",
+        "classes"
+    ) as any,
+    tableRow: getModule(
+        "game-ui/game/components/transportation-overview-panel/transport-line-item/transport-line-item.module.scss",
         "classes"
     ) as any,
 }

@@ -1,25 +1,42 @@
 $horizontal-padding: 16rem;
 
-.listItem {
-    color: var(--textColorDim);
+$row-inset: $horizontal-padding;
+$accent-tint: rgba(75, 195, 241, 0.1);
+
+.table {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: var(--gap6);
-    padding-bottom: var(--gap6);
-    padding-left: $horizontal-padding;
-    padding-right: $horizontal-padding;
-}
-.listItem:hover {
-    color: var(--textColor);
-    background-color: var(--menuHoverColor);
+    flex-direction: column;
+    min-height: 0;
 }
 
-.listItemName {
-    display: block;
+.columnHeaders {
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    background-color: var(--sectionHeaderColor);
+    font-size: var(--fontSizeS);
+}
+
+.totalRow {
+    --normalColor: #{$accent-tint};
+    --hoverColorNormal: var(--normalColor);
+    margin-left: $row-inset;
+    margin-right: $row-inset;
+    color: var(--textColor);
+    border-bottom-style: solid;
+    border-bottom-width: var(--stroke2);
+    border-bottom-color: var(--accentColorDark);
+}
+
+.list {
+    --contentPadding: #{$row-inset};
+    --scrollbarPadding: #{$row-inset};
     flex: 1;
-    min-width: 0;
-    margin-right: var(--gap8);
+    min-height: 0;
+    color: var(--textColorDim);
+}
+
+.name {
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

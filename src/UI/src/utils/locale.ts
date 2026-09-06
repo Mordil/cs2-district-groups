@@ -161,6 +161,9 @@ const kFallback: Record<keyof typeof kLocale, string> = {
 // Locale ids owned by the game rather than the mod.
 export const VanillaLocale = {
     details: { id: "SelectedInfoPanel.DETAILS", fallback: "View Details" },
+    total: { id: "TransportInfoPanel.TOTAL", fallback: "Total" },
+    districtsColumn: { id: "Glossary.SECTION_TITLE[Districts]", fallback: "Districts" },
+    populationColumn: { id: "Glossary.SECTION_TITLE[Population]", fallback: "Population" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",

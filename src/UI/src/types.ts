@@ -1,9 +1,11 @@
 import { Color } from "cs2/bindings"
 import { Entity } from "cs2/utils"
 
-export interface NamedEntity {
+// A district that belongs to a group, with the per-district numbers its overview row shows
+export interface DistrictMember {
     entity: Entity
     name: string
+    population: number
 }
 
 // A service building of the currently filtered type, with the assignment state its row needs
@@ -27,5 +29,5 @@ export interface Group {
     color: Color
     assignedBuildingCount: number
     population: number
-    members: NamedEntity[]
+    members: DistrictMember[]
 }

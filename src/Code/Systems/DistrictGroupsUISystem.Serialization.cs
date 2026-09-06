@@ -38,7 +38,7 @@ namespace DistrictGroups
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)
                 {
-                    WriteNamedEntity(writer, member.m_District);
+                    WriteDistrictMember(writer, member.m_District, districtPopulations);
                 }
                 writer.ArrayEnd();
                 writer.TypeEnd();
@@ -107,13 +107,16 @@ namespace DistrictGroups
             writer.Write(m_PrefabSystem.GetPrefabName(prefab));
         }
 
-        private void WriteNamedEntity(IJsonWriter writer, Entity entity)
+        // A member district, carrying the per-district numbers its overview row reads
+        private void WriteDistrictMember(IJsonWriter writer, Entity entity, Dictionary<Entity, int> districtPopulations)
         {
-            writer.TypeBegin("NamedEntity");
+            writer.TypeBegin("DistrictMember");
             writer.PropertyName("entity");
             WriteEntity(writer, entity);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(entity) ? m_NameSystem.GetRenderedLabelName(entity) : "<missing>");
+            writer.PropertyName("population");
+            writer.Write(districtPopulations.TryGetValue(entity, out int population) ? population : 0);
             writer.TypeEnd();
         }
     }
