@@ -123,3 +123,11 @@
     flex: 1;
     color: var(--textColor);
 }
+
+.selectDistrictButton {
+    flex-grow: 1;
+    margin-left: var(--gap8);
+    margin-top: var(--gap8);
+    margin-right: var(--gap8);
+    margin-bottom: var(--gap8);
+}

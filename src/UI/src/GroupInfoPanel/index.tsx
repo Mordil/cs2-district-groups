@@ -7,14 +7,15 @@ import { LocalizedString } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityEquals, entityKey } from "cs2/utils"
 
-import { serviceBuildings$ } from "../bindings"
+import { selectingGroup$, serviceBuildings$ } from "../bindings"
 import { ColorPicker } from "../components/ColorPicker"
 import { glyphIconSrc } from "../components/icons"
+import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { TypePicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
 import { useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
-import { deleteGroup, renameGroup, setGroupColor, setGroupType } from "../triggers"
+import { deleteGroup, renameGroup, setGroupColor, setGroupType, toggleDistrictSelection } from "../triggers"
 import { Group } from "../types"
 import { VanillaLocale, useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
@@ -57,6 +58,8 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const serviceBuildings = useValue(serviceBuildings$)
+    const selectingGroup = useValue(selectingGroup$)
+    const selectingDistricts = entityEquals(selectingGroup, group.entity)
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
     const dialogStack = useContext(DialogStack)
@@ -136,8 +139,16 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         }
     }
 
+    const handleClose = () => {
+        if (selectingDistricts) {
+            logger.info(`Closing group info panel with active district selection, toggling off; entity:${entityKey(group.entity)}`)
+            toggleDistrictSelection(group.entity)
+        }
+        onClose()
+    }
+
     return (
-        <InputActionConsumer actions={{ Close: onClose, Back: onClose }} ignoreFocusState={true}>
+        <InputActionConsumer actions={{ Close: handleClose, Back: handleClose }} ignoreFocusState={true}>
             <div className={`${css.panel} ${css[phase]}`}>
                 <div className={css.header}>
                     <div className={css.titleRow}>
@@ -186,7 +197,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             src={VT.panel.closeIcon}
                             theme={VT.roundIconButton}
                             className={VT.panel.closeButton}
-                            onSelect={onClose}
+                            onSelect={handleClose}
                             onMouseDown={stopMouseDown}
                         />
                     </div>
@@ -202,6 +213,15 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             }}
                             labels={typeLabels}
                             tooltip={typePickerTooltip}
+                            style={{ height: "100%", boxSizing: "border-box" }}
+                        />
+
+                        <SelectDistrictsButton
+                            selected={selectingDistricts}
+                            onSelect={() => {
+                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                                toggleDistrictSelection(group.entity)
+                            }}
                         />
                     </div>
 

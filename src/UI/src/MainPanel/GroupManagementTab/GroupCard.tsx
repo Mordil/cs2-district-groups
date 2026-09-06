@@ -215,6 +215,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
 
                         <SelectDistrictsButton
                             selected={selectingDistricts}
+                            className={css.selectDistrictButton}
                             onSelect={() => {
                                 logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                                 toggleDistrictSelection(group.entity)

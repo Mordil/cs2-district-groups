@@ -1,3 +1,5 @@
+import { CSSProperties } from "react"
+
 import { Icon } from "cs2/ui"
 
 import { useTranslation } from "../utils/locale"
@@ -8,13 +10,19 @@ import { VT } from "./vanilla"
 import css from "./SelectDistrictsButton.module.scss"
 
 // Toggles district-picking mode for a group; `selected` reflects whether it's currently active.
-export const SelectDistrictsButton = (props: { selected: boolean; onSelect: () => void }) => {
+export const SelectDistrictsButton = (props: {
+    selected: boolean;
+    onSelect: () => void;
+    style?: CSSProperties;
+    className?: string;
+}) => {
     const t = useTranslation()
 
     return (
         <button
-            className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, props.selected ? "selected" : ""]
+            className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, props.className, props.selected ? "selected" : ""]
                 .filter(Boolean).join(" ")}
+            style={props.style}
             onClick={props.onSelect}
         >
             <Icon className={VT.sectionPrimaryButton.icon} src={gameIconSrc("Districts")} />

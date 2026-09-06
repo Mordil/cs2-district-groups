@@ -86,7 +86,8 @@ $horizontal-padding: 16rem;
 
 .actionSection {
     display: flex;
-    align-items: center;
+    align-items: stretch;
+    justify-content: space-between;
     padding-top: $horizontal-padding;
     padding-right: $horizontal-padding;
     padding-bottom: $horizontal-padding;
