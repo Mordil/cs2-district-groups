@@ -47,9 +47,6 @@ $horizontal-padding: 16rem;
 }
 
 .colorSwatch {
-    width: 14rem;
-    height: 14rem;
-    border-radius: var(--panelRadiusInner);
     margin-right: var(--gap8);
     flex-shrink: 0;
 }
@@ -57,12 +54,38 @@ $horizontal-padding: 16rem;
 .title {
     flex: 1;
     min-width: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: var(--panelRadiusInner);
+    margin-left: calc(-1 * var(--gap4));
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    padding-left: var(--gap4);
+    padding-right: var(--gap4);
+    color: var(--accentColorNormal);
     font-size: var(--fontSizeXL);
-    text-transform: uppercase;
-    letter-spacing: 0.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+.title:hover {
+    background-color: var(--hoverColor);
+}
+.title:focus {
+    outline: none;
+    background-color: var(--activeColor);
+}
+
+.deleteButtonHover {
+    border-radius: 3rem;
+    margin-right: var(--gap4);
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.deleteButtonHover:hover {
+    background-color: var(--hoverColorNormal);
 }
 
 .actionSection {
@@ -73,7 +96,6 @@ $horizontal-padding: 16rem;
     padding-bottom: $horizontal-padding;
     padding-left: $horizontal-padding;
     background-color: rgba(19, 28, 48, 0.75);
-    --iconColor: var(--textColorDimmest);
 }
 
 .content {
