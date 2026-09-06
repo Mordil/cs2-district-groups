@@ -85,7 +85,6 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         lastFilterType = type
         setFilterType(type)
         setOverlayFilter(type)
-        console.log("FIZZ")
 
         if (type !== filterType) {
             cancelActiveDistrictSelection()
@@ -96,7 +95,6 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
         logger.info(`Panel tab changed; tab:${PanelTab[tab]}`)
         lastPanelTab = tab
         setActiveTab(tab)
-        console.log("FIZZ")
 
         if (tab !== activeTab) {
             cancelActiveDistrictSelection()
