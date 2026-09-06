@@ -1,5 +1,6 @@
 import { CSSProperties, MouseEvent, useContext, useState } from "react"
 
+import { trigger } from "cs2/api"
 import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
@@ -186,6 +187,20 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
                             {group.members.map((member) => (
                                 <div className={css.memberRow} key={entityKey(member.entity)}>
                                     <div className={css.memberName}>{member.name}</div>
+
+                                    <div className={css.viewDetailsLink}>
+                                        <VC.InfoLink
+                                            onSelect={() => {
+                                                logger.info(`View district details clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                                trigger("selectedInfo", "selectEntity", member.entity)
+                                            }}
+                                        >
+                                            <LocalizedString
+                                                id={VanillaLocale.details.id}
+                                                fallback={VanillaLocale.details.fallback}
+                                            />
+                                        </VC.InfoLink>
+                                    </div>
 
                                     <Tooltip tooltip={t("removeMemberTooltip")}>
                                         <div className={css.deleteButtonHover}>
