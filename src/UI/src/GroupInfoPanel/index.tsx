@@ -11,7 +11,7 @@ import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc } from "../components/icons"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../components/vanilla"
-import { useTypeLabels } from "../constants"
+import { kGroupInfoPanelMaxWidth, kPanelWidth, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import { deleteGroup, renameGroup, setGroupColor, setGroupType, toggleDistrictSelection } from "../triggers"
 import { Group } from "../types"
@@ -25,6 +25,7 @@ import css from "./index.module.scss"
 // Tints the header delete action to flag it as the harder-to-reverse one.
 const dangerIconStyle = { "--iconColor": "var(--negativeColor)" } as CSSProperties
 const removeButtonStyle = { "height": "24rem", "width": "24rem" } as CSSProperties
+const panelWidthStyle = { "minWidth": `${kPanelWidth}rem`, "maxWidth": `${kGroupInfoPanelMaxWidth}rem` } as CSSProperties
 
 const stopMouseDown = (e: MouseEvent) => {
     e.preventDefault()
@@ -144,7 +145,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
 
     return (
         <InputActionConsumer actions={{ Close: handleClose, Back: handleClose }} ignoreFocusState={true}>
-            <div className={`${css.panel} ${css[phase]}`}>
+            <div className={`${css.panel} ${css[phase]}`} style={panelWidthStyle}>
                 <div className={css.header}>
                     <div className={css.titleRow}>
                         <ColorPicker

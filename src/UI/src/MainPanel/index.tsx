@@ -10,7 +10,7 @@ import { Checkbox } from "../components/Checkbox"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { VC, VF, VT } from "../components/vanilla"
-import { useTypeLabels } from "../constants"
+import { kPanelWidth, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import {
     createGroup as createGroupTrigger,
@@ -174,7 +174,7 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
 
     return (
         <InputActionConsumer actions={{ Close: onClose, Back: onClose }} ignoreFocusState={true}>
-            <div className={`${css.panel} ${css[phase]}`}>
+            <div className={`${css.panel} ${css[phase]}`} style={{ width: `${kPanelWidth}rem` }}>
                 <div className={css.header}>
                     <div className={css.titleRow}>
                         <span className={css.title}>{t("panelTitle")}</span>

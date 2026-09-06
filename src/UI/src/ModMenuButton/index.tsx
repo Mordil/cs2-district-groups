@@ -6,7 +6,7 @@ import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { Entity, entityEquals } from "cs2/utils"
 
 import { areaToolActive$, groups$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
-import { kIconStylePaths, kPanelWidth } from "../constants"
+import { kGroupInfoPanelMaxWidth, kIconStylePaths, kPanelWidth } from "../constants"
 import { markdownRenderer } from "../shared"
 import { setOverlay, toggleDistrictSelection } from "../triggers"
 import { useTranslation } from "../utils/locale"
@@ -22,11 +22,12 @@ const kDetailsSwapDurationMs = 120
 
 interface PanelBodyProps {
     onClose: () => void
+    onShowingDetailsChange: (showingDetails: boolean) => void
 }
 
 // Whichever group's details the player last chose to view takes over the whole panel shell,
 // in place of MainPanel, until they close it and land back on the group list.
-const PanelBody = ({ onClose }: PanelBodyProps) => {
+const PanelBody = ({ onClose, onShowingDetailsChange }: PanelBodyProps) => {
     const groups = useValue(groups$)
     const [viewingGroupEntity, setViewingGroupEntity] = useState<Entity | null>(null)
     const [detailsVisible, setDetailsVisible] = useState(false)
@@ -44,12 +45,18 @@ const PanelBody = ({ onClose }: PanelBodyProps) => {
         ? groups.find((g) => entityEquals(g.entity, viewingGroupEntity))
         : undefined
 
+    const showingDetails = detailsMounted && viewingGroup !== undefined
+
+    useEffect(() => {
+        onShowingDetailsChange(showingDetails)
+    }, [showingDetails])
+
     const openDetails = (entity: Entity) => {
         setViewingGroupEntity(entity)
         setDetailsVisible(true)
     }
 
-    return detailsMounted && viewingGroup ? (
+    return showingDetails ? (
         <GroupInfoPanel group={viewingGroup} onClose={() => setDetailsVisible(false)} phase={phase} />
     ) : (
         <MainPanel onClose={onClose} onViewGroupDetails={openDetails} />
@@ -78,6 +85,7 @@ export const GroupManager = () => {
     const shouldDismissPanel = useValue(shouldDismissPanel$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
+    const [showingDetails, setShowingDetails] = useState(false)
 
     const openPanel = () => {
         logger.info("Panel opened;")
@@ -159,9 +167,12 @@ export const GroupManager = () => {
                 />
             </Tooltip>
 
-            <div className={`${css.panelShell} ${css[phase]}`} style={{ width: `${kPanelWidth}rem` }}>
+            <div
+                className={`${css.panelShell} ${css[phase]}`}
+                style={{ width: `${showingDetails ? kGroupInfoPanelMaxWidth : kPanelWidth}rem` }}
+            >
                 {contentMounted &&
-                    <PanelBody onClose={closePanel} />
+                    <PanelBody onClose={closePanel} onShowingDetailsChange={setShowingDetails} />
                 }
             </div>
         </>

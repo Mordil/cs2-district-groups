@@ -17,6 +17,9 @@ export const kGenericType = 0
 // The size of the main panel, in rem CSS units
 export const kPanelWidth = 490
 
+// How wide the group info panel is allowed to grow to fit longer content, in rem CSS units
+export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.25
+
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {
