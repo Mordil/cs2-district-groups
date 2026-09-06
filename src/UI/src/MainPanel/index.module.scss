@@ -1,3 +1,5 @@
+@use "../styles/transitions" as *;
+
 $horizontal-padding: 16rem;
 
 .panel {
@@ -10,6 +12,13 @@ $horizontal-padding: 16rem;
     border-bottom-left-radius: var(--panelRadius);
     border-bottom-right-radius: var(--panelRadius);
     overflow: hidden;
+
+    @include enter-exit-transition(
+        120ms,
+        (opacity: 0, transform: translateY(-4rem)),
+        (opacity: 1, transform: translateY(0)),
+        ease-out
+    );
 }
 
 .header {

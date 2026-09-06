@@ -12,17 +12,15 @@ import { ColorPicker } from "../components/ColorPicker"
 import { glyphIconSrc } from "../components/icons"
 import { TypePicker } from "../components/TypePicker"
 import { VC, VF, VT } from "../components/vanilla"
-import { kPanelWidth, useTypeLabels } from "../constants"
+import { useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import { deleteGroup, renameGroup, setGroupColor, setGroupType } from "../triggers"
 import { Group } from "../types"
 import { VanillaLocale, useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
-import { useEnterExitPhase } from "../utils/useEnterExitPhase"
+import { TransitionPhase } from "../utils/useEnterExitPhase"
 
 import css from "./index.module.scss"
-
-const kFadeDurationMs = 150
 
 // Tints the header delete action to flag it as the harder-to-reverse one.
 const dangerIconStyle = { "--iconColor": "var(--negativeColor)" } as CSSProperties
@@ -51,14 +49,14 @@ const EntityRow = ({ entity, name }: EntityRowProps) => (
 interface GroupInfoPanelProps {
     group: Group
     onClose: () => void
+    phase: TransitionPhase
 }
 
 // Detail view for a single district group; the name and identity color are editable here.
-export const GroupInfoPanel = ({ group, onClose }: GroupInfoPanelProps) => {
+export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
     const serviceBuildings = useValue(serviceBuildings$)
-    const { phase } = useEnterExitPhase(true, kFadeDurationMs, { skipInitial: false })
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
     const dialogStack = useContext(DialogStack)
@@ -140,7 +138,7 @@ export const GroupInfoPanel = ({ group, onClose }: GroupInfoPanelProps) => {
 
     return (
         <InputActionConsumer actions={{ Close: onClose, Back: onClose }} ignoreFocusState={true}>
-            <div className={`${css.panel} ${css[phase]}`} style={{ left: `${kPanelWidth + 16}rem`, width: `${kPanelWidth}rem` }}>
+            <div className={`${css.panel} ${css[phase]}`}>
                 <div className={css.header}>
                     <div className={css.titleRow}>
                         <ColorPicker

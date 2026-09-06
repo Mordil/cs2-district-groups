@@ -2,7 +2,7 @@ import { CSSProperties, MouseEvent, useContext, useState } from "react"
 
 import { trigger } from "cs2/api"
 import { LocalizedString } from "cs2/l10n"
-import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Portal, Tooltip } from "cs2/ui"
+import { ConfirmationDialog, DialogStack, FormattedParagraphs, Icon, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
@@ -14,7 +14,6 @@ import { Group } from "../../types"
 import { VanillaLocale, useTranslation } from "../../utils/locale"
 import { logger } from "../../utils/log"
 import { useEnterExitPhase } from "../../utils/useEnterExitPhase"
-import { GroupInfoPanel } from "GroupInfoPanel"
 
 import css from "./GroupCard.module.scss"
 
@@ -35,12 +34,12 @@ const stopMouseDown = (e: MouseEvent) => {
 interface GroupCardProps {
     group: Group
     selectingDistricts: boolean
+    onViewDetails: () => void
 }
 
-export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
+export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCardProps) => {
     const t = useTranslation()
     const [expanded, setExpanded] = useState(false)
-    const [showDetails, setShowDetails] = useState(false)
     const { phase: expandPhase, mounted: expandedContentMounted } = useEnterExitPhase(
         expanded,
         kExpandDurationMs
@@ -104,137 +103,129 @@ export const GroupCard = ({ group, selectingDistricts }: GroupCardProps) => {
     }
 
     return (
-        <>
-            <div className={css.groupCard}>
-                <div className={css.colorStripe} style={{ backgroundColor: identityColor }} />
+        <div className={css.groupCard}>
+            <div className={css.colorStripe} style={{ backgroundColor: identityColor }} />
 
-                <div className={css.cardBody}>
-                    <div style={backgroundTintStyle}>
-                        <div className={css.groupDetailRow}>
-                            <VC.IconButton
-                                tinted={true}
-                                focusKey={VF.FOCUS_DISABLED}
-                                src={glyphIconSrc(expanded ? "ThickStrokeArrowDown" : "ThickStrokeArrowRight")}
-                                theme={VT.roundIconButton}
-                                className={css.rowIconButton}
-                                onSelect={toggleExpanded}
-                                onMouseDown={stopMouseDown}
-                            />
+            <div className={css.cardBody}>
+                <div style={backgroundTintStyle}>
+                    <div className={css.groupDetailRow}>
+                        <VC.IconButton
+                            tinted={true}
+                            focusKey={VF.FOCUS_DISABLED}
+                            src={glyphIconSrc(expanded ? "ThickStrokeArrowDown" : "ThickStrokeArrowRight")}
+                            theme={VT.roundIconButton}
+                            className={css.rowIconButton}
+                            onSelect={toggleExpanded}
+                            onMouseDown={stopMouseDown}
+                        />
 
-                            <span className={css.groupName}>{group.name}</span>
+                        <span className={css.groupName}>{group.name}</span>
 
-                            <div className={css.viewDetailsLink}>
-                                <VC.InfoLink
-                                    onSelect={() => {
-                                        logger.info(`View group details clicked; entity:${entityKey(group.entity)}`)
-                                        setShowDetails(true)
-                                    }}
-                                >
-                                    <LocalizedString
-                                        id={VanillaLocale.details.id}
-                                        fallback={VanillaLocale.details.fallback}
-                                    />
-                                </VC.InfoLink>
-                            </div>
-                        </div>
-
-                        <div className={css.metadataRow}>
-                            <div className={css.metadataItems}>
-                                <MetadataItem
-                                    icon={gameIconSrc("LotTool")}
-                                    value={group.members.length}
-                                    tooltip={t("metadataDistrictsTooltip")}
+                        <div className={css.viewDetailsLink}>
+                            <VC.InfoLink
+                                onSelect={() => {
+                                    logger.info(`View group details clicked; entity:${entityKey(group.entity)}`)
+                                    onViewDetails()
+                                }}
+                            >
+                                <LocalizedString
+                                    id={VanillaLocale.details.id}
+                                    fallback={VanillaLocale.details.fallback}
                                 />
-                                <MetadataItem
-                                    icon={modIconSrc("building")}
-                                    value={group.assignedBuildingCount}
-                                    tooltip={t("metadataBuildingsTooltip")}
-                                />
-                                <MetadataItem
-                                    icon={gameIconSrc("Population")}
-                                    value={group.population}
-                                    tooltip={t("metadataPopulationTooltip")}
-                                />
-                            </div>
-
-                            <Tooltip tooltip={deleteGroupTooltip}>
-                                <div className={css.deleteButtonHover}>
-                                    <VC.IconButton
-                                        tinted={true}
-                                        focusKey={VF.FOCUS_DISABLED}
-                                        src={glyphIconSrc("Trash")}
-                                        className={VT.districtsSection.deleteButton}
-                                        style={{ ...dangerIconStyle, ...removeButtonStyle }}
-                                        onSelect={handleDeleteGroup}
-                                        onMouseDown={stopMouseDown}
-                                    />
-                                </div>
-                            </Tooltip>
+                            </VC.InfoLink>
                         </div>
                     </div>
 
-                    {expandedContentMounted && (
-                        <div className={`${css.expandableContent} ${css[expandPhase]}`} style={{ borderTopColor: dividerTint }}>
-                            <div className={css.memberList}>
-                                {group.members.map((member) => (
-                                    <div className={css.memberRow} key={entityKey(member.entity)}>
-                                        <div className={css.memberName}>{member.name}</div>
-
-                                        <div className={css.viewDetailsLink}>
-                                            <VC.InfoLink
-                                                onSelect={() => {
-                                                    logger.info(`View district details clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
-                                                    trigger("selectedInfo", "selectEntity", member.entity)
-                                                }}
-                                            >
-                                                <LocalizedString
-                                                    id={VanillaLocale.details.id}
-                                                    fallback={VanillaLocale.details.fallback}
-                                                />
-                                            </VC.InfoLink>
-                                        </div>
-
-                                        <Tooltip tooltip={t("removeMemberTooltip")}>
-                                            <div className={css.deleteButtonHover}>
-                                                <VC.IconButton
-                                                    tinted={true}
-                                                    focusKey={VF.FOCUS_DISABLED}
-                                                    src={glyphIconSrc("Trash")}
-                                                    className={`${VT.districtsSection.deleteButton} ${css.memberDeleteButton}`}
-                                                    style={removeButtonStyle}
-                                                    onSelect={() => {
-                                                        logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
-                                                        removeMember(group.entity, member.entity)
-                                                    }}
-                                                    onMouseDown={stopMouseDown}
-                                                />
-                                            </div>
-                                        </Tooltip>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <button
-                                className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, selectingDistricts ? "selected" : ""]
-                                    .filter(Boolean).join(" ")}
-                                onClick={() => {
-                                    logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
-                                    toggleDistrictSelection(group.entity)
-                                }}
-                            >
-                                <Icon className={VT.sectionPrimaryButton.icon} src={gameIconSrc("Districts")} />
-                                <span className={VT.sectionPrimaryButton.label}>{t("selectDistrictsButton")}</span>
-                            </button>
+                    <div className={css.metadataRow}>
+                        <div className={css.metadataItems}>
+                            <MetadataItem
+                                icon={gameIconSrc("LotTool")}
+                                value={group.members.length}
+                                tooltip={t("metadataDistrictsTooltip")}
+                            />
+                            <MetadataItem
+                                icon={modIconSrc("building")}
+                                value={group.assignedBuildingCount}
+                                tooltip={t("metadataBuildingsTooltip")}
+                            />
+                            <MetadataItem
+                                icon={gameIconSrc("Population")}
+                                value={group.population}
+                                tooltip={t("metadataPopulationTooltip")}
+                            />
                         </div>
-                    )}
-                </div>
-            </div>
 
-            {showDetails && (
-                <Portal>
-                    <GroupInfoPanel group={group} onClose={() => setShowDetails(false)} />
-                </Portal>
-            )}
-        </>
+                        <Tooltip tooltip={deleteGroupTooltip}>
+                            <div className={css.deleteButtonHover}>
+                                <VC.IconButton
+                                    tinted={true}
+                                    focusKey={VF.FOCUS_DISABLED}
+                                    src={glyphIconSrc("Trash")}
+                                    className={VT.districtsSection.deleteButton}
+                                    style={{ ...dangerIconStyle, ...removeButtonStyle }}
+                                    onSelect={handleDeleteGroup}
+                                    onMouseDown={stopMouseDown}
+                                />
+                            </div>
+                        </Tooltip>
+                    </div>
+                </div>
+
+                {expandedContentMounted && (
+                    <div className={`${css.expandableContent} ${css[expandPhase]}`} style={{ borderTopColor: dividerTint }}>
+                        <div className={css.memberList}>
+                            {group.members.map((member) => (
+                                <div className={css.memberRow} key={entityKey(member.entity)}>
+                                    <div className={css.memberName}>{member.name}</div>
+
+                                    <div className={css.viewDetailsLink}>
+                                        <VC.InfoLink
+                                            onSelect={() => {
+                                                logger.info(`View district details clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                                trigger("selectedInfo", "selectEntity", member.entity)
+                                            }}
+                                        >
+                                            <LocalizedString
+                                                id={VanillaLocale.details.id}
+                                                fallback={VanillaLocale.details.fallback}
+                                            />
+                                        </VC.InfoLink>
+                                    </div>
+
+                                    <Tooltip tooltip={t("removeMemberTooltip")}>
+                                        <div className={css.deleteButtonHover}>
+                                            <VC.IconButton
+                                                tinted={true}
+                                                focusKey={VF.FOCUS_DISABLED}
+                                                src={glyphIconSrc("Trash")}
+                                                className={`${VT.districtsSection.deleteButton} ${css.memberDeleteButton}`}
+                                                style={removeButtonStyle}
+                                                onSelect={() => {
+                                                    logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                                    removeMember(group.entity, member.entity)
+                                                }}
+                                                onMouseDown={stopMouseDown}
+                                            />
+                                        </div>
+                                    </Tooltip>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button
+                            className={[VT.sectionPrimaryButton.button, css.selectDistrictsButton, selectingDistricts ? "selected" : ""]
+                                .filter(Boolean).join(" ")}
+                            onClick={() => {
+                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                                toggleDistrictSelection(group.entity)
+                            }}
+                        >
+                            <Icon className={VT.sectionPrimaryButton.icon} src={gameIconSrc("Districts")} />
+                            <span className={VT.sectionPrimaryButton.label}>{t("selectDistrictsButton")}</span>
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
     )
 }

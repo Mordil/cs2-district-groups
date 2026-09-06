@@ -3,7 +3,7 @@ import { MouseEvent, useEffect, useRef, useState } from "react"
 import { useValue } from "cs2/api"
 import { AutoNavigationScope, InputActionConsumer, NavigationDirection } from "cs2/input"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
-import { entityEquals } from "cs2/utils"
+import { Entity, entityEquals } from "cs2/utils"
 
 import { areasVisible$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
@@ -23,6 +23,7 @@ import {
 } from "../triggers"
 import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
+import { useEnterExitPhase } from "../utils/useEnterExitPhase"
 
 import { BuildingAssignmentsTab } from "./BuildingAssignmentsTab"
 import { GroupManagementTab } from "./GroupManagementTab"
@@ -35,15 +36,19 @@ enum PanelTab {
 
 const kTabOrder = [PanelTab.Groups, PanelTab.Assignments]
 
+const kFadeDurationMs = 120
+
 interface MainPanelProps {
     onClose: () => void
+    onViewGroupDetails: (entity: Entity) => void
 }
 
 let lastFilterType = 0
 let lastPanelTab = PanelTab.Groups
-export const MainPanel = ({ onClose }: MainPanelProps) => {
+export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
     const t = useTranslation()
     const typeLabels = useTypeLabels()
+    const { phase } = useEnterExitPhase(true, kFadeDurationMs, { skipInitial: false })
     const [filterType, setFilterType] = useState(lastFilterType)
     const [activeTab, setActiveTab] = useState(lastPanelTab)
     const [hideAssigned, setHideAssigned] = useState(false)
@@ -169,7 +174,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
 
     return (
         <InputActionConsumer actions={{ Close: onClose, Back: onClose }} ignoreFocusState={true}>
-            <div className={css.panel}>
+            <div className={`${css.panel} ${css[phase]}`}>
                 <div className={css.header}>
                     <div className={css.titleRow}>
                         <span className={css.title}>{t("panelTitle")}</span>
@@ -262,6 +267,7 @@ export const MainPanel = ({ onClose }: MainPanelProps) => {
                                 <GroupManagementTab
                                     filterType={filterType}
                                     className={css.list}
+                                    onViewGroupDetails={onViewGroupDetails}
                                 />
                             ) : (
                                 <BuildingAssignmentsTab
