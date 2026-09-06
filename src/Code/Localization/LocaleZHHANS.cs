@@ -108,6 +108,8 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataDistrictsTooltip, "市辖区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已分配建筑" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },
+                { LocalizationKey.MetadataHappinessTooltip, "平均幸福感" },
+                { LocalizationKey.MetadataWealthTooltip, "平均资产" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**市辖区组**" },
                 { LocalizationKey.ToggleTooltipBody, "创建市辖区组并分配给服务建筑，实现**工作区**的自动管理。" },

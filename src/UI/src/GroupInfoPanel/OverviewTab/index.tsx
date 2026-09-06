@@ -5,9 +5,10 @@ import { Icon, Scrollable } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
 import { glyphIconSrc } from "../../components/icons"
+import { ThresholdValue } from "../../components/ThresholdValue"
 import { VC, VF, VT } from "../../components/vanilla"
 import { DistrictMember, Group } from "../../types"
-import { VanillaLocale } from "../../utils/locale"
+import { VanillaLocale, happinessThreshold, wealthThreshold } from "../../utils/locale"
 import { logger } from "../../utils/log"
 
 import css from "./index.module.scss"
@@ -19,6 +20,8 @@ const kTableRow = VT.tableRow
 enum OverviewColumn {
     District,
     Population,
+    Happiness,
+    Wealth,
 }
 
 interface ColumnDef {
@@ -79,6 +82,36 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
             compare: (a, b) => a.population - b.population,
             renderValue: (member) => <LocalizedNumber value={member.population} unit={Unit.Integer} />,
             renderTotal: (total) => <LocalizedNumber value={total.population} unit={Unit.Integer} />,
+        },
+        {
+            id: OverviewColumn.Happiness,
+            label: (
+                <LocalizedString
+                    id={VanillaLocale.happinessColumn.id}
+                    fallback={VanillaLocale.happinessColumn.fallback}
+                />
+            ),
+            widthClass: kTable.cellDouble,
+            alignClass: kTable.alignRight,
+            descendingFirst: true,
+            compare: (a, b) => a.happiness - b.happiness,
+            renderValue: (member) => <ThresholdValue label={happinessThreshold(member.happiness)} />,
+            renderTotal: (total) => <ThresholdValue label={happinessThreshold(total.happiness)} />,
+        },
+        {
+            id: OverviewColumn.Wealth,
+            label: (
+                <LocalizedString
+                    id={VanillaLocale.wealthColumn.id}
+                    fallback={VanillaLocale.wealthColumn.fallback}
+                />
+            ),
+            widthClass: kTable.cellDouble,
+            alignClass: kTable.alignRight,
+            descendingFirst: true,
+            compare: (a, b) => a.wealth - b.wealth,
+            renderValue: (member) => <ThresholdValue label={wealthThreshold(member.wealth)} />,
+            renderTotal: (total) => <ThresholdValue label={wealthThreshold(total.wealth)} />,
         },
     ]
 

@@ -108,6 +108,8 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataDistrictsTooltip, "特区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },
+                { LocalizationKey.MetadataHappinessTooltip, "平均幸福度" },
+                { LocalizationKey.MetadataWealthTooltip, "平均資産" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**特区グループ**" },
                 { LocalizationKey.ToggleTooltipBody, "特区をグループ化してサービス施設に割り当てることで、**稼働特区**を自動的に管理できるようにします。" },

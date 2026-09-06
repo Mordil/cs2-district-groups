@@ -12,11 +12,12 @@ namespace DistrictGroups
         private void WriteGroups(IJsonWriter writer)
         {
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
-            Dictionary<Entity, int> districtPopulations = m_GroupSystem.GetDistrictPopulations();
+            Dictionary<Entity, DistrictStats> districtStats = m_GroupSystem.GetDistrictStats();
             writer.ArrayBegin(groups.Length);
             foreach (Entity group in groups)
             {
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
+                DistrictStats groupStats = m_GroupSystem.GetGroupStats(group, districtStats);
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
                 writer.TypeBegin("Group");
                 writer.PropertyName("entity");
@@ -32,13 +33,12 @@ namespace DistrictGroups
                 {
                     writer.Write(assignedBuildings.Length);
                 }
-                writer.PropertyName("population");
-                writer.Write(m_GroupSystem.GetPopulation(group, districtPopulations));
+                WriteResidentStats(writer, groupStats);
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)
                 {
-                    WriteDistrictMember(writer, member.m_District, districtPopulations);
+                    WriteDistrictMember(writer, member.m_District, districtStats);
                 }
                 writer.ArrayEnd();
                 writer.TypeEnd();
@@ -108,16 +108,33 @@ namespace DistrictGroups
         }
 
         // A member district, carrying the per-district numbers its overview row reads
-        private void WriteDistrictMember(IJsonWriter writer, Entity entity, Dictionary<Entity, int> districtPopulations)
+        private void WriteDistrictMember(IJsonWriter writer, Entity entity, Dictionary<Entity, DistrictStats> districtStats)
         {
+            districtStats.TryGetValue(entity, out DistrictStats stats);
+
             writer.TypeBegin("DistrictMember");
             writer.PropertyName("entity");
             WriteEntity(writer, entity);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(entity) ? m_NameSystem.GetRenderedLabelName(entity) : "<missing>");
-            writer.PropertyName("population");
-            writer.Write(districtPopulations.TryGetValue(entity, out int population) ? population : 0);
+            WriteResidentStats(writer, stats);
             writer.TypeEnd();
+        }
+
+        /*
+            Happiness and wealth go over as the ordinal of the band the average lands in rather than the raw
+            average, because bucketing wealth needs a game parameter singleton the UI cannot reach, and the
+            panel only ever shows the band's name anyway. DistrictGroupSystem.kNoThreshold means the district
+            or group had no residents to average.
+        */
+        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats)
+        {
+            writer.PropertyName("population");
+            writer.Write(stats.m_Population);
+            writer.PropertyName("happiness");
+            writer.Write(DistrictGroupSystem.GetHappinessThreshold(stats));
+            writer.PropertyName("wealth");
+            writer.Write(m_GroupSystem.GetWealthThreshold(stats));
         }
     }
 }

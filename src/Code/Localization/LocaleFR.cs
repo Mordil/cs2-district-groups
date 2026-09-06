@@ -108,6 +108,8 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataDistrictsTooltip, "Quartiers" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Bâtiments assignés" },
                 { LocalizationKey.MetadataPopulationTooltip, "Population" },
+                { LocalizationKey.MetadataHappinessTooltip, "Bonheur moyen" },
+                { LocalizationKey.MetadataWealthTooltip, "Richesse moyenne" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GROUPES DE QUARTIERS**" },
                 { LocalizationKey.ToggleTooltipBody, "Créez des groupes de quartiers à assigner aux bâtiments de service pour une gestion automatique des **quartiers d'exploitation**." },

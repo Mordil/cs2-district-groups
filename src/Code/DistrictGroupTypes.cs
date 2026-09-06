@@ -39,6 +39,34 @@ namespace DistrictGroups
         Welfare = 12,
     }
 
+    // Resident totals for one district, or for a whole group once its districts are added together.
+    // 
+    // Kept as sums with their own divisors rather than as finished averages,
+    // so adding two districts together yields the population-weighted average and not the average of averages.
+    public struct DistrictStats
+    {
+        // Everyone living in the district's residential buildings.
+        public int m_Population;
+        // Summed Citizen.Happiness, divided by m_LivingResidentCount for the average.
+        public int m_HappinessSum;
+        // Living residents only - the dead still occupy a household but have no happiness to average.
+        public int m_LivingResidentCount;
+        // Summed household wealth, divided by m_HouseholdCount for the average.
+        public long m_WealthSum;
+        // Resident households, excluding the tourists and commuters vanilla leaves out of its wealth average.
+        public int m_HouseholdCount;
+
+        // Folds another district's totals into these.
+        public void Add(DistrictStats other)
+        {
+            m_Population += other.m_Population;
+            m_HappinessSum += other.m_HappinessSum;
+            m_LivingResidentCount += other.m_LivingResidentCount;
+            m_WealthSum += other.m_WealthSum;
+            m_HouseholdCount += other.m_HouseholdCount;
+        }
+    }
+
     // A named, typed set of base districts.
     public struct DistrictGroupData : IComponentData, IQueryTypeParameter, ISerializable
     {

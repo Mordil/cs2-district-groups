@@ -110,10 +110,10 @@ namespace DistrictGroups
                 RefreshPhase.ServiceBuildings,
                 ref m_LastSeenServiceBuildingsRefreshVersion);
 
-            // Populations are cached usually, so we want to force a fresh update
+            // District stats are cached usually, so we want to force a fresh update
             if (groupsRefreshDue)
             {
-                m_GroupSystem.InvalidateDistrictPopulations();
+                m_GroupSystem.InvalidateDistrictStats();
             }
 
             if (mutated || groupsRefreshDue)

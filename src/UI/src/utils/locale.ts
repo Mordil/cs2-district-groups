@@ -41,6 +41,8 @@ export const kLocale = {
     metadataDistrictsTooltip: id("MetadataDistrictsTooltip"),
     metadataBuildingsTooltip: id("MetadataBuildingsTooltip"),
     metadataPopulationTooltip: id("MetadataPopulationTooltip"),
+    metadataHappinessTooltip: id("MetadataHappinessTooltip"),
+    metadataWealthTooltip: id("MetadataWealthTooltip"),
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
     toggleTooltipBody: id("ToggleTooltipBody"),
@@ -118,6 +120,8 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     metadataDistrictsTooltip: "Districts",
     metadataBuildingsTooltip: "Assigned buildings",
     metadataPopulationTooltip: "Population",
+    metadataHappinessTooltip: "Average happiness",
+    metadataWealthTooltip: "Average wealth",
 
     toggleTooltipTitle: "**DISTRICT GROUPS**",
     toggleTooltipBody:
@@ -158,17 +162,54 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     typeWelfare: "Welfare",
 }
 
+// A display string the game itself ships, with the English text to fall back on.
+export interface VanillaLabel {
+    id: string
+    fallback: string
+}
+
 // Locale ids owned by the game rather than the mod.
 export const VanillaLocale = {
     details: { id: "SelectedInfoPanel.DETAILS", fallback: "View Details" },
     total: { id: "TransportInfoPanel.TOTAL", fallback: "Total" },
     districtsColumn: { id: "Glossary.SECTION_TITLE[Districts]", fallback: "Districts" },
     populationColumn: { id: "Glossary.SECTION_TITLE[Population]", fallback: "Population" },
+    happinessColumn: { id: "Glossary.SECTION_TITLE[Happiness]", fallback: "Happiness" },
+    wealthColumn: { id: "StatisticsPanel.STAT_TITLE[Wealth]", fallback: "Wealth" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",
     },
 }
+
+/*
+    The band names the game shows for citizen happiness and household wealth, in the order of the
+    C# enums whose ordinals the bindings send (Game.Citizens.CitizenHappiness and
+    Game.UI.InGame.HouseholdWealthKey).
+*/
+const kHappinessThresholds: VanillaLabel[] = [
+    { id: "SelectedInfoPanel.CITIZEN_HAPPINESS_TITLE[Depressed]", fallback: "Unhappy" },
+    { id: "SelectedInfoPanel.CITIZEN_HAPPINESS_TITLE[Sad]", fallback: "Sad" },
+    { id: "SelectedInfoPanel.CITIZEN_HAPPINESS_TITLE[Neutral]", fallback: "Neutral" },
+    { id: "SelectedInfoPanel.CITIZEN_HAPPINESS_TITLE[Content]", fallback: "Content" },
+    { id: "SelectedInfoPanel.CITIZEN_HAPPINESS_TITLE[Happy]", fallback: "Happy" },
+]
+
+const kWealthThresholds: VanillaLabel[] = [
+    { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Wretched]", fallback: "Wretched" },
+    { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Poor]", fallback: "Poor" },
+    { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Modest]", fallback: "Modest" },
+    { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Comfortable]", fallback: "Comfortable" },
+    { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Wealthy]", fallback: "Wealthy" },
+]
+
+// The label for a happiness band, or null for the kNoThreshold ordinal.
+export const happinessThreshold = (ordinal: number): VanillaLabel | null =>
+    kHappinessThresholds[ordinal] ?? null
+
+// The label for a household-wealth band, or null for the kNoThreshold ordinal.
+export const wealthThreshold = (ordinal: number): VanillaLabel | null =>
+    kWealthThresholds[ordinal] ?? null
 
 type LocaleKey = keyof typeof kLocale
 

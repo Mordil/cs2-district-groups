@@ -1,8 +1,8 @@
-using Colossal.Entities;
 using Colossal.Serialization.Entities;
 using Game;
 using Game.Areas;
 using Game.Buildings;
+using Game.Prefabs;
 using Game.UI;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -33,12 +33,17 @@ namespace DistrictGroups
             new Color(0.55f, 0.60f, 0.65f, 1f), // slate
         };
 
+        // What a threshold reads as when the district or group has no residents to average.
+        public const int kNoThreshold = -1;
+
         private EntityQuery m_GroupQuery;
         private EntityQuery m_AssignmentQuery;
         // Same component as m_AssignmentQuery, but including disabled (unassigned) buildings too
         private EntityQuery m_AllAssignmentsQuery;
-        // Residential buildings, keyed to a district via CurrentDistrict - backs GetDistrictPopulations.
+        // Residential buildings, keyed to a district via CurrentDistrict.
         private EntityQuery m_ResidentialBuildingQuery;
+        // Holds the wealth thresholds the average household wealth is bucketed against.
+        private EntityQuery m_CitizenHappinessParameterQuery;
 
         // Bumped on every group/assignment mutation (including renames and per-building assignment)
         public int Version { get; private set; }
@@ -48,8 +53,8 @@ namespace DistrictGroups
         // Next palette index to hand out to a newly created group.
         private int m_NextColorIndex;
 
-        private Dictionary<Entity, int> m_CachedDistrictPopulations = new Dictionary<Entity, int>();
-        private bool m_DistrictPopulationsStale = true;
+        private Dictionary<Entity, DistrictStats> m_CachedDistrictStats = new Dictionary<Entity, DistrictStats>();
+        private bool m_DistrictStatsStale = true;
 
         // Read-only usage only (GetRenderedLabelName in the Debug partial) - group labels read the
         // name directly off DistrictGroupData each rebuild, no NameSystem registration needed.
@@ -73,6 +78,7 @@ namespace DistrictGroups
                 ComponentType.ReadOnly<ResidentialProperty>(),
                 ComponentType.Exclude<Game.Tools.Temp>(),
                 ComponentType.Exclude<Game.Common.Deleted>());
+            m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             InitializeDebugSupport();
             Enabled = false;
         }
@@ -93,8 +99,8 @@ namespace DistrictGroups
                 EntityManager.DestroyEntity(m_GroupQuery);
             }
             m_NextColorIndex = 0;
-            m_CachedDistrictPopulations.Clear();
-            m_DistrictPopulationsStale = true;
+            m_CachedDistrictStats.Clear();
+            m_DistrictStatsStale = true;
         }
 
         // Safety net for saves that already contain corrupted groups: drop member entries whose district no longer exists.
@@ -392,57 +398,6 @@ namespace DistrictGroups
                 }
             }
             return result.ToArray(allocator);
-        }
-
-        public void InvalidateDistrictPopulations()
-        {
-            m_DistrictPopulationsStale = true;
-        }
-
-        // District -> total population, summed from every residential building's renter households
-        public Dictionary<Entity, int> GetDistrictPopulations()
-        {
-            if (!m_DistrictPopulationsStale)
-            {
-                return m_CachedDistrictPopulations;
-            }
-            m_DistrictPopulationsStale = false;
-
-            Dictionary<Entity, int> populations = new Dictionary<Entity, int>();
-            using NativeArray<Entity> buildings = m_ResidentialBuildingQuery.ToEntityArray(Allocator.Temp);
-            foreach (Entity building in buildings)
-            {
-                Entity district = EntityManager.GetComponentData<CurrentDistrict>(building).m_District;
-                if (district == Entity.Null || !EntityManager.TryGetBuffer(building, true, out DynamicBuffer<Renter> renters))
-                {
-                    continue;
-                }
-                int buildingPopulation = 0;
-                foreach (Renter renter in renters)
-                {
-                    if (EntityManager.TryGetBuffer(renter.m_Renter, true, out DynamicBuffer<Game.Citizens.HouseholdCitizen> residents))
-                    {
-                        buildingPopulation += residents.Length;
-                    }
-                }
-                populations[district] = populations.TryGetValue(district, out int existing) ? existing + buildingPopulation : buildingPopulation;
-            }
-            m_CachedDistrictPopulations = populations;
-            return m_CachedDistrictPopulations;
-        }
-
-        public int GetPopulation(Entity group, Dictionary<Entity, int> districtPopulations)
-        {
-            int population = 0;
-            using NativeArray<Entity> districts = GetValidMemberDistricts(group, Allocator.Temp);
-            foreach (Entity district in districts)
-            {
-                if (districtPopulations.TryGetValue(district, out int districtPopulation))
-                {
-                    population += districtPopulation;
-                }
-            }
-            return population;
         }
 
         public Entity FindGroupByName(string name)

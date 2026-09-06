@@ -14,6 +14,9 @@ export const kUITopOffset = 60;
 // GroupServiceType.Generic - the "no type selected" sentinel for the type filter.
 export const kGenericType = 0
 
+// ResidentStats.happiness/wealth for a district or group with no residents to average.
+export const kNoThreshold = -1
+
 // The size of the main panel, in rem CSS units
 export const kPanelWidth = 490
 

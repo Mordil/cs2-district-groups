@@ -108,6 +108,8 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataDistrictsTooltip, "Районы" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Назначенные здания" },
                 { LocalizationKey.MetadataPopulationTooltip, "Население" },
+                { LocalizationKey.MetadataHappinessTooltip, "Средний уровень довольства" },
+                { LocalizationKey.MetadataWealthTooltip, "Средний уровень благосостояния" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**ГРУППЫ РАЙОНОВ**" },
                 { LocalizationKey.ToggleTooltipBody, "Создавайте группы районов и назначайте их зданиям служб для автоматического управления **районами обслуживания**." },
