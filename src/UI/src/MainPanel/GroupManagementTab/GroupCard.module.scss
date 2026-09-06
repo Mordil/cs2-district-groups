@@ -1,7 +1,7 @@
 @use "../../styles/transitions" as *;
 
 .groupCard {
-    display: flex;
+    position: relative;
     background-color: var(--hoverColor);
 
     border-top-left-radius: var(--panelRadiusInner);
@@ -18,14 +18,17 @@
 }
 
 .colorStripe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: 5rem;
-    flex-grow: 0;
-    flex-shrink: 0;
 }
 
 .cardBody {
-    flex-grow: 1;
-    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 5rem;
 }
 
 .groupDetailRow {
