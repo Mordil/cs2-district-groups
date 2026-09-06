@@ -1,0 +1,132 @@
+@use "../styles/transitions" as *;
+
+$horizontal-padding: 16rem;
+
+.panel {
+    pointer-events: auto;
+    position: absolute;
+    // taken from the Info Panel, should be ~50px
+    top: calc(var(--screenPadding) + var(--floatingToggleSize) + var(--gap8));
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    border-top-left-radius: var(--panelRadius);
+    border-top-right-radius: var(--panelRadius);
+    border-bottom-left-radius: var(--panelRadius);
+    border-bottom-right-radius: var(--panelRadius);
+    overflow: hidden;
+    transform-origin: 50% 100%;
+
+    @include enter-exit-transition(
+        120ms,
+        (opacity: 0, transform: translateY(-4rem)),
+        (opacity: 1, transform: translateY(0)),
+        ease-out
+    );
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    color: var(--accentColorNormal);
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+    border-bottom-style: solid;
+    border-bottom-width: var(--stroke2);
+    border-bottom-color: var(--accentColorDark);
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+}
+
+.colorSwatch {
+    width: 14rem;
+    height: 14rem;
+    border-radius: var(--panelRadiusInner);
+    margin-right: var(--gap8);
+    flex-shrink: 0;
+}
+
+.title {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--fontSizeXL);
+    text-transform: uppercase;
+    letter-spacing: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.actionSection {
+    display: flex;
+    align-items: center;
+    padding-top: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    padding-bottom: $horizontal-padding;
+    padding-left: $horizontal-padding;
+    background-color: rgba(19, 28, 48, 0.75);
+    --iconColor: var(--textColorDimmest);
+}
+
+.content {
+    flex: 1;
+    min-height: 0;
+    background-image: linear-gradient(var(--panelGradientStart), var(--panelGradientEnd));
+    background-color: var(--panelColorNormal);
+    backdrop-filter: var(--panelBlur);
+}
+:global(.legacy-interface) .content {
+    background-image: none;
+}
+
+.scrollableContent {
+    padding-top: $horizontal-padding;
+    padding-bottom: $horizontal-padding;
+}
+
+.listSectionHeader {
+    color: var(--textColorDimmer);
+    font-size: var(--fontSizeS);
+    text-transform: uppercase;
+    line-height: 130%;
+    letter-spacing: 0.5rem;
+    margin-top: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+}
+.listSectionHeader:first-child {
+    margin-top: 0;
+}
+
+.listItem {
+    color: var(--textColorDim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+}
+.listItem:hover {
+    color: var(--textColor);
+    background-color: var(--menuHoverColor);
+}
+
+.listItemName {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--gap8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -97,22 +97,6 @@
     min-width: 0;
 }
 
-.metadataItem {
-    display: flex;
-    align-items: center;
-    margin-right: 20rem;
-    margin-bottom: var(--gap2);
-    color: var(--textColorDimmest);
-    font-size: var(--fontSizeS);
-    font-variant-numeric: tabular-nums;
-    min-width: 40rem;
-}
-
-.metadataIcon {
-    --size: 20rem;
-    margin-right: var(--gap4);
-}
-
 .expandableContent {
     overflow: hidden;
     border-top-width: 2px;

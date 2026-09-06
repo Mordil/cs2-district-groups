@@ -6,7 +6,7 @@ import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals } from "cs2/utils"
 
 import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
-import { kIconStylePaths, kUITopOffset } from "../constants"
+import { kIconStylePaths, kPanelWidth } from "../constants"
 import { markdownRenderer } from "../shared"
 import { setOverlay, toggleDistrictSelection } from "../triggers"
 import { useTranslation } from "../utils/locale"
@@ -122,7 +122,7 @@ export const GroupManager = () => {
                 />
             </Tooltip>
 
-            <div className={`${css.panelShell} ${css[phase]}`}>
+            <div className={`${css.panelShell} ${css[phase]}`} style={{ width: `${kPanelWidth}rem` }}>
                 {contentMounted &&
                     <MainPanel onClose={closePanel} />
                 }

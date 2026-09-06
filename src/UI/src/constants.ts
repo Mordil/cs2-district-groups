@@ -14,6 +14,9 @@ export const kUITopOffset = 60;
 // GroupServiceType.Generic - the "no type selected" sentinel for the type filter.
 export const kGenericType = 0
 
+// The size of the main panel, in rem CSS units
+export const kPanelWidth = 490
+
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {
