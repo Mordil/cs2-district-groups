@@ -44,6 +44,7 @@ This is the game simulation catching up.
 3. Localized UI
 4. Overlay UI: Visualize your district groups with drawn colored areas to see your city coverage of services, as well as spotting your service buildings
 5. Service Building Index: See a full list of service buildings by type, to quickly modify their group assignments or fully inspect the building
+6. Group-level stats: See population, wealth, building efficiency, etc. for your groups in a dedicated view
 
 ## Localization
 
@@ -66,21 +67,22 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 ## Roadmap
 
-1. Group Info panel: View an aggregate of wealth, population, etc. of districts in the group.
-2. District policy quality of life: Enable/disable district policies for all districts in a group.
+1. District policy quality of life: Enable/disable district policies for all districts in a group.
+2. More district-level, group type stats: Crime rate, Fire risk, Education capacity, etc.
 	</LongDescription>
 
 	<!--Thumbnail-->
 	<Thumbnail Value="Properties/Thumbnail-1.0.png" />
 
 	<!--Screenshot, can be set multiple times-->
-	<Screenshot Value="Properties/Screenshots/Preview1-1.1.png" />
-	<Screenshot Value="Properties/Screenshots/Preview2-1.1.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview3-1.0.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview4-1.1.jpg" />
-	<Screenshot Value="Properties/Screenshots/Preview5-1.1.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview1-1.2.png" />
+	<Screenshot Value="Properties/Screenshots/Preview2-1.2.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview3-1.2.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview4-1.2.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview5-1.2.jpg" />
 	<Screenshot Value="Properties/Screenshots/Preview6-1.1.png" />
 	<Screenshot Value="Properties/Screenshots/Preview7-1.1.jpg" />
+	<Screenshot Value="Properties/Screenshots/Preview8-1.2.jpg" />
 
 	<!--Tag, can be set multiple times. The server validates against a fixed list and
 	    rejects anything else; the UI label "Areas" is the tag id "UIAreas". Other likely
@@ -92,7 +94,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="1.1.0" />
+	<ModVersion Value="1.2.0" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -107,19 +109,33 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
+**IMPORTANT**
+
+'Generic' group types have been renamed to 'Civic'. Your saves are fine, this is a display-only change.
+
 **NEW**
+
+Added a new view: Group Info Panel
+
+In this view, you can edit the group details such as the name, type, and color, or delete the group.
+
+This is also where you can check how your districts are doing. It shows population, happiness, and wealth — both as a total for the whole group, and broken down district by district, so you can quickly see which areas need attention.
+
+While working in this view, the overlay will update to show you only the group's districts and buildings.
 
 **CHANGED**
 
-- Further optimized the Overlay rendering
-- Group member districts are now sorted alphabetically in the Group Management list
-- Group member districts now have links to inspect their Info Panel in the Group Management list
-- The list in Group Management is now sorted by name, alphabetically
 - The list in Group Management is now read-only data. To change details, open the Group Info Panel using the "View Details" button
+- The list in Group Management is now sorted by name, alphabetically
+- Group member districts now have links to inspect their Info Panel in the Group Management list
+- Group member districts are now sorted alphabetically in the Group Management list
+- Minor UI optimization to avoid unnecessary work
+- Further optimized the Overlay rendering
 
 **FIXED**
 
 - Fixed tab bar styling when in legacy interface styles
+- Fixed logging a random debug "FIZZ" message
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
