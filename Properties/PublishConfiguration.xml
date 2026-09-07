@@ -111,6 +111,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **CHANGED**
 
+- Further optimized the Overlay rendering
 - Group member districts are now sorted alphabetically in the Group Management list
 - Group member districts now have links to inspect their Info Panel in the Group Management list
 - The list in Group Management is now sorted by name, alphabetically

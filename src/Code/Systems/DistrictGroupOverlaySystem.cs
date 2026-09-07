@@ -10,6 +10,7 @@ using Game.UI.InGame;
 using TMPro;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -52,9 +53,10 @@ namespace DistrictGroups
         {
             // raw group colors, group-iteration order
             public List<Color> Colors;
-            // node positions with kOverlayHeightOffset added to Y
-            public float3[] BorderPositions;
-            // AABB over BorderPositions, for frustum culling
+            // this district's slice of m_BorderPositions
+            public int BorderStart;
+            public int BorderCount;
+            // AABB over that slice, for frustum culling
             public Bounds BorderBounds;
             // raw node positions (fill root transform supplies the lift)
             public Vector3[] FillVertices;
@@ -81,6 +83,13 @@ namespace DistrictGroups
 
         // Scratch for the cached border path's culling.
         private readonly Plane[] m_BorderFrustumPlanes = new Plane[6];
+
+        // Every captured district's node ring, concatenated, with kOverlayHeightOffset already added to Y.
+        private NativeList<float3> m_BorderPositions;
+
+        // The border draw handed to a worker thread, held so the main thread can wait before rewriting
+        // the positions it reads.
+        private JobHandle m_BorderJobHandle;
 
         // Lighten() results keyed by raw group color
         private readonly Dictionary<Color, Color> m_LightenedColorCache = new Dictionary<Color, Color>();
@@ -298,6 +307,7 @@ namespace DistrictGroups
             m_CameraUpdateSystem = World.GetOrCreateSystemManaged<CameraUpdateSystem>();
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
             m_OverlayConfigQuery = GetEntityQuery(ComponentType.ReadOnly<OverlayConfigurationData>());
+            m_BorderPositions = new NativeList<float3>(Allocator.Persistent);
             ApplyAreasVisibility();
 
             m_ToolSystem = World.GetOrCreateSystemManaged<ToolSystem>();
@@ -308,6 +318,8 @@ namespace DistrictGroups
 
         protected override void OnDestroy()
         {
+            m_BorderJobHandle.Complete();
+            m_BorderPositions.Dispose();
             m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Remove(
                 m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
             DestroyDesaturationVolume();
@@ -326,6 +338,8 @@ namespace DistrictGroups
             m_DirtyFlags = OverlayDirtyFlags.All;
 
             // Snapshot rows are keyed by the previous city's entities - drop them outright.
+            m_BorderJobHandle.Complete();
+            m_BorderPositions.Clear();
             m_DistrictSnapshots.Clear();
             m_GroupSnapshots.Clear();
 
@@ -519,6 +533,9 @@ namespace DistrictGroups
             bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
             System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
+            // A border draw scheduled on an earlier frame reads m_BorderPositions, and the rebuild below overwrites it.
+            m_BorderJobHandle.Complete();
+            m_BorderPositions.Clear();
             m_DistrictSnapshots.Clear();
             m_GroupSnapshots.Clear();
 
@@ -592,8 +609,9 @@ namespace DistrictGroups
 
             DynamicBuffer<Game.Areas.Node> nodes = EntityManager.GetBuffer<Game.Areas.Node>(district, isReadOnly: true);
             int nodeCount = nodes.Length;
-            snapshot.BorderPositions = new float3[nodeCount];
             snapshot.FillVertices = new Vector3[nodeCount];
+            snapshot.BorderStart = m_BorderPositions.Length;
+            snapshot.BorderCount = nodeCount;
 
             float3 min = new float3(float.MaxValue);
             float3 max = new float3(float.MinValue);
@@ -602,7 +620,7 @@ namespace DistrictGroups
             {
                 float3 position = nodes[i].m_Position;
                 float3 lifted = position + new float3(0f, kOverlayHeightOffset, 0f);
-                snapshot.BorderPositions[i] = lifted;
+                m_BorderPositions.Add(lifted);
                 snapshot.FillVertices[i] = new Vector3(position.x, position.y, position.z);
                 min = math.min(min, lifted);
                 max = math.max(max, lifted);
