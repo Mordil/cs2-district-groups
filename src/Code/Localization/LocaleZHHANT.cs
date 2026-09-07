@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "永久刪除此群組。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "已指派的建築將失去其**行政區**。" },
                 { LocalizationKey.TypePickerTooltipLine1, "變更群組的**類型**。" },
-                { LocalizationKey.TypePickerTooltipLine2, "**通用**群組可指派給任何服務建築。" },
+                { LocalizationKey.TypePickerTooltipLine2, "**市民**群組可指派給任何服務建築。" },
                 { LocalizationKey.TypePickerTooltipLine3, "其他所有類型僅適用於對應的服務建築。" },
                 { LocalizationKey.DeleteGroupConfirmMessage, "「{NAME}」已指派給 {COUNT} 個服務建築。\n已指派的服務建築將重新服務整座城市。" },
                 { LocalizationKey.DeleteGroupDialogTitle, "刪除行政區群組？" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "沒有符合搜尋條件的群組。" },
                 { LocalizationKey.NoGroupsInSection, "找不到群組。" },
 
-                { LocalizationKey.TypeGeneric, "通用" },
+                { LocalizationKey.TypeGeneric, "市民" },
                 { LocalizationKey.TypePolice, "警察" },
                 { LocalizationKey.TypeFire, "火災" },
                 { LocalizationKey.TypeHealthcare, "醫療衛生" },

@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "グループを完全に削除します。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "割り当てられた施設は**稼働特区**を失います。" },
                 { LocalizationKey.TypePickerTooltipLine1, "グループの**タイプ**を変更します。" },
-                { LocalizationKey.TypePickerTooltipLine2, "**汎用**グループは、どのサービス施設にも割り当てることができます。" },
+                { LocalizationKey.TypePickerTooltipLine2, "**市民**グループは、どのサービス施設にも割り当てることができます。" },
                 { LocalizationKey.TypePickerTooltipLine3, "他のタイプは、対応するサービス施設にのみ割り当てることができます。" },
                 { LocalizationKey.DeleteGroupConfirmMessage, "「{NAME}」は{COUNT}件のサービス施設に割り当てられています。\n割り当てられたサービス施設は、再び都市全体にサービスを提供するようになります。" },
                 { LocalizationKey.DeleteGroupDialogTitle, "特区グループを削除しますか?" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "検索条件に一致するグループがありません。" },
                 { LocalizationKey.NoGroupsInSection, "グループが見つかりません。" },
 
-                { LocalizationKey.TypeGeneric, "汎用" },
+                { LocalizationKey.TypeGeneric, "市民" },
                 { LocalizationKey.TypePolice, "警察" },
                 { LocalizationKey.TypeFire, "火災" },
                 { LocalizationKey.TypeHealthcare, "医療" },

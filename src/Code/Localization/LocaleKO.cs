@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "그룹을 영구적으로 삭제합니다." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "할당된 건물은 **운영 지구**을 잃게 됩니다." },
                 { LocalizationKey.TypePickerTooltipLine1, "그룹의 **유형**을 변경합니다." },
-                { LocalizationKey.TypePickerTooltipLine2, "**일반** 그룹은 모든 서비스 건물에 할당할 수 있습니다." },
+                { LocalizationKey.TypePickerTooltipLine2, "**시민** 그룹은 모든 서비스 건물에 할당할 수 있습니다." },
                 { LocalizationKey.TypePickerTooltipLine3, "다른 모든 유형은 일치하는 서비스 건물에만 사용할 수 있습니다." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\"이(가) {COUNT}개의 서비스 건물에 할당되어 있습니다.\n할당된 서비스 건물은 다시 도시 전역을 대상으로 서비스를 제공합니다." },
                 { LocalizationKey.DeleteGroupDialogTitle, "지구 그룹을 삭제하시겠습니까?" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "검색어와 일치하는 그룹이 없습니다." },
                 { LocalizationKey.NoGroupsInSection, "그룹을 찾을 수 없습니다." },
 
-                { LocalizationKey.TypeGeneric, "일반" },
+                { LocalizationKey.TypeGeneric, "시민" },
                 { LocalizationKey.TypePolice, "경찰" },
                 { LocalizationKey.TypeFire, "화재" },
                 { LocalizationKey.TypeHealthcare, "의료" },

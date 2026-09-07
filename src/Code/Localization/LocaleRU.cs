@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "Полностью удалить группу." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Назначенные здания потеряют свои **районы обслуживания**." },
                 { LocalizationKey.TypePickerTooltipLine1, "Изменить **тип** группы." },
-                { LocalizationKey.TypePickerTooltipLine2, "Группы типа **Общий** можно назначить любому зданию службы." },
+                { LocalizationKey.TypePickerTooltipLine2, "Группы типа **Гражданский** можно назначить любому зданию службы." },
                 { LocalizationKey.TypePickerTooltipLine3, "Все остальные типы доступны только для соответствующих зданий служб." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "«{NAME}» назначена {COUNT} зданиям служб.\nНазначенные здания служб будут снова обслуживать весь город." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Удалить группу районов?" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "Нет групп, соответствующих поиску." },
                 { LocalizationKey.NoGroupsInSection, "Группы не найдены." },
 
-                { LocalizationKey.TypeGeneric, "Общий" },
+                { LocalizationKey.TypeGeneric, "Гражданский" },
                 { LocalizationKey.TypePolice, "Полиция" },
                 { LocalizationKey.TypeFire, "Пожар" },
                 { LocalizationKey.TypeHealthcare, "Здравоохранение" },

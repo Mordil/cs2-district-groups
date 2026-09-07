@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "Exclui o grupo permanentemente." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Os edifícios atribuídos perderão seus **distritos em operação**." },
                 { LocalizationKey.TypePickerTooltipLine1, "Altera o **tipo** do grupo." },
-                { LocalizationKey.TypePickerTooltipLine2, "Grupos **Genéricos** podem ser atribuídos a qualquer edifício de serviço." },
+                { LocalizationKey.TypePickerTooltipLine2, "Grupos **Cívicos** podem ser atribuídos a qualquer edifício de serviço." },
                 { LocalizationKey.TypePickerTooltipLine3, "Todos os outros tipos só estão disponíveis para edifícios de serviço correspondentes." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\" está atribuído a {COUNT} edifício(s) de serviço.\nO(s) edifício(s) de serviço atribuído(s) voltará(ão) a atender a cidade inteira." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Excluir Grupo de Distritos?" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "Nenhum grupo corresponde à sua pesquisa." },
                 { LocalizationKey.NoGroupsInSection, "Nenhum grupo encontrado." },
 
-                { LocalizationKey.TypeGeneric, "Genérico" },
+                { LocalizationKey.TypeGeneric, "Cívico" },
                 { LocalizationKey.TypePolice, "Polícia" },
                 { LocalizationKey.TypeFire, "Incêndio" },
                 { LocalizationKey.TypeHealthcare, "Sistema de Saúde" },

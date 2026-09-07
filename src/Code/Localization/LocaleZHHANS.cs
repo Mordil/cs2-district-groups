@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "永久删除该市辖区组。" },
                 { LocalizationKey.DeleteGroupTooltipLine2, "已分配的建筑将失去其**工作区**。" },
                 { LocalizationKey.TypePickerTooltipLine1, "更改市辖区组的**类型**。" },
-                { LocalizationKey.TypePickerTooltipLine2, "**通用**类型的市辖区组可分配给任何服务建筑。" },
+                { LocalizationKey.TypePickerTooltipLine2, "**市民**类型的市辖区组可分配给任何服务建筑。" },
                 { LocalizationKey.TypePickerTooltipLine3, "其他所有类型仅适用于匹配的服务建筑。" },
                 { LocalizationKey.DeleteGroupConfirmMessage, "“{NAME}”已分配给 {COUNT} 个服务建筑。\n已分配的服务建筑将再次为全市提供服务。" },
                 { LocalizationKey.DeleteGroupDialogTitle, "删除市辖区组？" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "没有市辖区组匹配您的搜索。" },
                 { LocalizationKey.NoGroupsInSection, "未找到市辖区组。" },
 
-                { LocalizationKey.TypeGeneric, "通用" },
+                { LocalizationKey.TypeGeneric, "市民" },
                 { LocalizationKey.TypePolice, "警察" },
                 { LocalizationKey.TypeFire, "消防" },
                 { LocalizationKey.TypeHealthcare, "医疗卫生" },

@@ -94,7 +94,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupTooltipLine1, "Löscht die Gruppe endgültig." },
                 { LocalizationKey.DeleteGroupTooltipLine2, "Zugewiesene Gebäude verlieren ihre **versorgten Bezirke**." },
                 { LocalizationKey.TypePickerTooltipLine1, "Ändert den **Typ** der Gruppe." },
-                { LocalizationKey.TypePickerTooltipLine2, "**Allgemeine** Gruppen können jedem Dienstleistungsgebäude zugewiesen werden." },
+                { LocalizationKey.TypePickerTooltipLine2, "Gruppen des Typs **Bürger** können jedem Dienstleistungsgebäude zugewiesen werden." },
                 { LocalizationKey.TypePickerTooltipLine3, "Alle anderen Typen stehen nur passenden Dienstleistungsgebäuden zur Verfügung." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\" ist {COUNT} Dienstleistungsgebäude(n) zugewiesen.\nZugewiesene Dienstleistungsgebäude werden wieder die gesamte Stadt versorgen." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Bezirksgruppe löschen?" },
@@ -138,7 +138,7 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "Keine Gruppen entsprechen deiner Suche." },
                 { LocalizationKey.NoGroupsInSection, "Keine Gruppen gefunden." },
 
-                { LocalizationKey.TypeGeneric, "Allgemein" },
+                { LocalizationKey.TypeGeneric, "Bürger" },
                 { LocalizationKey.TypePolice, "Polizei" },
                 { LocalizationKey.TypeFire, "Feuerwehr" },
                 { LocalizationKey.TypeHealthcare, "Gesundheitsfürsorge" },

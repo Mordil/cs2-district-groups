@@ -111,7 +111,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     deleteGroupTooltipLine1: "Permanently delete the group.",
     deleteGroupTooltipLine2: "Assigned buildings will lose their **operating districts**.",
     typePickerTooltipLine1: "Change the **type** of the group.",
-    typePickerTooltipLine2: "**Generic** groups can be assigned to any service building.",
+    typePickerTooltipLine2: "**Civic** groups can be assigned to any service building.",
     typePickerTooltipLine3: "All other types are only available to matching service buildings.",
     deleteGroupConfirmMessage:
         '"{NAME}" is assigned to {COUNT} service building(s).\nAssigned service building(s) will serve the whole city again.',
@@ -159,7 +159,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     noGroupsMatchSearch: "No groups match your search.",
     noGroupsInSection: "No groups found.",
 
-    typeGeneric: "Generic",
+    typeGeneric: "Civic",
     typePolice: "Police",
     typeFire: "Fire",
     typeHealthcare: "Healthcare",
