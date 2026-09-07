@@ -9,8 +9,7 @@ import { selectingGroup$, showOverlay$, showServiceBuildings$ } from "../binding
 import { Checkbox } from "../components/Checkbox"
 import { ColorPicker } from "../components/ColorPicker"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
-import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
-import { MetadataItem } from "../components/MetadataItem"
+import { glyphIconSrc } from "../components/icons"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../components/vanilla"
 import { kGroupInfoPanelMaxWidth, kPanelWidth, useTypeLabels } from "../constants"
@@ -255,18 +254,14 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             tooltip={typePickerTooltip}
                         />
 
-                        <div className={css.metadataItems}>
-                            <MetadataItem
-                                icon={gameIconSrc("LotTool")}
-                                value={group.members.length}
-                                tooltip={t("metadataDistrictsTooltip")}
-                            />
-                            <MetadataItem
-                                icon={modIconSrc("building")}
-                                value={group.buildings.length}
-                                tooltip={t("metadataBuildingsTooltip")}
-                            />
-                        </div>
+                        <SelectDistrictsButton
+                            selected={selectingDistricts}
+                            className={css.selectDistrictButton}
+                            onSelect={() => {
+                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                                toggleDistrictSelection(group.entity)
+                            }}
+                        />
                     </div>
 
                     <VC.TabBar className={css.tabBar}>
@@ -303,30 +298,19 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                 </div>
 
                 <div className={css.footer}>
-                    <div className={css.footerActions}>
-                        <Tooltip tooltip={deleteGroupTooltip}>
-                            <div className={css.deleteButtonHover}>
-                                <VC.IconButton
-                                    tinted={true}
-                                    focusKey={VF.FOCUS_DISABLED}
-                                    src={glyphIconSrc("Trash")}
-                                    className={VT.districtsSection.deleteButton}
-                                    style={{ ...dangerIconStyle, ...removeButtonStyle }}
-                                    onSelect={handleDeleteGroup}
-                                    onMouseDown={stopMouseDown}
-                                />
-                            </div>
-                        </Tooltip>
-
-                        <SelectDistrictsButton
-                            selected={selectingDistricts}
-                            className={css.selectDistrictButton}
-                            onSelect={() => {
-                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
-                                toggleDistrictSelection(group.entity)
-                            }}
-                        />
-                    </div>
+                    <Tooltip tooltip={deleteGroupTooltip}>
+                        <div className={css.deleteButtonHover}>
+                            <VC.IconButton
+                                tinted={true}
+                                focusKey={VF.FOCUS_DISABLED}
+                                src={glyphIconSrc("Trash")}
+                                className={VT.districtsSection.deleteButton}
+                                style={{ ...dangerIconStyle, ...removeButtonStyle }}
+                                onSelect={handleDeleteGroup}
+                                onMouseDown={stopMouseDown}
+                            />
+                        </div>
+                    </Tooltip>
 
                     <Checkbox
                         checked={showOverlay && showServiceBuildings}
