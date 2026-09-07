@@ -41,6 +41,7 @@
         public const string NameInputTooltip = "DistrictGroups.UI[NameInputTooltip]";
         public const string OverviewTabLabel = "DistrictGroups.UI[OverviewTabLabel]";
         public const string BuildingsTabLabel = "DistrictGroups.UI[BuildingsTabLabel]";
+        public const string TypeColumnLabel = "DistrictGroups.UI[TypeColumnLabel]";
         public const string MetadataDistrictsTooltip = "DistrictGroups.UI[MetadataDistrictsTooltip]";
         public const string MetadataBuildingsTooltip = "DistrictGroups.UI[MetadataBuildingsTooltip]";
         public const string MetadataPopulationTooltip = "DistrictGroups.UI[MetadataPopulationTooltip]";

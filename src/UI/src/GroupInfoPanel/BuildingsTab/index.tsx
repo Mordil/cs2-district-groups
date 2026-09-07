@@ -6,9 +6,9 @@ import { entityKey } from "cs2/utils"
 
 import { glyphIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
-import { kUnknownEfficiency, kNoValue } from "../../constants"
+import { kUnknownEfficiency, kNoValue, useTypeLabels } from "../../constants"
 import { AssignedBuilding, Group } from "../../types"
-import { VanillaLocale } from "../../utils/locale"
+import { VanillaLocale, useTranslation } from "../../utils/locale"
 import { logger } from "../../utils/log"
 
 import css from "./index.module.scss"
@@ -19,6 +19,7 @@ const kTableRow = VT.tableRow
 // The columns the building list can be ranked by.
 enum BuildingsColumn {
     Building,
+    Type,
     Efficiency,
 }
 
@@ -42,6 +43,8 @@ interface BuildingsTabProps {
 
 // Lists the service buildings assigned to the group as a sortable table.
 export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
+    const t = useTranslation()
+    const typeLabels = useTypeLabels()
     const [sortColumn, setSortColumn] = useState(lastSortColumn)
     const [ascending, setAscending] = useState(lastAscending)
 
@@ -59,6 +62,15 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
             descendingFirst: false,
             compare: (a, b) => a.name.localeCompare(b.name),
             renderValue: (building) => <div className={css.name}>{building.name}</div>,
+        },
+        {
+            id: BuildingsColumn.Type,
+            label: t("typeColumnLabel"),
+            widthClass: kTable.cellDouble,
+            alignClass: kTable.alignLeft,
+            descendingFirst: false,
+            compare: (a, b) => typeLabels[a.type].localeCompare(typeLabels[b.type]),
+            renderValue: (building) => <div className={css.name}>{typeLabels[building.type]}</div>,
         },
         {
             id: BuildingsColumn.Efficiency,

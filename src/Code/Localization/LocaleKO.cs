@@ -106,6 +106,7 @@ namespace DistrictGroups
                 { LocalizationKey.NameInputTooltip, "선택하여 이름을 편집할 수 있습니다." },
                 { LocalizationKey.OverviewTabLabel, "개요" },
                 { LocalizationKey.BuildingsTabLabel, "건물" },
+                { LocalizationKey.TypeColumnLabel, "유형" },
                 { LocalizationKey.MetadataDistrictsTooltip, "지구" },
                 { LocalizationKey.MetadataBuildingsTooltip, "배정된 건물" },
                 { LocalizationKey.MetadataPopulationTooltip, "인구" },

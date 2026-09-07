@@ -106,6 +106,7 @@ namespace DistrictGroups
                 { LocalizationKey.NameInputTooltip, "Select to edit the name." },
                 { LocalizationKey.OverviewTabLabel, "Overview" },
                 { LocalizationKey.BuildingsTabLabel, "Buildings" },
+                { LocalizationKey.TypeColumnLabel, "Type" },
                 { LocalizationKey.MetadataDistrictsTooltip, "Districts" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Assigned buildings" },
                 { LocalizationKey.MetadataPopulationTooltip, "Population" },

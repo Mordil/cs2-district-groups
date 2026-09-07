@@ -23,6 +23,7 @@ export interface ResidentStats {
 export interface AssignedBuilding {
     entity: Entity
     name: string
+    type: number
     // Whole-percent efficiency, or kUnknownEfficiency when the building reports none
     efficiency: number
 }

@@ -121,6 +121,8 @@ namespace DistrictGroups
             WriteEntity(writer, building);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(building) ? m_NameSystem.GetRenderedLabelName(building) : "<missing>");
+            writer.PropertyName("type");
+            writer.Write((int)m_GroupSystem.DetectBuildingServiceType(building));
             writer.PropertyName("efficiency");
             writer.Write(GetEfficiencyPercent(building));
             writer.TypeEnd();

@@ -106,6 +106,7 @@ namespace DistrictGroups
                 { LocalizationKey.NameInputTooltip, "選択して名前を編集します。" },
                 { LocalizationKey.OverviewTabLabel, "概要" },
                 { LocalizationKey.BuildingsTabLabel, "建物" },
+                { LocalizationKey.TypeColumnLabel, "タイプ" },
                 { LocalizationKey.MetadataDistrictsTooltip, "特区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },

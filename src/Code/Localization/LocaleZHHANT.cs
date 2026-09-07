@@ -106,6 +106,7 @@ namespace DistrictGroups
                 { LocalizationKey.NameInputTooltip, "選取以修改名稱。" },
                 { LocalizationKey.OverviewTabLabel, "總覽" },
                 { LocalizationKey.BuildingsTabLabel, "建築" },
+                { LocalizationKey.TypeColumnLabel, "類型" },
                 { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },

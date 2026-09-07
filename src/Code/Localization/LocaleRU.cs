@@ -106,6 +106,7 @@ namespace DistrictGroups
                 { LocalizationKey.NameInputTooltip, "Выберите, чтобы изменить название." },
                 { LocalizationKey.OverviewTabLabel, "Обзор" },
                 { LocalizationKey.BuildingsTabLabel, "Здания" },
+                { LocalizationKey.TypeColumnLabel, "Тип" },
                 { LocalizationKey.MetadataDistrictsTooltip, "Районы" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Назначенные здания" },
                 { LocalizationKey.MetadataPopulationTooltip, "Население" },
