@@ -21,6 +21,7 @@ namespace DistrictGroups
         public const int kUnknownEfficiency = -1;
 
         private DistrictGroupSystem m_GroupSystem;
+        private DistrictStatsSystem m_StatsSystem;
         private DistrictGroupOverlaySystem m_OverlaySystem;
         private DistrictGroupServiceBuildingSystem m_ServiceBuildingSystem;
         private DistrictGroupSelectionSystem m_SelectionSystem;
@@ -45,6 +46,7 @@ namespace DistrictGroups
         private RawValueBinding m_ServiceBuildingsBinding;
         private RawValueBinding m_SelectingGroupBinding;
         private int m_LastSeenGroupVersion = -1;
+        private int m_LastSeenStatsVersion = -1;
         private int m_LastSeenTypeFilter = -1;
         private int m_LastSeenTargetVersion;
         private Entity m_LastSeenSelectingGroup = Entity.Null;
@@ -64,6 +66,7 @@ namespace DistrictGroups
             base.OnCreate();
 
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
+            m_StatsSystem = World.GetOrCreateSystemManaged<DistrictStatsSystem>();
             m_OverlaySystem = World.GetOrCreateSystemManaged<DistrictGroupOverlaySystem>();
             m_ServiceBuildingSystem = World.GetOrCreateSystemManaged<DistrictGroupServiceBuildingSystem>();
             m_SelectionSystem = World.GetOrCreateSystemManaged<DistrictGroupSelectionSystem>();
@@ -95,15 +98,19 @@ namespace DistrictGroups
             */
 
             int groupVersion = m_GroupSystem.Version;
+            int statsVersion = m_StatsSystem.StatsVersion;
             int typeFilter = m_OverlaySystem.TypeFilter;
             int targetVersion = m_ServiceBuildingSystem.TargetVersion;
             Entity selectingGroup = m_SelectionSystem.SelectingGroup;
 
             bool mutated = groupVersion != m_LastSeenGroupVersion;
+            // The stats sweep lands a frame or more after it was asked for, so its totals arrive on their own.
+            bool statsArrived = statsVersion != m_LastSeenStatsVersion;
             bool filterChanged = typeFilter != m_LastSeenTypeFilter;
             bool targetsChanged = targetVersion != m_LastSeenTargetVersion;
 
             m_LastSeenGroupVersion = groupVersion;
+            m_LastSeenStatsVersion = statsVersion;
             m_LastSeenTypeFilter = typeFilter;
             m_LastSeenTargetVersion = targetVersion;
 
@@ -113,13 +120,13 @@ namespace DistrictGroups
                 RefreshPhase.ServiceBuildings,
                 ref m_LastSeenServiceBuildingsRefreshVersion);
 
-            // District stats are cached usually, so we want to force a fresh update
+            // Asks for a fresh sweep; it lands a frame or more later and reports itself through statsArrived
             if (groupsRefreshDue)
             {
-                m_GroupSystem.InvalidateDistrictStats();
+                m_StatsSystem.InvalidateDistrictStats();
             }
 
-            if (mutated || groupsRefreshDue)
+            if (mutated || statsArrived || groupsRefreshDue)
             {
                 m_GroupsBinding.Update();
             }

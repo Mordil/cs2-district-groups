@@ -15,12 +15,12 @@ namespace DistrictGroups
         private void WriteGroups(IJsonWriter writer)
         {
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
-            Dictionary<Entity, DistrictStats> districtStats = m_GroupSystem.GetDistrictStats();
+            Dictionary<Entity, DistrictStats> districtStats = m_StatsSystem.GetDistrictStats();
             writer.ArrayBegin(groups.Length);
             foreach (Entity group in groups)
             {
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
-                DistrictStats groupStats = m_GroupSystem.GetGroupStats(group, districtStats);
+                DistrictStats groupStats = m_StatsSystem.GetGroupStats(group, districtStats);
                 DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
                 using NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp);
                 writer.TypeBegin("Group");
@@ -163,7 +163,7 @@ namespace DistrictGroups
         /*
             Happiness and wealth go over as the ordinal of the band the average lands in rather than the raw
             average, because bucketing wealth needs a game parameter singleton the UI cannot reach, and the
-            panel only ever shows the band's name anyway. DistrictGroupSystem.kNoThreshold means the district
+            panel only ever shows the band's name anyway. DistrictStatsSystem.kNoThreshold means the district
             or group had no residents to average.
         */
         private void WriteResidentStats(IJsonWriter writer, DistrictStats stats)
@@ -171,9 +171,9 @@ namespace DistrictGroups
             writer.PropertyName("population");
             writer.Write(stats.m_Population);
             writer.PropertyName("happiness");
-            writer.Write(DistrictGroupSystem.GetHappinessThreshold(stats));
+            writer.Write(DistrictStatsSystem.GetHappinessThreshold(stats));
             writer.PropertyName("wealth");
-            writer.Write(m_GroupSystem.GetWealthThreshold(stats));
+            writer.Write(m_StatsSystem.GetWealthThreshold(stats));
         }
     }
 }
