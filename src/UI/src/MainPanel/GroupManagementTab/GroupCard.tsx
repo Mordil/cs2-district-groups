@@ -65,13 +65,13 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
     // that's actively managing a building's operating districts is not, so let's get the user to double confirm
     const handleDeleteGroup = () => {
         logger.info(`Delete group clicked; entity:${entityKey(group.entity)}`)
-        if (group.assignedBuildingCount === 0) {
+        if (group.buildings.length === 0) {
             deleteGroup(group.entity)
             return
         }
         const deleteGroupMessage = t("deleteGroupConfirmMessage", {
             name: group.name,
-            count: group.assignedBuildingCount,
+            count: group.buildings.length,
         })
         dialogStack.showDialog(
             <ConfirmationDialog
@@ -146,7 +146,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                             />
                             <MetadataItem
                                 icon={modIconSrc("building")}
-                                value={group.assignedBuildingCount}
+                                value={group.buildings.length}
                                 tooltip={t("metadataBuildingsTooltip")}
                             />
                             <MetadataItem

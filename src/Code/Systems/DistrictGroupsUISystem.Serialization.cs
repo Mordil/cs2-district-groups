@@ -32,8 +32,6 @@ namespace DistrictGroups
                 writer.Write((int)data.m_Type);
                 writer.PropertyName("color");
                 writer.Write(data.m_Color);
-                writer.PropertyName("assignedBuildingCount");
-                writer.Write(assignedBuildings.Length);
                 WriteResidentStats(writer, groupStats);
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);

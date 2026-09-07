@@ -46,7 +46,6 @@ export interface Group extends ResidentStats {
     name: string
     type: number
     color: Color
-    assignedBuildingCount: number
     members: DistrictMember[]
     buildings: AssignedBuilding[]
 }

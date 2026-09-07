@@ -8,7 +8,8 @@ import { entityEquals, entityKey } from "cs2/utils"
 import { selectingGroup$ } from "../bindings"
 import { ColorPicker } from "../components/ColorPicker"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
-import { glyphIconSrc } from "../components/icons"
+import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
+import { MetadataItem } from "../components/MetadataItem"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../components/vanilla"
 import { kGroupInfoPanelMaxWidth, kPanelWidth, useTypeLabels } from "../constants"
@@ -81,13 +82,13 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     */
     const handleDeleteGroup = () => {
         logger.info(`Delete group clicked; entity:${entityKey(group.entity)}`)
-        if (group.assignedBuildingCount === 0) {
+        if (group.buildings.length === 0) {
             deleteGroup(group.entity)
             return
         }
         const deleteGroupMessage = t("deleteGroupConfirmMessage", {
             name: group.name,
-            count: group.assignedBuildingCount,
+            count: group.buildings.length,
         })
         dialogStack.showDialog(
             <ConfirmationDialog
