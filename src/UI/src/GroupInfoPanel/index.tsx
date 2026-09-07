@@ -199,6 +199,19 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             icon="tag"
                             tooltip={typePickerTooltip}
                         />
+
+                        <div className={css.metadataItems}>
+                            <MetadataItem
+                                icon={gameIconSrc("LotTool")}
+                                value={group.members.length}
+                                tooltip={t("metadataDistrictsTooltip")}
+                            />
+                            <MetadataItem
+                                icon={modIconSrc("building")}
+                                value={group.buildings.length}
+                                tooltip={t("metadataBuildingsTooltip")}
+                            />
+                        </div>
                     </div>
 
                     <VC.TabBar className={css.tabBar}>

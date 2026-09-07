@@ -92,6 +92,14 @@ $horizontal-padding: 16rem;
     background-color: rgba(19, 28, 48, 0.75);
 }
 
+.metadataItems {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: -16rem;
+    --iconColor: var(--textColorDimmest);
+}
+
 .selectDistrictButton {
     font-size: var(--fontSizeS);
 }
