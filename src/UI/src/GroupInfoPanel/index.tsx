@@ -5,7 +5,8 @@ import { InputActionConsumer } from "cs2/input"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals, entityKey } from "cs2/utils"
 
-import { selectingGroup$ } from "../bindings"
+import { selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
+import { Checkbox } from "../components/Checkbox"
 import { ColorPicker } from "../components/ColorPicker"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
@@ -14,7 +15,15 @@ import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../components/vanilla"
 import { kGroupInfoPanelMaxWidth, kPanelWidth, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
-import { deleteGroup, renameGroup, setGroupColor, setGroupType, toggleDistrictSelection } from "../triggers"
+import {
+    deleteGroup,
+    renameGroup,
+    setGroupColor,
+    setGroupType,
+    setShowOverlay,
+    setShowServiceBuildings,
+    toggleDistrictSelection,
+} from "../triggers"
 import { Group } from "../types"
 import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
@@ -53,6 +62,8 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     const typeLabels = useTypeLabels()
     const selectingGroup = useValue(selectingGroup$)
     const selectingDistricts = entityEquals(selectingGroup, group.entity)
+    const showOverlay = useValue(showOverlay$)
+    const showServiceBuildings = useValue(showServiceBuildings$)
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
     const [activeTab, setActiveTab] = useState(lastGroupInfoTab)
@@ -135,6 +146,16 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         logger.info(`Group info tab changed; tab:${GroupInfoTab[tab]}`)
         lastGroupInfoTab = tab
         setActiveTab(tab)
+    }
+
+    const onShowOverlayChange = (checked: boolean) => {
+        logger.info(`Show group overlay toggled; show:${checked}`)
+        setShowOverlay(checked)
+    }
+
+    const onShowServiceBuildingsChange = (checked: boolean) => {
+        logger.info(`Show service buildings toggled; show:${checked}`)
+        setShowServiceBuildings(checked)
     }
 
     const handleClose = () => {
@@ -271,6 +292,22 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                                 logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                                 toggleDistrictSelection(group.entity)
                             }}
+                        />
+                    </div>
+
+                    <div className={css.footerToggles}>
+                        <Checkbox
+                            checked={showOverlay}
+                            onChange={onShowOverlayChange}
+                            label={t("showGroupOverlayLabel")}
+                            className={css.toggleRow}
+                        />
+
+                        <Checkbox
+                            checked={showServiceBuildings}
+                            onChange={onShowServiceBuildingsChange}
+                            label={t("showServiceBuildingsLabel")}
+                            className={css.toggleRow}
                         />
                     </div>
                 </div>
