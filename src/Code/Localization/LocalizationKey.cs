@@ -49,6 +49,7 @@
         public const string MetadataPopulationTooltip = "DistrictGroups.UI[MetadataPopulationTooltip]";
         public const string MetadataHappinessTooltip = "DistrictGroups.UI[MetadataHappinessTooltip]";
         public const string MetadataWealthTooltip = "DistrictGroups.UI[MetadataWealthTooltip]";
+        public const string ShowOverlayAndBuildingsLabel = "DistrictGroups.UI[ShowOverlayAndBuildingsLabel]";
 
         public const string ToggleTooltipTitle = "DistrictGroups.UI[ToggleTooltipTitle]";
         public const string ToggleTooltipBody = "DistrictGroups.UI[ToggleTooltipBody]";

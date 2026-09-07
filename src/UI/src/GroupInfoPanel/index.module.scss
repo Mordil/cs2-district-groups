@@ -144,7 +144,7 @@ $horizontal-padding: 16rem;
 
 .footer {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     padding-top: var(--gap8);
     padding-bottom: var(--gap8);
@@ -157,12 +157,6 @@ $horizontal-padding: 16rem;
 .footerActions {
     display: flex;
     align-items: center;
-}
-
-.footerToggles {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
 }
 
 .toggleRow {

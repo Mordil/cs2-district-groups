@@ -114,6 +114,7 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataPopulationTooltip, "Bevölkerung" },
                 { LocalizationKey.MetadataHappinessTooltip, "Durchschnittliche Zufriedenheit" },
                 { LocalizationKey.MetadataWealthTooltip, "Durchschnittliches Vermögen" },
+                { LocalizationKey.ShowOverlayAndBuildingsLabel, "Overlay und Gebäude anzeigen" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**BEZIRKSGRUPPEN**" },
                 { LocalizationKey.ToggleTooltipBody, "Erstelle Gruppen von Bezirken, die du Dienstleistungsgebäuden zuweisen kannst, um deren **versorgte Bezirke** automatisch zu verwalten." },

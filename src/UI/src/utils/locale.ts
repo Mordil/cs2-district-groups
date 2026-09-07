@@ -47,6 +47,7 @@ export const kLocale = {
     metadataPopulationTooltip: id("MetadataPopulationTooltip"),
     metadataHappinessTooltip: id("MetadataHappinessTooltip"),
     metadataWealthTooltip: id("MetadataWealthTooltip"),
+    showOverlayAndBuildingsLabel: id("ShowOverlayAndBuildingsLabel"),
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
     toggleTooltipBody: id("ToggleTooltipBody"),
@@ -130,6 +131,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     metadataPopulationTooltip: "Population",
     metadataHappinessTooltip: "Average happiness",
     metadataWealthTooltip: "Average wealth",
+    showOverlayAndBuildingsLabel: "Show overlay and buildings",
 
     toggleTooltipTitle: "**DISTRICT GROUPS**",
     toggleTooltipBody:

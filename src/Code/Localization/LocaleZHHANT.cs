@@ -114,6 +114,7 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },
                 { LocalizationKey.MetadataHappinessTooltip, "平均幸福指數" },
                 { LocalizationKey.MetadataWealthTooltip, "平均財富" },
+                { LocalizationKey.ShowOverlayAndBuildingsLabel, "顯示覆蓋圖和建築" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**行政區群組**" },
                 { LocalizationKey.ToggleTooltipBody, "建立行政區群組並指派給服務建築，自動管理其**行政區**。" },

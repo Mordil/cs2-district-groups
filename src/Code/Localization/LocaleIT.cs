@@ -114,6 +114,7 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataPopulationTooltip, "Popolazione" },
                 { LocalizationKey.MetadataHappinessTooltip, "Felicità media" },
                 { LocalizationKey.MetadataWealthTooltip, "Ricchezza media" },
+                { LocalizationKey.ShowOverlayAndBuildingsLabel, "Mostra sovrimpressione ed edifici" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPPI DI QUARTIERI**" },
                 { LocalizationKey.ToggleTooltipBody, "Crea gruppi di quartieri da assegnare agli edifici di servizio per la gestione automatica dei **quartieri operativi**." },

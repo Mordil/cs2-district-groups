@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent, useContext, useEffect, useState } from "react"
+import { CSSProperties, MouseEvent, useContext, useEffect, useRef, useState } from "react"
 
 import { useValue } from "cs2/api"
 import { InputActionConsumer } from "cs2/input"
@@ -66,6 +66,8 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     const selectingDistricts = entityEquals(selectingGroup, group.entity)
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
+    const restoreShowOverlay = useRef(showOverlay)
+    const restoreShowServiceBuildings = useRef(showServiceBuildings)
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
     const [activeTab, setActiveTab] = useState(lastGroupInfoTab)
@@ -123,6 +125,20 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         )
     }
 
+    // display overlay and buildings together, since it's filtered to the group being inspected
+    // we restore the original state when the panel dismisses
+    useEffect(() => {
+        logger.info(`Forcing group overlay and service buildings on for the group info panel; prev_overlay:${restoreShowOverlay.current} prev_buildings:${restoreShowServiceBuildings.current}`)
+        setShowOverlay(true)
+        setShowServiceBuildings(true)
+
+        return () => {
+            logger.info(`Restoring display toggles after leaving the group info panel; overlay:${restoreShowOverlay.current} buildings:${restoreShowServiceBuildings.current}`)
+            setShowOverlay(restoreShowOverlay.current)
+            setShowServiceBuildings(restoreShowServiceBuildings.current)
+        }
+    }, [])
+
     // notify when we present or dismiss a single group
     useEffect(() => {
         logger.info(`Focusing overlay on group; entity:${entityKey(group.entity)}`)
@@ -161,13 +177,9 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         setActiveTab(tab)
     }
 
-    const onShowOverlayChange = (checked: boolean) => {
-        logger.info(`Show group overlay toggled; show:${checked}`)
+    const onShowOverlayAndBuildingsChange = (checked: boolean) => {
+        logger.info(`Show overlay and buildings toggled; show:${checked}`)
         setShowOverlay(checked)
-    }
-
-    const onShowServiceBuildingsChange = (checked: boolean) => {
-        logger.info(`Show service buildings toggled; show:${checked}`)
         setShowServiceBuildings(checked)
     }
 
@@ -308,21 +320,12 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                         />
                     </div>
 
-                    <div className={css.footerToggles}>
-                        <Checkbox
-                            checked={showOverlay}
-                            onChange={onShowOverlayChange}
-                            label={t("showGroupOverlayLabel")}
-                            className={css.toggleRow}
-                        />
-
-                        <Checkbox
-                            checked={showServiceBuildings}
-                            onChange={onShowServiceBuildingsChange}
-                            label={t("showServiceBuildingsLabel")}
-                            className={css.toggleRow}
-                        />
-                    </div>
+                    <Checkbox
+                        checked={showOverlay && showServiceBuildings}
+                        onChange={onShowOverlayAndBuildingsChange}
+                        label={t("showOverlayAndBuildingsLabel")}
+                        className={css.toggleRow}
+                    />
                 </div>
             </div>
         </InputActionConsumer>

@@ -114,6 +114,7 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataPopulationTooltip, "인구" },
                 { LocalizationKey.MetadataHappinessTooltip, "평균 행복도" },
                 { LocalizationKey.MetadataWealthTooltip, "평균 재산" },
+                { LocalizationKey.ShowOverlayAndBuildingsLabel, "오버레이 및 건물 표시" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**지구 그룹**" },
                 { LocalizationKey.ToggleTooltipBody, "지구 그룹을 만들어 서비스 건물에 할당하면 **운영 지구**이 자동으로 관리됩니다." },

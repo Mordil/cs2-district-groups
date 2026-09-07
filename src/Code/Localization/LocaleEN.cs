@@ -114,6 +114,7 @@ namespace DistrictGroups
                 { LocalizationKey.MetadataPopulationTooltip, "Population" },
                 { LocalizationKey.MetadataHappinessTooltip, "Average happiness" },
                 { LocalizationKey.MetadataWealthTooltip, "Average wealth" },
+                { LocalizationKey.ShowOverlayAndBuildingsLabel, "Show overlay and buildings" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**DISTRICT GROUPS**" },
                 { LocalizationKey.ToggleTooltipBody, "Create groups of districts to assign to service buildings for self-managing of **operating districts**." },
