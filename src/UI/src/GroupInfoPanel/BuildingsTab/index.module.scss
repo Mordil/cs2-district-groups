@@ -32,6 +32,11 @@ $header-label-padding: 6rem;
     color: var(--textColorHighlightDim);
 }
 
+.actionCell {
+    --normalColor: transparent;
+    margin-left: 8rem;
+}
+
 .name {
     max-width: 100%;
     overflow: hidden;

@@ -1,10 +1,11 @@
-import { ReactNode, useState } from "react"
+import { MouseEvent, ReactNode, useState } from "react"
 
+import { camera } from "cs2/bindings"
 import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
-import { Icon, Scrollable } from "cs2/ui"
+import { Icon, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
-import { glyphIconSrc } from "../../components/icons"
+import { gameIconSrc, glyphIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
 import { kUnknownEfficiency, kNoValue, useTypeLabels } from "../../constants"
 import { AssignedBuilding, Group } from "../../types"
@@ -35,6 +36,11 @@ interface ColumnDef {
 
 let lastSortColumn = BuildingsColumn.Building
 let lastAscending = true
+
+const stopMouseDown = (e: MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+}
 
 interface BuildingsTabProps {
     group: Group
@@ -122,7 +128,34 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
     )
 
     // Every row ends on a spacer, holding a column open for per-building actions.
-    const actionCell = <div className={kTable.cellSingle} />
+    const actionCell = <div className={`${kTable.cellSingle} ${css.actionCell}`} />
+
+    const onFocusBuilding = (building: AssignedBuilding) => {
+        logger.info(`Focus building clicked; building:${entityKey(building.entity)}`)
+        camera.focusEntity(building.entity)
+    }
+
+    const focusActionCell = (building: AssignedBuilding) => (
+        <div className={`${kTable.cellSingle} ${css.actionCell}`}>
+            <Tooltip
+                tooltip={
+                    <LocalizedString
+                        id={VanillaLocale.focusTooltip.id}
+                        fallback={VanillaLocale.focusTooltip.fallback}
+                    />
+                }
+            >
+                <VC.IconButton
+                    tinted={false}
+                    focusKey={VF.FOCUS_DISABLED}
+                    theme={VT.actionButton}
+                    src={gameIconSrc("MapMarker")}
+                    onSelect={() => onFocusBuilding(building)}
+                    onMouseDown={stopMouseDown}
+                />
+            </Tooltip>
+        </div>
+    )
 
     const cells = (render: (column: ColumnDef) => ReactNode) =>
         columns.map((column) => (
@@ -153,7 +186,7 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
                     <div key={entityKey(building.entity)} className={kTableRow.transportationLineItem}>
                         <div className={kTableRow.container}>
                             {cells((column) => column.renderValue(building))}
-                            {actionCell}
+                            {focusActionCell(building)}
                         </div>
                     </div>
                 ))}

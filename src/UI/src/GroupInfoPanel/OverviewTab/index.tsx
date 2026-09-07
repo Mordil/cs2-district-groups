@@ -1,10 +1,11 @@
-import { ReactNode, useState } from "react"
+import { MouseEvent, ReactNode, useState } from "react"
 
+import { camera } from "cs2/bindings"
 import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
-import { Icon, Scrollable } from "cs2/ui"
+import { Icon, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
-import { glyphIconSrc } from "../../components/icons"
+import { gameIconSrc, glyphIconSrc } from "../../components/icons"
 import { ThresholdValue } from "../../components/ThresholdValue"
 import { VC, VF, VT } from "../../components/vanilla"
 import { DistrictMember, Group } from "../../types"
@@ -37,6 +38,11 @@ interface ColumnDef {
 
 let lastSortColumn = OverviewColumn.District
 let lastAscending = true
+
+const stopMouseDown = (e: MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+}
 
 interface OverviewTabProps {
     group: Group
@@ -145,7 +151,34 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
     )
 
     // Every row ends on a spacer, holding a column open for per-district actions.
-    const actionCell = <div className={kTable.cellSingle} />
+    const actionCell = <div className={`${kTable.cellSingle} ${css.actionCell}`} />
+
+    const onFocusDistrict = (member: DistrictMember) => {
+        logger.info(`Focus district clicked; district:${entityKey(member.entity)}`)
+        camera.focusEntity(member.entity)
+    }
+
+    const focusActionCell = (member: DistrictMember) => (
+        <div className={`${kTable.cellSingle} ${css.actionCell}`}>
+            <Tooltip
+                tooltip={
+                    <LocalizedString
+                        id={VanillaLocale.focusTooltip.id}
+                        fallback={VanillaLocale.focusTooltip.fallback}
+                    />
+                }
+            >
+                <VC.IconButton
+                    tinted={false}
+                    focusKey={VF.FOCUS_DISABLED}
+                    theme={VT.actionButton}
+                    src={gameIconSrc("MapMarker")}
+                    onSelect={() => onFocusDistrict(member)}
+                    onMouseDown={stopMouseDown}
+                />
+            </Tooltip>
+        </div>
+    )
 
     const cells = (render: (column: ColumnDef) => ReactNode) =>
         columns.map((column) => (
@@ -181,7 +214,7 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
                     <div key={entityKey(member.entity)} className={kTableRow.transportationLineItem}>
                         <div className={kTableRow.container}>
                             {cells((column) => column.renderValue(member))}
-                            {actionCell}
+                            {focusActionCell(member)}
                         </div>
                     </div>
                 ))}
