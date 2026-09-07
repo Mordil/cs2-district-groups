@@ -60,6 +60,7 @@ $horizontal-padding: 16rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
 }
 .title:hover {
     background-color: var(--hoverColor);
