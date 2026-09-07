@@ -18,7 +18,10 @@ namespace DistrictGroups
         private void UpdateGroupLabels(bool shouldSample)
         {
             bool enabled = Mod.Settings?.OverlayEnableGroupLabels ?? Setting.kDefaultOverlayEnableGroupLabels;
-            if (!enabled)
+            bool hasFocusedGroup = m_GroupSystem.FocusedGroup != Entity.Null;
+
+            // A focused group is already unambiguous from its own border/fill, so its label would be redundant.
+            if (!enabled || hasFocusedGroup)
             {
                 if (m_LabelsActive)
                 {
