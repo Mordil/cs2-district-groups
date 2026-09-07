@@ -93,6 +93,8 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
         )
     }
 
+    const sortedMembers = [...group.members].sort((a, b) => a.name.localeCompare(b.name))
+
     const toggleExpanded = () => {
         const next = !expanded
 
@@ -175,7 +177,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                 {expandedContentMounted && (
                     <div className={`${css.expandableContent} ${css[expandPhase]}`} style={{ borderTopColor: dividerTint }}>
                         <div className={css.memberList}>
-                            {group.members.map((member) => (
+                            {sortedMembers.map((member) => (
                                 <div className={css.memberRow} key={entityKey(member.entity)}>
                                     <div className={css.memberName}>{member.name}</div>
 
