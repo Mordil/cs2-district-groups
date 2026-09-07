@@ -23,7 +23,6 @@ import { BuildingsTab } from "./BuildingsTab"
 import { OverviewTab } from "./OverviewTab"
 import css from "./index.module.scss"
 
-// Tints the header delete action to flag it as the harder-to-reverse one.
 const dangerIconStyle = { "--iconColor": "var(--negativeColor)" } as CSSProperties
 const removeButtonStyle = { "height": "24rem", "width": "24rem" } as CSSProperties
 const panelWidthStyle = { "minWidth": `${kPanelWidth}rem`, "maxWidth": `${kGroupInfoPanelMaxWidth}rem` } as CSSProperties
@@ -175,20 +174,6 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             />
                         </Tooltip>
 
-                        <Tooltip tooltip={deleteGroupTooltip}>
-                            <div className={css.deleteButtonHover}>
-                                <VC.IconButton
-                                    tinted={true}
-                                    focusKey={VF.FOCUS_DISABLED}
-                                    src={glyphIconSrc("Trash")}
-                                    className={VT.districtsSection.deleteButton}
-                                    style={{ ...dangerIconStyle, ...removeButtonStyle }}
-                                    onSelect={handleDeleteGroup}
-                                    onMouseDown={stopMouseDown}
-                                />
-                            </div>
-                        </Tooltip>
-
                         <VC.IconButton
                             tinted={true}
                             focusKey={VF.FOCUS_DISABLED}
@@ -213,15 +198,6 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             labels={typeLabels}
                             icon="tag"
                             tooltip={typePickerTooltip}
-                        />
-
-                        <SelectDistrictsButton
-                            selected={selectingDistricts}
-                            className={css.selectDistrictButton}
-                            onSelect={() => {
-                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
-                                toggleDistrictSelection(group.entity)
-                            }}
                         />
                     </div>
 
@@ -256,6 +232,33 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             <BuildingsTab group={group} className={css.tabContent} />
                         )}
                     </VC.TabNav>
+                </div>
+
+                <div className={css.footer}>
+                    <div className={css.footerActions}>
+                        <Tooltip tooltip={deleteGroupTooltip}>
+                            <div className={css.deleteButtonHover}>
+                                <VC.IconButton
+                                    tinted={true}
+                                    focusKey={VF.FOCUS_DISABLED}
+                                    src={glyphIconSrc("Trash")}
+                                    className={VT.districtsSection.deleteButton}
+                                    style={{ ...dangerIconStyle, ...removeButtonStyle }}
+                                    onSelect={handleDeleteGroup}
+                                    onMouseDown={stopMouseDown}
+                                />
+                            </div>
+                        </Tooltip>
+
+                        <SelectDistrictsButton
+                            selected={selectingDistricts}
+                            className={css.selectDistrictButton}
+                            onSelect={() => {
+                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                                toggleDistrictSelection(group.entity)
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </InputActionConsumer>

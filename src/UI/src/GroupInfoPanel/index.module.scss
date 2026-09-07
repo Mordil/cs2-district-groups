@@ -71,7 +71,7 @@ $horizontal-padding: 16rem;
 
 .deleteButtonHover {
     border-radius: 3rem;
-    margin-right: var(--gap4);
+    margin-right: var(--gap8);
     padding-top: var(--gap6);
     padding-bottom: var(--gap6);
     padding-left: 10rem;
@@ -92,12 +92,8 @@ $horizontal-padding: 16rem;
     background-color: rgba(19, 28, 48, 0.75);
 }
 
-.typeSelector {
-    margin-right: var(--gap8);
-}
-
 .selectDistrictButton {
-    font-size: var(--fontSizeXS);
+    font-size: var(--fontSizeS);
 }
 
 .content {
@@ -136,4 +132,21 @@ $horizontal-padding: 16rem;
 .tabContent {
     flex: 1;
     min-height: 0;
+}
+
+.footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+}
+
+.footerActions {
+    display: flex;
+    align-items: center;
 }
