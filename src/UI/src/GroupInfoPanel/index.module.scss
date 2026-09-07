@@ -141,7 +141,7 @@ $horizontal-padding: 16rem;
     justify-content: space-between;
     padding-top: var(--gap8);
     padding-bottom: var(--gap8);
-    padding-left: $horizontal-padding;
+    padding-left: var(--gap8);
     padding-right: $horizontal-padding;
     background-color: var(--panelColorDark);
     backdrop-filter: var(--panelBlur);
