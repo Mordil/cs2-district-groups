@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useState } from "react"
+import { CSSProperties, MouseEvent, ReactNode, useState } from "react"
 
 import { camera } from "cs2/bindings"
 import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
@@ -8,6 +8,7 @@ import { entityKey } from "cs2/utils"
 import { gameIconSrc, glyphIconSrc } from "../../components/icons"
 import { ThresholdValue } from "../../components/ThresholdValue"
 import { VC, VF, VT } from "../../components/vanilla"
+import { removeMember } from "../../triggers"
 import { DistrictMember, Group } from "../../types"
 import { VanillaLocale, happinessThreshold, useTranslation, wealthThreshold } from "../../utils/locale"
 import { logger } from "../../utils/log"
@@ -16,6 +17,8 @@ import css from "./index.module.scss"
 
 const kTable = VT.table
 const kTableRow = VT.tableRow
+
+const removeButtonStyle = { "height": "24rem", "width": "24rem" } as CSSProperties
 
 // The columns the district list can be ranked by.
 enum OverviewColumn {
@@ -151,15 +154,20 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
     )
 
     // Every row ends on a spacer, holding a column open for per-district actions.
-    const actionCell = <div className={`${kTable.cellSingle} ${css.actionCell}`} />
+    const actionCell = <div className={`${kTable.cellDouble} ${css.actionCell}`} />
 
     const onFocusDistrict = (member: DistrictMember) => {
         logger.info(`Focus district clicked; district:${entityKey(member.entity)}`)
         camera.focusEntity(member.entity)
     }
 
-    const focusActionCell = (member: DistrictMember) => (
-        <div className={`${kTable.cellSingle} ${css.actionCell}`}>
+    const onRemoveMember = (member: DistrictMember) => {
+        logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+        removeMember(group.entity, member.entity)
+    }
+
+    const rowActionCell = (member: DistrictMember) => (
+        <div className={`${kTable.cellDouble} ${css.actionCell}`}>
             <Tooltip
                 tooltip={
                     <LocalizedString
@@ -176,6 +184,20 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
                     onSelect={() => onFocusDistrict(member)}
                     onMouseDown={stopMouseDown}
                 />
+            </Tooltip>
+
+            <Tooltip tooltip={t("removeMemberTooltip")}>
+                <div className={css.deleteButtonHover}>
+                    <VC.IconButton
+                        tinted={true}
+                        focusKey={VF.FOCUS_DISABLED}
+                        src={glyphIconSrc("Trash")}
+                        className={VT.districtsSection.deleteButton}
+                        style={removeButtonStyle}
+                        onSelect={() => onRemoveMember(member)}
+                        onMouseDown={stopMouseDown}
+                    />
+                </div>
             </Tooltip>
         </div>
     )
@@ -214,7 +236,7 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
                     <div key={entityKey(member.entity)} className={kTableRow.transportationLineItem}>
                         <div className={kTableRow.container}>
                             {cells((column) => column.renderValue(member))}
-                            {focusActionCell(member)}
+                            {rowActionCell(member)}
                         </div>
                     </div>
                 ))}

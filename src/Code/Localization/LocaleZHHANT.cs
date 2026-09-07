@@ -101,6 +101,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupConfirm, "刪除群組" },
                 { LocalizationKey.DeleteGroupCancel, "保留群組" },
                 { LocalizationKey.RemoveMemberTooltip, "將該行政區從群組中移除。" },
+                { LocalizationKey.RemoveBuildingTooltip, "將該建築從群組中移除。" },
                 { LocalizationKey.SelectDistrictsButton, "選擇行政區" },
                 { LocalizationKey.GroupColorTooltip, "群組顏色" },
                 { LocalizationKey.NameInputTooltip, "選取以修改名稱。" },

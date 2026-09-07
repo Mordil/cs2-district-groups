@@ -101,6 +101,7 @@ namespace DistrictGroups
                 { LocalizationKey.DeleteGroupConfirm, "Usuń grupę" },
                 { LocalizationKey.DeleteGroupCancel, "Zachowaj grupę" },
                 { LocalizationKey.RemoveMemberTooltip, "Usuwa dzielnicę z grupy." },
+                { LocalizationKey.RemoveBuildingTooltip, "Usuwa budynek z grupy." },
                 { LocalizationKey.SelectDistrictsButton, "Wybierz dzielnice" },
                 { LocalizationKey.GroupColorTooltip, "Kolor grupy" },
                 { LocalizationKey.NameInputTooltip, "Wybierz, aby edytować nazwę." },

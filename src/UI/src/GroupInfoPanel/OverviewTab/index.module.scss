@@ -48,6 +48,17 @@ $header-label-padding: 6rem;
     margin-left: 8rem;
 }
 
+.deleteButtonHover {
+    border-radius: 3rem;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.deleteButtonHover:hover {
+    background-color: var(--hoverColorNormal);
+}
+
 .name {
     max-width: 100%;
     overflow: hidden;

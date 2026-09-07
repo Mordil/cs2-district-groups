@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useState } from "react"
+import { CSSProperties, MouseEvent, ReactNode, useState } from "react"
 
 import { camera } from "cs2/bindings"
 import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
@@ -8,6 +8,7 @@ import { entityKey } from "cs2/utils"
 import { gameIconSrc, glyphIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
 import { kUnknownEfficiency, kNoValue, useTypeLabels } from "../../constants"
+import { unassignBuildingGroup } from "../../triggers"
 import { AssignedBuilding, Group } from "../../types"
 import { VanillaLocale, useTranslation } from "../../utils/locale"
 import { logger } from "../../utils/log"
@@ -16,6 +17,8 @@ import css from "./index.module.scss"
 
 const kTable = VT.table
 const kTableRow = VT.tableRow
+
+const removeButtonStyle = { "height": "24rem", "width": "24rem" } as CSSProperties
 
 // The columns the building list can be ranked by.
 enum BuildingsColumn {
@@ -128,15 +131,20 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
     )
 
     // Every row ends on a spacer, holding a column open for per-building actions.
-    const actionCell = <div className={`${kTable.cellSingle} ${css.actionCell}`} />
+    const actionCell = <div className={`${kTable.cellDouble} ${css.actionCell}`} />
 
     const onFocusBuilding = (building: AssignedBuilding) => {
         logger.info(`Focus building clicked; building:${entityKey(building.entity)}`)
         camera.focusEntity(building.entity)
     }
 
-    const focusActionCell = (building: AssignedBuilding) => (
-        <div className={`${kTable.cellSingle} ${css.actionCell}`}>
+    const onRemoveBuilding = (building: AssignedBuilding) => {
+        logger.info(`Remove building clicked; entity:${entityKey(group.entity)} building:${entityKey(building.entity)}`)
+        unassignBuildingGroup(building.entity)
+    }
+
+    const rowActionCell = (building: AssignedBuilding) => (
+        <div className={`${kTable.cellDouble} ${css.actionCell}`}>
             <Tooltip
                 tooltip={
                     <LocalizedString
@@ -153,6 +161,20 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
                     onSelect={() => onFocusBuilding(building)}
                     onMouseDown={stopMouseDown}
                 />
+            </Tooltip>
+
+            <Tooltip tooltip={t("removeBuildingTooltip")}>
+                <div className={css.deleteButtonHover}>
+                    <VC.IconButton
+                        tinted={true}
+                        focusKey={VF.FOCUS_DISABLED}
+                        src={glyphIconSrc("Trash")}
+                        className={VT.districtsSection.deleteButton}
+                        style={removeButtonStyle}
+                        onSelect={() => onRemoveBuilding(building)}
+                        onMouseDown={stopMouseDown}
+                    />
+                </div>
             </Tooltip>
         </div>
     )
@@ -186,7 +208,7 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
                     <div key={entityKey(building.entity)} className={kTableRow.transportationLineItem}>
                         <div className={kTableRow.container}>
                             {cells((column) => column.renderValue(building))}
-                            {focusActionCell(building)}
+                            {rowActionCell(building)}
                         </div>
                     </div>
                 ))}

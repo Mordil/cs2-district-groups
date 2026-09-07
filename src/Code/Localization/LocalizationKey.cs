@@ -36,6 +36,7 @@
         public const string DeleteGroupConfirm = "DistrictGroups.UI[DeleteGroupConfirm]";
         public const string DeleteGroupCancel = "DistrictGroups.UI[DeleteGroupCancel]";
         public const string RemoveMemberTooltip = "DistrictGroups.UI[RemoveMemberTooltip]";
+        public const string RemoveBuildingTooltip = "DistrictGroups.UI[RemoveBuildingTooltip]";
         public const string SelectDistrictsButton = "DistrictGroups.UI[SelectDistrictsButton]";
         public const string GroupColorTooltip = "DistrictGroups.UI[GroupColorTooltip]";
         public const string NameInputTooltip = "DistrictGroups.UI[NameInputTooltip]";
