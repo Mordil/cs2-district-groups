@@ -234,6 +234,13 @@ namespace DistrictGroups
             AddBinding(new TriggerBinding<Entity>(kBindingGroup, "toggleDistrictSelection",
                 group => m_SelectionSystem.ToggleSelection(group)));
 
+            // The group info panel narrows the overlay and the service-building markers to the one
+            // group it shows; clearing widens both back out to the panel's filtered type.
+            AddBinding(new TriggerBinding<Entity>(kBindingGroup, "setFocusedGroup",
+                group => m_GroupSystem.SetFocusedGroup(group)));
+            AddBinding(new TriggerBinding(kBindingGroup, "clearFocusedGroup",
+                () => m_GroupSystem.SetFocusedGroup(Entity.Null)));
+
             // The info-panel section's own "assignGroup"/"unassignGroup" always mean
             // the selected building; these name the building instead, since the
             // panel assigns buildings it never selects.

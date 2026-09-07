@@ -16,8 +16,10 @@ import { VC, VF, VT } from "../components/vanilla"
 import { kGroupInfoPanelMaxWidth, kPanelWidth, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import {
+    clearFocusedGroup,
     deleteGroup,
     renameGroup,
+    setFocusedGroup,
     setGroupColor,
     setGroupType,
     setShowOverlay,
@@ -120,6 +122,17 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
             />
         )
     }
+
+    // notify when we present or dismiss a single group
+    useEffect(() => {
+        logger.info(`Focusing overlay on group; entity:${entityKey(group.entity)}`)
+        setFocusedGroup(group.entity)
+
+        return () => {
+            logger.info(`Clearing overlay group focus; entity:${entityKey(group.entity)}`)
+            clearFocusedGroup()
+        }
+    }, [group.entity])
 
     /*
         Stay in sync with external changes (e.g. our own rename echoing back through the binding)

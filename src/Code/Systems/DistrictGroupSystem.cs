@@ -40,6 +40,10 @@ namespace DistrictGroups
         // Bumped only when a group's membership, type, or color changes
         public int GroupCompositionVersion { get; private set; }
 
+        // The one group the player is looking at in detail, or Entity.Null when they aren't looking at any.
+        private Entity m_FocusedGroup = Entity.Null;
+        public Entity FocusedGroup => m_FocusedGroup;
+
         // Next palette index to hand out to a newly created group.
         private int m_NextColorIndex;
 
@@ -78,6 +82,9 @@ namespace DistrictGroups
                 EntityManager.DestroyEntity(m_GroupQuery);
             }
             m_NextColorIndex = 0;
+
+            // Named the outgoing city's group, and the panel that set it is gone with that city.
+            m_FocusedGroup = Entity.Null;
         }
 
         // Safety net for saves that already contain corrupted groups: drop member entries whose district no longer exists.
@@ -147,9 +154,31 @@ namespace DistrictGroups
             return group;
         }
 
+        // Narrows the world view to a single group while its details are on screen. Entity.Null - or
+        // a group the world no longer has - widens it back out to the panel's whole filtered type.
+        public void SetFocusedGroup(Entity group)
+        {
+            bool groupExists = EntityManager.Exists(group);
+            Entity focused = groupExists ? group : Entity.Null;
+            if (m_FocusedGroup == focused)
+            {
+                return;
+            }
+
+            m_FocusedGroup = focused;
+            Mod.log.Info($"Focused group changed; group:{m_FocusedGroup}");
+        }
+
         public void DeleteGroup(Entity group)
         {
             Mod.log.Info($"Deleting group; group:{group}");
+
+            // Nothing may go on pointing at a group that is about to stop existing.
+            if (m_FocusedGroup == group)
+            {
+                SetFocusedGroup(Entity.Null);
+            }
+
             using NativeArray<Entity> buildings = GetAssignedBuildings(group, Allocator.Temp);
             foreach (Entity building in buildings)
             {
@@ -413,6 +442,7 @@ namespace DistrictGroups
 
             EntityManager.DestroyEntity(m_GroupQuery);
 
+            m_FocusedGroup = Entity.Null;
             m_NextColorIndex = 0;
             Version++;
             GroupCompositionVersion++;
