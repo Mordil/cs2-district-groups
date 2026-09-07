@@ -107,6 +107,8 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "Panoramica" },
                 { LocalizationKey.BuildingsTabLabel, "Edifici" },
                 { LocalizationKey.TypeColumnLabel, "Tipo" },
+                { LocalizationKey.NoDistrictsInGroup, "Non ci sono quartieri in questo gruppo. Aggiungi quartieri con il pulsante SELEZIONA QUARTIERI." },
+                { LocalizationKey.NoBuildingsInGroup, "Questo gruppo non ha ancora edifici assegnati." },
                 { LocalizationKey.MetadataDistrictsTooltip, "Quartieri" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Edifici assegnati" },
                 { LocalizationKey.MetadataPopulationTooltip, "Popolazione" },

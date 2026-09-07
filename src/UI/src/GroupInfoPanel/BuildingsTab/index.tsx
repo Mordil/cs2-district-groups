@@ -48,6 +48,10 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
     const [sortColumn, setSortColumn] = useState(lastSortColumn)
     const [ascending, setAscending] = useState(lastAscending)
 
+    if (group.buildings.length === 0) {
+        return <div className={`${css.empty} ${className ?? ""}`}>{t("noBuildingsInGroup")}</div>
+    }
+
     const columns: ColumnDef[] = [
         {
             id: BuildingsColumn.Building,

@@ -107,6 +107,8 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "개요" },
                 { LocalizationKey.BuildingsTabLabel, "건물" },
                 { LocalizationKey.TypeColumnLabel, "유형" },
+                { LocalizationKey.NoDistrictsInGroup, "이 그룹에는 지구가 없습니다. 지구 선택 버튼으로 지구를 추가하세요." },
+                { LocalizationKey.NoBuildingsInGroup, "이 그룹에는 아직 배정된 건물이 없습니다." },
                 { LocalizationKey.MetadataDistrictsTooltip, "지구" },
                 { LocalizationKey.MetadataBuildingsTooltip, "배정된 건물" },
                 { LocalizationKey.MetadataPopulationTooltip, "인구" },

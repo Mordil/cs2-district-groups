@@ -107,6 +107,8 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "總覽" },
                 { LocalizationKey.BuildingsTabLabel, "建築" },
                 { LocalizationKey.TypeColumnLabel, "類型" },
+                { LocalizationKey.NoDistrictsInGroup, "此群組中沒有行政區。請使用「選擇行政區」按鈕新增行政區。" },
+                { LocalizationKey.NoBuildingsInGroup, "此群組尚無已指派建築。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },

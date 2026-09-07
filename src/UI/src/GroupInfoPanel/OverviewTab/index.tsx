@@ -8,7 +8,7 @@ import { glyphIconSrc } from "../../components/icons"
 import { ThresholdValue } from "../../components/ThresholdValue"
 import { VC, VF, VT } from "../../components/vanilla"
 import { DistrictMember, Group } from "../../types"
-import { VanillaLocale, happinessThreshold, wealthThreshold } from "../../utils/locale"
+import { VanillaLocale, happinessThreshold, useTranslation, wealthThreshold } from "../../utils/locale"
 import { logger } from "../../utils/log"
 
 import css from "./index.module.scss"
@@ -45,8 +45,13 @@ interface OverviewTabProps {
 
 // Lists the districts that belong to the group as a sortable table.
 export const OverviewTab = ({ group, className }: OverviewTabProps) => {
+    const t = useTranslation()
     const [sortColumn, setSortColumn] = useState(lastSortColumn)
     const [ascending, setAscending] = useState(lastAscending)
+
+    if (group.members.length === 0) {
+        return <div className={`${css.empty} ${className ?? ""}`}>{t("noDistrictsInGroup")}</div>
+    }
 
     const columns: ColumnDef[] = [
         {

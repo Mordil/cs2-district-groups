@@ -107,6 +107,8 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "概览" },
                 { LocalizationKey.BuildingsTabLabel, "建筑" },
                 { LocalizationKey.TypeColumnLabel, "类型" },
+                { LocalizationKey.NoDistrictsInGroup, "此市辖区组中没有市辖区。点击「选择市辖区」按钮添加市辖区。" },
+                { LocalizationKey.NoBuildingsInGroup, "此市辖区组尚无已分配建筑。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "市辖区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已分配建筑" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },

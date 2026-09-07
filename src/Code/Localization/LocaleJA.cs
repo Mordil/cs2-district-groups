@@ -107,6 +107,8 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "概要" },
                 { LocalizationKey.BuildingsTabLabel, "建物" },
                 { LocalizationKey.TypeColumnLabel, "タイプ" },
+                { LocalizationKey.NoDistrictsInGroup, "このグループには特区がありません。「特区を選択」ボタンで特区を追加してください。" },
+                { LocalizationKey.NoBuildingsInGroup, "このグループにはまだ割り当てられた建物がありません。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "特区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
                 { LocalizationKey.MetadataPopulationTooltip, "人口" },

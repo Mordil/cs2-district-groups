@@ -107,6 +107,8 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "Обзор" },
                 { LocalizationKey.BuildingsTabLabel, "Здания" },
                 { LocalizationKey.TypeColumnLabel, "Тип" },
+                { LocalizationKey.NoDistrictsInGroup, "В этой группе нет районов. Добавьте районы с помощью кнопки ВЫБРАТЬ РАЙОНЫ." },
+                { LocalizationKey.NoBuildingsInGroup, "В этой группе пока нет назначенных зданий." },
                 { LocalizationKey.MetadataDistrictsTooltip, "Районы" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Назначенные здания" },
                 { LocalizationKey.MetadataPopulationTooltip, "Население" },
