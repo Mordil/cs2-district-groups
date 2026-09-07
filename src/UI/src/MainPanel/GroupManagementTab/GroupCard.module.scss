@@ -1,6 +1,7 @@
 @use "../../styles/transitions" as *;
 
 .groupCard {
+    position: relative;
     background-color: var(--hoverColor);
 
     border-top-left-radius: var(--panelRadiusInner);
@@ -8,31 +9,36 @@
     border-bottom-left-radius: var(--panelRadiusInner);
     border-bottom-right-radius: var(--panelRadiusInner);
 
+    overflow: hidden;
+
     margin: var(--gap4) 10rem;
 }
 .groupCard + .groupCard {
     margin-top: var(--gap8);
 }
 
+.colorStripe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5rem;
+}
+
+.cardBody {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 5rem;
+}
+
 .groupDetailRow {
     display: flex;
     align-items: center;
-    padding-left: var(--gap8);
+    padding-left: var(--gap4);
     padding-top: var(--gap8);
     padding-right: var(--gap8);
     padding-bottom: var(--gap4);
 }
-
-// when I introduce a "Inspect Group" type of panel, we can have this styling.
-// .groupDetailRow.collapsed:hover {
-//     border-bottom-left-radius: var(--panelRadiusInner);
-//     border-bottom-right-radius: var(--panelRadiusInner);
-// }
-// .groupDetailRow:hover {
-//     background-color: var(--activeColor);
-//     border-top-left-radius: var(--panelRadiusInner);
-//     border-top-right-radius: var(--panelRadiusInner);
-// }
 
 .deleteButtonHover {
     border-radius: 3rem;
@@ -45,63 +51,60 @@
     background-color: var(--hoverColorNormal);
 }
 
-.colorSwatch {
-    margin-left: var(--gap8);
-    margin-right: var(--gap4);
-}
-
-.nameInput {
-    background-color: transparent;
-    border: none;
-    border-top-left-radius: var(--panelRadius);
-    border-top-right-radius: var(--panelRadius);
-    border-bottom-left-radius: var(--panelRadius);
-    border-bottom-right-radius: var(--panelRadius);
-    padding-top: var(--gap4);
-    padding-bottom: var(--gap4);
-    padding-left: var(--gap8);
-    padding-right: var(--gap8);
-    margin-right: var(--gap4);
-    color: var(--textColorDim);
+.groupName {
+    display: block;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+    margin-left: var(--gap4);
+    margin-right: var(--gap8);
+    color: var(--textColor);
     font-size: var(--fontSizeM);
     line-height: 1;
-    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.nameInput:hover {
-    background-color: var(--hoverColor);
+
+.viewDetailsLink {
+    display: flex;
+    align-items: center;
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-radius: 3rem;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: 10rem;
+    padding-right: 10rem;
 }
-.nameInput:focus {
-    outline: none;
-    background-color: var(--activeColor);
-    border-color: var(--focusedColor);
+.viewDetailsLink:hover {
+    background-color: var(--hoverColorNormal);
+}
+.viewDetailsLink:active {
+    background-color: var(--activeColorNormal);
 }
 
 .metadataRow {
     display: flex;
     align-items: center;
-    padding-left: 40rem; // .groupDetailRow + .colorSwatch + rowIconButton left padding/margin
+    justify-content: space-between;
+    padding-left: 30rem; // .groupDetailRow left padding + the expand chevron, so the strip starts clear of it
     padding-right: var(--gap8);
-    padding-bottom: var(--gap8);
+    padding-bottom: var(--gap4);
     --iconColor: var(--textColorDimmest);
 }
 
-.metadataItem {
+.metadataItems {
     display: flex;
-    align-items: center;
-    margin-right: 20rem;
-    color: var(--textColorDimmest);
-    font-size: var(--fontSizeS);
-    font-variant-numeric: tabular-nums;
-    width: 40rem;
-}
-
-.metadataIcon {
-    --size: 20rem;
-    margin-right: var(--gap4);
+    flex-wrap: wrap;
+    flex-grow: 1;
+    min-width: 0;
 }
 
 .expandableContent {
     overflow: hidden;
+    border-top-width: 2px;
+    border-top-style: solid;
 
     @include enter-exit-transition(250ms, (opacity: 0.5, height: 0), (opacity: 1, height: auto));
 }
@@ -113,7 +116,7 @@
 .memberRow {
     display: flex;
     align-items: center;
-    padding-left: 24rem;
+    margin-left: 12rem;
     padding-right: var(--gap8);
 }
 .memberRow+.memberRow {
@@ -125,12 +128,10 @@
     color: var(--textColor);
 }
 
-.selectDistrictsButton {
+.selectDistrictButton {
     flex-grow: 1;
-    margin-top: var(--gap4);
-    margin-bottom: var(--gap8);
     margin-left: var(--gap8);
+    margin-top: var(--gap8);
     margin-right: var(--gap8);
-    padding-top: 10rem;
-    padding-bottom: 10rem;
+    margin-bottom: var(--gap8);
 }

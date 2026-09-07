@@ -1,10 +1,10 @@
 import { MouseEvent, RefObject, useState } from "react"
 
-import { Color } from "cs2/bindings"
 import { Button, Scrollable, Tooltip } from "cs2/ui"
 import { Entity, entityKey } from "cs2/utils"
 
 import { useTypeLabels, kUITopOffset } from "../../constants"
+import { colorToCss } from "../../shared"
 import { useTranslation } from "../../utils/locale"
 import { useEnterExitPhase } from "../../utils/useEnterExitPhase"
 import { VC, VF, VT } from "../vanilla"
@@ -17,10 +17,6 @@ const kGapPx = 24
 
 // Matches the mixin's own transition duration in GroupSearchFlyout.module.scss.
 const kFadeDurationMs = 120
-
-// Color channels arrive as 0-1 floats (see ColorPicker.tsx's own {..., a: 1} clamp).
-const colorToCss = (c: Color): string =>
-    `rgba(${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}, ${c.a})`
 
 // Only the horizontal edges of the toggle button are ever needed (to decide which side of it the flyout opens on)
 export interface AnchorEdges {

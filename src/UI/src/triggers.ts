@@ -18,6 +18,10 @@ export const setShowOverlay = createTrigger<[show: boolean]>("setShowOverlay")
 export const setShowServiceBuildings = createTrigger<[show: boolean]>("setShowServiceBuildings")
 export const setHideAssignedBuildings = createTrigger<[hide: boolean]>("setHideAssignedBuildings")
 
+// Narrows the overlay and the service-building markers to a single group while its details are on screen
+export const setFocusedGroup = createTrigger<[group: Entity]>("setFocusedGroup")
+export const clearFocusedGroup = createTrigger("clearFocusedGroup")
+
 // Group management tab
 export const createGroup = createTrigger("createGroup")
 export const deleteGroup = createTrigger<[group: Entity]>("deleteGroup")

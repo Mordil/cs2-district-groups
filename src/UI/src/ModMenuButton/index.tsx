@@ -3,21 +3,65 @@ import { useEffect, useRef, useState } from "react"
 import { useValue } from "cs2/api"
 import { infoview } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
-import { entityEquals } from "cs2/utils"
+import { Entity, entityEquals } from "cs2/utils"
 
-import { areaToolActive$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
-import { kIconStylePaths, kUITopOffset } from "../constants"
+import { areaToolActive$, groups$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
+import { kGroupInfoPanelMaxWidth, kIconStylePaths, kPanelWidth } from "../constants"
 import { markdownRenderer } from "../shared"
 import { setOverlay, toggleDistrictSelection } from "../triggers"
 import { useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
 import { useEnterExitPhase } from "../utils/useEnterExitPhase"
+import { GroupInfoPanel } from "GroupInfoPanel"
 import { MainPanel } from "MainPanel"
 
 import css from "./index.module.scss"
 
-// Matches the mixin's own transition duration in index.module.scss.
 const kFadeDurationMs = 150
+const kDetailsSwapDurationMs = 120
+
+interface PanelBodyProps {
+    onClose: () => void
+    onShowingDetailsChange: (showingDetails: boolean) => void
+}
+
+// Whichever group's details the player last chose to view takes over the whole panel shell,
+// in place of MainPanel, until they close it and land back on the group list.
+const PanelBody = ({ onClose, onShowingDetailsChange }: PanelBodyProps) => {
+    const groups = useValue(groups$)
+    const [viewingGroupEntity, setViewingGroupEntity] = useState<Entity | null>(null)
+    const [detailsVisible, setDetailsVisible] = useState(false)
+    const { phase, mounted: detailsMounted } = useEnterExitPhase(detailsVisible, kDetailsSwapDurationMs)
+
+    // Only forget which group we were viewing once its exit transition has actually
+    // finished, so GroupInfoPanel keeps the data it needs to render while fading out.
+    useEffect(() => {
+        if (!detailsMounted) {
+            setViewingGroupEntity(null)
+        }
+    }, [detailsMounted])
+
+    const viewingGroup = viewingGroupEntity !== null
+        ? groups.find((g) => entityEquals(g.entity, viewingGroupEntity))
+        : undefined
+
+    const showingDetails = detailsMounted && viewingGroup !== undefined
+
+    useEffect(() => {
+        onShowingDetailsChange(showingDetails)
+    }, [showingDetails])
+
+    const openDetails = (entity: Entity) => {
+        setViewingGroupEntity(entity)
+        setDetailsVisible(true)
+    }
+
+    return showingDetails ? (
+        <GroupInfoPanel group={viewingGroup} onClose={() => setDetailsVisible(false)} phase={phase} />
+    ) : (
+        <MainPanel onClose={onClose} onViewGroupDetails={openDetails} />
+    )
+}
 
 /*
 
@@ -41,6 +85,7 @@ export const GroupManager = () => {
     const shouldDismissPanel = useValue(shouldDismissPanel$)
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
+    const [showingDetails, setShowingDetails] = useState(false)
 
     const openPanel = () => {
         logger.info("Panel opened;")
@@ -122,9 +167,12 @@ export const GroupManager = () => {
                 />
             </Tooltip>
 
-            <div className={`${css.panelShell} ${css[phase]}`}>
+            <div
+                className={`${css.panelShell} ${css[phase]}`}
+                style={{ width: `${showingDetails ? kGroupInfoPanelMaxWidth : kPanelWidth}rem` }}
+            >
                 {contentMounted &&
-                    <MainPanel onClose={closePanel} />
+                    <PanelBody onClose={closePanel} onShowingDetailsChange={setShowingDetails} />
                 }
             </div>
         </>

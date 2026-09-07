@@ -109,31 +109,15 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **NEW**
 
-Added a new tab to the District Group panel: Service Buildings.
-
-In this view, you can see a list of all service buildings in your city matching the selected filter type.
-From here, you can quickly change the district group assignment.
-
-With quick actions you can fully inspect the building or jump to where it is in the city.
-
-Looking to update your prior buildings? Click on "hide assigned buildings" to get a smaller list of unassigned buildings.
-
 **CHANGED**
 
-- Optimized mod performance in general, by spreading work across multiple frames
-- Fixed the width of group metadata items so that the UI is consistenly spaced
-- Optimized mod performance when the main panel is open to avoid writing updates every frame
-- Increased the size of the delete group and remove district icons
-- Increased the font size of the group type selector
+- Group member districts now have links to inspect their Info Panel in the Group Management list
+- The list in Group Management is now sorted by name, alphabetically
+- The list in Group Management is now read-only data. To change details, open the Group Info Panel using the "View Details" button
 
 **FIXED**
 
-- Fixed district selection in Group Management not ending when you select a different filter option
-- Fixed the service building filter and selector UI growing too large in certain languages like French
-- Fixed a shader log error caused by the overlay labels added in v1.0
-- The read-only version of the service building Operating Districts link button is now correctly localized
-- Localization of service building terminology in the mod UI to align with game translations
-- Localization of the service building Operating Districts tooltip in Spanish, French, Italian, Polish, Brazilian Portuguese, and Russian.
+- Fixed tab bar styling when in legacy interface styles
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

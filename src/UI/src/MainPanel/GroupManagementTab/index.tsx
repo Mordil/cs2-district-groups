@@ -1,6 +1,6 @@
 import { useValue } from "cs2/api"
 import { Scrollable } from "cs2/ui"
-import { entityEquals, entityKey } from "cs2/utils"
+import { Entity, entityEquals, entityKey } from "cs2/utils"
 
 import { groups$, selectingGroup$ } from "../../bindings"
 import { useTranslation } from "../../utils/locale"
@@ -10,15 +10,17 @@ import { GroupCard } from "./GroupCard"
 interface GroupManagementTabProps {
     filterType: number
     className?: string
+    onViewGroupDetails: (entity: Entity) => void
 }
 
-export const GroupManagementTab = ({ filterType, className }: GroupManagementTabProps) => {
+export const GroupManagementTab = ({ filterType, className, onViewGroupDetails }: GroupManagementTabProps) => {
     const t = useTranslation()
     const groups = useValue(groups$)
     const selectingGroup = useValue(selectingGroup$)
 
-    // Groups matching the filtered type, in creation order (the binding's own order).
-    const displayedGroups = groups.filter((g) => g.type === filterType)
+    const displayedGroups = groups
+        .filter((g) => g.type === filterType)
+        .sort((a, b) => a.name.localeCompare(b.name))
 
     return (
         <Scrollable
@@ -39,6 +41,7 @@ export const GroupManagementTab = ({ filterType, className }: GroupManagementTab
                     key={entityKey(group.entity)}
                     group={group}
                     selectingDistricts={entityEquals(selectingGroup, group.entity)}
+                    onViewDetails={() => onViewGroupDetails(group.entity)}
                 />
             ))}
         </Scrollable>

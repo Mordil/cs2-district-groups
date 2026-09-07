@@ -1,0 +1,172 @@
+@use "../styles/transitions" as *;
+
+$horizontal-padding: 16rem;
+
+.panel {
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    border-top-left-radius: var(--panelRadius);
+    border-top-right-radius: var(--panelRadius);
+    border-bottom-left-radius: var(--panelRadius);
+    border-bottom-right-radius: var(--panelRadius);
+    overflow: hidden;
+
+    @include enter-exit-transition(
+        120ms,
+        (opacity: 0, transform: translateY(-4rem)),
+        (opacity: 1, transform: translateY(0)),
+        ease-out
+    );
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    color: var(--accentColorNormal);
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+}
+
+.colorSwatch {
+    margin-right: var(--gap8);
+    flex-shrink: 0;
+}
+
+.title {
+    flex: 1;
+    min-width: 0;
+    background-color: transparent;
+    border: none;
+    border-radius: var(--panelRadiusInner);
+    margin-left: calc(-1 * var(--gap4));
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    padding-left: var(--gap4);
+    padding-right: var(--gap4);
+    color: var(--accentColorNormal);
+    font-size: var(--fontSizeXL);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.title:hover {
+    background-color: var(--hoverColor);
+}
+.title:focus {
+    outline: none;
+    background-color: var(--activeColor);
+}
+
+.deleteButtonHover {
+    border-radius: 3rem;
+    margin-right: var(--gap8);
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: 10rem;
+    padding-right: 10rem;
+}
+.deleteButtonHover:hover {
+    background-color: var(--hoverColorNormal);
+}
+
+.actionSection {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    padding-top: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    padding-bottom: $horizontal-padding;
+    padding-left: $horizontal-padding;
+    background-color: rgba(19, 28, 48, 0.75);
+}
+
+.metadataItems {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: -16rem;
+    --iconColor: var(--textColorDimmest);
+}
+
+.selectDistrictButton {
+    font-size: var(--fontSizeS);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    background-image: linear-gradient(var(--panelGradientStart), var(--panelGradientEnd));
+    background-color: var(--panelColorNormal);
+    backdrop-filter: var(--panelBlur);
+}
+:global(.legacy-interface) .content {
+    background-image: none;
+}
+
+.tabBar {
+    --minTabWidth: 0rem;
+    align-items: stretch;
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    background-color: rgba(19, 28, 48, 0.75);
+}
+
+.tabBar button {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+.tab {
+    white-space: normal;
+    text-overflow: clip;
+    font-size: var(--fontSizeM)
+}
+
+.tabContent {
+    flex: 1;
+    min-height: 0;
+}
+
+.footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-top: var(--gap8);
+    padding-bottom: var(--gap8);
+    padding-left: $horizontal-padding;
+    padding-right: $horizontal-padding;
+    background-color: var(--panelColorDark);
+    backdrop-filter: var(--panelBlur);
+}
+
+.footerActions {
+    display: flex;
+    align-items: center;
+}
+
+.footerToggles {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.toggleRow {
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    color: var(--textColorDim);
+}

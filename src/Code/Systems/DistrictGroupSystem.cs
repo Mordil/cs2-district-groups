@@ -1,10 +1,7 @@
-using Colossal.Entities;
 using Colossal.Serialization.Entities;
 using Game;
 using Game.Areas;
-using Game.Buildings;
 using Game.UI;
-using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -37,19 +34,18 @@ namespace DistrictGroups
         private EntityQuery m_AssignmentQuery;
         // Same component as m_AssignmentQuery, but including disabled (unassigned) buildings too
         private EntityQuery m_AllAssignmentsQuery;
-        // Residential buildings, keyed to a district via CurrentDistrict - backs GetDistrictPopulations.
-        private EntityQuery m_ResidentialBuildingQuery;
 
         // Bumped on every group/assignment mutation (including renames and per-building assignment)
         public int Version { get; private set; }
         // Bumped only when a group's membership, type, or color changes
         public int GroupCompositionVersion { get; private set; }
 
+        // The one group the player is looking at in detail, or Entity.Null when they aren't looking at any.
+        private Entity m_FocusedGroup = Entity.Null;
+        public Entity FocusedGroup => m_FocusedGroup;
+
         // Next palette index to hand out to a newly created group.
         private int m_NextColorIndex;
-
-        private Dictionary<Entity, int> m_CachedDistrictPopulations = new Dictionary<Entity, int>();
-        private bool m_DistrictPopulationsStale = true;
 
         // Read-only usage only (GetRenderedLabelName in the Debug partial) - group labels read the
         // name directly off DistrictGroupData each rebuild, no NameSystem registration needed.
@@ -66,13 +62,6 @@ namespace DistrictGroups
                 All = new[] { ComponentType.ReadOnly<DistrictGroupAssignment>() },
                 Options = EntityQueryOptions.IgnoreComponentEnabledState,
             });
-            m_ResidentialBuildingQuery = GetEntityQuery(
-                ComponentType.ReadOnly<Building>(),
-                ComponentType.ReadOnly<CurrentDistrict>(),
-                ComponentType.ReadOnly<Renter>(),
-                ComponentType.ReadOnly<ResidentialProperty>(),
-                ComponentType.Exclude<Game.Tools.Temp>(),
-                ComponentType.Exclude<Game.Common.Deleted>());
             InitializeDebugSupport();
             Enabled = false;
         }
@@ -93,8 +82,9 @@ namespace DistrictGroups
                 EntityManager.DestroyEntity(m_GroupQuery);
             }
             m_NextColorIndex = 0;
-            m_CachedDistrictPopulations.Clear();
-            m_DistrictPopulationsStale = true;
+
+            // Named the outgoing city's group, and the panel that set it is gone with that city.
+            m_FocusedGroup = Entity.Null;
         }
 
         // Safety net for saves that already contain corrupted groups: drop member entries whose district no longer exists.
@@ -164,9 +154,31 @@ namespace DistrictGroups
             return group;
         }
 
+        // Narrows the world view to a single group while its details are on screen. Entity.Null - or
+        // a group the world no longer has - widens it back out to the panel's whole filtered type.
+        public void SetFocusedGroup(Entity group)
+        {
+            bool groupExists = EntityManager.Exists(group);
+            Entity focused = groupExists ? group : Entity.Null;
+            if (m_FocusedGroup == focused)
+            {
+                return;
+            }
+
+            m_FocusedGroup = focused;
+            Mod.log.Info($"Focused group changed; group:{m_FocusedGroup}");
+        }
+
         public void DeleteGroup(Entity group)
         {
             Mod.log.Info($"Deleting group; group:{group}");
+
+            // Nothing may go on pointing at a group that is about to stop existing.
+            if (m_FocusedGroup == group)
+            {
+                SetFocusedGroup(Entity.Null);
+            }
+
             using NativeArray<Entity> buildings = GetAssignedBuildings(group, Allocator.Temp);
             foreach (Entity building in buildings)
             {
@@ -351,10 +363,12 @@ namespace DistrictGroups
             }
         }
 
+        // The group's member districts that still exist, which is the only set safe to hand onwards.
+        //
         // membership pruning happens in DistrictGroupSyncSystem and on load,
         // but a dead district must never reach a vanilla buffer.
         // Filtered once per group instead of once per assigned building.
-        private NativeArray<Entity> GetValidMemberDistricts(Entity group, Allocator allocator)
+        public NativeArray<Entity> GetValidMemberDistricts(Entity group, Allocator allocator)
         {
             DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
             using NativeList<Entity> valid = new NativeList<Entity>(members.Length, Allocator.Temp);
@@ -394,57 +408,6 @@ namespace DistrictGroups
             return result.ToArray(allocator);
         }
 
-        public void InvalidateDistrictPopulations()
-        {
-            m_DistrictPopulationsStale = true;
-        }
-
-        // District -> total population, summed from every residential building's renter households
-        public Dictionary<Entity, int> GetDistrictPopulations()
-        {
-            if (!m_DistrictPopulationsStale)
-            {
-                return m_CachedDistrictPopulations;
-            }
-            m_DistrictPopulationsStale = false;
-
-            Dictionary<Entity, int> populations = new Dictionary<Entity, int>();
-            using NativeArray<Entity> buildings = m_ResidentialBuildingQuery.ToEntityArray(Allocator.Temp);
-            foreach (Entity building in buildings)
-            {
-                Entity district = EntityManager.GetComponentData<CurrentDistrict>(building).m_District;
-                if (district == Entity.Null || !EntityManager.TryGetBuffer(building, true, out DynamicBuffer<Renter> renters))
-                {
-                    continue;
-                }
-                int buildingPopulation = 0;
-                foreach (Renter renter in renters)
-                {
-                    if (EntityManager.TryGetBuffer(renter.m_Renter, true, out DynamicBuffer<Game.Citizens.HouseholdCitizen> residents))
-                    {
-                        buildingPopulation += residents.Length;
-                    }
-                }
-                populations[district] = populations.TryGetValue(district, out int existing) ? existing + buildingPopulation : buildingPopulation;
-            }
-            m_CachedDistrictPopulations = populations;
-            return m_CachedDistrictPopulations;
-        }
-
-        public int GetPopulation(Entity group, Dictionary<Entity, int> districtPopulations)
-        {
-            int population = 0;
-            using NativeArray<Entity> districts = GetValidMemberDistricts(group, Allocator.Temp);
-            foreach (Entity district in districts)
-            {
-                if (districtPopulations.TryGetValue(district, out int districtPopulation))
-                {
-                    population += districtPopulation;
-                }
-            }
-            return population;
-        }
-
         public Entity FindGroupByName(string name)
         {
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
@@ -479,6 +442,7 @@ namespace DistrictGroups
 
             EntityManager.DestroyEntity(m_GroupQuery);
 
+            m_FocusedGroup = Entity.Null;
             m_NextColorIndex = 0;
             Version++;
             GroupCompositionVersion++;

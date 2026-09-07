@@ -112,6 +112,10 @@ namespace DistrictGroups
         // in addition to m_LastSeenCompositionVersion above.
         private int m_LastSeenVersion = -1;
 
+        // Last DistrictGroupSystem.FocusedGroup already folded into m_DirtyFlags. Focus decides which
+        // groups the snapshot even captures, and no version counter moves when it changes.
+        private Entity m_LastSeenFocusedGroup = Entity.Null;
+
         // Master on/off for the border+fill overlay. In-session only, like m_TypeFilter below -
         // resets to the default each time the game starts.
         private bool m_ShowOverlay = true;
@@ -420,6 +424,14 @@ namespace DistrictGroups
                 m_LastSeenVersion = version;
                 m_DirtyFlags |= OverlayDirtyFlags.Labels;
             }
+
+            // Focus decides which groups the snapshot captures at all, so everything drawn from it goes stale.
+            Entity focusedGroup = m_GroupSystem.FocusedGroup;
+            if (focusedGroup != m_LastSeenFocusedGroup)
+            {
+                m_LastSeenFocusedGroup = focusedGroup;
+                m_DirtyFlags |= OverlayDirtyFlags.All;
+            }
         }
 
         // The UI panel drives visibility
@@ -510,11 +522,21 @@ namespace DistrictGroups
             m_DistrictSnapshots.Clear();
             m_GroupSnapshots.Clear();
 
+            Entity focusedGroup = m_GroupSystem.FocusedGroup;
+            bool hasFocusedGroup = focusedGroup != Entity.Null;
             using NativeArray<Entity> groups = m_GroupSystem.GetGroups(Allocator.Temp);
             for (int i = 0; i < groups.Length; i++)
             {
+                // A focused group is drawn on its own, whatever its type and whatever the panel filters to.
+                bool isFocusedGroup = groups[i] == focusedGroup;
+                if (hasFocusedGroup && !isFocusedGroup)
+                {
+                    continue;
+                }
+
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(groups[i]);
-                if (m_TypeFilter >= 0 && (int)data.m_Type != m_TypeFilter)
+                bool matchesTypeFilter = m_TypeFilter < 0 || (int)data.m_Type == m_TypeFilter;
+                if (!hasFocusedGroup && !matchesTypeFilter)
                 {
                     continue;
                 }
@@ -558,7 +580,8 @@ namespace DistrictGroups
             {
                 stopwatch.Stop();
                 Mod.log.Debug($"Overlay snapshot rebuilt; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
-                    $"group_count:{groups.Length} district_count:{m_DistrictSnapshots.Count} label_group_count:{m_GroupSnapshots.Count}");
+                    $"group_count:{groups.Length} district_count:{m_DistrictSnapshots.Count} " +
+                    $"label_group_count:{m_GroupSnapshots.Count} focused_group:{focusedGroup}");
             }
         }
 

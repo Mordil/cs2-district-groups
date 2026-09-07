@@ -58,14 +58,20 @@ namespace DistrictGroups
 
         // What the markers on screen right now were built from
         private GroupServiceType m_MarkedType = GroupServiceType.Generic;
-        private int m_MarkedTargetVersion = kUnfilteredTargetVersion;
+        private Entity m_MarkedGroup = Entity.Null;
+        private int m_MarkedSetVersion = kUnfilteredTargetVersion;
 
         private readonly Dictionary<Entity, Entity> m_Markers = new Dictionary<Entity, Entity>();
 
         // Reused scratch buffers for batching work and avoiding GC pressure with creating these frequently
         private readonly HashSet<Entity> m_TargetBuffer = new HashSet<Entity>();
         private readonly List<Entity> m_StaleBuffer = new List<Entity>();
-        private readonly List<Entity> m_PendingCreateBuffer = new List<Entity>();
+
+        // Buildings waiting on a marker, bucketed by the icon they need so each icon's markers
+        // are still created as one batch. Buckets are reused across rebuilds, never reallocated.
+        private readonly Dictionary<GroupServiceType, List<Entity>> m_PendingCreateBuckets =
+            new Dictionary<GroupServiceType, List<Entity>>();
+
         private readonly List<Entity> m_PendingDestroyBuffer = new List<Entity>();
 
         private bool IsActive => m_ShowServiceBuildings && m_OverlaySystem.Visible && !m_GameScreenUISystem.isMenuActive;
@@ -121,8 +127,9 @@ namespace DistrictGroups
             // clear ours explicitly, so a marker from the previous city doesn't survive as a dangling ghost.
             ClearAllMarkers();
             m_MarkedType = GroupServiceType.Generic;
+            m_MarkedGroup = Entity.Null;
             m_HideAssignedBuildings = false;
-            m_MarkedTargetVersion = kUnfilteredTargetVersion;
+            m_MarkedSetVersion = kUnfilteredTargetVersion;
             m_LastSampleTime = float.NegativeInfinity;
         }
 
@@ -134,16 +141,19 @@ namespace DistrictGroups
                 m_LastSampleTime = UnityEngine.Time.realtimeSinceStartup;
             }
 
-            GroupServiceType desiredType = IsActive ? (GroupServiceType)m_OverlaySystem.TypeFilter : GroupServiceType.Generic;
+            bool isActive = IsActive;
+            GroupServiceType desiredType = isActive ? (GroupServiceType)m_OverlaySystem.TypeFilter : GroupServiceType.Generic;
+            Entity desiredGroup = isActive ? m_GroupSystem.FocusedGroup : Entity.Null;
             bool typeChanged = desiredType != m_MarkedType;
-            bool targetsChanged = TargetVersion != m_MarkedTargetVersion;
+            bool groupChanged = desiredGroup != m_MarkedGroup;
+            bool targetsChanged = GetMarkerSetVersion(desiredGroup) != m_MarkedSetVersion;
 
-            // Even with nothing else changing, re-sample periodically while a real category is showing so
+            // Even with nothing else changing, re-sample periodically while anything is showing so
             // newly-constructed or demolished matching buildings get picked up/dropped.
-            if (typeChanged || targetsChanged
-                || (desiredType != GroupServiceType.Generic && shouldSample))
+            bool hasMarkableSet = desiredGroup != Entity.Null || desiredType != GroupServiceType.Generic;
+            if (typeChanged || groupChanged || targetsChanged || (hasMarkableSet && shouldSample))
             {
-                RebuildMarkers(desiredType);
+                RebuildMarkers(desiredType, desiredGroup);
             }
         }
 
@@ -175,7 +185,7 @@ namespace DistrictGroups
             Mod.log.Info("Removing all service-building marker state from the world");
             m_ShowServiceBuildings = false;
             m_HideAssignedBuildings = false;
-            RebuildMarkers(GroupServiceType.Generic);
+            RebuildMarkers(GroupServiceType.Generic, Entity.Null);
             Mod.log.Info("Finished removing all service-building marker state from the world");
         }
 
@@ -194,17 +204,30 @@ namespace DistrictGroups
             });
         }
 
-        private void RebuildMarkers(GroupServiceType type)
+        // Places markers on every building of `type`, or on just the buildings `focusedGroup` has
+        // assigned when the panel is showing that one group.
+        private void RebuildMarkers(GroupServiceType type, Entity focusedGroup)
         {
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-            using NativeArray<Entity> targets = GetTargetBuildings(type, Allocator.Temp);
+            bool hasFocusedGroup = focusedGroup != Entity.Null;
+            using NativeArray<Entity> targets = hasFocusedGroup
+                ? m_GroupSystem.GetAssignedBuildings(focusedGroup, Allocator.Temp)
+                : GetTargetBuildings(type, Allocator.Temp);
             double queryMs = stopwatch.Elapsed.TotalMilliseconds;
 
             m_TargetBuffer.Clear();
             foreach (Entity building in targets)
             {
-                m_TargetBuffer.Add(building);
+                /*
+                    A group's assignments aren't narrowed by a query the way the per-type sets are, so a
+                    building already on its way out of the world can still be listed among them.
+                */
+                bool isMarkable = !hasFocusedGroup || IsMarkable(building);
+                if (isMarkable)
+                {
+                    m_TargetBuffer.Add(building);
+                }
             }
 
             m_StaleBuffer.Clear();
@@ -227,37 +250,68 @@ namespace DistrictGroups
             int removed = m_StaleBuffer.Count;
             double destroyMs = stopwatch.Elapsed.TotalMilliseconds - queryMs - diffMs;
 
-            int added = 0;
-            double createMs = 0;
-            if (type != GroupServiceType.Generic)
+            /*
+                A focused group holds whatever buildings the player assigned to it, and those need not
+                all be the type the panel is filtered to - a group whose type was changed after the fact
+                keeps the buildings it already had. So each building is marked with the icon for the
+                service it actually provides, rather than for the filtered type.
+            */
+            foreach (List<Entity> bucket in m_PendingCreateBuckets.Values)
             {
-                Entity iconPrefabEntity = ResolveIconPrefabEntity(type);
-                if (iconPrefabEntity != Entity.Null)
+                bucket.Clear();
+            }
+            foreach (Entity building in m_TargetBuffer)
+            {
+                if (m_Markers.ContainsKey(building))
                 {
-                    m_PendingCreateBuffer.Clear();
-                    foreach (Entity building in m_TargetBuffer)
-                    {
-                        if (!m_Markers.ContainsKey(building))
-                        {
-                            m_PendingCreateBuffer.Add(building);
-                        }
-                    }
-                    added = m_PendingCreateBuffer.Count;
-                    double beforeCreate = stopwatch.Elapsed.TotalMilliseconds;
-                    CreateMarkers(m_PendingCreateBuffer, iconPrefabEntity);
-                    createMs = stopwatch.Elapsed.TotalMilliseconds - beforeCreate;
+                    continue;
                 }
+                GroupServiceType iconType = hasFocusedGroup
+                    ? m_GroupSystem.DetectBuildingServiceType(building)
+                    : type;
+                if (!m_PendingCreateBuckets.TryGetValue(iconType, out List<Entity> bucket))
+                {
+                    bucket = new List<Entity>();
+                    m_PendingCreateBuckets[iconType] = bucket;
+                }
+                bucket.Add(building);
             }
 
+            int added = 0;
+            double beforeCreate = stopwatch.Elapsed.TotalMilliseconds;
+            foreach (KeyValuePair<GroupServiceType, List<Entity>> pending in m_PendingCreateBuckets)
+            {
+                if (pending.Value.Count == 0)
+                {
+                    continue;
+                }
+                Entity iconPrefabEntity = ResolveIconPrefabEntity(pending.Key);
+                if (iconPrefabEntity == Entity.Null)
+                {
+                    continue;
+                }
+                CreateMarkers(pending.Value, iconPrefabEntity);
+                added += pending.Value.Count;
+            }
+            double createMs = stopwatch.Elapsed.TotalMilliseconds - beforeCreate;
+
             m_MarkedType = type;
-            m_MarkedTargetVersion = TargetVersion;
+            m_MarkedGroup = focusedGroup;
+            m_MarkedSetVersion = GetMarkerSetVersion(focusedGroup);
 
             stopwatch.Stop();
-            Mod.log.Info($"Service building markers rebuilt; type:{type} hide_assigned:{m_HideAssignedBuildings} " +
-                $"added_count:{added} removed_count:{removed} " +
+            Mod.log.Info($"Service building markers rebuilt; type:{type} focused_group:{focusedGroup} " +
+                $"hide_assigned:{m_HideAssignedBuildings} added_count:{added} removed_count:{removed} " +
                 $"total_count:{m_Markers.Count} query_ms:{queryMs:F3} diff_ms:{diffMs:F3} destroy_ms:{destroyMs:F3} " +
                 $"create_ms:{createMs:F3} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
         }
+
+        // Identifies the set the markers are placed on, changing whenever that set could have.
+        // A focused group's markers come from its own assignments, so they track every assignment change.
+        private int GetMarkerSetVersion(Entity focusedGroup) =>
+            m_HideAssignedBuildings || focusedGroup != Entity.Null
+                ? m_GroupSystem.Version
+                : kUnfilteredTargetVersion;
 
         // Every building of `type` the panel is currently listing, which both the markers and the panel's own rows are built from.
         public NativeArray<Entity> GetTargetBuildings(GroupServiceType type, Allocator allocator)
@@ -362,6 +416,13 @@ namespace DistrictGroups
                 m_Markers[building] = marker;
             }
         }
+
+        // Whether the world still holds enough of this building to hang a marker over it.
+        private bool IsMarkable(Entity building) =>
+            EntityManager.Exists(building)
+            && EntityManager.HasComponent<Game.Objects.Transform>(building)
+            && !EntityManager.HasComponent<Deleted>(building)
+            && !EntityManager.HasComponent<Temp>(building);
 
         // Roof height (building's own Y plus its prefab's local bounds top), not ground level
         private float3 GetMarkerLocation(Entity building)

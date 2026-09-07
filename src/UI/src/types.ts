@@ -1,9 +1,31 @@
 import { Color } from "cs2/bindings"
 import { Entity } from "cs2/utils"
 
-export interface NamedEntity {
+// A district that belongs to a group, with the per-district numbers its overview row shows
+export interface DistrictMember extends ResidentStats {
     entity: Entity
     name: string
+}
+
+/*
+    The resident figures a district, or a whole group, reads out.
+
+    Happiness and wealth arrive as the ordinal of the band their average landed in rather than as a
+    raw average, and are kNoThreshold when there were no residents to average.
+*/
+export interface ResidentStats {
+    population: number
+    happiness: number
+    wealth: number
+}
+
+// A service building assigned to a group, with the per-building numbers its buildings row shows
+export interface AssignedBuilding {
+    entity: Entity
+    name: string
+    type: number
+    // Whole-percent efficiency, or kUnknownEfficiency when the building reports none
+    efficiency: number
 }
 
 // A service building of the currently filtered type, with the assignment state its row needs
@@ -20,12 +42,11 @@ export interface ServiceBuilding {
     assetName: string
 }
 
-export interface Group {
+export interface Group extends ResidentStats {
     entity: Entity
     name: string
     type: number
     color: Color
-    assignedBuildingCount: number
-    population: number
-    members: NamedEntity[]
+    members: DistrictMember[]
+    buildings: AssignedBuilding[]
 }

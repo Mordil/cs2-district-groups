@@ -16,7 +16,7 @@ export const serviceBuildings$ = bindValue<ServiceBuilding[]>(mod.id, "serviceBu
 // The group whose district selection is currently active, or the null entity when none is
 export const selectingGroup$ = bindValue<Entity>(mod.id, "selectingGroup", { index: 0, version: 0 })
 
-// Display toggles, mirrored by the main panel's footer
+// Display toggles
 export const showOverlay$ = bindValue<boolean>(mod.id, "showOverlay", true)
 export const showServiceBuildings$ = bindValue<boolean>(mod.id, "showServiceBuildings", false)
 export const areasVisible$ = bindValue<boolean>(mod.id, "areasVisible", false)

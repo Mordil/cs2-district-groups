@@ -1,0 +1,52 @@
+$horizontal-padding: 16rem;
+
+$row-inset: $horizontal-padding;
+
+$row-cell-padding: 6rem;
+$header-label-padding: 6rem;
+
+.table {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background-color: var(--sectionBackgroundColor);
+}
+
+.columnHeaders {
+    padding-left: $horizontal-padding + $row-cell-padding;
+    padding-right: $horizontal-padding + $row-cell-padding;
+    background-color: var(--sectionHeaderColor);
+    font-size: var(--fontSizeS);
+}
+
+.columnHeaderButton {
+    margin-left: -$header-label-padding;
+    margin-right: -$header-label-padding;
+}
+
+.list {
+    --contentPadding: #{$row-inset};
+    --scrollbarPadding: #{$row-inset};
+    flex: 1;
+    min-height: 0;
+    color: var(--textColorHighlightDim);
+}
+
+.actionCell {
+    --normalColor: transparent;
+    margin-left: 8rem;
+}
+
+.name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty {
+    padding: $horizontal-padding;
+    background-color: var(--sectionBackgroundColor);
+    color: var(--textColorDim);
+    font-size: var(--fontSizeM);
+}

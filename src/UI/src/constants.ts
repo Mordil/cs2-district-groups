@@ -14,6 +14,21 @@ export const kUITopOffset = 60;
 // GroupServiceType.Generic - the "no type selected" sentinel for the type filter.
 export const kGenericType = 0
 
+// AssignedBuilding.efficiency for a building the game has no efficiency to report for.
+export const kUnknownEfficiency = -1
+
+// ResidentStats.happiness/wealth for a district or group with no residents to average.
+export const kNoThreshold = -1
+
+// The size of the main panel, in rem CSS units
+export const kPanelWidth = 490
+
+// How wide the group info panel is allowed to grow to fit longer content, in rem CSS units
+export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.25
+
+// Stands in for a district stat that is unreported.
+export const kNoValue = "—"
+
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {
