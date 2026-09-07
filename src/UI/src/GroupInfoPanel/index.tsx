@@ -199,6 +199,10 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                         <ColorPicker
                             value={group.color}
                             onChange={(color) => {
+                                if (color == group.color) {
+                                    return
+                                }
+
                                 logger.info(`Group color changed; entity:${entityKey(group.entity)}`)
                                 setGroupColor(group.entity, color)
                             }}
@@ -239,6 +243,10 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             className={css.typeSelector}
                             value={group.type}
                             onChange={(newType) => {
+                                if (newType == group.type) {
+                                    return
+                                }
+
                                 logger.info(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
                                 setGroupType(group.entity, newType)
                             }}

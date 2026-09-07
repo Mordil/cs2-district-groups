@@ -86,14 +86,15 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
     }
 
     const onFilterChange = (type: number) => {
+        if (lastFilterType == type) {
+            return
+        }
+
         logger.info(`Filter changed; type:${type}`)
         lastFilterType = type
         setFilterType(type)
         setOverlayFilter(type)
-
-        if (type !== filterType) {
-            cancelActiveDistrictSelection()
-        }
+        cancelActiveDistrictSelection()
     }
 
     const onTabSelect = (tab: PanelTab) => {
