@@ -15,6 +15,7 @@ import {
 } from "cs2/ui"
 
 import { isDebugBuild$ } from "../../bindings"
+import { Checkbox } from "../../components/Checkbox"
 import { glyphIconSrc } from "../../components/icons"
 import { VC, VT } from "../../components/vanilla"
 import { markdownRenderer } from "../../shared"
@@ -29,13 +30,16 @@ const kDropdownLabels = ["Option A", "Option B", "Option C"]
 // Dev-only showcase of every reusable vanilla piece (cs2/ui components +
 // design tokens) cataloged in the "reference_cs2_native_ui_components" and
 // "reference_cs2_vanilla_css_variables" memories - lets us eyeball what's
-// actually available before reaching for a custom-styled element. Gated on
+// actually available before reaching for a custom-styled element, alongside
+// the mod's own components built from those pieces. Gated on
 // isDebugBuild$ (DistrictGroupsUISystem.IsDebugBuild, a real C# `#if DEBUG`
 // check) so it never renders in a shipped Release build.
 export const KitchenSinkDebugPanel = () => {
     const isDebugBuild = useValue(isDebugBuild$)
     const [open, setOpen] = useState(false)
     const [dropdownValue, setDropdownValue] = useState(0)
+    const [customChecked, setCustomChecked] = useState(false)
+    const [customMultistate, setCustomMultistate] = useState<boolean | undefined>(undefined)
     const dialogStack = useContext(DialogStack)
 
     if (!isDebugBuild) {
@@ -81,6 +85,19 @@ export const KitchenSinkDebugPanel = () => {
                         <div className={css.row}>
                             <Icon tinted={true} src={glyphIconSrc("ThickStrokeArrowRight")} />
                             <Icon tinted={false} src={glyphIconSrc("ThickStrokeArrowRight")} />
+                        </div>
+
+                        <div className={css.groupHeader}>Checkbox (custom - components/Checkbox)</div>
+                        <div className={css.row}>
+                            <Checkbox checked={customChecked} onChange={setCustomChecked} label="Two-state" />
+                        </div>
+                        <div className={css.row}>
+                            <Checkbox
+                                checked={customMultistate}
+                                multistate={true}
+                                onMultistateChange={setCustomMultistate}
+                                label="Tri-state (multistate)"
+                            />
                         </div>
 
                         <div className={css.groupHeader}>Dropdown</div>
