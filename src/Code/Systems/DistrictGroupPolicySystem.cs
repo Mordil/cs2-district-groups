@@ -34,9 +34,8 @@ namespace DistrictGroups
         private readonly List<DistrictPolicy> m_Policies = new List<DistrictPolicy>();
         private bool m_PoliciesDirty = true;
 
-        // How many policy prefabs the list was last built from; never equal to a real count to start with.
-        private int m_SeenPolicyPrefabCount = -1;
-        private int m_LastSeenPoliciesRefreshVersion = RefreshClock.kNeverRefreshed;
+        // The PolicyData order version the list was last built from; the dirty flag covers the first build.
+        private int m_SeenPolicyPrefabVersion;
 
         // Identifies the answer every policy read currently gives, changing whenever that answer could have.
         public int Version { get; private set; }
@@ -66,6 +65,14 @@ namespace DistrictGroups
                 ComponentType.ReadOnly<District>(),
                 ComponentType.ReadOnly<Policy>(),
                 ComponentType.ReadOnly<Updated>());
+
+            GameManager.instance.localizationManager.onActiveDictionaryChanged += OnActiveDictionaryChanged;
+        }
+
+        protected override void OnDestroy()
+        {
+            GameManager.instance.localizationManager.onActiveDictionaryChanged -= OnActiveDictionaryChanged;
+            base.OnDestroy();
         }
 
         // Prefabs and their unlock state both belong to the city that just loaded, so the list starts over.
@@ -76,19 +83,24 @@ namespace DistrictGroups
             Version++;
         }
 
+        // The list is sorted by each policy's display name, so a new active language reorders it.
+        private void OnActiveDictionaryChanged()
+        {
+            m_PoliciesDirty = true;
+        }
+
         protected override void OnUpdate()
         {
             bool policyUnlocked = PrefabUtils.HasUnlockedPrefab<PolicyData>(EntityManager, m_PolicyUnlockedQuery);
             bool districtPolicyChanged = !m_UpdatedDistrictPolicyQuery.IsEmptyIgnoreFilter;
             /*
                 A policy prefab can be registered at any point while a city loads, a mod's own
-                included, and registering one raises no event of its own - so the only way to notice
-                is to count what the query holds. Nothing the player does moves that count, so it is
-                read on the shared refresh cadence rather than every frame.
+                included, and registering one raises no event of its own.
+
+                ECS keeps a per-component order version that moves whenever an archetype carrying that component gains or loses an entity,
+                and PolicyData only ever sits on a prefab.
             */
-            bool policiesRefreshDue = RefreshClock.IsDue(RefreshPhase.Policies, ref m_LastSeenPoliciesRefreshVersion);
-            bool prefabsChanged = policiesRefreshDue
-                && m_PolicyPrefabQuery.CalculateEntityCount() != m_SeenPolicyPrefabCount;
+            bool prefabsChanged = EntityManager.GetComponentOrderVersion<PolicyData>() != m_SeenPolicyPrefabVersion;
             bool listStale = m_PoliciesDirty || policyUnlocked || prefabsChanged;
 
             if (listStale)
@@ -197,9 +209,9 @@ namespace DistrictGroups
         private void RebuildPolicies()
         {
             m_Policies.Clear();
+            m_SeenPolicyPrefabVersion = EntityManager.GetComponentOrderVersion<PolicyData>();
 
             using NativeArray<Entity> policies = m_PolicyPrefabQuery.ToEntityArray(Allocator.Temp);
-            m_SeenPolicyPrefabCount = policies.Length;
             foreach (Entity policy in policies)
             {
                 if (TryDescribePolicy(policy, out DistrictPolicy described))

@@ -110,7 +110,7 @@ namespace DistrictGroups
                 return;
             }
 
-            float defaultValue = m_PolicySystem.GetDefaultValue(policy.m_Policy);
+            float defaultValue = policy.DefaultValue;
             writer.ArrayBegin(members.Length);
             foreach (DistrictGroupMember member in members)
             {

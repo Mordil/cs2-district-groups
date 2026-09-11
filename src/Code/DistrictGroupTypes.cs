@@ -58,6 +58,9 @@ namespace DistrictGroups
         private readonly string m_LocalizedName;
         private readonly int m_Priority;
 
+        // The value a district falls back to when it has never carried the policy.
+        public float DefaultValue => m_HasSlider ? m_Slider.m_Default : 0f;
+
         public DistrictPolicy(
             Entity policy,
             string id,

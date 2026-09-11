@@ -26,9 +26,6 @@ namespace DistrictGroups
 
         // The overlay's baked group-name labels
         OverlayLabels = 4,
-
-        // The set of district policies the group panel can list
-        Policies = 5,
     }
 
     // The one cadence everything that re-reads aggregate or derived data shares,
