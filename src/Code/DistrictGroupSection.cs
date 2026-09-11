@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Reflection;
 using Colossal.UI.Binding;
 using Game.Areas;
 using Game.UI.InGame;
@@ -23,39 +21,17 @@ namespace DistrictGroups
         private GroupServiceType m_BuildingType;
         private int m_LastSeenVersion = -1;
 
-        /*
-            We need to use reflection to find the index of the "operating districts" section since it's all private and done before we load
-
-            That way we can insert at the right index
-        */
-        private static readonly FieldInfo kMiddleSectionsField =
-            typeof(SelectedInfoUISystem).GetField("m_MiddleSections", BindingFlags.NonPublic | BindingFlags.Instance);
-
         protected override void OnCreate()
         {
             base.OnCreate();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
-            InsertBeforeDistrictsSection();
+
+            // Sits directly above the "operating districts" section the assignment governs.
+            InfoSectionOrder.InsertBefore<DistrictsSection>(m_InfoUISystem, this);
 
             AddBinding(new TriggerBinding<Entity>(DistrictGroupsUISystem.kBindingGroup, "assignGroup", OnAssignGroup));
             AddBinding(new TriggerBinding(DistrictGroupsUISystem.kBindingGroup, "unassignGroup", OnUnassignGroup));
-        }
-
-        private void InsertBeforeDistrictsSection()
-        {
-            DistrictsSection districtsSection = World.GetOrCreateSystemManaged<DistrictsSection>();
-            if (kMiddleSectionsField?.GetValue(m_InfoUISystem) is List<ISectionSource> sections)
-            {
-                int index = sections.IndexOf(districtsSection);
-                if (index >= 0)
-                {
-                    sections.Insert(index, this);
-                    return;
-                }
-            }
-            Mod.log.Warn("Could not locate DistrictsSection in the info panel. falling back to appending our section;");
-            m_InfoUISystem.AddMiddleSection(this);
         }
 
         private void OnAssignGroup(Entity group)

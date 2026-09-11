@@ -3,10 +3,11 @@ import { useEffect, useRef, useState } from "react"
 import { useValue } from "cs2/api"
 import { infoview } from "cs2/bindings"
 import { Button, FormattedParagraphs, Tooltip } from "cs2/ui"
-import { Entity, entityEquals } from "cs2/utils"
+import { Entity, entityEquals, entityKey } from "cs2/utils"
 
 import { areaToolActive$, groups$, overlayVisible$, selectingGroup$, shouldDismissPanel$ } from "../bindings"
 import { kGroupInfoPanelMaxWidth, kIconStylePaths, kPanelWidth } from "../constants"
+import { useGroupInspectionRequests } from "../inspectGroup"
 import { markdownRenderer } from "../shared"
 import { setOverlay, toggleDistrictSelection } from "../triggers"
 import { useTranslation } from "../utils/locale"
@@ -23,11 +24,14 @@ const kDetailsSwapDurationMs = 120
 interface PanelBodyProps {
     onClose: () => void
     onShowingDetailsChange: (showingDetails: boolean) => void
+    // The group an Inspect action asked for, or null when the player opened the panel themselves.
+    inspectRequest: Entity | null
+    onInspectRequestHandled: () => void
 }
 
 // Whichever group's details the player last chose to view takes over the whole panel shell,
 // in place of MainPanel, until they close it and land back on the group list.
-const PanelBody = ({ onClose, onShowingDetailsChange }: PanelBodyProps) => {
+const PanelBody = ({ onClose, onShowingDetailsChange, inspectRequest, onInspectRequestHandled }: PanelBodyProps) => {
     const groups = useValue(groups$)
     const [viewingGroupEntity, setViewingGroupEntity] = useState<Entity | null>(null)
     const [detailsVisible, setDetailsVisible] = useState(false)
@@ -55,6 +59,15 @@ const PanelBody = ({ onClose, onShowingDetailsChange }: PanelBodyProps) => {
         setViewingGroupEntity(entity)
         setDetailsVisible(true)
     }
+
+    // An Inspect action names the group up front, so skip past the group list straight to its details.
+    useEffect(() => {
+        if (inspectRequest === null) {
+            return
+        }
+        openDetails(inspectRequest)
+        onInspectRequestHandled()
+    }, [inspectRequest])
 
     return showingDetails ? (
         <GroupInfoPanel group={viewingGroup} onClose={() => setDetailsVisible(false)} phase={phase} />
@@ -86,6 +99,7 @@ export const GroupManager = () => {
     const iconPath = kIconStylePaths[open ? 0 : 1]
     const dismissedByAreaTool = useRef(false)
     const [showingDetails, setShowingDetails] = useState(false)
+    const [inspectRequest, setInspectRequest] = useState<Entity | null>(null)
 
     const openPanel = () => {
         logger.info("Panel opened;")
@@ -115,6 +129,14 @@ export const GroupManager = () => {
     }
 
     const togglePanel = () => (open ? closePanel() : openPanel())
+
+    useGroupInspectionRequests((group) => {
+        logger.info(`Group inspection requested from the info panel; entity:${entityKey(group)}`)
+        setInspectRequest(group)
+        if (!open) {
+            openPanel()
+        }
+    })
 
     // The district area tool shares the same screen space our panel occupies.
     // If it opens while we're displaying our UI, we want to dismiss until the player is done.
@@ -172,7 +194,12 @@ export const GroupManager = () => {
                 style={{ width: `${showingDetails ? kGroupInfoPanelMaxWidth : kPanelWidth}rem` }}
             >
                 {contentMounted &&
-                    <PanelBody onClose={closePanel} onShowingDetailsChange={setShowingDetails} />
+                    <PanelBody
+                        onClose={closePanel}
+                        onShowingDetailsChange={setShowingDetails}
+                        inspectRequest={inspectRequest}
+                        onInspectRequestHandled={() => setInspectRequest(null)}
+                    />
                 }
             </div>
         </>

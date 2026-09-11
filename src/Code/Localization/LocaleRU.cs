@@ -142,6 +142,10 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "Нет групп, соответствующих поиску." },
                 { LocalizationKey.NoGroupsInSection, "Группы не найдены." },
 
+                { LocalizationKey.MembershipSectionLabel, "ГРУППЫ РАЙОНОВ" },
+                { LocalizationKey.MembershipSectionTooltipLine1, "**Группы районов**, в которые входит этот район." },
+                { LocalizationKey.MembershipSectionTooltipLine2, "Здания служб, назначенные любой из этих групп, будут обслуживать этот район." },
+
                 { LocalizationKey.TypeGeneric, "Гражданский" },
                 { LocalizationKey.TypePolice, "Полиция" },
                 { LocalizationKey.TypeFire, "Пожар" },

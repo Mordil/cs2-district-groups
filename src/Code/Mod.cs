@@ -75,6 +75,7 @@ namespace DistrictGroups
             updateSystem.UpdateAt<DistrictGroupPolicySystem>(SystemUpdatePhase.UIUpdate);
             updateSystem.UpdateAt<DistrictGroupsUISystem>(SystemUpdatePhase.UIUpdate);
             updateSystem.UpdateAt<DistrictGroupSection>(SystemUpdatePhase.UIUpdate);
+            updateSystem.UpdateAt<DistrictGroupMembershipSection>(SystemUpdatePhase.UIUpdate);
         }
 
         // The Icons folder sits next to the deployed DLL - the csproj's DeployIcons

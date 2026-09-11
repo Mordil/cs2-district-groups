@@ -142,6 +142,10 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "検索条件に一致するグループがありません。" },
                 { LocalizationKey.NoGroupsInSection, "グループが見つかりません。" },
 
+                { LocalizationKey.MembershipSectionLabel, "特区グループ" },
+                { LocalizationKey.MembershipSectionTooltipLine1, "この特区が所属している**特区グループ**です。" },
+                { LocalizationKey.MembershipSectionTooltipLine2, "これらのグループのいずれかに割り当てられたサービス施設は、この特区にサービスを提供します。" },
+
                 { LocalizationKey.TypeGeneric, "市民" },
                 { LocalizationKey.TypePolice, "警察" },
                 { LocalizationKey.TypeFire, "火災" },

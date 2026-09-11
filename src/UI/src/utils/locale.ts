@@ -75,6 +75,10 @@ export const kLocale = {
     noGroupsMatchSearch: id("NoGroupsMatchSearch"),
     noGroupsInSection: id("NoGroupsInSection"),
 
+    membershipSectionLabel: id("MembershipSectionLabel"),
+    membershipSectionTooltipLine1: id("MembershipSectionTooltipLine1"),
+    membershipSectionTooltipLine2: id("MembershipSectionTooltipLine2"),
+
     typeGeneric: id("TypeGeneric"),
     typePolice: id("TypePolice"),
     typeFire: id("TypeFire"),
@@ -166,6 +170,10 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     searchGroupsPlaceholder: "Search...",
     noGroupsMatchSearch: "No groups match your search.",
     noGroupsInSection: "No groups found.",
+
+    membershipSectionLabel: "DISTRICT GROUPS",
+    membershipSectionTooltipLine1: "The **district groups** this district belongs to.",
+    membershipSectionTooltipLine2: "Service buildings assigned to any of these groups will provide service to this district.",
 
     typeGeneric: "Civic",
     typePolice: "Police",

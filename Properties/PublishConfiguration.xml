@@ -121,6 +121,10 @@ Once you unlock district policies, inspect a group and view the new "Policies" t
 
 Toggles policies across all districts in the group with a single button, or control them on a per-district level.
 
+**NEW**
+
+District Info panels now have a section listing the groups it is a member of, and the type of the group.
+
 **CHANGED**
 
 - The Group type list now displays an icon for each group type

@@ -142,6 +142,10 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "沒有符合搜尋條件的群組。" },
                 { LocalizationKey.NoGroupsInSection, "找不到群組。" },
 
+                { LocalizationKey.MembershipSectionLabel, "行政區群組" },
+                { LocalizationKey.MembershipSectionTooltipLine1, "此行政區所屬的**行政區群組**。" },
+                { LocalizationKey.MembershipSectionTooltipLine2, "指派給其中任一行政區群組的服務建築都會為此行政區提供服務。" },
+
                 { LocalizationKey.TypeGeneric, "市民" },
                 { LocalizationKey.TypePolice, "警察" },
                 { LocalizationKey.TypeFire, "火災" },

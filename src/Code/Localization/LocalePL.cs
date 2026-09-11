@@ -142,6 +142,10 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "Brak grup zgodnych z wyszukiwaniem." },
                 { LocalizationKey.NoGroupsInSection, "Nie znaleziono grup." },
 
+                { LocalizationKey.MembershipSectionLabel, "GRUPY DZIELNIC" },
+                { LocalizationKey.MembershipSectionTooltipLine1, "**Grupy dzielnic**, do których należy ta dzielnica." },
+                { LocalizationKey.MembershipSectionTooltipLine2, "Budynki usługowe przypisane do którejkolwiek z tych grup będą obsługiwać tę dzielnicę." },
+
                 { LocalizationKey.TypeGeneric, "Obywatelski" },
                 { LocalizationKey.TypePolice, "Policja" },
                 { LocalizationKey.TypeFire, "Straż pożarna" },

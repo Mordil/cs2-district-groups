@@ -142,6 +142,10 @@ namespace DistrictGroups
                 { LocalizationKey.NoGroupsMatchSearch, "검색어와 일치하는 그룹이 없습니다." },
                 { LocalizationKey.NoGroupsInSection, "그룹을 찾을 수 없습니다." },
 
+                { LocalizationKey.MembershipSectionLabel, "지구 그룹" },
+                { LocalizationKey.MembershipSectionTooltipLine1, "이 지구가 속한 **지구 그룹**입니다." },
+                { LocalizationKey.MembershipSectionTooltipLine2, "이 그룹들 중 어느 하나에 할당된 서비스 건물은 이 지구에 서비스를 제공합니다." },
+
                 { LocalizationKey.TypeGeneric, "시민" },
                 { LocalizationKey.TypePolice, "경찰" },
                 { LocalizationKey.TypeFire, "화재" },

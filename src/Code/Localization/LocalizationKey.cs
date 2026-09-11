@@ -77,6 +77,10 @@
         public const string NoGroupsMatchSearch = "DistrictGroups.UI[NoGroupsMatchSearch]";
         public const string NoGroupsInSection = "DistrictGroups.UI[NoGroupsInSection]";
 
+        public const string MembershipSectionLabel = "DistrictGroups.UI[MembershipSectionLabel]";
+        public const string MembershipSectionTooltipLine1 = "DistrictGroups.UI[MembershipSectionTooltipLine1]";
+        public const string MembershipSectionTooltipLine2 = "DistrictGroups.UI[MembershipSectionTooltipLine2]";
+
         public const string TypeGeneric = "DistrictGroups.UI[TypeGeneric]";
         public const string TypePolice = "DistrictGroups.UI[TypePolice]";
         public const string TypeFire = "DistrictGroups.UI[TypeFire]";
