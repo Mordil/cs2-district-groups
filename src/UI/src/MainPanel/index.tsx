@@ -10,7 +10,7 @@ import { Checkbox } from "../components/Checkbox"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc, modIconSrc } from "../components/icons"
 import { VC, VF, VT } from "../components/vanilla"
-import { kPanelWidth, useTypeLabels } from "../constants"
+import { kPanelWidth, kTypeIcons, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import {
     createGroup as createGroupTrigger,
@@ -228,7 +228,8 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
                             value={filterType}
                             onChange={onFilterChange}
                             labels={typeLabels}
-                            icon="FunnelFilter"
+                            iconSrc={modIconSrc("FunnelFilter")}
+                            optionIcons={kTypeIcons}
                             tooltip={filterTooltip}
                         />
 

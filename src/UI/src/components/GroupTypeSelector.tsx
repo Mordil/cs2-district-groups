@@ -3,7 +3,7 @@ import { ReactNode } from "react"
 import { Dropdown, Tooltip } from "cs2/ui"
 
 import css from "./GroupTypeSelector.module.scss"
-import { ModIcon } from "./icons"
+import { SrcIcon } from "./icons"
 import { VC, VT } from "./vanilla"
 
 // A labeled-option dropdown picker over a district group's service type, shown as an icon + ellipsized label toggle; `value` is an index into `labels`.
@@ -11,7 +11,8 @@ export const GroupTypeSelector = (props: {
     value: number
     onChange: (value: number) => void
     labels: string[]
-    icon: string
+    iconSrc: string
+    optionIcons: string[]
     tooltip?: ReactNode
     className?: string
 }) => {
@@ -33,10 +34,11 @@ export const GroupTypeSelector = (props: {
                         closeOnSelect={true}
                         onChange={() => props.onChange(i)}
                     >
-                        <div style={{
-                            paddingLeft: "8rem",
-                            paddingRight: "8rem"
-                        }}>{optionLabel}</div>
+                        <div className={css.optionRow}>
+                            <SrcIcon src={props.optionIcons[i]} size="20rem" />
+
+                            <div className={css.optionLabel}>{optionLabel}</div>
+                        </div>
                     </VC.DropdownItem>
                 ))}
             >
@@ -45,7 +47,7 @@ export const GroupTypeSelector = (props: {
                     className={[css.selectorToggle, props.className].filter(Boolean).join(" ")}
                 >
                     <div className={css.iconSlot}>
-                        <ModIcon name={props.icon} />
+                        <SrcIcon src={props.iconSrc} size="24rem" />
                     </div>
                     <div className={css.selectorLabel}>{label}</div>
                 </VC.DropdownToggleBase>

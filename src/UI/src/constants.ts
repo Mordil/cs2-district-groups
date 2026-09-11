@@ -1,3 +1,4 @@
+import { gameIconSrc, modIconSrc } from "./components/icons"
 import { useTranslation } from "./utils/locale"
 
 export const kAssetPath = 'coui://districtgroups/'
@@ -28,6 +29,26 @@ export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.25
 
 // Stands in for a district stat that is unreported.
 export const kNoValue = "—"
+
+// Indexed by GroupServiceType - order must match the C# enum.
+// 
+// The "Civic"(Generic) entry is the mod's own icon;
+// every other entry reuses the game's own icon for that service.
+export const kTypeIcons: string[] = [
+    modIconSrc("civic"),
+    gameIconSrc("Police"),
+    gameIconSrc("FireSafety"),
+    gameIconSrc("Healthcare"),
+    gameIconSrc("Deathcare"),
+    gameIconSrc("Garbage"),
+    gameIconSrc("Education"),
+    gameIconSrc("Education"),
+    gameIconSrc("Education"),
+    gameIconSrc("Education"),
+    gameIconSrc("PostService"),
+    gameIconSrc("ParksAndRecreation"),
+    gameIconSrc("Administration"),
+]
 
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
 // must match the C# enum.

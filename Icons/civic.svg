@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 26 26"
+     role="img"
+     aria-labelledby="title">
+  <title id="title">Civic icon</title>
+
+  <path d="M2 19.6 11.5 15.4 21 19.6 11.5 23.8Z" fill="#c7d0da"/>
+  <path d="M2 19.6 11.5 23.8v1.8L2 21.4Z" fill="#8a96a3"/>
+  <path d="M11.5 23.8 21 19.6v1.8l-9.5 4.2Z" fill="#6e7987"/>
+  <ellipse cx="6.8" cy="19.9" rx="2" ry="0.85" fill="#000" fill-opacity="0.18"/>
+  <rect x="6.05" y="2.4" width="1.5" height="17.5" rx="0.75" fill="#aab4bf"/>
+  <circle cx="6.8" cy="2.2" r="1.1" fill="#e6ebf1"/>
+  <path d="M7.55 3.1 12.2 2.1v9L7.55 12.1Z" fill="#c0aef5"/>
+  <path d="M12.2 2.1l5.2 2.1v9l-5.2-2.1Z" fill="#6d4fc4"/>
+  <path d="M17.4 4.2l5.4-1.1v9l-5.4 1.1Z" fill="#9575e6"/>
+</svg>

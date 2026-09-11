@@ -3,7 +3,7 @@
     background-color: var(--activeColor);
     color: var(--textColor);
     border-radius: 3rem;
-    padding: 4rem 10rem 4rem 35rem;
+    padding: 4rem 10rem 4rem 40rem;
     font-size: var(--fontSizeM);
     max-width: 50%;
 
@@ -26,4 +26,15 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.optionRow {
+    display: flex;
+    align-items: center;
+    padding-left: 4rem;
+    padding-right: 8rem;
+}
+
+.optionLabel {
+    margin-left: 8rem;
 }

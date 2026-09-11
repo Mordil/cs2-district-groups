@@ -12,7 +12,7 @@ import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc } from "../components/icons"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../components/vanilla"
-import { kGroupInfoPanelMaxWidth, kPanelWidth, useTypeLabels } from "../constants"
+import { kGroupInfoPanelMaxWidth, kPanelWidth, kTypeIcons, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import {
     clearFocusedGroup,
@@ -270,7 +270,8 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                                 setGroupType(group.entity, newType)
                             }}
                             labels={typeLabels}
-                            icon="tag"
+                            iconSrc={kTypeIcons[group.type]}
+                            optionIcons={kTypeIcons}
                             tooltip={typePickerTooltip}
                         />
 

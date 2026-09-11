@@ -15,16 +15,26 @@ export interface IconProps {
     height?: string
 }
 
+function iconStyle(props: { size?: string; width?: string; height?: string }) {
+    return { width: props.size ?? props.width ?? "20rem", height: props.size ?? props.height ?? "20rem" }
+}
+
 function icon(source: string, props: IconProps) {
-    return <img
-        src={source + props.name + ".svg"}
-        style={{ width: props.size ?? props.width ?? "20rem", height: props.size ?? props.height ?? "20rem" }}
-    />
+    return <img src={source + props.name + ".svg"} style={iconStyle(props)} />
 }
 
 export const GameIcon = (props: IconProps) => icon(kGameIcons, props)
 export const GlyphIcon = (props: IconProps) => icon(kGameGlyphs, props)
 export const ModIcon = (props: IconProps) => icon(kModIcons, props)
+
+export interface SrcIconProps {
+    src: string
+    size?: string
+    width?: string
+    height?: string
+}
+
+export const SrcIcon = (props: SrcIconProps) => <img src={props.src} style={iconStyle(props)} />
 
 // For consumers that need the raw coui:// path instead of a rendered <img>
 export const gameIconSrc = (name: string): string => `${kGameIcons}${name}.svg`
