@@ -113,10 +113,6 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-**IMPORTANT**
-
-'Generic' group types have been renamed to 'Civic'. Your saves are fine, this is a display-only change.
-
 **NEW**
 
 District policies can now be managed at the group level.
