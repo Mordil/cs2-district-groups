@@ -135,7 +135,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     buildingsTabLabel: "Buildings",
     policiesTabLabel: "Policies",
     typeColumnLabel: "Type",
-    noDistrictsInGroup: "There are no districts in this group. Add districts with the SELECT DISTRICTS button.",
+    noDistrictsInGroup: "There are no districts in this group.\nAdd districts with the SELECT DISTRICTS button.",
     noBuildingsInGroup: "This group has no assigned buildings yet.",
     applyPolicyToGroupTooltip: "Applies the policy to all {COUNT} districts in this group.",
     clearPolicyFromGroupTooltip: "Removes the policy from all {COUNT} districts in this group.",

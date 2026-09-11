@@ -109,7 +109,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "建筑" },
                 { LocalizationKey.PoliciesTabLabel, "政策" },
                 { LocalizationKey.TypeColumnLabel, "类型" },
-                { LocalizationKey.NoDistrictsInGroup, "此市辖区组中没有市辖区。点击「选择市辖区」按钮添加市辖区。" },
+                { LocalizationKey.NoDistrictsInGroup, "此市辖区组中没有市辖区。\n点击「选择市辖区」按钮添加市辖区。" },
                 { LocalizationKey.NoBuildingsInGroup, "此市辖区组尚无已分配建筑。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "将该政策应用到此市辖区组的全部 {COUNT} 个市辖区。" },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "从此市辖区组的全部 {COUNT} 个市辖区撤销该政策。" },

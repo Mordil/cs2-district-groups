@@ -109,7 +109,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "Edifici" },
                 { LocalizationKey.PoliciesTabLabel, "Politiche" },
                 { LocalizationKey.TypeColumnLabel, "Tipo" },
-                { LocalizationKey.NoDistrictsInGroup, "Non ci sono quartieri in questo gruppo. Aggiungi quartieri con il pulsante SELEZIONA QUARTIERI." },
+                { LocalizationKey.NoDistrictsInGroup, "Non ci sono quartieri in questo gruppo.\nAggiungi quartieri con il pulsante SELEZIONA QUARTIERI." },
                 { LocalizationKey.NoBuildingsInGroup, "Questo gruppo non ha ancora edifici assegnati." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Applica la politica a tutti i {COUNT} quartieri di questo gruppo." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Rimuove la politica da tutti i {COUNT} quartieri di questo gruppo." },

@@ -109,7 +109,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "建物" },
                 { LocalizationKey.PoliciesTabLabel, "条例" },
                 { LocalizationKey.TypeColumnLabel, "タイプ" },
-                { LocalizationKey.NoDistrictsInGroup, "このグループには特区がありません。「特区を選択」ボタンで特区を追加してください。" },
+                { LocalizationKey.NoDistrictsInGroup, "このグループには特区がありません。\n「特区を選択」ボタンで特区を追加してください。" },
                 { LocalizationKey.NoBuildingsInGroup, "このグループにはまだ割り当てられた建物がありません。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "このグループの{COUNT}件すべての特区に条例を適用します。" },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "このグループの{COUNT}件すべての特区から条例を解除します。" },

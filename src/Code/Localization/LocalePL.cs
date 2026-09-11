@@ -109,7 +109,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "Budynki" },
                 { LocalizationKey.PoliciesTabLabel, "Uchwały" },
                 { LocalizationKey.TypeColumnLabel, "Typ" },
-                { LocalizationKey.NoDistrictsInGroup, "W tej grupie nie ma dzielnic. Dodaj dzielnice za pomocą przycisku WYBIERZ DZIELNICE." },
+                { LocalizationKey.NoDistrictsInGroup, "W tej grupie nie ma dzielnic.\nDodaj dzielnice za pomocą przycisku WYBIERZ DZIELNICE." },
                 { LocalizationKey.NoBuildingsInGroup, "Ta grupa nie ma jeszcze przypisanych budynków." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Stosuje uchwałę we wszystkich {COUNT} dzielnicach tej grupy." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Uchyla uchwałę we wszystkich {COUNT} dzielnicach tej grupy." },

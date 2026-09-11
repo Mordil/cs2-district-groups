@@ -109,7 +109,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "Здания" },
                 { LocalizationKey.PoliciesTabLabel, "Постановления" },
                 { LocalizationKey.TypeColumnLabel, "Тип" },
-                { LocalizationKey.NoDistrictsInGroup, "В этой группе нет районов. Добавьте районы с помощью кнопки ВЫБРАТЬ РАЙОНЫ." },
+                { LocalizationKey.NoDistrictsInGroup, "В этой группе нет районов.\nДобавьте районы с помощью кнопки ВЫБРАТЬ РАЙОНЫ." },
                 { LocalizationKey.NoBuildingsInGroup, "В этой группе пока нет назначенных зданий." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Применяет постановление ко всем районам этой группы ({COUNT})." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Отменяет постановление во всех районах этой группы ({COUNT})." },
