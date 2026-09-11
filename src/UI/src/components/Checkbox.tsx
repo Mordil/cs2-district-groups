@@ -5,7 +5,7 @@ import { Tooltip } from "cs2/ui"
 import { VT } from "./vanilla"
 
 interface CheckboxBaseProps {
-    label: string
+    label?: string
     tooltip?: ReactNode
     className?: string
     style?: CSSProperties
@@ -52,7 +52,9 @@ export const Checkbox = (props: TwoStateCheckboxProps | MultistateCheckboxProps)
                 style={{ display: "flex", alignItems: "center", cursor: "pointer", ...props.style }}
                 onClick={select}
             >
-                <span style={{ marginRight: "6rem" }}>{props.label}</span>
+                {props.label !== undefined && (
+                    <span style={{ marginRight: "6rem" }}>{props.label}</span>
+                )}
 
                 <div
                     className={`${VT.checkbox.toggle} ${toggleState}`}
