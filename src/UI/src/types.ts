@@ -42,6 +42,37 @@ export interface ServiceBuilding {
     assetName: string
 }
 
+// The adjustable value a policy carries on top of being switched on or off
+export interface PolicySlider {
+    min: number
+    max: number
+    default: number
+    step: number
+    // A cs2/l10n Unit name, or "" when the game reports none for the policy
+    unit: string
+}
+
+// How one member district has a policy set, as its row inside an expanded policy reads it
+export interface DistrictPolicyState {
+    entity: Entity
+    name: string
+    active: boolean
+    // The value the district carries; only meaningful when the policy has a slider
+    value: number
+}
+
+// A district policy, with how every district of the focused group currently has it set
+export interface GroupPolicy {
+    // The policy prefab, which is what every policy write names as its subject
+    entity: Entity
+    // The hash the game keys Policy.TITLE and Policy.DESCRIPTION on
+    id: string
+    icon: string
+    slider: PolicySlider | null
+    // Empty when no group is focused, or when the focused group has no districts
+    districts: DistrictPolicyState[]
+}
+
 export interface Group extends ResidentStats {
     entity: Entity
     name: string

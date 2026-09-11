@@ -29,6 +29,7 @@ export const VC = {
     ) as any,
     Button: getModule("game-ui/common/input/button/button.tsx", "Button") as any,
     IconButton: getModule("game-ui/common/input/button/icon-button.tsx", "IconButton") as any,
+    Slider: getModule("game-ui/common/input/slider/slider.tsx", "Slider") as any,
     InfoLink: getModule(
         "game-ui/game/components/selected-info-panel/shared-components/info-link/info-link.tsx",
         "InfoLink"

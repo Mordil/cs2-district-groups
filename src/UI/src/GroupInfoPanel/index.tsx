@@ -5,7 +5,7 @@ import { InputActionConsumer } from "cs2/input"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals, entityKey } from "cs2/utils"
 
-import { selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
+import { groupPolicies$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
 import { ColorPicker } from "../components/ColorPicker"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
@@ -32,6 +32,7 @@ import { TransitionPhase } from "../utils/useEnterExitPhase"
 
 import { BuildingsTab } from "./BuildingsTab"
 import { OverviewTab } from "./OverviewTab"
+import { PoliciesTab } from "./PoliciesTab"
 import css from "./index.module.scss"
 
 const dangerIconStyle = { "--iconColor": "var(--negativeColor)" } as CSSProperties
@@ -46,9 +47,10 @@ const stopMouseDown = (e: MouseEvent) => {
 enum GroupInfoTab {
     Overview = 0,
     Buildings = 1,
+    Policies = 2,
 }
 
-const kTabOrder = [GroupInfoTab.Overview, GroupInfoTab.Buildings]
+const kTabOrder = [GroupInfoTab.Overview, GroupInfoTab.Buildings, GroupInfoTab.Policies]
 
 interface GroupInfoPanelProps {
     group: Group
@@ -65,12 +67,18 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     const selectingDistricts = entityEquals(selectingGroup, group.entity)
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
+    const policies = useValue(groupPolicies$)
     const restoreShowOverlay = useRef(showOverlay)
     const restoreShowServiceBuildings = useRef(showServiceBuildings)
     const [nameDraft, setNameDraft] = useState(group.name)
     const [nameFocused, setNameFocused] = useState(false)
     const [activeTab, setActiveTab] = useState(lastGroupInfoTab)
     const dialogStack = useContext(DialogStack)
+
+    // Nothing unlocked to list means no tab
+    const hasPolicies = policies.length > 0
+    const tabs = hasPolicies ? kTabOrder : kTabOrder.filter((tab) => tab !== GroupInfoTab.Policies)
+    const selectedTab = tabs.includes(activeTab) ? activeTab : GroupInfoTab.Overview
 
     const deleteGroupTooltip = (
         <FormattedParagraphs
@@ -182,6 +190,18 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         setShowServiceBuildings(checked)
     }
 
+    const renderTab = () => {
+        if (selectedTab === GroupInfoTab.Buildings) {
+            return <BuildingsTab group={group} className={css.tabContent} />
+        }
+
+        if (selectedTab === GroupInfoTab.Policies) {
+            return <PoliciesTab group={group} policies={policies} className={css.tabContent} />
+        }
+
+        return <OverviewTab group={group} className={css.tabContent} />
+    }
+
     const handleClose = () => {
         if (selectingDistricts) {
             logger.info(`Closing group info panel with active district selection, toggling off; entity:${entityKey(group.entity)}`)
@@ -267,7 +287,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                     <VC.TabBar className={css.tabBar}>
                         <VC.Tab
                             id={GroupInfoTab.Overview}
-                            selectedId={activeTab}
+                            selectedId={selectedTab}
                             className={css.tab}
                             onSelect={onTabSelect}
                         >
@@ -276,24 +296,31 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
 
                         <VC.Tab
                             id={GroupInfoTab.Buildings}
-                            selectedId={activeTab}
+                            selectedId={selectedTab}
                             className={css.tab}
                             onSelect={onTabSelect}
                         >
                             {t("buildingsTabLabel")}
                         </VC.Tab>
+
+                        {hasPolicies && (
+                            <VC.Tab
+                                id={GroupInfoTab.Policies}
+                                selectedId={selectedTab}
+                                className={css.tab}
+                                onSelect={onTabSelect}
+                            >
+                                {t("policiesTabLabel")}
+                            </VC.Tab>
+                        )}
                     </VC.TabBar>
 
                     <VC.TabNav
-                        tabs={kTabOrder}
-                        selectedTab={activeTab}
+                        tabs={tabs}
+                        selectedTab={selectedTab}
                         onSelect={onTabSelect}
                     >
-                        {activeTab === GroupInfoTab.Overview ? (
-                            <OverviewTab group={group} className={css.tabContent} />
-                        ) : (
-                            <BuildingsTab group={group} className={css.tabContent} />
-                        )}
+                        {renderTab()}
                     </VC.TabNav>
                 </div>
 

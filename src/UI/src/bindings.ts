@@ -3,7 +3,7 @@ import { Entity } from "cs2/utils"
 
 import mod from "../mod.json"
 
-import { Group, ServiceBuilding } from "./types"
+import { Group, GroupPolicy, ServiceBuilding } from "./types"
 
 // Every binding the C# side exposes to the UI.
 
@@ -12,6 +12,9 @@ export const groups$ = bindValue<Group[]>(mod.id, "groups", [])
 
 // Every service building that can carry a group assignment
 export const serviceBuildings$ = bindValue<ServiceBuilding[]>(mod.id, "serviceBuildings", [])
+
+// Every district policy the game has, carrying how each district of the focused group has it set
+export const groupPolicies$ = bindValue<GroupPolicy[]>(mod.id, "groupPolicies", [])
 
 // The group whose district selection is currently active, or the null entity when none is
 export const selectingGroup$ = bindValue<Entity>(mod.id, "selectingGroup", { index: 0, version: 0 })

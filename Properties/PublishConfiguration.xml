@@ -115,27 +115,15 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **NEW**
 
-Added a new view: Group Info Panel
+District policies can now be managed at the group level.
 
-In this view, you can edit the group details such as the name, type, and color, or delete the group.
+Once you unlock district policies, inspect a group and view the new "Policies" tab.
 
-This is also where you can check how your districts are doing. It shows population, happiness, and wealth — both as a total for the whole group, and broken down district by district, so you can quickly see which areas need attention.
-
-While working in this view, the overlay will update to show you only the group's districts and buildings.
+Toggles policies across all districts in the group with a single button, or control them on a per-district level.
 
 **CHANGED**
 
-- The list in Group Management is now read-only data. To change details, open the Group Info Panel using the "View Details" button
-- The list in Group Management is now sorted by name, alphabetically
-- Group member districts now have links to inspect their Info Panel in the Group Management list
-- Group member districts are now sorted alphabetically in the Group Management list
-- Minor UI optimization to avoid unnecessary work
-- Further optimized the Overlay rendering
-
 **FIXED**
-
-- Fixed tab bar styling when in legacy interface styles
-- Fixed logging a random debug "FIZZ" message
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

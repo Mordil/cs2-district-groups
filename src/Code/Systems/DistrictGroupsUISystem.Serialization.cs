@@ -2,6 +2,7 @@ using Colossal.Entities;
 using Colossal.UI.Binding;
 using Game.Buildings;
 using Game.Prefabs;
+using System;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -47,6 +48,82 @@ namespace DistrictGroups
                     WriteAssignedBuilding(writer, building);
                 }
                 writer.ArrayEnd();
+                writer.TypeEnd();
+            }
+            writer.ArrayEnd();
+        }
+
+        private void WriteGroupPolicies(IJsonWriter writer)
+        {
+            Entity group = m_GroupSystem.FocusedGroup;
+            IReadOnlyList<DistrictPolicy> policies = m_PolicySystem.Policies;
+
+            writer.ArrayBegin(policies.Count);
+            foreach (DistrictPolicy policy in policies)
+            {
+                writer.TypeBegin("GroupPolicy");
+                writer.PropertyName("entity");
+                WriteEntity(writer, policy.m_Policy);
+                writer.PropertyName("id");
+                writer.Write(policy.m_Id);
+                writer.PropertyName("icon");
+                writer.Write(policy.m_Icon);
+                writer.PropertyName("slider");
+                WritePolicySlider(writer, policy);
+                writer.PropertyName("districts");
+                WritePolicyDistricts(writer, group, policy);
+                writer.TypeEnd();
+            }
+            writer.ArrayEnd();
+        }
+
+        private void WritePolicySlider(IJsonWriter writer, DistrictPolicy policy)
+        {
+            if (!policy.m_HasSlider)
+            {
+                writer.WriteNull();
+                return;
+            }
+
+            PolicySliderData slider = policy.m_Slider;
+            writer.TypeBegin("PolicySlider");
+            writer.PropertyName("min");
+            writer.Write(slider.m_Range.min);
+            writer.PropertyName("max");
+            writer.Write(slider.m_Range.max);
+            writer.PropertyName("default");
+            writer.Write(slider.m_Default);
+            writer.PropertyName("step");
+            writer.Write(slider.m_Step);
+            // The same unit names the game's own policy sliders send, so the UI can format with them directly.
+            writer.PropertyName("unit");
+            writer.Write(Enum.GetName(typeof(PolicySliderUnit), (PolicySliderUnit)slider.m_Unit) ?? "");
+            writer.TypeEnd();
+        }
+
+        private void WritePolicyDistricts(IJsonWriter writer, Entity group, DistrictPolicy policy)
+        {
+            if (!EntityManager.TryGetBuffer(group, isReadOnly: true, out DynamicBuffer<DistrictGroupMember> members))
+            {
+                writer.ArrayBegin(0);
+                writer.ArrayEnd();
+                return;
+            }
+
+            float defaultValue = m_PolicySystem.GetDefaultValue(policy.m_Policy);
+            writer.ArrayBegin(members.Length);
+            foreach (DistrictGroupMember member in members)
+            {
+                DistrictPolicyState state = m_PolicySystem.GetDistrictState(member.m_District, policy.m_Policy, defaultValue);
+                writer.TypeBegin("DistrictPolicyState");
+                writer.PropertyName("entity");
+                WriteEntity(writer, member.m_District);
+                writer.PropertyName("name");
+                writer.Write(EntityManager.Exists(member.m_District) ? m_NameSystem.GetRenderedLabelName(member.m_District) : "<missing>");
+                writer.PropertyName("active");
+                writer.Write(state.m_Active);
+                writer.PropertyName("value");
+                writer.Write(state.m_Value);
                 writer.TypeEnd();
             }
             writer.ArrayEnd();

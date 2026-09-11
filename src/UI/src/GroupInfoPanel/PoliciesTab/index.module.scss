@@ -1,0 +1,155 @@
+$horizontal-padding: 16rem;
+
+$row-inset: $horizontal-padding;
+$row-padding: 10rem;
+$district-indent: 16rem;
+$policy-icon-size: 32rem;
+$caret-size: 36rem;
+$caret-gap: 8rem;
+
+.tab {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background-color: var(--sectionBackgroundColor);
+}
+
+.list {
+    --contentPadding: #{$row-inset};
+    --scrollbarPadding: #{$row-inset};
+    flex: 1;
+    min-height: 0;
+    color: var(--textColorHighlightDim);
+}
+
+.policyRow {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: var(--gap6);
+    border-radius: 3rem;
+    background-color: var(--hoverColor);
+    font-size: var(--fontSizeS);
+}
+
+.policyHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: var(--gap6);
+    padding-bottom: var(--gap6);
+    padding-left: $row-padding;
+    padding-right: $row-padding;
+}
+
+.policyTitle {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+}
+
+.icon {
+    flex-shrink: 0;
+    width: $policy-icon-size;
+    height: $policy-icon-size;
+}
+
+.iconOff {
+    filter: grayscale(100%);
+}
+
+.policyName {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    margin-left: $row-padding;
+    color: var(--textColorDim);
+    white-space: normal;
+}
+
+
+.count {
+    flex-shrink: 0;
+    margin-left: $caret-gap;
+    color: var(--textColorDimmer);
+}
+
+.checkbox {
+    flex-shrink: 0;
+    margin-left: $caret-gap;
+}
+
+.caret {
+    flex-shrink: 0;
+    margin-left: $caret-gap;
+}
+
+.sliderRow {
+    display: flex;
+    align-items: center;
+    padding-bottom: var(--gap6);
+    padding-left: $row-padding;
+    padding-right: $row-padding;
+}
+
+.slider {
+    flex: 1;
+    min-width: 0;
+}
+
+.sliderValue {
+    flex-shrink: 0;
+    min-width: 52rem;
+    margin-left: $row-padding;
+    color: var(--textColorDim);
+    text-align: right;
+}
+
+.districts {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-top-style: solid;
+    border-top-width: var(--stroke1);
+    border-top-color: var(--sectionBorderColor);
+}
+
+.districtRow {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.districtHeader {
+    display: flex;
+    align-items: center;
+    padding-top: var(--gap4);
+    padding-bottom: var(--gap4);
+    padding-left: $district-indent;
+    padding-right: $row-padding;
+}
+
+.districtToggle {
+    flex: 1;
+    min-width: 0;
+    justify-content: space-between;
+}
+
+.caretSpacer {
+    flex-shrink: 0;
+    width: $caret-size;
+    margin-left: $caret-gap;
+}
+
+.empty {
+    padding: $horizontal-padding;
+    background-color: var(--sectionBackgroundColor);
+    color: var(--textColorDim);
+    font-size: var(--fontSizeM);
+}
+
+.districtRow .sliderRow {
+    padding-left: $district-indent;
+    padding-right: $caret-size + $caret-gap + $row-padding;
+}

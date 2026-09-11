@@ -31,6 +31,19 @@ export const setGroupColor = createTrigger<[group: Entity, color: Color]>("setGr
 export const removeMember = createTrigger<[group: Entity, district: Entity]>("removeMember")
 export const toggleDistrictSelection = createTrigger<[group: Entity]>("toggleDistrictSelection")
 
+/*
+    Group info panel, policies tab. A policy belongs to the district, so a group-wide write is a
+    fan-out over its members - any other group sharing one of those districts sees the change too.
+*/
+export const setGroupPolicyActive =
+    createTrigger<[group: Entity, policy: Entity, active: boolean]>("setGroupPolicyActive")
+export const setGroupPolicyValue =
+    createTrigger<[group: Entity, policy: Entity, value: number]>("setGroupPolicyValue")
+export const setDistrictPolicyActive =
+    createTrigger<[district: Entity, policy: Entity, active: boolean]>("setDistrictPolicyActive")
+export const setDistrictPolicyValue =
+    createTrigger<[district: Entity, policy: Entity, value: number]>("setDistrictPolicyValue")
+
 // Building assignments tab.
 export const assignBuildingGroup = createTrigger<[building: Entity, group: Entity]>("assignBuildingGroup")
 export const unassignBuildingGroup = createTrigger<[building: Entity]>("unassignBuildingGroup")

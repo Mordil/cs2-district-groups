@@ -1,5 +1,7 @@
 using Colossal.Serialization.Entities;
 using Colossal.UI.Binding;
+using Game.Prefabs;
+using System;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -37,6 +39,65 @@ namespace DistrictGroups
         Post = 10,
         Parks = 11,
         Welfare = 12,
+    }
+
+    // A district policy as the group panel lists it, with the prefab display data its row reads.
+    public readonly struct DistrictPolicy : IComparable<DistrictPolicy>
+    {
+        // The policy prefab entity, which is what a policy write names as its subject.
+        public readonly Entity m_Policy;
+        // The prefab name, which is also the hash the game keys Policy.TITLE and Policy.DESCRIPTION on.
+        public readonly string m_Id;
+        // Resolved icon uri, already fallen back to the game's placeholder when the prefab carries none.
+        public readonly string m_Icon;
+        // Whether the policy carries an adjustable value on top of being on or off.
+        public readonly bool m_HasSlider;
+        // The value's range, default and step; meaningless unless m_HasSlider.
+        public readonly PolicySliderData m_Slider;
+
+        private readonly string m_LocalizedName;
+        private readonly int m_Priority;
+
+        public DistrictPolicy(
+            Entity policy,
+            string id,
+            string localizedName,
+            string icon,
+            int priority,
+            bool hasSlider,
+            PolicySliderData slider)
+        {
+            m_Policy = policy;
+            m_Id = id;
+            m_LocalizedName = localizedName;
+            m_Icon = icon;
+            m_Priority = priority;
+            m_HasSlider = hasSlider;
+            m_Slider = slider;
+        }
+
+        /*
+            The keys the game's own policy lists sort by, minus the milestone one: a policy still
+            behind a milestone never reaches this list, so every entry shares the same milestone of
+            none, and what is left is the order players already know from the district info panel.
+        */
+        public int CompareTo(DistrictPolicy other)
+        {
+            int byPriority = m_Priority.CompareTo(other.m_Priority);
+            if (byPriority != 0)
+            {
+                return byPriority;
+            }
+
+            return string.Compare(m_LocalizedName, other.m_LocalizedName, StringComparison.Ordinal);
+        }
+    }
+
+    // How one district has a policy set: whether it is switched on, and the value it carries.
+    public struct DistrictPolicyState
+    {
+        public bool m_Active;
+        public float m_Value;
     }
 
     // Resident totals for one district, or for a whole group once its districts are added together.

@@ -25,6 +25,7 @@ namespace DistrictGroups
         private DistrictGroupOverlaySystem m_OverlaySystem;
         private DistrictGroupServiceBuildingSystem m_ServiceBuildingSystem;
         private DistrictGroupSelectionSystem m_SelectionSystem;
+        private DistrictGroupPolicySystem m_PolicySystem;
         private NameSystem m_NameSystem;
         private PrefabSystem m_PrefabSystem;
         private PrefabUISystem m_PrefabUISystem;
@@ -45,10 +46,14 @@ namespace DistrictGroups
         private RawValueBinding m_GroupsBinding;
         private RawValueBinding m_ServiceBuildingsBinding;
         private RawValueBinding m_SelectingGroupBinding;
+        private RawValueBinding m_GroupPoliciesBinding;
         private int m_LastSeenGroupVersion = -1;
         private int m_LastSeenStatsVersion = -1;
         private int m_LastSeenTypeFilter = -1;
         private int m_LastSeenTargetVersion;
+        private int m_LastSeenPolicyVersion = -1;
+        private int m_LastSeenGroupCompositionVersion = -1;
+        private Entity m_LastSeenFocusedGroup = Entity.Null;
         private Entity m_LastSeenSelectingGroup = Entity.Null;
         private int m_LastSeenGroupsRefreshVersion = RefreshClock.kNeverRefreshed;
         private int m_LastSeenServiceBuildingsRefreshVersion = RefreshClock.kNeverRefreshed;
@@ -70,6 +75,7 @@ namespace DistrictGroups
             m_OverlaySystem = World.GetOrCreateSystemManaged<DistrictGroupOverlaySystem>();
             m_ServiceBuildingSystem = World.GetOrCreateSystemManaged<DistrictGroupServiceBuildingSystem>();
             m_SelectionSystem = World.GetOrCreateSystemManaged<DistrictGroupSelectionSystem>();
+            m_PolicySystem = World.GetOrCreateSystemManaged<DistrictGroupPolicySystem>();
             m_NameSystem = World.GetOrCreateSystemManaged<NameSystem>();
             m_PrefabSystem = World.GetOrCreateSystemManaged<PrefabSystem>();
             m_PrefabUISystem = World.GetOrCreateSystemManaged<PrefabUISystem>();
@@ -85,6 +91,7 @@ namespace DistrictGroups
             SetupRootBindings();
             SetupOverlayBindings();
             SetupGroupManagementPanelBindings();
+            SetupPolicyBindings();
         }
 
         protected override void OnUpdate()
@@ -140,6 +147,23 @@ namespace DistrictGroups
             {
                 m_LastSeenSelectingGroup = selectingGroup;
                 m_SelectingGroupBinding.Update();
+            }
+
+            int policyVersion = m_PolicySystem.Version;
+            int compositionVersion = m_GroupSystem.GroupCompositionVersion;
+            Entity focusedGroup = m_GroupSystem.FocusedGroup;
+
+            bool policiesChanged = policyVersion != m_LastSeenPolicyVersion;
+            bool membersChanged = compositionVersion != m_LastSeenGroupCompositionVersion;
+            bool focusChanged = focusedGroup != m_LastSeenFocusedGroup;
+
+            m_LastSeenPolicyVersion = policyVersion;
+            m_LastSeenGroupCompositionVersion = compositionVersion;
+            m_LastSeenFocusedGroup = focusedGroup;
+
+            if (policiesChanged || membersChanged || focusChanged)
+            {
+                m_GroupPoliciesBinding.Update();
             }
         }
 
@@ -203,6 +227,21 @@ namespace DistrictGroups
                 show => m_ServiceBuildingSystem.SetShowServiceBuildings(show)));
             AddBinding(new TriggerBinding<bool>(kBindingGroup, "setHideAssignedBuildings",
                 hide => m_ServiceBuildingSystem.SetHideAssignedBuildings(hide)));
+        }
+
+        private void SetupPolicyBindings()
+        {
+            m_GroupPoliciesBinding = new RawValueBinding(kBindingGroup, "groupPolicies", WriteGroupPolicies);
+            AddBinding(m_GroupPoliciesBinding);
+
+            AddBinding(new TriggerBinding<Entity, Entity, bool>(kBindingGroup, "setGroupPolicyActive",
+                (group, policy, active) => m_PolicySystem.SetGroupPolicyActive(group, policy, active)));
+            AddBinding(new TriggerBinding<Entity, Entity, float>(kBindingGroup, "setGroupPolicyValue",
+                (group, policy, value) => m_PolicySystem.SetGroupPolicyValue(group, policy, value)));
+            AddBinding(new TriggerBinding<Entity, Entity, bool>(kBindingGroup, "setDistrictPolicyActive",
+                (district, policy, active) => m_PolicySystem.SetDistrictPolicyActive(district, policy, active)));
+            AddBinding(new TriggerBinding<Entity, Entity, float>(kBindingGroup, "setDistrictPolicyValue",
+                (district, policy, value) => m_PolicySystem.SetDistrictPolicyValue(district, policy, value)));
         }
 
         private void SetupGroupManagementPanelBindings()

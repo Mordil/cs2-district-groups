@@ -72,6 +72,7 @@ namespace DistrictGroups
             updateSystem.UpdateAt<DistrictGroupServiceBuildingSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictGroupSelectionSystem>(SystemUpdatePhase.ToolUpdate);
             updateSystem.UpdateAt<DistrictStatsSystem>(SystemUpdatePhase.UIUpdate);
+            updateSystem.UpdateAt<DistrictGroupPolicySystem>(SystemUpdatePhase.UIUpdate);
             updateSystem.UpdateAt<DistrictGroupsUISystem>(SystemUpdatePhase.UIUpdate);
             updateSystem.UpdateAt<DistrictGroupSection>(SystemUpdatePhase.UIUpdate);
         }
