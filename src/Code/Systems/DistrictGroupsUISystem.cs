@@ -1,11 +1,13 @@
 using Colossal.UI.Binding;
 using Game.Areas;
 using Game.Common;
+using Game.Policies;
 using Game.Prefabs;
 using Game.Rendering;
 using Game.Tools;
 using Game.UI;
 using Game.UI.InGame;
+using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 using static DistrictGroups.EntityJson;
@@ -57,6 +59,24 @@ namespace DistrictGroups
         private Entity m_LastSeenSelectingGroup = Entity.Null;
         private int m_LastSeenGroupsRefreshVersion = RefreshClock.kNeverRefreshed;
         private int m_LastSeenServiceBuildingsRefreshVersion = RefreshClock.kNeverRefreshed;
+
+        // Scratch space for the focused group's member districts, reused by every policy payload.
+        private readonly List<PolicyDistrict> m_PolicyDistricts = new List<PolicyDistrict>();
+
+        // One member district as the policy payload reads it, holding what every policy would otherwise resolve again.
+        private readonly struct PolicyDistrict
+        {
+            public readonly Entity m_District;
+            public readonly string m_Name;
+            public readonly DynamicBuffer<Policy> m_Policies;
+
+            public PolicyDistrict(Entity district, string name, DynamicBuffer<Policy> policies)
+            {
+                m_District = district;
+                m_Name = name;
+                m_Policies = policies;
+            }
+        }
 
         // Lets the UI know if we're in a debug build
         public static bool IsDebugBuild =>

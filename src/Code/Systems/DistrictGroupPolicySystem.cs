@@ -118,9 +118,21 @@ namespace DistrictGroups
         // Whether a district has the policy switched on, and the value it carries when it has one.
         public DistrictPolicyState GetDistrictState(Entity district, Entity policy, float defaultValue)
         {
+            if (!EntityManager.TryGetBuffer(district, isReadOnly: true, out DynamicBuffer<Policy> policies))
+            {
+                return new DistrictPolicyState { m_Active = false, m_Value = defaultValue };
+            }
+
+            return GetDistrictState(policies, policy, defaultValue);
+        }
+
+        // The same read against a district's policy buffer the caller is already holding.
+        public static DistrictPolicyState GetDistrictState(DynamicBuffer<Policy> policies, Entity policy, float defaultValue)
+        {
             DistrictPolicyState state = new DistrictPolicyState { m_Active = false, m_Value = defaultValue };
 
-            if (!EntityManager.TryGetBuffer(district, isReadOnly: true, out DynamicBuffer<Policy> policies))
+            // A district that has never been given a policy carries no buffer to read, which reads the same as nothing set.
+            if (!policies.IsCreated)
             {
                 return state;
             }

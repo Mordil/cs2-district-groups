@@ -1,6 +1,7 @@
 using Colossal.Entities;
 using Colossal.UI.Binding;
 using Game.Buildings;
+using Game.Policies;
 using Game.Prefabs;
 using System;
 using System.Collections.Generic;
@@ -55,8 +56,8 @@ namespace DistrictGroups
 
         private void WriteGroupPolicies(IJsonWriter writer)
         {
-            Entity group = m_GroupSystem.FocusedGroup;
             IReadOnlyList<DistrictPolicy> policies = m_PolicySystem.Policies;
+            CollectPolicyDistricts(m_GroupSystem.FocusedGroup);
 
             writer.ArrayBegin(policies.Count);
             foreach (DistrictPolicy policy in policies)
@@ -71,7 +72,7 @@ namespace DistrictGroups
                 writer.PropertyName("slider");
                 WritePolicySlider(writer, policy);
                 writer.PropertyName("districts");
-                WritePolicyDistricts(writer, group, policy);
+                WritePolicyDistricts(writer, policy);
                 writer.TypeEnd();
             }
             writer.ArrayEnd();
@@ -101,25 +102,43 @@ namespace DistrictGroups
             writer.TypeEnd();
         }
 
-        private void WritePolicyDistricts(IJsonWriter writer, Entity group, DistrictPolicy policy)
+        private void CollectPolicyDistricts(Entity group)
         {
+            /*
+                Every policy in the payload lists the same member districts,
+                so resolving a district's name and its policy buffer inside the policy loop would redo that work.
+            */
+
+            m_PolicyDistricts.Clear();
+
             if (!EntityManager.TryGetBuffer(group, isReadOnly: true, out DynamicBuffer<DistrictGroupMember> members))
             {
-                writer.ArrayBegin(0);
-                writer.ArrayEnd();
                 return;
             }
 
-            float defaultValue = policy.DefaultValue;
-            writer.ArrayBegin(members.Length);
             foreach (DistrictGroupMember member in members)
             {
-                DistrictPolicyState state = m_PolicySystem.GetDistrictState(member.m_District, policy.m_Policy, defaultValue);
+                string name = EntityManager.Exists(member.m_District)
+                    ? m_NameSystem.GetRenderedLabelName(member.m_District)
+                    : "<missing>";
+                // A district with no policy buffer leaves an uncreated one behind, which the state read already handles.
+                EntityManager.TryGetBuffer(member.m_District, isReadOnly: true, out DynamicBuffer<Policy> policies);
+                m_PolicyDistricts.Add(new PolicyDistrict(member.m_District, name, policies));
+            }
+        }
+
+        private void WritePolicyDistricts(IJsonWriter writer, DistrictPolicy policy)
+        {
+            float defaultValue = policy.DefaultValue;
+            writer.ArrayBegin(m_PolicyDistricts.Count);
+            foreach (PolicyDistrict district in m_PolicyDistricts)
+            {
+                DistrictPolicyState state = DistrictGroupPolicySystem.GetDistrictState(district.m_Policies, policy.m_Policy, defaultValue);
                 writer.TypeBegin("DistrictPolicyState");
                 writer.PropertyName("entity");
-                WriteEntity(writer, member.m_District);
+                WriteEntity(writer, district.m_District);
                 writer.PropertyName("name");
-                writer.Write(EntityManager.Exists(member.m_District) ? m_NameSystem.GetRenderedLabelName(member.m_District) : "<missing>");
+                writer.Write(district.m_Name);
                 writer.PropertyName("active");
                 writer.Write(state.m_Active);
                 writer.PropertyName("value");
