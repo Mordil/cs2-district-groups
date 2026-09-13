@@ -23,45 +23,6 @@ namespace DistrictGroups
                 ComponentType.Exclude<Game.Tools.Temp>());
         }
 
-        // Shared with DistrictGroupSection, which detects the type of whatever
-        // building is currently selected in the info panel.
-        public GroupServiceType DetectServiceType(Entity prefab)
-        {
-            if (!EntityManager.Exists(prefab))
-            {
-                return GroupServiceType.Generic;
-            }
-            if (EntityManager.HasComponent<PoliceStationData>(prefab)) return GroupServiceType.Police;
-            if (EntityManager.HasComponent<FireStationData>(prefab)) return GroupServiceType.Fire;
-            if (EntityManager.HasComponent<HospitalData>(prefab)) return GroupServiceType.Healthcare;
-            if (EntityManager.HasComponent<DeathcareFacilityData>(prefab)) return GroupServiceType.Deathcare;
-            if (EntityManager.HasComponent<GarbageFacilityData>(prefab)) return GroupServiceType.Garbage;
-            if (EntityManager.HasComponent<PostFacilityData>(prefab)) return GroupServiceType.Post;
-            if (EntityManager.HasComponent<WelfareOfficeData>(prefab)) return GroupServiceType.Welfare;
-            if (EntityManager.HasComponent<SchoolData>(prefab))
-            {
-                SchoolData school = EntityManager.GetComponentData<SchoolData>(prefab);
-                switch (school.m_EducationLevel)
-                {
-                    case 1: return GroupServiceType.EducationElementary;
-                    case 2: return GroupServiceType.EducationHighSchool;
-                    case 3: return GroupServiceType.EducationCollege;
-                    default: return GroupServiceType.EducationUniversity;
-                }
-            }
-            return GroupServiceType.Generic;
-        }
-
-        public GroupServiceType DetectBuildingServiceType(Entity building)
-        {
-            if (!EntityManager.HasComponent<PrefabRef>(building))
-            {
-                return GroupServiceType.Generic;
-            }
-            Entity prefab = EntityManager.GetComponentData<PrefabRef>(building).m_Prefab;
-            return DetectServiceType(prefab);
-        }
-
         // writes a human-readable, multi-line report to the log file for troubleshooting reports
         public void DumpDebugData()
         {
