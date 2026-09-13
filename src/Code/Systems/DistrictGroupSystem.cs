@@ -1,5 +1,6 @@
 using Colossal.Serialization.Entities;
 using Game;
+using Game.Prefabs;
 using Game.Areas;
 using Game.UI;
 using Unity.Collections;
