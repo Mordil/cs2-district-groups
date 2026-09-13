@@ -92,7 +92,6 @@
         public const string TypeEducationCollege = "DistrictGroups.UI[TypeEducationCollege]";
         public const string TypeEducationUniversity = "DistrictGroups.UI[TypeEducationUniversity]";
         public const string TypePost = "DistrictGroups.UI[TypePost]";
-        public const string TypeParks = "DistrictGroups.UI[TypeParks]";
         public const string TypeWelfare = "DistrictGroups.UI[TypeWelfare]";
     }
 }

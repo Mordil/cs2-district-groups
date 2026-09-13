@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "Escuela superior" },
                 { LocalizationKey.TypeEducationUniversity, "Universidad" },
                 { LocalizationKey.TypePost, "Correo" },
-                { LocalizationKey.TypeParks, "Parques" },
                 { LocalizationKey.TypeWelfare, "Oficinas de seguridad social" },
             };
         }

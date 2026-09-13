@@ -46,7 +46,6 @@ export const kTypeIcons: string[] = [
     gameIconSrc("Education"),
     gameIconSrc("Education"),
     gameIconSrc("PostService"),
-    gameIconSrc("ParksAndRecreation"),
     gameIconSrc("Administration"),
 ]
 
@@ -66,7 +65,6 @@ export const useTypeLabels = (): string[] => {
         t("typeEducationCollege"),
         t("typeEducationUniversity"),
         t("typePost"),
-        t("typeParks"),
         t("typeWelfare"),
     ]
 }

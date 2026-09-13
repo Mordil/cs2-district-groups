@@ -37,7 +37,6 @@ namespace DistrictGroups
             if (EntityManager.HasComponent<DeathcareFacilityData>(prefab)) return GroupServiceType.Deathcare;
             if (EntityManager.HasComponent<GarbageFacilityData>(prefab)) return GroupServiceType.Garbage;
             if (EntityManager.HasComponent<PostFacilityData>(prefab)) return GroupServiceType.Post;
-            if (EntityManager.HasComponent<ParkData>(prefab)) return GroupServiceType.Parks;
             if (EntityManager.HasComponent<WelfareOfficeData>(prefab)) return GroupServiceType.Welfare;
             if (EntityManager.HasComponent<SchoolData>(prefab))
             {

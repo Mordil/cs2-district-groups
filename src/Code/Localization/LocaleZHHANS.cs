@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "学院制大学" },
                 { LocalizationKey.TypeEducationUniversity, "综合性大学" },
                 { LocalizationKey.TypePost, "邮政" },
-                { LocalizationKey.TypeParks, "公园" },
                 { LocalizationKey.TypeWelfare, "福利" },
             };
         }

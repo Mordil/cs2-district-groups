@@ -37,8 +37,7 @@ namespace DistrictGroups
         EducationCollege = 8,
         EducationUniversity = 9,
         Post = 10,
-        Parks = 11,
-        Welfare = 12,
+        Welfare = 11,
     }
 
     // A district policy as the group panel lists it, with the prefab display data its row reads.
@@ -140,7 +139,7 @@ namespace DistrictGroups
 
         public void Serialize<TWriter>(TWriter writer) where TWriter : IWriter
         {
-            writer.Write((byte)2);
+            writer.Write((byte)3);
             writer.Write((byte)m_Type);
             writer.Write(m_Name.ToString());
             writer.Write(m_Color.r);
@@ -153,6 +152,22 @@ namespace DistrictGroups
         {
             reader.Read(out byte version);
             reader.Read(out byte type);
+            /*
+                Versions before 3 stored GroupServiceType.Parks at byte 11 and GroupServiceType.Welfare
+                at byte 12; Parks was removed and Welfare renumbered down to 11, so a save from an older
+                version needs its raw byte remapped to keep reading the type it already had.
+            */
+            if (version < 3)
+            {
+                if (type == 11)
+                {
+                    type = (byte)GroupServiceType.Generic;
+                }
+                else if (type == 12)
+                {
+                    type = (byte)GroupServiceType.Welfare;
+                }
+            }
             m_Type = (GroupServiceType)type;
             reader.Read(out string name);
             m_Name = name;

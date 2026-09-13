@@ -113,21 +113,9 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-**NEW**
-
-District policies can now be managed at the group level.
-
-Once you unlock district policies, inspect a group and view the new "Policies" tab.
-
-Toggles policies across all districts in the group with a single button, or control them on a per-district level.
-
-**NEW**
-
-District Info panels now have a section listing the groups it is a member of, and the type of the group.
-
 **CHANGED**
 
-- The Group type list now displays an icon for each group type
+- Removed the "Park" group type and it's filter
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

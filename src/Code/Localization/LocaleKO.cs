@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "전문 대학" },
                 { LocalizationKey.TypeEducationUniversity, "대학교" },
                 { LocalizationKey.TypePost, "우편" },
-                { LocalizationKey.TypeParks, "공원" },
                 { LocalizationKey.TypeWelfare, "복지" },
             };
         }

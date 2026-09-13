@@ -32,7 +32,6 @@ namespace DistrictGroups
             { GroupServiceType.EducationCollege, "School" },
             { GroupServiceType.EducationUniversity, "School" },
             { GroupServiceType.Post, "Post Facility" },
-            { GroupServiceType.Parks, "Park" },
             { GroupServiceType.Welfare, "Welfare Office" },
         };
 
@@ -100,7 +99,6 @@ namespace DistrictGroups
                 { GroupServiceType.EducationCollege, schoolQuery },
                 { GroupServiceType.EducationUniversity, schoolQuery },
                 { GroupServiceType.Post, BuildQuery(ComponentType.ReadOnly<Game.Buildings.PostFacility>()) },
-                { GroupServiceType.Parks, BuildQuery(ComponentType.ReadOnly<Game.Buildings.Park>()) },
                 { GroupServiceType.Welfare, BuildQuery(ComponentType.ReadOnly<Game.Buildings.WelfareOffice>()) },
             };
 

@@ -90,7 +90,6 @@ export const kLocale = {
     typeEducationCollege: id("TypeEducationCollege"),
     typeEducationUniversity: id("TypeEducationUniversity"),
     typePost: id("TypePost"),
-    typeParks: id("TypeParks"),
     typeWelfare: id("TypeWelfare"),
 } as const
 
@@ -186,7 +185,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     typeEducationCollege: "College",
     typeEducationUniversity: "University",
     typePost: "Post",
-    typeParks: "Parks",
     typeWelfare: "Welfare",
 }
 
