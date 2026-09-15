@@ -259,8 +259,12 @@ namespace DistrictGroups
         /*
             Happiness and wealth go over as the ordinal of the band the average lands in rather than the raw
             average, because bucketing wealth needs a game parameter singleton the UI cannot reach, and the
-            panel only ever shows the band's name anyway. DistrictStatsSystem.kNoThreshold means the district
-            or group had no residents to average.
+            panel only ever shows the band's name anyway.
+            
+            Income has no such band, so it goes over as the raw average currency figure instead.
+            
+            DistrictStatsSystem.kNoThreshold means the district
+            or group had no residents (or no households, for wealth/income) to average.
         */
         private void WriteResidentStats(IJsonWriter writer, DistrictStats stats)
         {
@@ -270,6 +274,8 @@ namespace DistrictGroups
             writer.Write(DistrictStatsSystem.GetHappinessThreshold(stats));
             writer.PropertyName("wealth");
             writer.Write(m_StatsSystem.GetWealthThreshold(stats));
+            writer.PropertyName("income");
+            writer.Write(DistrictStatsSystem.GetAverageIncome(stats));
         }
     }
 }

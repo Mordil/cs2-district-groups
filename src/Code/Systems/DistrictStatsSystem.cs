@@ -218,6 +218,16 @@ namespace DistrictGroups
             return (int)CitizenUIUtils.GetHouseholdWealthKey(averageWealth, parameters);
         }
 
+        // Average household income as raw numbers
+        public static int GetAverageIncome(DistrictStats stats)
+        {
+            if (stats.m_HouseholdCount == 0)
+            {
+                return kNoThreshold;
+            }
+            return (int)(stats.m_IncomeSum / stats.m_HouseholdCount);
+        }
+
         // Hands the in-scope buildings to a parallel sweep and leaves it running.
         private void ScheduleSweep(HashSet<Entity> scope)
         {
@@ -368,7 +378,8 @@ namespace DistrictGroups
                 /*
                     Vanilla's two sweeps disagree on which households they take, so each accumulator keeps its
                     own filter: happiness counts every renter household's living citizens, while the wealth
-                    average leaves out tourists, commuters and households already on their way out of the city.
+                    and income averages leave out tourists, commuters and households already on their way out
+                    of the city.
                 */
 
                 bool isHousehold = m_Households.TryGetComponent(household, out Household householdData);
@@ -399,6 +410,7 @@ namespace DistrictGroups
                     return;
                 }
                 stats.m_WealthSum += EconomyUtils.GetHouseholdTotalWealth(householdData, resources);
+                stats.m_IncomeSum += householdData.m_Income;
                 stats.m_HouseholdCount++;
             }
         }

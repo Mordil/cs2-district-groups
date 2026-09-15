@@ -202,6 +202,7 @@ export const VanillaLocale = {
     populationColumn: { id: "Glossary.SECTION_TITLE[Population]", fallback: "Population" },
     happinessColumn: { id: "Glossary.SECTION_TITLE[Happiness]", fallback: "Happiness" },
     wealthColumn: { id: "StatisticsPanel.STAT_TITLE[Wealth]", fallback: "Wealth" },
+    incomeColumn: { id: "StatisticsPanel.STAT_TITLE[Income]", fallback: "Income" },
     buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },
     focusTooltip: {

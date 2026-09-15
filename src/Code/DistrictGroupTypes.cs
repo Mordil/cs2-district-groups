@@ -116,6 +116,8 @@ namespace DistrictGroups
         public int m_LivingResidentCount;
         // Summed household wealth, divided by m_HouseholdCount for the average.
         public long m_WealthSum;
+        // Summed household income, divided by m_HouseholdCount for the average.
+        public long m_IncomeSum;
         // Resident households, excluding the tourists and commuters vanilla leaves out of its wealth average.
         public int m_HouseholdCount;
 
@@ -126,6 +128,7 @@ namespace DistrictGroups
             m_HappinessSum += other.m_HappinessSum;
             m_LivingResidentCount += other.m_LivingResidentCount;
             m_WealthSum += other.m_WealthSum;
+            m_IncomeSum += other.m_IncomeSum;
             m_HouseholdCount += other.m_HouseholdCount;
         }
     }

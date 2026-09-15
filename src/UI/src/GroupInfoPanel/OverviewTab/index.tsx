@@ -8,6 +8,7 @@ import { entityKey } from "cs2/utils"
 import { gameIconSrc, glyphIconSrc } from "../../components/icons"
 import { ThresholdValue } from "../../components/ThresholdValue"
 import { VC, VF, VT } from "../../components/vanilla"
+import { kNoThreshold, kNoValue } from "../../constants"
 import { removeMember } from "../../triggers"
 import { DistrictMember, Group } from "../../types"
 import { VanillaLocale, happinessThreshold, useTranslation, wealthThreshold } from "../../utils/locale"
@@ -26,7 +27,12 @@ enum OverviewColumn {
     Population,
     Happiness,
     Wealth,
+    Income,
 }
+
+// Average household income has no vanilla band to bucket it into, so render as currency
+const IncomeValue = ({ income }: { income: number }) =>
+    income === kNoThreshold ? <>{kNoValue}</> : <LocalizedNumber value={income} unit={Unit.MoneyPerMonth} />
 
 interface ColumnDef {
     id: OverviewColumn
@@ -126,6 +132,21 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
             compare: (a, b) => a.wealth - b.wealth,
             renderValue: (member) => <ThresholdValue label={wealthThreshold(member.wealth)} />,
             renderTotal: (total) => <ThresholdValue label={wealthThreshold(total.wealth)} />,
+        },
+        {
+            id: OverviewColumn.Income,
+            label: (
+                <LocalizedString
+                    id={VanillaLocale.incomeColumn.id}
+                    fallback={VanillaLocale.incomeColumn.fallback}
+                />
+            ),
+            widthClass: kTable.cellDouble,
+            alignClass: kTable.alignRight,
+            descendingFirst: true,
+            compare: (a, b) => a.income - b.income,
+            renderValue: (member) => <IncomeValue income={member.income} />,
+            renderTotal: (total) => <IncomeValue income={total.income} />,
         },
     ]
 

@@ -12,11 +12,16 @@ export interface DistrictMember extends ResidentStats {
 
     Happiness and wealth arrive as the ordinal of the band their average landed in rather than as a
     raw average, and are kNoThreshold when there were no residents to average.
+    
+    Income has no such band in vanilla, so it arrives as the raw average currency figure.
+    
+    `kNoThreshold` when there were no households to average.
 */
 export interface ResidentStats {
     population: number
     happiness: number
     wealth: number
+    income: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows
