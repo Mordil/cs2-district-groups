@@ -98,7 +98,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="1.4.0" />
+	<ModVersion Value="1.5.0" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -115,12 +115,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **CHANGED**
 
-- Removed the "Park" group type and it's filter
-- Removed icon assets that are no longer referenced
-
-**FIXED**
-
-- Prisons are now reliably classified as Police buildings. They should now receive indicators in the overlay
+- Added income to the Group Info Panel, now that income players a larger role than wealth in the 1.6.2f1 patch
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
