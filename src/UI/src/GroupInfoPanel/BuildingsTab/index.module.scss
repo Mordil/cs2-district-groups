@@ -55,6 +55,12 @@ $header-label-padding: 6rem;
     white-space: nowrap;
 }
 
+.typeName {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
 .empty {
     padding: $horizontal-padding;
     background-color: var(--sectionBackgroundColor);
