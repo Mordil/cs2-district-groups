@@ -90,7 +90,6 @@ export const kLocale = {
     typeEducationCollege: id("TypeEducationCollege"),
     typeEducationUniversity: id("TypeEducationUniversity"),
     typePost: id("TypePost"),
-    typeWelfare: id("TypeWelfare"),
 } as const
 
 // English fallbacks - shown as-is until a locale source (en-US at minimum,
@@ -185,7 +184,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     typeEducationCollege: "College",
     typeEducationUniversity: "University",
     typePost: "Post",
-    typeWelfare: "Welfare",
 }
 
 // A display string the game itself ships, with the English text to fall back on.

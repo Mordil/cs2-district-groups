@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "Szkoła pomaturalna" },
                 { LocalizationKey.TypeEducationUniversity, "Uniwersytet" },
                 { LocalizationKey.TypePost, "Poczta" },
-                { LocalizationKey.TypeWelfare, "Opieka społeczna" },
             };
         }
 

@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "Колледж" },
                 { LocalizationKey.TypeEducationUniversity, "Университет" },
                 { LocalizationKey.TypePost, "Почта" },
-                { LocalizationKey.TypeWelfare, "Социальное обеспечение" },
             };
         }
 

@@ -46,7 +46,6 @@ export const kTypeIcons: string[] = [
     gameIconSrc("Education"),
     gameIconSrc("Education"),
     gameIconSrc("PostService"),
-    gameIconSrc("Administration"),
 ]
 
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order
@@ -65,6 +64,5 @@ export const useTypeLabels = (): string[] => {
         t("typeEducationCollege"),
         t("typeEducationUniversity"),
         t("typePost"),
-        t("typeWelfare"),
     ]
 }

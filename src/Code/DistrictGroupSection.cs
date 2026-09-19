@@ -19,6 +19,7 @@ namespace DistrictGroups
         private EntityQuery m_GroupQuery;
         private Entity m_AssignedGroup;
         private GroupServiceType m_BuildingType;
+        private bool m_RestrictedToGeneric;
         private int m_LastSeenVersion = -1;
 
         protected override void OnCreate()
@@ -56,6 +57,7 @@ namespace DistrictGroups
         {
             m_AssignedGroup = Entity.Null;
             m_BuildingType = GroupServiceType.Generic;
+            m_RestrictedToGeneric = false;
         }
 
         protected override void OnProcess() { }
@@ -85,6 +87,7 @@ namespace DistrictGroups
                     ? EntityManager.GetComponentData<DistrictGroupAssignment>(selectedEntity).m_Group
                     : Entity.Null;
                 m_BuildingType = m_GroupSystem.DetectServiceType(selectedPrefab);
+                m_RestrictedToGeneric = m_GroupSystem.IsRestrictedToGenericGroup(selectedPrefab);
             }
             finally
             {
@@ -101,8 +104,10 @@ namespace DistrictGroups
         public override void OnWriteProperties(IJsonWriter writer)
         {
             long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+            // A restricted building has no group type of its own, so it's reported as Civic (Generic) too.
+            GroupServiceType reportedType = m_RestrictedToGeneric ? GroupServiceType.Generic : m_BuildingType;
             writer.PropertyName("buildingType");
-            writer.Write((int)m_BuildingType);
+            writer.Write((int)reportedType);
             writer.PropertyName("hasAssignment");
             writer.Write(m_AssignedGroup != Entity.Null);
             writer.PropertyName("assignedGroupName");
@@ -113,9 +118,11 @@ namespace DistrictGroups
             foreach (Entity candidate in groups)
             {
                 GroupServiceType type = EntityManager.GetComponentData<DistrictGroupData>(candidate).m_Type;
-                bool matches = m_BuildingType == GroupServiceType.Generic
-                    || type == m_BuildingType
-                    || type == GroupServiceType.Generic;
+                bool matches = m_RestrictedToGeneric
+                    ? type == GroupServiceType.Generic
+                    : m_BuildingType == GroupServiceType.Generic
+                        || type == m_BuildingType
+                        || type == GroupServiceType.Generic;
                 if (matches && candidate != m_AssignedGroup)
                 {
                     candidates.Add(candidate);

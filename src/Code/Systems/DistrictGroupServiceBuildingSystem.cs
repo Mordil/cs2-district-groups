@@ -32,7 +32,6 @@ namespace DistrictGroups
             { GroupServiceType.EducationCollege, "School" },
             { GroupServiceType.EducationUniversity, "School" },
             { GroupServiceType.Post, "Post Facility" },
-            { GroupServiceType.Welfare, "Welfare Office" },
         };
 
         private DistrictGroupSystem m_GroupSystem;
@@ -99,7 +98,6 @@ namespace DistrictGroups
                 { GroupServiceType.EducationCollege, schoolQuery },
                 { GroupServiceType.EducationUniversity, schoolQuery },
                 { GroupServiceType.Post, BuildQuery(ComponentType.ReadOnly<Game.Buildings.PostFacility>()) },
-                { GroupServiceType.Welfare, BuildQuery(ComponentType.ReadOnly<Game.Buildings.WelfareOffice>()) },
             };
 
             // Vanilla's SchoolLevel enum: Elementary=1, HighSchool=2, College=3, University=4.

@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "単科大学" },
                 { LocalizationKey.TypeEducationUniversity, "総合大学" },
                 { LocalizationKey.TypePost, "郵便" },
-                { LocalizationKey.TypeWelfare, "福祉" },
             };
         }
 

@@ -157,7 +157,6 @@ namespace DistrictGroups
                 { LocalizationKey.TypeEducationCollege, "Faculdade" },
                 { LocalizationKey.TypeEducationUniversity, "Universidade" },
                 { LocalizationKey.TypePost, "Correio" },
-                { LocalizationKey.TypeWelfare, "Previdência Social" },
             };
         }
 

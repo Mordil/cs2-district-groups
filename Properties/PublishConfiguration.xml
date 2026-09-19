@@ -115,7 +115,8 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **CHANGED**
 
-- Added income to the Group Info Panel, now that income players a larger role than wealth in the 1.6.2f1 patch
+- Removed the "Welfare" group type; existing Welfare groups become Civic
+- Welfare buildings (Administration) can now only be assigned to Civic groups
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
