@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "새로 고침 빈도" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "집계된 지구 정보에 대한 UI 업데이트 사이에 대기할 시간(초)입니다.\n\n자주 업데이트하면 성능에 부정적인 영향을 미칠 수 있습니다." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "모든 그룹에서 정책 설정" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "모든 지구 그룹이 지구 정책을 설정할 수 있도록 허용합니다." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "모든 설정 초기화" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "모든 모드 설정을 기본값으로 되돌립니다." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "모든 모드 설정이 기본값으로 되돌아갑니다.\r\n계속하시겠습니까?" },

@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "更新率" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "介面更新彙總行政區資訊之間等待的秒數。\n\n頻繁更新可能會對效能產生負面影響。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "從所有群組設定政策" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "允許所有行政區群組設定行政區政策。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重設所有設定" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "將所有模組設定重設為預設值。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "所有模組設定將還原為預設值。\r\n是否要繼續？" },

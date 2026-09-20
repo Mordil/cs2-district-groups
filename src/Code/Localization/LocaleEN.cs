@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Refresh rate" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "The number of seconds to wait between UI updates for aggregate district information.\n\nUpdating frequently may negatively impact performance." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Set policies from all groups" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Allow all district groups to set district policies." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Reset all settings" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Resets all mod settings back to their default values." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "All mod settings will revert to their default values.\r\nDo you want to proceed?" },

@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Częstotliwość odświeżania" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "Liczba sekund oczekiwania między aktualizacjami interfejsu dla zagregowanych informacji o dzielnicach.\n\nCzęste aktualizowanie może negatywnie wpłynąć na wydajność." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Ustawianie uchwał z wszystkich grup" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Zezwala wszystkim grupom dzielnic na ustawianie uchwał dzielnic." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Zresetuj wszystkie ustawienia" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Przywraca wszystkie ustawienia moda do wartości domyślnych." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Wszystkie ustawienia moda zostaną przywrócone do wartości domyślnych.\r\nCzy chcesz kontynuować?" },

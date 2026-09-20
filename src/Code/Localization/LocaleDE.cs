@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Aktualisierungsrate" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "Die Anzahl an Sekunden, die zwischen Aktualisierungen der aggregierten Bezirksinformationen in der Benutzeroberfläche gewartet wird.\n\nHäufiges Aktualisieren kann sich negativ auf die Leistung auswirken." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Bestimmungen aus allen Gruppen festlegen" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Erlaubt allen Bezirksgruppen, Bezirksbestimmungen festzulegen." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Alle Einstellungen zurücksetzen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Setzt alle Mod-Einstellungen auf ihre Standardwerte zurück." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Alle Mod-Einstellungen werden auf ihre Standardwerte zurückgesetzt.\r\nMöchtest du fortfahren?" },

@@ -254,6 +254,9 @@ namespace DistrictGroups
             m_GroupPoliciesBinding = new RawValueBinding(kBindingGroup, "groupPolicies", WriteGroupPolicies);
             AddBinding(m_GroupPoliciesBinding);
 
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "allowPoliciesForAllGroupTypes",
+                () => Mod.Settings?.AllowPoliciesForAllGroupTypes ?? Setting.kDefaultAllowPoliciesForAllGroupTypes));
+
             AddBinding(new TriggerBinding<Entity, Entity, bool>(kBindingGroup, "setGroupPolicyActive",
                 (group, policy, active) => m_PolicySystem.SetGroupPolicyActive(group, policy, active)));
             AddBinding(new TriggerBinding<Entity, Entity, float>(kBindingGroup, "setGroupPolicyValue",

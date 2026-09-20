@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Fréquence de mise à jour" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "Le nombre de secondes à attendre entre les mises à jour de l'interface pour les informations agrégées des quartiers.\n\nUne mise à jour fréquente peut avoir un impact négatif sur les performances." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Définir des politiques depuis tous les groupes" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Permet à tous les groupes de quartiers de définir des politiques de quartier." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Réinitialiser tous les paramètres" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Réinitialise tous les paramètres du mod à leurs valeurs par défaut." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Tous les paramètres du mod reviendront à leurs valeurs par défaut.\r\nVoulez-vous continuer ?" },

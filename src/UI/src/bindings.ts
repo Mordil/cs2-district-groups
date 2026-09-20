@@ -16,6 +16,9 @@ export const serviceBuildings$ = bindValue<ServiceBuilding[]>(mod.id, "serviceBu
 // Every district policy the game has, carrying how each district of the focused group has it set
 export const groupPolicies$ = bindValue<GroupPolicy[]>(mod.id, "groupPolicies", [])
 
+// Whether any group type can set district policies, or only Civic groups
+export const allowPoliciesForAllGroupTypes$ = bindValue<boolean>(mod.id, "allowPoliciesForAllGroupTypes", false)
+
 // The group whose district selection is currently active, or the null entity when none is
 export const selectingGroup$ = bindValue<Entity>(mod.id, "selectingGroup", { index: 0, version: 0 })
 

@@ -5,14 +5,14 @@ import { InputActionConsumer } from "cs2/input"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityEquals, entityKey } from "cs2/utils"
 
-import { groupPolicies$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
+import { allowPoliciesForAllGroupTypes$, groupPolicies$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
 import { ColorPicker } from "../components/ColorPicker"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc } from "../components/icons"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../components/vanilla"
-import { kGroupInfoPanelMaxWidth, kPanelWidth, kTypeIcons, useTypeLabels } from "../constants"
+import { kGenericType, kGroupInfoPanelMaxWidth, kPanelWidth, kTypeIcons, useTypeLabels } from "../constants"
 import { markdownRenderer } from "../shared"
 import {
     clearFocusedGroup,
@@ -68,6 +68,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     const showOverlay = useValue(showOverlay$)
     const showServiceBuildings = useValue(showServiceBuildings$)
     const policies = useValue(groupPolicies$)
+    const allowPoliciesForAllGroupTypes = useValue(allowPoliciesForAllGroupTypes$)
     const restoreShowOverlay = useRef(showOverlay)
     const restoreShowServiceBuildings = useRef(showServiceBuildings)
     const [nameDraft, setNameDraft] = useState(group.name)
@@ -75,8 +76,9 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     const [activeTab, setActiveTab] = useState(lastGroupInfoTab)
     const dialogStack = useContext(DialogStack)
 
-    // Nothing unlocked to list means no tab
+    // Nothing unlocked to list means no tab; non-Civic groups also need the "all group types" setting on
     const hasPolicies = policies.length > 0
+        && (allowPoliciesForAllGroupTypes || group.type === kGenericType)
     const tabs = hasPolicies ? kTabOrder : kTabOrder.filter((tab) => tab !== GroupInfoTab.Policies)
     const selectedTab = tabs.includes(activeTab) ? activeTab : GroupInfoTab.Overview
 

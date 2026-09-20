@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "更新頻度" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "特区の集計情報をUIで更新する間隔(秒)です。\n\n頻繁に更新すると、パフォーマンスに悪影響を及ぼす可能性があります。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "すべてのグループから条例を設定" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "すべての特区グループが条例を設定できるようにします。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "すべての設定をリセット" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "すべてのMOD設定を初期値に戻します。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "すべてのMOD設定が初期値に戻ります。\r\n続行しますか?" },

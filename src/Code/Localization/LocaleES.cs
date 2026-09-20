@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "Frecuencia de actualización" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "El número de segundos que se espera entre actualizaciones de la interfaz para la información agregada de distritos.\n\nActualizar con frecuencia puede afectar negativamente al rendimiento." },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Establecer políticas desde todos los grupos" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Permite que todos los grupos de distrito establezcan políticas de distrito." },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Restablecer todos los ajustes" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Restablece todos los ajustes del mod a sus valores predeterminados." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Todos los ajustes del mod volverán a sus valores predeterminados.\r\n¿Deseas continuar?" },

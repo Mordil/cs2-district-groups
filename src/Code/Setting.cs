@@ -41,6 +41,7 @@ namespace DistrictGroups
         public const bool kDefaultOverlayFillUseTransparency = true;
         public const bool kDefaultOverlayEnableGroupLabels = true;
         public const int kDefaultRefreshRateSeconds = 10;
+        public const bool kDefaultAllowPoliciesForAllGroupTypes = false;
 #if DEBUG
         public const bool kDefaultEnableDebugLogging = true;
 #else
@@ -66,6 +67,7 @@ namespace DistrictGroups
             OverlayFillUseTransparency = kDefaultOverlayFillUseTransparency;
             OverlayEnableGroupLabels = kDefaultOverlayEnableGroupLabels;
             RefreshRateSeconds = kDefaultRefreshRateSeconds;
+            AllowPoliciesForAllGroupTypes = kDefaultAllowPoliciesForAllGroupTypes;
             EnableDebugLogging = kDefaultEnableDebugLogging;
         }
 
@@ -101,6 +103,10 @@ namespace DistrictGroups
         [SettingsUISlider(min = 1, max = 30, step = 1, unit = Unit.kInteger)]
         [SettingsUISection(kTabGeneral, kSectionDefault)]
         public int RefreshRateSeconds { get; set; }
+
+        // Lets any group type set district policies; when off, only Civic groups can.
+        [SettingsUISection(kTabGeneral, kSectionDefault)]
+        public bool AllowPoliciesForAllGroupTypes { get; set; }
 
         // Resets every mod setting back to its shipped default.
         [SettingsUIButton]

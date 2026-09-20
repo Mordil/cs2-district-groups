@@ -58,6 +58,9 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.RefreshRateSeconds)), "刷新率" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.RefreshRateSeconds)), "在界面更新聚合市辖区信息之间等待的秒数。\n\n频繁更新可能会对性能产生负面影响。" },
 
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "从所有组设置政策" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "允许所有市辖区组设置市辖区政策。" },
+
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重置所有设置" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "将所有模组设置恢复为默认值。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "所有模组设置都将恢复为默认值。\r\n是否继续？" },
