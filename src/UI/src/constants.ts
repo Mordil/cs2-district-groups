@@ -1,5 +1,5 @@
 import { gameIconSrc, modIconSrc } from "./components/icons"
-import { useTranslation } from "./utils/locale"
+import { VanillaLocale, useTranslation, useVanillaLabel } from "./utils/locale"
 
 export const kAssetPath = 'coui://districtgroups/'
 
@@ -52,10 +52,13 @@ export const kTypeIcons: string[] = [
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {
     const t = useTranslation()
+    // Reuses the game's own Info View option label rather than a mod-owned translation, so this entry
+    // stays in whatever wording the player's language already knows and never drifts from it.
+    const fireAndRescue = useVanillaLabel(VanillaLocale.fireAndRescueType)
     return [
         t("typeGeneric"),
         t("typePolice"),
-        t("typeFire"),
+        fireAndRescue,
         t("typeHealthcare"),
         t("typeDeathcare"),
         t("typeGarbage"),

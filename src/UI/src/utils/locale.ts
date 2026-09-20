@@ -81,7 +81,6 @@ export const kLocale = {
 
     typeGeneric: id("TypeGeneric"),
     typePolice: id("TypePolice"),
-    typeFire: id("TypeFire"),
     typeHealthcare: id("TypeHealthcare"),
     typeDeathcare: id("TypeDeathcare"),
     typeGarbage: id("TypeGarbage"),
@@ -175,7 +174,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
 
     typeGeneric: "Civic",
     typePolice: "Police",
-    typeFire: "Fire",
     typeHealthcare: "Healthcare",
     typeDeathcare: "Deathcare",
     typeGarbage: "Garbage",
@@ -203,6 +201,7 @@ export const VanillaLocale = {
     incomeColumn: { id: "StatisticsPanel.STAT_TITLE[Income]", fallback: "Income" },
     buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },
+    fireAndRescueType: { id: "Infoviews.INFOVIEW[FireRescue]", fallback: "Fire & Rescue" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",
@@ -256,4 +255,10 @@ export const useTranslation = () => {
             template
         )
     }
+}
+
+// A vanilla label as a plain string, for contexts (sorting, comparison) that can't render JSX.
+export const useVanillaLabel = (label: VanillaLabel): string => {
+    const { translate } = useLocalization()
+    return translate(label.id, label.fallback) ?? label.fallback
 }

@@ -148,7 +148,6 @@ namespace DistrictGroups
 
                 { LocalizationKey.TypeGeneric, "Civic" },
                 { LocalizationKey.TypePolice, "Police" },
-                { LocalizationKey.TypeFire, "Fire" },
                 { LocalizationKey.TypeHealthcare, "Healthcare" },
                 { LocalizationKey.TypeDeathcare, "Deathcare" },
                 { LocalizationKey.TypeGarbage, "Garbage" },

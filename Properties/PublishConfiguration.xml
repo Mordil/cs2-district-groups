@@ -115,6 +115,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **CHANGED**
 
+- "Fire" group types are now labeled as "Fire & Rescue" to match vanilla's terminology
 - Removed the "Welfare" group type; existing Welfare groups become Civic
 - Welfare buildings (Administration) can now only be assigned to Civic groups
 	</ChangeLog>

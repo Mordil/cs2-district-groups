@@ -148,7 +148,6 @@ namespace DistrictGroups
 
                 { LocalizationKey.TypeGeneric, "市民" },
                 { LocalizationKey.TypePolice, "警察" },
-                { LocalizationKey.TypeFire, "消防" },
                 { LocalizationKey.TypeHealthcare, "医疗卫生" },
                 { LocalizationKey.TypeDeathcare, "殡葬" },
                 { LocalizationKey.TypeGarbage, "垃圾" },

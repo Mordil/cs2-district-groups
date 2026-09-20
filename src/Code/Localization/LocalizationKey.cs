@@ -83,7 +83,6 @@
 
         public const string TypeGeneric = "DistrictGroups.UI[TypeGeneric]";
         public const string TypePolice = "DistrictGroups.UI[TypePolice]";
-        public const string TypeFire = "DistrictGroups.UI[TypeFire]";
         public const string TypeHealthcare = "DistrictGroups.UI[TypeHealthcare]";
         public const string TypeDeathcare = "DistrictGroups.UI[TypeDeathcare]";
         public const string TypeGarbage = "DistrictGroups.UI[TypeGarbage]";
