@@ -14,7 +14,7 @@ export const MetadataItem = ({ icon, value, tooltip }: MetadataItemProps) => (
     <Tooltip tooltip={tooltip}>
         <div className={css.metadataItem}>
             <Icon
-                tinted={true}
+                tinted={false}
                 className={css.metadataIcon}
                 src={icon} />
 
