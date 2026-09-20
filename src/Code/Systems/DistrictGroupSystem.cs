@@ -145,6 +145,7 @@ namespace DistrictGroups
             if (EntityManager.HasComponent<PoliceStationData>(prefab)) return GroupServiceType.Police;
             if (EntityManager.HasComponent<PrisonData>(prefab)) return GroupServiceType.Police;
             if (EntityManager.HasComponent<FireStationData>(prefab)) return GroupServiceType.Fire;
+            if (EntityManager.HasComponent<EmergencyShelterData>(prefab)) return GroupServiceType.Fire;
             if (EntityManager.HasComponent<HospitalData>(prefab)) return GroupServiceType.Healthcare;
             if (EntityManager.HasComponent<DeathcareFacilityData>(prefab)) return GroupServiceType.Deathcare;
             if (EntityManager.HasComponent<GarbageFacilityData>(prefab)) return GroupServiceType.Garbage;

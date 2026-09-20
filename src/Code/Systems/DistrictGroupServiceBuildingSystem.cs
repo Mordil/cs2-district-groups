@@ -89,7 +89,7 @@ namespace DistrictGroups
             m_TypeQueries = new Dictionary<GroupServiceType, EntityQuery>
             {
                 { GroupServiceType.Police, BuildQuery(ComponentType.ReadOnly<Game.Buildings.PoliceStation>(), ComponentType.ReadOnly<Game.Buildings.Prison>()) },
-                { GroupServiceType.Fire, BuildQuery(ComponentType.ReadOnly<Game.Buildings.FireStation>()) },
+                { GroupServiceType.Fire, BuildQuery(ComponentType.ReadOnly<Game.Buildings.FireStation>(), ComponentType.ReadOnly<Game.Buildings.EmergencyShelter>()) },
                 { GroupServiceType.Healthcare, BuildQuery(ComponentType.ReadOnly<Game.Buildings.Hospital>()) },
                 { GroupServiceType.Deathcare, BuildQuery(ComponentType.ReadOnly<Game.Buildings.DeathcareFacility>()) },
                 { GroupServiceType.Garbage, BuildQuery(ComponentType.ReadOnly<Game.Buildings.GarbageFacility>()) },

@@ -118,6 +118,10 @@ In Settings, there is a button to safely remove all mod data from your save.
 - "Fire" group types are now labeled as "Fire & Rescue" to match vanilla's terminology
 - Removed the "Welfare" group type; existing Welfare groups become Civic
 - Welfare buildings (Administration) can now only be assigned to Civic groups
+
+**FIXES**
+
+- Disaster shelters are now classified as "Fire & Rescue" buildings, and can be assigned to those groups
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
