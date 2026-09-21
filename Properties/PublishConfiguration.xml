@@ -122,7 +122,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **FIXES**
 
-- Disaster shelters are now classified as "Fire and Rescue" buildings, and can be assigned to those groups
+- Building icons in the overlay now display the building's name in the mouseover tooltip
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

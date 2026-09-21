@@ -393,7 +393,7 @@ namespace DistrictGroups
 
             using NativeArray<Entity> markers = new NativeArray<Entity>(buildings.Count, Allocator.Temp);
             EntityManager.CreateEntity(notificationIconData.m_Archetype, markers);
-            EntityManager.AddComponent<Game.Common.Target>(markers);
+            EntityManager.AddComponent<Owner>(markers);
             EntityManager.AddComponent<Game.Notifications.DisallowCluster>(markers);
 
             PrefabRef prefabRef = new PrefabRef(iconPrefabEntity);
@@ -405,10 +405,12 @@ namespace DistrictGroups
                 EntityManager.SetComponentData(marker, new Game.Notifications.Icon
                 {
                     m_Priority = Game.Notifications.IconPriority.Info,
+                    m_ClusterLayer = Game.Notifications.IconClusterLayer.Marker,
                     m_Flags = Game.Notifications.IconFlags.Unique | Game.Notifications.IconFlags.OnTop,
                     m_Location = GetMarkerLocation(building),
                 });
-                EntityManager.SetComponentData(marker, new Game.Common.Target(building));
+
+                EntityManager.SetComponentData(marker, new Owner(building));
                 m_Markers[building] = marker;
             }
         }
