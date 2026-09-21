@@ -98,7 +98,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/mod-district-groups-support-feedback.1938226/" />
 
 	<!--Version of the mod-->
-	<ModVersion Value="1.6.0" />
+	<ModVersion Value="1.6.1" />
 
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.6.*" />
@@ -113,13 +113,6 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-**CHANGED**
-
-- District policies can now only be managed by Civic groups. This can be overridden in Settings to allow all groups again.
-- "Fire" group types are now labeled as "Fire and Rescue" to match vanilla's terminology
-- Removed the "Welfare" group type; existing Welfare groups become Civic
-- Welfare buildings (Administration) can now only be assigned to Civic groups
-
 **FIXES**
 
 - Fixed sometimes not being able to click on entites vertically below the panel
