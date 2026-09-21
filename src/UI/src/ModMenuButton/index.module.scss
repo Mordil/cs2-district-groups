@@ -27,10 +27,11 @@
     font-size: var(--fontSizeS);
     overflow: hidden;
     transform-origin: 50% 100%;
+    pointer-events: none;
 
     @include enter-exit-transition(
         150ms,
-        (opacity: 0, transform: translateY(15rem), pointer-events: none),
-        (opacity: 1, transform: translateY(0), pointer-events: auto)
+        (opacity: 0, transform: translateY(15rem)),
+        (opacity: 1, transform: translateY(0))
     );
 }
