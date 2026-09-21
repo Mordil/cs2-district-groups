@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Colossal.Serialization.Entities;
 using Game;
+using Game.Areas;
 using Game.Common;
 using Game.Prefabs;
 using Game.Tools;
@@ -318,15 +319,16 @@ namespace DistrictGroups
             }
 
             bool isSchoolType = m_SchoolEducationLevels.TryGetValue(type, out byte requiredLevel);
-            if (!isSchoolType && !m_HideAssignedBuildings)
-            {
-                return query.ToEntityArray(allocator);
-            }
 
             using NativeArray<Entity> candidates = query.ToEntityArray(Allocator.Temp);
             using NativeList<Entity> filtered = new NativeList<Entity>(candidates.Length, Allocator.Temp);
             foreach (Entity building in candidates)
             {
+                // A building with no ServiceDistrict buffer can never be assigned a group, so it is never a target.
+                if (!EntityManager.HasBuffer<ServiceDistrict>(building))
+                {
+                    continue;
+                }
                 if (isSchoolType && !MatchesEducationLevel(building, requiredLevel))
                 {
                     continue;

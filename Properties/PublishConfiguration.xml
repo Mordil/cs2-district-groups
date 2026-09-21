@@ -122,6 +122,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 
 **FIXES**
 
+- Removed service buildings that can't be assigned a Group from the Service Building tab
 - Building icons in the overlay now display the building's name in the mouseover tooltip
 	</ChangeLog>
 
