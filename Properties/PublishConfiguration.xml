@@ -113,11 +113,9 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<!--NOTE: a Value attribute always wins over this element's body, even when empty,
 	    so keep the attribute form deleted while using multi-line notes below.-->
 	<ChangeLog>
-**FIXES**
+**CHANGED**
 
-- Fixed sometimes not being able to click on entites vertically below the panel
-- Removed service buildings that can't be assigned a Group from the Service Building tab
-- Building icons in the overlay now display the building's name in the mouseover tooltip
+- Slightly increased the width of the Group Info panel
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

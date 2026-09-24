@@ -23,7 +23,7 @@ export const kNoValue = -1
 export const kPanelWidth = 490
 
 // How wide the group info panel is allowed to grow to fit longer content, in rem CSS units
-export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.25
+export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.3
 
 // Stands in for a district stat that is unreported.
 export const kNoValueText = "—"
