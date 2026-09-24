@@ -143,6 +143,15 @@ namespace DistrictGroups
         // Living residents the death chances were drawn from. Not a denominator, but it tells a district that loses
         // nobody apart from a sweep that ran before the city had loaded the parameters the rate is weighed against.
         public int m_DeathRateResidentCount;
+        /*
+            Garbage the district's garbage-producing buildings generate per day, from ConsumptionData.m_GarbageAccumulation.
+            A rate rather than GarbageProducer.m_Garbage's uncollected pile: the pile measures whether trucks keep up,
+            while the rate measures what the district causes, which is what a group's processing has to match.
+        */
+        public float m_GarbageAccumulationSum;
+        // Garbage-producing buildings the rate was drawn from, which tells a district that generates nothing apart
+        // from a sweep that saw nothing.
+        public int m_GarbageProducerCount;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -162,6 +171,8 @@ namespace DistrictGroups
             m_ActivePatientCount += other.m_ActivePatientCount;
             m_DeathRateSum += other.m_DeathRateSum;
             m_DeathRateResidentCount += other.m_DeathRateResidentCount;
+            m_GarbageAccumulationSum += other.m_GarbageAccumulationSum;
+            m_GarbageProducerCount += other.m_GarbageProducerCount;
         }
     }
 
@@ -235,6 +246,13 @@ namespace DistrictGroups
             stats.m_DeathRateResidentCount == 0
                 ? DistrictGroupsUISystem.kNoValue
                 : (int)math.ceil(math.max(0f, stats.m_DeathRateSum));
+
+        // The garbage the district's own buildings generate per day, as a whole unit, or kNoValue when the sweep
+        // found no garbage-producing buildings there at all.
+        public int GarbageGeneration(DistrictStats stats) =>
+            stats.m_GarbageProducerCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.round(math.max(0f, stats.m_GarbageAccumulationSum));
     }
 
     // A named, typed set of base districts.

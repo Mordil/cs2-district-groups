@@ -16,6 +16,7 @@ const kPlaces: (Places | null)[] = [
     null,
     { label: VanillaLocale.patients, unit: Unit.Integer },
     { label: VanillaLocale.deceased, unit: Unit.Integer },
+    { label: VanillaLocale.storedGarbage, unit: Unit.Weight },
 ]
 
 // What a building of this service type calls its own places, or null for a type with none to name.

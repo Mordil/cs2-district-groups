@@ -97,6 +97,14 @@ const deathsPerDayColumn: DataColumn<DistrictMember> = {
     render: (member) => <StatValue value={member.deathsPerDay} unit={Unit.IntegerPerMonth} />,
 }
 
+const garbageGenerationColumn: DataColumn<DistrictMember> = {
+    id: "garbageGeneration",
+    label: <GameText label={VanillaLocale.garbageAccumulation} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.garbageGeneration),
+    render: (member) => <StatValue value={member.garbageGeneration} unit={Unit.WeightPerMonth} />,
+}
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
@@ -104,6 +112,7 @@ const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, fireRiskColumn],
     [districtColumn, populationColumn, healthColumn, activePatientsColumn],
     [districtColumn, populationColumn, deathsPerDayColumn],
+    [districtColumn, populationColumn, garbageGenerationColumn],
 ]
 
 // What a group of this type lists about each of its member districts.
@@ -194,6 +203,11 @@ const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [
         capacityColumn(VanillaLocale.deceasedStorage),
         processingColumn(VanillaLocale.deceasedProcessingCapacity, Unit.IntegerPerMonth),
+        efficiencyColumn,
+    ],
+    [
+        processingColumn(VanillaLocale.garbageProcessingCapacity, Unit.WeightPerMonth),
+        capacityColumn(VanillaLocale.garbageStorage),
         efficiencyColumn,
     ],
 ]

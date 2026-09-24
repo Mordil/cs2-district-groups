@@ -29,6 +29,8 @@ export interface ResidentStats {
     activePatients: number
     // Residents the district loses in a day, rounded up from summed chances
     deathsPerDay: number
+    // Garbage the district's own buildings generate per day
+    garbageGeneration: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows

@@ -140,6 +140,16 @@ const kCardStats: CardStat[][] = [
             label: <GameText label={VanillaLocale.deceasedProcessingCapacity} />,
         }),
     ],
+    [
+        load({
+            icon: modIconSrc("throughput"),
+            tinted: true,
+            unit: Unit.WeightPerMonth,
+            demand: (group) => group.garbageGeneration,
+            supply: processing,
+            label: <GameText label={VanillaLocale.garbageProcessingCapacity} />,
+        }),
+    ],
 ]
 
 // What a group of this type reads out on its card beyond its district and building counts.

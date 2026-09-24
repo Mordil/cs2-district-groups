@@ -52,6 +52,7 @@ namespace DistrictGroups
         private ComponentLookup<PrefabRef> m_BuildingPrefabs;
         private BufferLookup<Game.Buildings.InstalledUpgrade> m_InstalledUpgrades;
         private BufferLookup<Game.Buildings.Efficiency> m_BuildingEfficiencies;
+        private BufferLookup<Game.Economy.Resources> m_BuildingResources;
         private BufferLookup<Game.Buildings.Occupant> m_Occupants;
         private BufferLookup<Game.Buildings.Patient> m_BuildingPatients;
         private ComponentLookup<Game.Buildings.DeathcareFacility> m_DeathcareState;
@@ -62,7 +63,14 @@ namespace DistrictGroups
         private ComponentLookup<PrisonData> m_Prisons;
         private ComponentLookup<EmergencyShelterData> m_EmergencyShelters;
         private ComponentLookup<HospitalData> m_Hospitals;
+        private ComponentLookup<GarbageFacilityData> m_GarbageFacilities;
         private ComponentLookup<DeathcareFacilityData> m_DeathcareFacilities;
+
+        // What a landfill's player-drawn dumping areas are measured with.
+        private BufferLookup<Game.Areas.SubArea> m_SubAreas;
+        private ComponentLookup<Game.Areas.Storage> m_AreaStorages;
+        private ComponentLookup<Game.Areas.Geometry> m_AreaGeometries;
+        private ComponentLookup<StorageAreaData> m_PrefabStorageAreas;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -146,6 +154,7 @@ namespace DistrictGroups
             m_BuildingPrefabs = GetComponentLookup<PrefabRef>(true);
             m_InstalledUpgrades = GetBufferLookup<Game.Buildings.InstalledUpgrade>(true);
             m_BuildingEfficiencies = GetBufferLookup<Game.Buildings.Efficiency>(true);
+            m_BuildingResources = GetBufferLookup<Game.Economy.Resources>(true);
             m_Occupants = GetBufferLookup<Game.Buildings.Occupant>(true);
             m_BuildingPatients = GetBufferLookup<Game.Buildings.Patient>(true);
             m_DeathcareState = GetComponentLookup<Game.Buildings.DeathcareFacility>(true);
@@ -155,7 +164,13 @@ namespace DistrictGroups
             m_Prisons = GetComponentLookup<PrisonData>(true);
             m_EmergencyShelters = GetComponentLookup<EmergencyShelterData>(true);
             m_Hospitals = GetComponentLookup<HospitalData>(true);
+            m_GarbageFacilities = GetComponentLookup<GarbageFacilityData>(true);
             m_DeathcareFacilities = GetComponentLookup<DeathcareFacilityData>(true);
+
+            m_SubAreas = GetBufferLookup<Game.Areas.SubArea>(true);
+            m_AreaStorages = GetComponentLookup<Game.Areas.Storage>(true);
+            m_AreaGeometries = GetComponentLookup<Game.Areas.Geometry>(true);
+            m_PrefabStorageAreas = GetComponentLookup<StorageAreaData>(true);
 
             SetupRootBindings();
             SetupOverlayBindings();

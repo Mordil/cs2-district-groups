@@ -1,5 +1,6 @@
 using Colossal.UI.Binding;
 using Game.Buildings;
+using Game.Economy;
 using Game.Policies;
 using Game.Prefabs;
 using System;
@@ -305,6 +306,12 @@ namespace DistrictGroups
         */
         private int GetProcessingCapacity(Facility facility)
         {
+            if (facility.m_Type == GroupServiceType.Garbage
+                && TryGetData(facility, ref m_GarbageFacilities, out GarbageFacilityData garbage))
+            {
+                return garbage.m_ProcessingSpeed;
+            }
+
             if (facility.m_Type == GroupServiceType.Deathcare
                 && TryGetData(facility, ref m_DeathcareFacilities, out DeathcareFacilityData deathcare))
             {
@@ -378,6 +385,46 @@ namespace DistrictGroups
                     }
 
                     return;
+
+                case GroupServiceType.Garbage:
+                    if (TryGetData(facility, ref m_GarbageFacilities, out GarbageFacilityData garbage))
+                    {
+                        occupants = m_BuildingResources.TryGetBuffer(facility.m_Building, out DynamicBuffer<Resources> stored)
+                            ? EconomyUtils.GetResources(Resource.Garbage, stored)
+                            : 0;
+                        capacity = garbage.m_GarbageCapacity;
+                        AddStorageAreas(facility.m_Building, ref occupants, ref capacity);
+                    }
+
+                    return;
+            }
+        }
+
+        /*
+            A landfill's dumping area is drawn by the player, and most of its real capacity lives there rather than in the
+            prefab figure. Vanilla's own garbage infoview does this same walk but never resets its running total between
+            buildings in a chunk, so accumulating into one building's own totals is what avoids inheriting that.
+        */
+        private void AddStorageAreas(Entity building, ref int occupants, ref int capacity)
+        {
+            if (!m_SubAreas.TryGetBuffer(building, out DynamicBuffer<Game.Areas.SubArea> subAreas))
+            {
+                return;
+            }
+
+            foreach (Game.Areas.SubArea subArea in subAreas)
+            {
+                Entity area = subArea.m_Area;
+                if (!m_AreaStorages.TryGetComponent(area, out Game.Areas.Storage storage)
+                    || !m_BuildingPrefabs.TryGetComponent(area, out PrefabRef areaPrefab)
+                    || !m_PrefabStorageAreas.TryGetComponent(areaPrefab.m_Prefab, out StorageAreaData storageArea)
+                    || !m_AreaGeometries.TryGetComponent(area, out Game.Areas.Geometry geometry))
+                {
+                    continue;
+                }
+
+                capacity += Game.Areas.AreaUtils.CalculateStorageCapacity(geometry, storageArea);
+                occupants += storage.m_Amount;
             }
         }
 
@@ -428,6 +475,7 @@ namespace DistrictGroups
             m_BuildingPrefabs.Update(this);
             m_InstalledUpgrades.Update(this);
             m_BuildingEfficiencies.Update(this);
+            m_BuildingResources.Update(this);
             m_Occupants.Update(this);
             m_BuildingPatients.Update(this);
             m_DeathcareState.Update(this);
@@ -435,7 +483,12 @@ namespace DistrictGroups
             m_Prisons.Update(this);
             m_EmergencyShelters.Update(this);
             m_Hospitals.Update(this);
+            m_GarbageFacilities.Update(this);
             m_DeathcareFacilities.Update(this);
+            m_SubAreas.Update(this);
+            m_AreaStorages.Update(this);
+            m_AreaGeometries.Update(this);
+            m_PrefabStorageAreas.Update(this);
         }
 
         // A member district, carrying the per-district numbers its overview row reads
@@ -474,6 +527,8 @@ namespace DistrictGroups
             writer.Write(stats.m_ActivePatientCount);
             writer.PropertyName("deathsPerDay");
             writer.Write(reader.DeathsPerDay(stats));
+            writer.PropertyName("garbageGeneration");
+            writer.Write(reader.GarbageGeneration(stats));
         }
     }
 }

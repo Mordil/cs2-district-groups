@@ -3,6 +3,7 @@ using Game.Agents;
 using Game.Areas;
 using Game.Buildings;
 using Game.Citizens;
+using Game.City;
 using Game.Economy;
 using Game.Prefabs;
 using Game.Simulation;
@@ -38,6 +39,10 @@ namespace DistrictGroups
         // Hospitals with at least one occupied patient slot; every patient is hopped back to their own home district
         // rather than the hospital's, which may be anywhere in the city.
         private EntityQuery m_HospitalQuery;
+        // Garbage-producing buildings, keyed to a district via CurrentDistrict.
+        private EntityQuery m_GarbageProducerQuery;
+        // Holds the balances a building's garbage accumulation is weighed with.
+        private EntityQuery m_GarbageParameterQuery;
         // Holds the wealth thresholds the average household wealth is bucketed against.
         private EntityQuery m_CitizenHappinessParameterQuery;
         // Holds the crime accumulation ceiling a district's average crime is read as a share of.
@@ -89,6 +94,16 @@ namespace DistrictGroups
         private BufferLookup<Game.Net.ServiceCoverage> m_RoadServiceCoverages;
         private BufferLookup<DistrictModifier> m_DistrictModifiers;
 
+        // The rest of what vanilla's public GarbageAccumulationSystem.GetGarbageAccumulation asks for, which the garbage
+        // sweep calls rather than restating a formula weighing occupancy, education, level, homelessness and modifiers.
+        private ComponentLookup<ConsumptionData> m_PrefabConsumptions;
+        private ComponentLookup<ZoneData> m_PrefabZoneDatas;
+        private BufferLookup<InstalledUpgrade> m_InstalledUpgrades;
+        private BufferLookup<Game.Companies.Employee> m_Employees;
+        private BufferLookup<Game.Buildings.Student> m_BuildingStudents;
+        private BufferLookup<Occupant> m_Occupants;
+        private BufferLookup<CityModifier> m_CityModifiers;
+
         /*
             Every district that belongs to a group, and the dense slot its totals are accumulated into.
 
@@ -107,6 +122,8 @@ namespace DistrictGroups
         // narrowed on the main thread so no job needs a scope test of its own.
         private NativeList<ScopedBuilding> m_ResidentHomes;
         private NativeList<DistrictStats> m_ResidentResults;
+        private NativeList<ScopedBuilding> m_GarbageProducers;
+        private NativeList<float> m_GarbageResults;
         private NativeList<ScopedBuilding> m_CrimeProducerBuildings;
         private NativeList<ScopedBuilding> m_FlammableBuildings;
         // Every hospital in the city, unnarrowed: a patient is credited to their own home district, which is not
@@ -137,6 +154,7 @@ namespace DistrictGroups
         private SimulationSystem m_SimulationSystem;
         private DeathCheckSystem m_DeathCheckSystem;
         private TimeSystem m_TimeSystem;
+        private CitySystem m_CitySystem;
 
         /*
             HealthcareParameterData carries two death-rate curves, and a city started before the newer one was
@@ -148,6 +166,7 @@ namespace DistrictGroups
 
         private int m_ResidentHomeCount;
         private bool m_SweepDeathcareReady;
+        private bool m_SweepGarbageReady;
         private double m_SweepScheduleMs;
         private readonly System.Diagnostics.Stopwatch m_SweepClock = new System.Diagnostics.Stopwatch();
 
@@ -171,6 +190,7 @@ namespace DistrictGroups
             m_SimulationSystem = World.GetOrCreateSystemManaged<SimulationSystem>();
             m_DeathCheckSystem = World.GetOrCreateSystemManaged<DeathCheckSystem>();
             m_TimeSystem = World.GetOrCreateSystemManaged<TimeSystem>();
+            m_CitySystem = World.GetOrCreateSystemManaged<CitySystem>();
             m_UseNewDeathRateField = typeof(DeathCheckSystem).GetField(
                 "m_UseNewCurve",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
@@ -201,6 +221,16 @@ namespace DistrictGroups
                 ComponentType.ReadOnly<Patient>(),
                 ComponentType.Exclude<Game.Tools.Temp>(),
                 ComponentType.Exclude<Game.Common.Deleted>());
+            // Vanilla also excludes Destroyed: DestroySystem strips GarbageProducer off rubble in its own pass, so a
+            // building destroyed this frame can still match.
+            m_GarbageProducerQuery = GetEntityQuery(
+                ComponentType.ReadOnly<Game.Buildings.GarbageProducer>(),
+                ComponentType.ReadOnly<CurrentDistrict>(),
+                ComponentType.ReadOnly<PrefabRef>(),
+                ComponentType.Exclude<Game.Common.Destroyed>(),
+                ComponentType.Exclude<Game.Tools.Temp>(),
+                ComponentType.Exclude<Game.Common.Deleted>());
+            m_GarbageParameterQuery = GetEntityQuery(ComponentType.ReadOnly<GarbageParameterData>());
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
             m_HealthcareParameterQuery = GetEntityQuery(ComponentType.ReadOnly<HealthcareParameterData>());
@@ -236,6 +266,14 @@ namespace DistrictGroups
             m_RoadServiceCoverages = GetBufferLookup<Game.Net.ServiceCoverage>(true);
             m_DistrictModifiers = GetBufferLookup<DistrictModifier>(true);
 
+            m_PrefabConsumptions = GetComponentLookup<ConsumptionData>(true);
+            m_PrefabZoneDatas = GetComponentLookup<ZoneData>(true);
+            m_InstalledUpgrades = GetBufferLookup<InstalledUpgrade>(true);
+            m_Employees = GetBufferLookup<Game.Companies.Employee>(true);
+            m_BuildingStudents = GetBufferLookup<Game.Buildings.Student>(true);
+            m_Occupants = GetBufferLookup<Occupant>(true);
+            m_CityModifiers = GetBufferLookup<CityModifier>(true);
+
             m_ScopeDistricts = new NativeList<Entity>(Allocator.Persistent);
             m_ScopeSlots = new NativeHashMap<Entity, int>(16, Allocator.Persistent);
             m_ScopeSeen = new NativeHashSet<Entity>(16, Allocator.Persistent);
@@ -243,6 +281,8 @@ namespace DistrictGroups
 
             m_ResidentHomes = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_ResidentResults = new NativeList<DistrictStats>(Allocator.Persistent);
+            m_GarbageProducers = new NativeList<ScopedBuilding>(Allocator.Persistent);
+            m_GarbageResults = new NativeList<float>(Allocator.Persistent);
             m_CrimeProducerBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_FlammableBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_Hospitals = new NativeList<Entity>(Allocator.Persistent);
@@ -260,6 +300,8 @@ namespace DistrictGroups
             m_SweepTotals.Dispose();
             m_ResidentHomes.Dispose();
             m_ResidentResults.Dispose();
+            m_GarbageProducers.Dispose();
+            m_GarbageResults.Dispose();
             m_CrimeProducerBuildings.Dispose();
             m_FlammableBuildings.Dispose();
             m_Hospitals.Dispose();
@@ -415,6 +457,10 @@ namespace DistrictGroups
             CollectScoped(m_FlammableBuildingQuery, m_FlammableBuildings);
             CollectHospitals();
 
+            GarbageContext garbage = GetGarbageContext();
+            m_SweepGarbageReady = garbage.m_Valid;
+            CollectGarbageProducers(garbage.m_Valid);
+
             DeathcareContext deathcare = GetDeathcareContext();
             m_SweepDeathcareReady = deathcare.m_Valid;
 
@@ -425,6 +471,8 @@ namespace DistrictGroups
             NativeArray<DistrictStats> totals = m_SweepTotals.AsArray();
             NativeArray<ScopedBuilding> residentHomes = m_ResidentHomes.AsArray();
             NativeArray<DistrictStats> residentResults = m_ResidentResults.AsArray();
+            NativeArray<ScopedBuilding> garbageProducers = m_GarbageProducers.AsArray();
+            NativeArray<float> garbageResults = m_GarbageResults.AsArray();
             NativeArray<ScopedBuilding> crimeProducers = m_CrimeProducerBuildings.AsArray();
             NativeArray<SumAndCount> crimeTotals = m_CrimeTotals.AsArray();
             NativeArray<Entity> districts = m_ScopeDistricts.AsArray();
@@ -481,6 +529,28 @@ namespace DistrictGroups
                 m_Deathcare = deathcare,
                 m_Results = residentResults,
             }.Schedule(residentHomes.Length, kSweepBatchSize, Dependency);
+            JobHandle garbageRates = new SweepGarbageJob
+            {
+                m_Buildings = garbageProducers,
+                m_Districts = districts,
+                m_BuildingPrefabs = m_BuildingPrefabs,
+                m_PrefabConsumptions = m_PrefabConsumptions,
+                m_PrefabSpawnableBuildings = m_PrefabSpawnableBuildings,
+                m_PrefabZoneDatas = m_PrefabZoneDatas,
+                m_Citizens = m_Citizens,
+                m_HomelessHouseholds = m_HomelessHouseholds,
+                m_InstalledUpgrades = m_InstalledUpgrades,
+                m_Renters = m_Renters,
+                m_HouseholdCitizens = m_HouseholdCitizens,
+                m_Employees = m_Employees,
+                m_BuildingStudents = m_BuildingStudents,
+                m_Occupants = m_Occupants,
+                m_Patients = m_Patients,
+                m_DistrictModifiers = m_DistrictModifiers,
+                m_CityModifiers = m_CityModifiers,
+                m_Garbage = garbage,
+                m_Results = garbageResults,
+            }.Schedule(garbageProducers.Length, kSweepBatchSize, Dependency);
 
             // Adding one building's figures into a district's is real work at DistrictStats' size, so the
             // fold runs on a worker thread too; the main thread only ever reads the finished totals.
@@ -491,10 +561,12 @@ namespace DistrictGroups
                 m_PatientTotals = patientTotals,
                 m_ResidentHomes = residentHomes,
                 m_ResidentResults = residentResults,
+                m_GarbageProducers = garbageProducers,
+                m_GarbageResults = garbageResults,
                 m_Totals = totals,
             }.Schedule(JobHandle.CombineDependencies(
                 JobHandle.CombineDependencies(crime, fireRisk),
-                JobHandle.CombineDependencies(patients, residents)));
+                JobHandle.CombineDependencies(patients, residents, garbageRates)));
 
             Dependency = m_SweepHandle;
             m_SweepInFlight = true;
@@ -550,6 +622,21 @@ namespace DistrictGroups
             m_ResidentResults.Resize(m_ResidentHomes.Length, NativeArrayOptions.UninitializedMemory);
         }
 
+        // Narrows the garbage producers down to the districts in scope, or collects none at all when the city hasn't
+        // loaded its garbage parameters, so the panel reads nothing rather than a confident zero.
+        private void CollectGarbageProducers(bool ready)
+        {
+            m_GarbageResults.Clear();
+            if (!ready)
+            {
+                m_GarbageProducers.Clear();
+                return;
+            }
+
+            CollectScoped(m_GarbageProducerQuery, m_GarbageProducers);
+            m_GarbageResults.Resize(m_GarbageProducers.Length, NativeArrayOptions.UninitializedMemory);
+        }
+
         // Every hospital in the city, since a patient is credited to their own home district rather than to whichever
         // district the hospital itself sits in.
         private void CollectHospitals()
@@ -601,7 +688,26 @@ namespace DistrictGroups
                 $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1} " +
                 $"settled_resident_count:{total.m_SettledResidentCount} health_sum:{total.m_HealthSum} " +
                 $"active_patient_count:{total.m_ActivePatientCount} deathcare_ready:{m_SweepDeathcareReady} " +
+                $"garbage_ready:{m_SweepGarbageReady} swept_garbage_producer_count:{m_GarbageProducers.Length} " +
+                $"garbage_producer_count:{total.m_GarbageProducerCount} " +
+                $"garbage_accumulation_sum:{total.m_GarbageAccumulationSum:F1} " +
                 $"death_rate_resident_count:{total.m_DeathRateResidentCount} death_rate_sum:{total.m_DeathRateSum:F2}");
+        }
+
+        // The city-wide inputs a building's garbage accumulation is weighed against.
+        private GarbageContext GetGarbageContext()
+        {
+            if (m_GarbageParameterQuery.IsEmptyIgnoreFilter || m_CitySystem.City == Entity.Null)
+            {
+                return default;
+            }
+
+            return new GarbageContext
+            {
+                m_Valid = true,
+                m_City = m_CitySystem.City,
+                m_Parameters = m_GarbageParameterQuery.GetSingleton<GarbageParameterData>(),
+            };
         }
 
         // The city-wide inputs the game weighs a resident's chance of dying against.
@@ -671,6 +777,23 @@ namespace DistrictGroups
             m_BuildingsUnderConstruction.Update(this);
             m_RoadServiceCoverages.Update(this);
             m_DistrictModifiers.Update(this);
+
+            m_PrefabConsumptions.Update(this);
+            m_PrefabZoneDatas.Update(this);
+            m_InstalledUpgrades.Update(this);
+            m_Employees.Update(this);
+            m_BuildingStudents.Update(this);
+            m_Occupants.Update(this);
+            m_CityModifiers.Update(this);
+        }
+
+        // Whatever is the same for every building the garbage sweep visits.
+        private struct GarbageContext
+        {
+            // Whether the city had these loaded when the sweep was scheduled.
+            public bool m_Valid;
+            public Entity m_City;
+            public GarbageParameterData m_Parameters;
         }
 
         // The city-wide inputs the game weighs a citizen's chance of dying against.
@@ -883,6 +1006,8 @@ namespace DistrictGroups
             [ReadOnly] public NativeArray<int> m_PatientTotals;
             [ReadOnly] public NativeArray<ScopedBuilding> m_ResidentHomes;
             [ReadOnly] public NativeArray<DistrictStats> m_ResidentResults;
+            [ReadOnly] public NativeArray<ScopedBuilding> m_GarbageProducers;
+            [ReadOnly] public NativeArray<float> m_GarbageResults;
             public NativeArray<DistrictStats> m_Totals;
 
             public void Execute()
@@ -906,6 +1031,91 @@ namespace DistrictGroups
                     totals.Add(m_ResidentResults[i]);
                     m_Totals[slot] = totals;
                 }
+
+                for (int i = 0; i < m_GarbageProducers.Length; i++)
+                {
+                    int slot = m_GarbageProducers[i].m_Slot;
+                    DistrictStats totals = m_Totals[slot];
+                    totals.m_GarbageAccumulationSum += m_GarbageResults[i];
+                    totals.m_GarbageProducerCount++;
+                    m_Totals[slot] = totals;
+                }
+            }
+        }
+
+        /*
+            One in-scope garbage producer per iteration, its own daily rate into its own result slot.
+
+            Nothing stores the rate: GarbageAccumulationSystem pulls ConsumptionData off the prefab into a local, adjusts it
+            and discards it. The adjustment walks the building's citizens, which is what makes this a job.
+        */
+        private struct SweepGarbageJob : IJobParallelFor
+        {
+            [ReadOnly] public NativeArray<ScopedBuilding> m_Buildings;
+            [ReadOnly] public NativeArray<Entity> m_Districts;
+            [ReadOnly] public ComponentLookup<PrefabRef> m_BuildingPrefabs;
+            [ReadOnly] public ComponentLookup<ConsumptionData> m_PrefabConsumptions;
+            [ReadOnly] public ComponentLookup<SpawnableBuildingData> m_PrefabSpawnableBuildings;
+            [ReadOnly] public ComponentLookup<ZoneData> m_PrefabZoneDatas;
+            [ReadOnly] public ComponentLookup<Citizen> m_Citizens;
+            [ReadOnly] public ComponentLookup<HomelessHousehold> m_HomelessHouseholds;
+            [ReadOnly] public BufferLookup<InstalledUpgrade> m_InstalledUpgrades;
+            [ReadOnly] public BufferLookup<Renter> m_Renters;
+            [ReadOnly] public BufferLookup<HouseholdCitizen> m_HouseholdCitizens;
+            [ReadOnly] public BufferLookup<Game.Companies.Employee> m_Employees;
+            [ReadOnly] public BufferLookup<Game.Buildings.Student> m_BuildingStudents;
+            [ReadOnly] public BufferLookup<Occupant> m_Occupants;
+            [ReadOnly] public BufferLookup<Patient> m_Patients;
+            [ReadOnly] public BufferLookup<DistrictModifier> m_DistrictModifiers;
+            [ReadOnly] public BufferLookup<CityModifier> m_CityModifiers;
+            public GarbageContext m_Garbage;
+            [WriteOnly] public NativeArray<float> m_Results;
+
+            public void Execute(int index)
+            {
+                m_Results[index] = 0f;
+                if (!m_CityModifiers.TryGetBuffer(m_Garbage.m_City, out DynamicBuffer<CityModifier> cityModifiers))
+                {
+                    return;
+                }
+
+                Entity producer = m_Buildings[index].m_Building;
+                if (!m_BuildingPrefabs.TryGetComponent(producer, out PrefabRef prefabRef))
+                {
+                    return;
+                }
+
+                Entity prefab = prefabRef.m_Prefab;
+                m_PrefabConsumptions.TryGetComponent(prefab, out ConsumptionData consumption);
+
+                // Upgrades change what a building produces, the same as they change a facility's throughput.
+                if (m_InstalledUpgrades.TryGetBuffer(producer, out DynamicBuffer<InstalledUpgrade> upgrades)
+                    && upgrades.Length != 0)
+                {
+                    UpgradeUtils.CombineStats(ref consumption, upgrades, ref m_BuildingPrefabs, ref m_PrefabConsumptions);
+                }
+
+                GarbageParameterData parameters = m_Garbage.m_Parameters;
+                GarbageAccumulationSystem.GetGarbageAccumulation(
+                    producer,
+                    prefab,
+                    ref consumption,
+                    new CurrentDistrict { m_District = m_Districts[m_Buildings[index].m_Slot] },
+                    cityModifiers,
+                    m_Citizens,
+                    m_PrefabSpawnableBuildings,
+                    m_PrefabZoneDatas,
+                    m_HomelessHouseholds,
+                    m_HouseholdCitizens,
+                    m_Renters,
+                    m_Employees,
+                    m_BuildingStudents,
+                    m_Occupants,
+                    m_Patients,
+                    m_DistrictModifiers,
+                    ref parameters);
+
+                m_Results[index] = consumption.m_GarbageAccumulation;
             }
         }
 

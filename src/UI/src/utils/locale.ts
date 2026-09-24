@@ -224,6 +224,19 @@ export const VanillaLocale = {
         id: "Properties.DECEASED_PROCESSING_CAPACITY",
         fallback: "Processing Capacity",
     },
+    storedGarbage: {
+        id: "SelectedInfoPanel.GARBAGE_MANAGEMENT_STORED_GARBAGE",
+        fallback: "Stored Garbage",
+    },
+    garbageAccumulation: {
+        id: "Infoviews.INFOMODE[Garbage Accumulation]",
+        fallback: "Garbage Accumulation",
+    },
+    garbageStorage: { id: "Properties.GARBAGE_STORAGE", fallback: "Storage Capacity" },
+    garbageProcessingCapacity: {
+        id: "Properties.GARBAGE_PROCESSING_CAPACITY",
+        fallback: "Processing Capacity",
+    },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",
