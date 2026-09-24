@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
+using Unity.Mathematics;
 
 using Purpose = Colossal.Serialization.Entities.Purpose;
 
@@ -30,6 +31,9 @@ namespace DistrictGroups
         private EntityQuery m_ResidentialBuildingQuery;
         // Crime-producing buildings, keyed to a district via CurrentDistrict.
         private EntityQuery m_CrimeProducerQuery;
+        // Flammable buildings, keyed to a district via CurrentDistrict; excludes fire stations and buildings already
+        // on fire, which contribute no fire risk of their own.
+        private EntityQuery m_FlammableBuildingQuery;
         // Holds the wealth thresholds the average household wealth is bucketed against.
         private EntityQuery m_CitizenHappinessParameterQuery;
         // Holds the crime accumulation ceiling a district's average crime is read as a share of.
@@ -57,6 +61,18 @@ namespace DistrictGroups
         private ComponentLookup<Game.Buildings.CrimeProducer> m_CrimeProducers;
 
         /*
+            All the items needed to recreate the fire hazard algorithm since it's not fully exposed by the game.
+        */
+        private ComponentLookup<Building> m_Buildings;
+        private ComponentLookup<PrefabRef> m_BuildingPrefabs;
+        private ComponentLookup<DestructibleObjectData> m_PrefabFireHazards;
+        private ComponentLookup<SpawnableBuildingData> m_PrefabSpawnableBuildings;
+        private ComponentLookup<ZonePropertiesData> m_PrefabZoneProperties;
+        private ComponentLookup<Game.Objects.UnderConstruction> m_BuildingsUnderConstruction;
+        private BufferLookup<Game.Net.ServiceCoverage> m_RoadServiceCoverages;
+        private BufferLookup<DistrictModifier> m_DistrictModifiers;
+
+        /*
             Every district that belongs to a group, and the dense slot its totals are accumulated into.
 
             A slot map rather than a dictionary keyed by entity, because a job can read it and because a
@@ -75,8 +91,10 @@ namespace DistrictGroups
         private NativeList<ScopedBuilding> m_ResidentHomes;
         private NativeList<DistrictStats> m_ResidentResults;
         private NativeList<ScopedBuilding> m_CrimeProducerBuildings;
+        private NativeList<ScopedBuilding> m_FlammableBuildings;
 
         private NativeList<SumAndCount> m_CrimeTotals;
+        private NativeList<SumAndCount> m_FireRiskTotals;
 
         private JobHandle m_SweepHandle;
         private bool m_SweepInFlight;
@@ -130,6 +148,14 @@ namespace DistrictGroups
                 ComponentType.ReadOnly<CurrentDistrict>(),
                 ComponentType.Exclude<Game.Tools.Temp>(),
                 ComponentType.Exclude<Game.Common.Deleted>());
+            m_FlammableBuildingQuery = GetEntityQuery(
+                ComponentType.ReadOnly<Building>(),
+                ComponentType.ReadOnly<CurrentDistrict>(),
+                ComponentType.ReadOnly<PrefabRef>(),
+                ComponentType.Exclude<Game.Buildings.FireStation>(),
+                ComponentType.Exclude<Game.Events.OnFire>(),
+                ComponentType.Exclude<Game.Tools.Temp>(),
+                ComponentType.Exclude<Game.Common.Deleted>());
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
 
@@ -148,6 +174,15 @@ namespace DistrictGroups
 
             m_CrimeProducers = GetComponentLookup<Game.Buildings.CrimeProducer>(true);
 
+            m_Buildings = GetComponentLookup<Building>(true);
+            m_BuildingPrefabs = GetComponentLookup<PrefabRef>(true);
+            m_PrefabFireHazards = GetComponentLookup<DestructibleObjectData>(true);
+            m_PrefabSpawnableBuildings = GetComponentLookup<SpawnableBuildingData>(true);
+            m_PrefabZoneProperties = GetComponentLookup<ZonePropertiesData>(true);
+            m_BuildingsUnderConstruction = GetComponentLookup<Game.Objects.UnderConstruction>(true);
+            m_RoadServiceCoverages = GetBufferLookup<Game.Net.ServiceCoverage>(true);
+            m_DistrictModifiers = GetBufferLookup<DistrictModifier>(true);
+
             m_ScopeDistricts = new NativeList<Entity>(Allocator.Persistent);
             m_ScopeSlots = new NativeHashMap<Entity, int>(16, Allocator.Persistent);
             m_ScopeSeen = new NativeHashSet<Entity>(16, Allocator.Persistent);
@@ -156,7 +191,9 @@ namespace DistrictGroups
             m_ResidentHomes = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_ResidentResults = new NativeList<DistrictStats>(Allocator.Persistent);
             m_CrimeProducerBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
+            m_FlammableBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_CrimeTotals = new NativeList<SumAndCount>(Allocator.Persistent);
+            m_FireRiskTotals = new NativeList<SumAndCount>(Allocator.Persistent);
         }
 
         protected override void OnDestroy()
@@ -169,7 +206,9 @@ namespace DistrictGroups
             m_ResidentHomes.Dispose();
             m_ResidentResults.Dispose();
             m_CrimeProducerBuildings.Dispose();
+            m_FlammableBuildings.Dispose();
             m_CrimeTotals.Dispose();
+            m_FireRiskTotals.Dispose();
             base.OnDestroy();
         }
 
@@ -316,6 +355,7 @@ namespace DistrictGroups
 
             CollectResidentHomes();
             CollectScoped(m_CrimeProducerQuery, m_CrimeProducerBuildings);
+            CollectScoped(m_FlammableBuildingQuery, m_FlammableBuildings);
 
             /*
                 Every view onto a persistent list is taken before anything is scheduled: asking a list for
@@ -326,6 +366,9 @@ namespace DistrictGroups
             NativeArray<DistrictStats> residentResults = m_ResidentResults.AsArray();
             NativeArray<ScopedBuilding> crimeProducers = m_CrimeProducerBuildings.AsArray();
             NativeArray<SumAndCount> crimeTotals = m_CrimeTotals.AsArray();
+            NativeArray<Entity> districts = m_ScopeDistricts.AsArray();
+            NativeArray<ScopedBuilding> flammableBuildings = m_FlammableBuildings.AsArray();
+            NativeArray<SumAndCount> fireRiskTotals = m_FireRiskTotals.AsArray();
 
             // Every sweep only reads the world and writes into an output of its own, so they all run alongside each other.
             JobHandle crime = new SweepCrimeJob
@@ -333,6 +376,20 @@ namespace DistrictGroups
                 m_Buildings = crimeProducers,
                 m_CrimeProducers = m_CrimeProducers,
                 m_Totals = crimeTotals,
+            }.Schedule(Dependency);
+            JobHandle fireRisk = new SweepFireHazardJob
+            {
+                m_Buildings = flammableBuildings,
+                m_Districts = districts,
+                m_BuildingData = m_Buildings,
+                m_BuildingPrefabs = m_BuildingPrefabs,
+                m_PrefabFireHazards = m_PrefabFireHazards,
+                m_PrefabSpawnableBuildings = m_PrefabSpawnableBuildings,
+                m_PrefabZoneProperties = m_PrefabZoneProperties,
+                m_BuildingsUnderConstruction = m_BuildingsUnderConstruction,
+                m_RoadServiceCoverages = m_RoadServiceCoverages,
+                m_DistrictModifiers = m_DistrictModifiers,
+                m_Totals = fireRiskTotals,
             }.Schedule(Dependency);
 
             JobHandle residents = new SweepResidentsJob
@@ -355,10 +412,11 @@ namespace DistrictGroups
             m_SweepHandle = new FoldSweepsJob
             {
                 m_CrimeTotals = crimeTotals,
+                m_FireRiskTotals = fireRiskTotals,
                 m_ResidentHomes = residentHomes,
                 m_ResidentResults = residentResults,
                 m_Totals = totals,
-            }.Schedule(JobHandle.CombineDependencies(crime, residents));
+            }.Schedule(JobHandle.CombineDependencies(crime, fireRisk, residents));
 
             Dependency = m_SweepHandle;
             m_SweepInFlight = true;
@@ -375,6 +433,7 @@ namespace DistrictGroups
             }
             ClearPerDistrict(m_SweepTotals);
             ClearPerDistrict(m_CrimeTotals);
+            ClearPerDistrict(m_FireRiskTotals);
         }
 
         // Gives one per-district output an empty entry for every district in scope.
@@ -450,7 +509,8 @@ namespace DistrictGroups
                 $"latency_ms:{latencyMs:F3} finished_early:{finishedUnwatched} building_count:{m_ResidentHomeCount} " +
                 $"swept_building_count:{m_ResidentHomes.Length} scope_district_count:{m_ScopeDistricts.Length} " +
                 $"district_count:{m_PublishedStats.Count} population:{total.m_Population} household_count:{total.m_HouseholdCount} " +
-                $"crime_producer_count:{total.m_CrimeProducerCount} crime_sum:{total.m_CrimeSum:F1}");
+                $"crime_producer_count:{total.m_CrimeProducerCount} crime_sum:{total.m_CrimeSum:F1} " +
+                $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1}");
         }
 
         // Points every lookup the sweeps hop through at the current frame's data.
@@ -467,6 +527,15 @@ namespace DistrictGroups
             m_MovingAwayHouseholds.Update(this);
 
             m_CrimeProducers.Update(this);
+
+            m_Buildings.Update(this);
+            m_BuildingPrefabs.Update(this);
+            m_PrefabFireHazards.Update(this);
+            m_PrefabSpawnableBuildings.Update(this);
+            m_PrefabZoneProperties.Update(this);
+            m_BuildingsUnderConstruction.Update(this);
+            m_RoadServiceCoverages.Update(this);
+            m_DistrictModifiers.Update(this);
         }
 
         // Already-accumulated crime, added straight into each producer's own district.
@@ -493,10 +562,100 @@ namespace DistrictGroups
             }
         }
 
+        // Vanilla's own per-building fire-hazard formula, reimplemented over this system's own lookups.
+        private struct SweepFireHazardJob : IJob
+        {
+            [ReadOnly] public NativeArray<ScopedBuilding> m_Buildings;
+            [ReadOnly] public NativeArray<Entity> m_Districts;
+            [ReadOnly] public ComponentLookup<Building> m_BuildingData;
+            [ReadOnly] public ComponentLookup<PrefabRef> m_BuildingPrefabs;
+            [ReadOnly] public ComponentLookup<DestructibleObjectData> m_PrefabFireHazards;
+            [ReadOnly] public ComponentLookup<SpawnableBuildingData> m_PrefabSpawnableBuildings;
+            [ReadOnly] public ComponentLookup<ZonePropertiesData> m_PrefabZoneProperties;
+            [ReadOnly] public ComponentLookup<Game.Objects.UnderConstruction> m_BuildingsUnderConstruction;
+            [ReadOnly] public BufferLookup<Game.Net.ServiceCoverage> m_RoadServiceCoverages;
+            [ReadOnly] public BufferLookup<DistrictModifier> m_DistrictModifiers;
+            public NativeArray<SumAndCount> m_Totals;
+
+            public void Execute()
+            {
+                foreach (ScopedBuilding scoped in m_Buildings)
+                {
+                    if (!TryGetRiskFactor(scoped.m_Building, m_Districts[scoped.m_Slot], out float riskFactor))
+                    {
+                        continue;
+                    }
+
+                    SumAndCount totals = m_Totals[scoped.m_Slot];
+                    totals.m_Sum += riskFactor;
+                    totals.m_Count++;
+
+                    m_Totals[scoped.m_Slot] = totals;
+                }
+            }
+
+            private bool TryGetRiskFactor(Entity building, Entity district, out float riskFactor)
+            {
+                riskFactor = 0f;
+
+                if (!m_BuildingData.TryGetComponent(building, out Building buildingData)
+                    || !m_BuildingPrefabs.TryGetComponent(building, out PrefabRef prefabRef))
+                {
+                    return false;
+                }
+
+                float fireHazard = m_PrefabFireHazards.TryGetComponent(prefabRef.m_Prefab, out DestructibleObjectData destructible)
+                    ? destructible.m_FireHazard
+                    : 100f;
+
+                bool hasUnderConstruction = m_BuildingsUnderConstruction.TryGetComponent(
+                    building, out Game.Objects.UnderConstruction underConstruction);
+                byte progress = hasUnderConstruction ? underConstruction.m_Progress : byte.MaxValue;
+                Entity newPrefab = hasUnderConstruction ? underConstruction.m_NewPrefab : Entity.Null;
+
+                if (newPrefab == Entity.Null && progress < byte.MaxValue)
+                {
+                    fireHazard = 0f;
+                }
+
+                if (fireHazard == 0f)
+                {
+                    return false;
+                }
+
+                if (m_PrefabSpawnableBuildings.TryGetComponent(prefabRef.m_Prefab, out SpawnableBuildingData spawnable))
+                {
+                    fireHazard *= 1f - (spawnable.m_Level - 1) * 0.03f;
+
+                    if (m_PrefabZoneProperties.TryGetComponent(spawnable.m_ZonePrefab, out ZonePropertiesData zone))
+                    {
+                        fireHazard *= zone.m_FireHazardMultiplier;
+                    }
+                }
+
+                float coverage = 0f;
+                if (m_RoadServiceCoverages.TryGetBuffer(buildingData.m_RoadEdge, out DynamicBuffer<Game.Net.ServiceCoverage> coverages))
+                {
+                    coverage = Game.Net.NetUtils.GetServiceCoverage(coverages, Game.Net.CoverageService.FireRescue, buildingData.m_CurvePosition);
+                    fireHazard *= math.max(0.01f, 1f - coverage * 0.01f);
+                }
+
+                if (m_DistrictModifiers.TryGetBuffer(district, out DynamicBuffer<DistrictModifier> modifiers))
+                {
+                    AreaUtils.ApplyModifier(ref fireHazard, modifiers, DistrictModifierType.BuildingFireHazard);
+                }
+
+                riskFactor = fireHazard / (1f + coverage * 0.5f);
+
+                return true;
+            }
+        }
+
         // Adds what every sweep found into one set of totals per district in scope.
         private struct FoldSweepsJob : IJob
         {
             [ReadOnly] public NativeArray<SumAndCount> m_CrimeTotals;
+            [ReadOnly] public NativeArray<SumAndCount> m_FireRiskTotals;
             [ReadOnly] public NativeArray<ScopedBuilding> m_ResidentHomes;
             [ReadOnly] public NativeArray<DistrictStats> m_ResidentResults;
             public NativeArray<DistrictStats> m_Totals;
@@ -509,6 +668,8 @@ namespace DistrictGroups
                     DistrictStats totals = m_Totals[slot];
                     totals.m_CrimeSum = m_CrimeTotals[slot].m_Sum;
                     totals.m_CrimeProducerCount = m_CrimeTotals[slot].m_Count;
+                    totals.m_FireRiskSum = m_FireRiskTotals[slot].m_Sum;
+                    totals.m_FireRiskBuildingCount = m_FireRiskTotals[slot].m_Count;
                     m_Totals[slot] = totals;
                 }
 

@@ -4,7 +4,7 @@ import { Tooltip } from "cs2/ui"
 import { DataColumn } from "../components/DataTable"
 import { Occupancy, PlacesTooltip, hasCapacity, occupancyShare } from "../components/OccupancyStats"
 import { StatValue, ThresholdValue } from "../components/StatValue"
-import { kGenericType } from "../constants"
+import { kGenericType, kNoValue } from "../constants"
 import { AssignedBuilding, DistrictMember } from "../types"
 import { VanillaLabel, VanillaLocale, happinessThreshold, wealthThreshold } from "../utils/locale"
 
@@ -64,10 +64,19 @@ const crimeChanceColumn: DataColumn<DistrictMember> = {
     render: (member) => <StatValue value={member.crimeChance} unit={Unit.Percentage} />,
 }
 
+const fireRiskColumn: DataColumn<DistrictMember> = {
+    id: "fireRisk",
+    label: <GameText label={VanillaLocale.fireHazard} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.fireRisk),
+    render: (member) => <StatValue value={member.fireRisk} unit={Unit.Percentage} />,
+}
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
     [districtColumn, populationColumn, crimeChanceColumn],
+    [districtColumn, populationColumn, fireRiskColumn],
 ]
 
 // What a group of this type lists about each of its member districts.
@@ -116,6 +125,17 @@ const capacityColumn = (label: VanillaLabel): DataColumn<AssignedBuilding> => ({
     render: (building) => <CapacityCell building={building} />,
 })
 
+// A shelter holds nobody day to day, so this reads out what it can hold rather than an occupancy share.
+const shelterCapacityColumn: DataColumn<AssignedBuilding> = {
+    id: "capacity",
+    label: <GameText label={VanillaLocale.shelterCapacity} />,
+    descendingFirst: true,
+    compare: byStat((building) => building.capacity),
+    render: (building) => (
+        <StatValue value={hasCapacity(building.capacity) ? building.capacity : kNoValue} unit={Unit.Integer} />
+    ),
+}
+
 const efficiencyColumn: DataColumn<AssignedBuilding> = {
     id: "efficiency",
     label: <GameText label={VanillaLocale.efficiencyColumn} />,
@@ -128,6 +148,7 @@ const efficiencyColumn: DataColumn<AssignedBuilding> = {
 const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [efficiencyColumn],
     [capacityColumn(VanillaLocale.jailCapacity), efficiencyColumn],
+    [shelterCapacityColumn, efficiencyColumn],
 ]
 
 // What a group of this type lists about each of its assigned buildings.

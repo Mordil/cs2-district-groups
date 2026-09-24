@@ -58,6 +58,7 @@ namespace DistrictGroups
         // The one prefab component each service type keeps its own places on.
         private ComponentLookup<PoliceStationData> m_PoliceStations;
         private ComponentLookup<PrisonData> m_Prisons;
+        private ComponentLookup<EmergencyShelterData> m_EmergencyShelters;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -146,6 +147,7 @@ namespace DistrictGroups
 
             m_PoliceStations = GetComponentLookup<PoliceStationData>(true);
             m_Prisons = GetComponentLookup<PrisonData>(true);
+            m_EmergencyShelters = GetComponentLookup<EmergencyShelterData>(true);
 
             SetupRootBindings();
             SetupOverlayBindings();

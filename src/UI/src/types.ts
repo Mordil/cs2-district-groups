@@ -21,6 +21,8 @@ export interface ResidentStats {
     income: number
     // Average crime accumulation, as a whole percent of the game's own maximum
     crimeChance: number
+    // Average fire hazard, on vanilla's own 0-100 scale
+    fireRisk: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows

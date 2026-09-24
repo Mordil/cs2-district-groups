@@ -124,6 +124,10 @@ namespace DistrictGroups
         public float m_CrimeSum;
         // Crime-producing buildings the sum was drawn from.
         public int m_CrimeProducerCount;
+        // Summed fire-hazard risk factor, divided by m_FireRiskBuildingCount for the average.
+        public float m_FireRiskSum;
+        // Flammable buildings the sum was drawn from.
+        public int m_FireRiskBuildingCount;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -136,6 +140,8 @@ namespace DistrictGroups
             m_HouseholdCount += other.m_HouseholdCount;
             m_CrimeSum += other.m_CrimeSum;
             m_CrimeProducerCount += other.m_CrimeProducerCount;
+            m_FireRiskSum += other.m_FireRiskSum;
+            m_FireRiskBuildingCount += other.m_FireRiskBuildingCount;
         }
     }
 
@@ -191,6 +197,12 @@ namespace DistrictGroups
             float averageCrime = stats.m_CrimeSum / stats.m_CrimeProducerCount;
             return (int)math.round(100f * math.saturate(averageCrime / m_MaxCrimeAccumulation));
         }
+
+        // Average fire risk across the district's flammable buildings, on vanilla's own 0-100 fire-hazard scale, or kNoValue
+        public int FireRisk(DistrictStats stats) =>
+            stats.m_FireRiskBuildingCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.round(math.clamp(stats.m_FireRiskSum / stats.m_FireRiskBuildingCount, 0f, 100f));
     }
 
     // A named, typed set of base districts.

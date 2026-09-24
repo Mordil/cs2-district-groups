@@ -9,7 +9,7 @@ import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
 import { MetadataItem } from "../../components/MetadataItem"
 import { SelectDistrictsButton } from "../../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../../components/vanilla"
-import { cardStats } from "../../groupStats/cards"
+import { cardStats, groupCapacity } from "../../groupStats/cards"
 import { colorToCss, markdownRenderer } from "../../shared"
 import { deleteGroup, removeMember, toggleDistrictSelection } from "../../triggers"
 import { Group } from "../../types"
@@ -97,6 +97,9 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
 
     const sortedMembers = [...group.members].sort((a, b) => a.name.localeCompare(b.name))
 
+    // What the group's own buildings add up to, which its type's demand figures are weighed against.
+    const capacity = groupCapacity(group.buildings)
+
     const toggleExpanded = () => {
         const next = !expanded
 
@@ -157,8 +160,9 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                                 <MetadataItem
                                     key={index}
                                     icon={stat.icon}
-                                    value={stat.render(group)}
-                                    tooltip={stat.tooltip(group)}
+                                    tinted={stat.tinted}
+                                    value={stat.render(group, capacity)}
+                                    tooltip={stat.tooltip(group, capacity)}
                                 />
                             ))}
                         </div>

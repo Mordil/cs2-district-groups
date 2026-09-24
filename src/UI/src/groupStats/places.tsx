@@ -12,6 +12,8 @@ export interface Places {
 const kPlaces: (Places | null)[] = [
     null,
     { label: VanillaLocale.prisoners, unit: Unit.Integer },
+    // Shelters read out their capacity alone, with no occupancy share to name
+    null,
 ]
 
 // What a building of this service type calls its own places, or null for a type with none to name.

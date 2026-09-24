@@ -3,6 +3,7 @@ import { ReactNode } from "react"
 import { LocalizedFraction, LocalizedNumber, Unit } from "cs2/l10n"
 
 import { kNoValue, kNoValueText } from "../constants"
+import { AssignedBuilding } from "../types"
 
 // Whether a building reported any places at all.
 export const hasCapacity = (capacity: number) => capacity > 0
@@ -48,3 +49,28 @@ export const PlacesTooltip = ({ label, claimed, capacity, unit = Unit.Integer }:
         )}
     </>
 )
+
+// A building with no efficiency left - no power, no water, no staff, budget switched off - can fill none of its
+// places, the same exclusion the game's own infoviews make. One the game reports no efficiency for is only unmeasured.
+const isStalled = (building: AssignedBuilding) => building.efficiency !== kNoValue && building.efficiency <= 0
+
+interface LoadProps {
+    // Everything calling on a group's places, and the places there are for it
+    demand: number
+    capacity: number
+}
+
+// How hard a group's capacity is leaned on: demand over supply, so 100% is break-even and 112% is twelve percent past it.
+const loadShare = ({ demand, capacity }: LoadProps) =>
+    hasCapacity(capacity) && demand >= 0 ? demand / capacity : kNoValue
+
+// The share of a group's places its demand calls for, or a placeholder where it has none.
+export const Load = (places: LoadProps) => <SharePercentage share={loadShare(places)} />
+
+// The places a group's own buildings provide, leaving out any that has stalled.
+export const assignedCapacity = (buildings: AssignedBuilding[]) =>
+    buildings.reduce(
+        (total, building) =>
+            hasCapacity(building.capacity) && !isStalled(building) ? total + building.capacity : total,
+        0
+    )

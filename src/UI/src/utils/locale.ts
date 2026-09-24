@@ -202,6 +202,12 @@ export const VanillaLocale = {
     buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },
     fireAndRescueType: { id: "Infoviews.INFOVIEW[FireRescue]", fallback: "Fire & Rescue" },
+    fireHazard: { id: "Infoviews.INFOMODE[FireHazard]", fallback: "Fire Hazard" },
+    averageFireHazard: {
+        id: "FireAndRescueInfoPanel.AVERAGE_FIRE_HAZARD",
+        fallback: "Average Fire Hazard",
+    },
+    shelterCapacity: { id: "Properties.SHELTER_CAPACITY", fallback: "Shelter Capacity" },
     crimeProbability: { id: "Infoviews.INFOMODE[Crime Probability]", fallback: "Crime Probability" },
     averageCrimeProbability: {
         id: "PoliceInfoPanel.AVERAGE_CRIME_PROBABILITY",

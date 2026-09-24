@@ -323,6 +323,16 @@ namespace DistrictGroups
                     }
 
                     return;
+
+                // A fire group holds stations as well as shelters, and only a shelter holds anybody.
+                case GroupServiceType.Fire:
+                    if (TryGetData(facility, ref m_EmergencyShelters, out EmergencyShelterData shelter))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_Occupants);
+                        capacity = shelter.m_ShelterCapacity;
+                    }
+
+                    return;
             }
         }
 
@@ -376,6 +386,7 @@ namespace DistrictGroups
             m_Occupants.Update(this);
             m_PoliceStations.Update(this);
             m_Prisons.Update(this);
+            m_EmergencyShelters.Update(this);
         }
 
         // A member district, carrying the per-district numbers its overview row reads
@@ -406,6 +417,8 @@ namespace DistrictGroups
             writer.Write(reader.Income(stats));
             writer.PropertyName("crimeChance");
             writer.Write(reader.CrimeChance(stats));
+            writer.PropertyName("fireRisk");
+            writer.Write(reader.FireRisk(stats));
         }
     }
 }
