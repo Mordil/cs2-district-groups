@@ -111,7 +111,6 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "Vue d'ensemble" },
                 { LocalizationKey.BuildingsTabLabel, "Bâtiments" },
                 { LocalizationKey.PoliciesTabLabel, "Politiques" },
-                { LocalizationKey.TypeColumnLabel, "Type" },
                 { LocalizationKey.EligibleColumnLabel, "Éligibles" },
                 { LocalizationKey.NoDistrictsInGroup, "Il n'y a aucun quartier dans ce groupe.\nAjoutez des quartiers avec le bouton SÉLECTIONNER DES QUARTIERS." },
                 { LocalizationKey.NoBuildingsInGroup, "Ce groupe n'a pas encore de bâtiments assignés." },

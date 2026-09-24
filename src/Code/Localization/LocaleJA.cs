@@ -111,7 +111,6 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "概要" },
                 { LocalizationKey.BuildingsTabLabel, "建物" },
                 { LocalizationKey.PoliciesTabLabel, "条例" },
-                { LocalizationKey.TypeColumnLabel, "タイプ" },
                 { LocalizationKey.EligibleColumnLabel, "対象人数" },
                 { LocalizationKey.NoDistrictsInGroup, "このグループには特区がありません。\n「特区を選択」ボタンで特区を追加してください。" },
                 { LocalizationKey.NoBuildingsInGroup, "このグループにはまだ割り当てられた建物がありません。" },

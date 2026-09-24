@@ -115,7 +115,12 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **CHANGED**
 
+- Buildings now display their type as an icon in the Buildings tab of the Group Info panel rather than a text column
 - Slightly increased the width of the Group Info panel
+
+**FIXED**
+
+- Admin buildings other than Welfare offices should now be classified as Civic buildings
 	</ChangeLog>
 
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->

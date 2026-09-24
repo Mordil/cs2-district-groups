@@ -29,9 +29,12 @@ export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.3
 export const kNoValueText = "—"
 
 // Indexed by GroupServiceType - order must match the C# enum.
-// 
+//
 // The "Civic"(Generic) entry is the mod's own icon;
 // every other entry reuses the game's own icon for that service.
+//
+// The Administration entry is detected per-building only and is never a group's own type, so it is
+// past the range the group type picker offers as an option.
 export const kTypeIcons: string[] = [
     modIconSrc("civic"),
     gameIconSrc("Police"),
@@ -44,6 +47,7 @@ export const kTypeIcons: string[] = [
     gameIconSrc("Education"),
     gameIconSrc("Education"),
     gameIconSrc("PostService"),
+    gameIconSrc("Administration"),
 ]
 
 // Indexed by GroupServiceType (src/Code/DistrictGroupComponents.cs) - order

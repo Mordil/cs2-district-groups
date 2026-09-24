@@ -1,13 +1,14 @@
 import { Unit } from "cs2/l10n"
-import { Tooltip } from "cs2/ui"
+import { Icon, Tooltip } from "cs2/ui"
 
 import { DataColumn } from "../components/DataTable"
 import { Occupancy, PlacesTooltip, hasCapacity, occupancyShare } from "../components/OccupancyStats"
 import { StatValue, ThresholdValue } from "../components/StatValue"
-import { kGenericType, kNoValue } from "../constants"
+import { kGenericType, kNoValue, kTypeIcons } from "../constants"
 import { AssignedBuilding, DistrictMember } from "../types"
 import { VanillaLabel, VanillaLocale, happinessThreshold, wealthThreshold } from "../utils/locale"
 
+import css from "./columns.module.scss"
 import { GameText, ModText } from "./labels"
 import { placesOf } from "./places"
 
@@ -187,13 +188,26 @@ const CapacityCell = ({ building }: { building: AssignedBuilding }) => {
     )
 }
 
-const buildingColumn: DataColumn<AssignedBuilding> = {
+// Prefixes the building's own type icon onto its name, but only for a Civic group - every other
+// group's buildings all share its own type already shown by the group's own icon.
+const buildingColumn = (groupType: number): DataColumn<AssignedBuilding> => ({
     id: "building",
     label: <GameText label={VanillaLocale.buildingsColumn} />,
     layout: "name",
     compare: (a, b) => a.name.localeCompare(b.name),
-    render: (building) => building.name,
-}
+    render: (building) =>
+        groupType === kGenericType ? (
+            <div className={css.buildingTypeNameCell}>
+                <Icon
+                    src={kTypeIcons[building.type]}
+                    className={css.buildingTypeIcon} />
+
+                {building.name}
+            </div>
+        ) : (
+            building.name
+        ),
+})
 
 // How full each building's own places are, under the game's own name for that type's capacity.
 const capacityColumn = (label: VanillaLabel): DataColumn<AssignedBuilding> => ({
@@ -239,7 +253,7 @@ const efficiencyColumn: DataColumn<AssignedBuilding> = {
 
 const kSchoolBuildings = [capacityColumn(VanillaLocale.studentCapacity), efficiencyColumn]
 
-// The facility columns each group type lists after name and type, indexed by GroupServiceType - order must match the C# enum.
+// The facility columns each group type lists after name, indexed by GroupServiceType - order must match the C# enum.
 const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [efficiencyColumn],
     [capacityColumn(VanillaLocale.jailCapacity), efficiencyColumn],
@@ -263,19 +277,7 @@ const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
 ]
 
 // What a group of this type lists about each of its assigned buildings.
-//
-// The type column is built per render, since it ranks and reads out the translated type names.
-export const buildingsColumns = (
-    type: number,
-    typeLabels: string[]
-): DataColumn<AssignedBuilding>[] => [
-    buildingColumn,
-    {
-        id: "type",
-        label: <ModText label="typeColumnLabel" />,
-        layout: "text",
-        compare: (a, b) => typeLabels[a.type].localeCompare(typeLabels[b.type]),
-        render: (building) => typeLabels[building.type],
-    },
+export const buildingsColumns = (type: number): DataColumn<AssignedBuilding>[] => [
+    buildingColumn(type),
     ...(kBuildingColumns[type] ?? kBuildingColumns[kGenericType]),
 ]

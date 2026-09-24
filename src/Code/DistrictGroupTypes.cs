@@ -38,6 +38,8 @@ namespace DistrictGroups
         EducationCollege = 8,
         EducationUniversity = 9,
         Post = 10,
+        // Detected per-building only (city halls, banks); never a group's own type, so it never appears in the group type picker.
+        Administration = 11,
     }
 
     // Shared facts about a group's service type.

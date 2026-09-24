@@ -111,7 +111,6 @@ namespace DistrictGroups
                 { LocalizationKey.OverviewTabLabel, "概览" },
                 { LocalizationKey.BuildingsTabLabel, "建筑" },
                 { LocalizationKey.PoliciesTabLabel, "政策" },
-                { LocalizationKey.TypeColumnLabel, "类型" },
                 { LocalizationKey.EligibleColumnLabel, "合格者" },
                 { LocalizationKey.NoDistrictsInGroup, "此市辖区组中没有市辖区。\n点击「选择市辖区」按钮添加市辖区。" },
                 { LocalizationKey.NoBuildingsInGroup, "此市辖区组尚无已分配建筑。" },
