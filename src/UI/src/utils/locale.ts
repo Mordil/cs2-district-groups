@@ -50,9 +50,6 @@ export const kLocale = {
     mixedPolicyValueTooltip: id("MixedPolicyValueTooltip"),
     metadataDistrictsTooltip: id("MetadataDistrictsTooltip"),
     metadataBuildingsTooltip: id("MetadataBuildingsTooltip"),
-    metadataPopulationTooltip: id("MetadataPopulationTooltip"),
-    metadataHappinessTooltip: id("MetadataHappinessTooltip"),
-    metadataWealthTooltip: id("MetadataWealthTooltip"),
     showOverlayAndBuildingsLabel: id("ShowOverlayAndBuildingsLabel"),
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
@@ -141,9 +138,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     mixedPolicyValueTooltip: "Districts in this group are set to different values.",
     metadataDistrictsTooltip: "Districts",
     metadataBuildingsTooltip: "Assigned buildings",
-    metadataPopulationTooltip: "Population",
-    metadataHappinessTooltip: "Average happiness",
-    metadataWealthTooltip: "Average wealth",
     showOverlayAndBuildingsLabel: "Show overlay and buildings",
 
     toggleTooltipTitle: "**DISTRICT GROUPS**",
@@ -200,6 +194,10 @@ export const VanillaLocale = {
     populationColumn: { id: "Glossary.SECTION_TITLE[Population]", fallback: "Population" },
     happinessColumn: { id: "Glossary.SECTION_TITLE[Happiness]", fallback: "Happiness" },
     wealthColumn: { id: "StatisticsPanel.STAT_TITLE[Wealth]", fallback: "Wealth" },
+    averageHouseholdWealth: {
+        id: "SelectedInfoPanel.AVERAGE_HOUSEHOLD_WEALTH",
+        fallback: "Average wealth",
+    },
     incomeColumn: { id: "StatisticsPanel.STAT_TITLE[Income]", fallback: "Income" },
     buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },

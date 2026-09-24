@@ -120,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "Dzielnice w tej grupie mają różne wartości." },
                 { LocalizationKey.MetadataDistrictsTooltip, "Dzielnice" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Przypisane budynki" },
-                { LocalizationKey.MetadataPopulationTooltip, "Populacja" },
-                { LocalizationKey.MetadataHappinessTooltip, "Średnie zadowolenie" },
-                { LocalizationKey.MetadataWealthTooltip, "Średnia zamożność" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Pokaż nakładkę i budynki" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPY DZIELNIC**" },

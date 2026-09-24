@@ -120,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "このグループの特区には異なる値が設定されています。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "特区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
-                { LocalizationKey.MetadataPopulationTooltip, "人口" },
-                { LocalizationKey.MetadataHappinessTooltip, "平均幸福度" },
-                { LocalizationKey.MetadataWealthTooltip, "平均資産" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "オーバーレイと施設を表示" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**特区グループ**" },

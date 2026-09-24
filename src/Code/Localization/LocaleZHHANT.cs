@@ -120,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "此群組中各行政區的數值不同。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
-                { LocalizationKey.MetadataPopulationTooltip, "人口" },
-                { LocalizationKey.MetadataHappinessTooltip, "平均幸福指數" },
-                { LocalizationKey.MetadataWealthTooltip, "平均財富" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "顯示覆蓋圖和建築" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**行政區群組**" },

@@ -39,21 +39,31 @@ const happinessColumn: DataColumn<DistrictMember> = {
     render: (member) => <ThresholdValue label={happinessThreshold(member.happiness)} />,
 }
 
+// Average household income has no vanilla band to bucket it into, so it reads as currency on the wealth values.
+const IncomeTooltip = ({ income }: { income: number }) => (
+    <>
+        <div>
+            <GameText label={VanillaLocale.incomeColumn} />
+        </div>
+        <div>
+            <StatValue value={income} unit={Unit.MoneyPerMonth} />
+        </div>
+    </>
+)
+
 const wealthColumn: DataColumn<DistrictMember> = {
     id: "wealth",
     label: <GameText label={VanillaLocale.wealthColumn} />,
+    headerTooltip: (total) => <IncomeTooltip income={total?.income ?? kNoValue} />,
     descendingFirst: true,
     compare: byStat((member) => member.wealth),
-    render: (member) => <ThresholdValue label={wealthThreshold(member.wealth)} />,
-}
-
-// Average household income has no vanilla band to bucket it into, so it reads as currency.
-const incomeColumn: DataColumn<DistrictMember> = {
-    id: "income",
-    label: <GameText label={VanillaLocale.incomeColumn} />,
-    descendingFirst: true,
-    compare: byStat((member) => member.income),
-    render: (member) => <StatValue value={member.income} unit={Unit.MoneyPerMonth} />,
+    render: (member) => (
+        <Tooltip tooltip={<IncomeTooltip income={member.income} />}>
+            <div>
+                <ThresholdValue label={wealthThreshold(member.wealth)} />
+            </div>
+        </Tooltip>
+    ),
 }
 
 const crimeChanceColumn: DataColumn<DistrictMember> = {
@@ -135,7 +145,7 @@ const mailGenerationColumn: DataColumn<DistrictMember> = {
 
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
-    [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
+    [districtColumn, populationColumn, happinessColumn, wealthColumn],
     [districtColumn, populationColumn, crimeChanceColumn],
     [districtColumn, populationColumn, fireRiskColumn],
     [districtColumn, populationColumn, healthColumn, activePatientsColumn],

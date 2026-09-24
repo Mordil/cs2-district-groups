@@ -10,12 +10,12 @@ import {
     assignedOccupants,
     assignedProcessingCapacity,
 } from "../components/OccupancyStats"
-import { StatValue } from "../components/StatValue"
+import { StatValue, ThresholdValue } from "../components/StatValue"
 import { kGenericType } from "../constants"
 import { AssignedBuilding, Group } from "../types"
-import { VanillaLocale } from "../utils/locale"
+import { VanillaLocale, wealthThreshold } from "../utils/locale"
 
-import { GameText, ModText } from "./labels"
+import { GameText } from "./labels"
 
 // What a group's own assigned buildings add up to, which its type's demand figures are weighed against.
 export interface GroupCapacity {
@@ -107,8 +107,13 @@ const kCardStats: CardStat[][] = [
             icon: gameIconSrc("Population"),
             unit: Unit.Integer,
             of: (group) => group.population,
-            label: <ModText label="metadataPopulationTooltip" />,
+            label: <GameText label={VanillaLocale.populationColumn} />,
         }),
+        {
+            icon: gameIconSrc("CitizenWealth"),
+            render: (group) => <ThresholdValue label={wealthThreshold(group.wealth)} />,
+            tooltip: () => <GameText label={VanillaLocale.averageHouseholdWealth} />,
+        },
     ],
     [
         reading({

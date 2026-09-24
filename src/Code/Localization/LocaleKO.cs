@@ -120,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "이 그룹의 지구마다 설정된 값이 다릅니다." },
                 { LocalizationKey.MetadataDistrictsTooltip, "지구" },
                 { LocalizationKey.MetadataBuildingsTooltip, "배정된 건물" },
-                { LocalizationKey.MetadataPopulationTooltip, "인구" },
-                { LocalizationKey.MetadataHappinessTooltip, "평균 행복도" },
-                { LocalizationKey.MetadataWealthTooltip, "평균 재산" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "오버레이 및 건물 표시" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**지구 그룹**" },

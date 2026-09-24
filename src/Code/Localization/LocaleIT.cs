@@ -120,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "I quartieri di questo gruppo hanno valori diversi." },
                 { LocalizationKey.MetadataDistrictsTooltip, "Quartieri" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Edifici assegnati" },
-                { LocalizationKey.MetadataPopulationTooltip, "Popolazione" },
-                { LocalizationKey.MetadataHappinessTooltip, "Felicità media" },
-                { LocalizationKey.MetadataWealthTooltip, "Ricchezza media" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Mostra sovrimpressione ed edifici" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPPI DI QUARTIERI**" },

@@ -44,6 +44,8 @@ export interface DataColumn<T> {
     render: (row: T) => ReactNode
     // What the totals row reads out, where that differs from a row's own value
     renderTotal?: (total: T) => ReactNode
+    // What the column was worked out from, shown on the heading itself
+    headerTooltip?: (total: T | undefined) => ReactNode
 }
 
 // The sort each table was last left on, so reopening a panel reads the way the player left it.
@@ -110,20 +112,28 @@ export const DataTable = <T,>({
 
     // A heading fills its own cell, since the sort button it holds is what has to stay clickable across it.
     const headerCells = () =>
-        columns.map((column) => (
-            <div key={column.id} className={cellClass(column)}>
-                <VC.Button
-                    disableHint={true}
-                    focusKey={VF.FOCUS_DISABLED}
-                    className={`${kTable.button} ${css.columnHeaderButton}`}
-                    onSelect={() => sortBy(column)}
-                >
-                    <div className={`${kTable.buttonLabel} ${css.columnHeaderLabel}`}>{column.label}</div>
+        columns.map((column) => {
+            const label = <div className={`${kTable.buttonLabel} ${css.columnHeaderLabel}`}>{column.label}</div>
 
-                    {column.id === activeColumn.id && sortIndicator}
-                </VC.Button>
-            </div>
-        ))
+            return (
+                <div key={column.id} className={cellClass(column)}>
+                    <VC.Button
+                        disableHint={true}
+                        focusKey={VF.FOCUS_DISABLED}
+                        className={`${kTable.button} ${css.columnHeaderButton}`}
+                        onSelect={() => sortBy(column)}
+                    >
+                        {column.headerTooltip ? (
+                            <Tooltip tooltip={column.headerTooltip(total)}>{label}</Tooltip>
+                        ) : (
+                            label
+                        )}
+
+                        {column.id === activeColumn.id && sortIndicator}
+                    </VC.Button>
+                </div>
+            )
+        })
 
     // A name or text cell wraps its content in one more element to ellipsize or wrap against.
     const bodyCells = (render: (column: DataColumn<T>) => ReactNode) =>
