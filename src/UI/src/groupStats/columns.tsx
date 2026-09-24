@@ -72,11 +72,28 @@ const fireRiskColumn: DataColumn<DistrictMember> = {
     render: (member) => <StatValue value={member.fireRisk} unit={Unit.Percentage} />,
 }
 
+const healthColumn: DataColumn<DistrictMember> = {
+    id: "health",
+    label: <GameText label={VanillaLocale.averageHealth} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.health),
+    render: (member) => <StatValue value={member.health} unit={Unit.Percentage} />,
+}
+
+const activePatientsColumn: DataColumn<DistrictMember> = {
+    id: "activePatients",
+    label: <GameText label={VanillaLocale.patients} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.activePatients),
+    render: (member) => <StatValue value={member.activePatients} unit={Unit.Integer} />,
+}
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
     [districtColumn, populationColumn, crimeChanceColumn],
     [districtColumn, populationColumn, fireRiskColumn],
+    [districtColumn, populationColumn, healthColumn, activePatientsColumn],
 ]
 
 // What a group of this type lists about each of its member districts.
@@ -149,6 +166,7 @@ const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [efficiencyColumn],
     [capacityColumn(VanillaLocale.jailCapacity), efficiencyColumn],
     [shelterCapacityColumn, efficiencyColumn],
+    [capacityColumn(VanillaLocale.patientCapacity), efficiencyColumn],
 ]
 
 // What a group of this type lists about each of its assigned buildings.

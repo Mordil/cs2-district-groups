@@ -215,6 +215,9 @@ export const VanillaLocale = {
     },
     prisoners: { id: "SelectedInfoPanel.PRISON_PRISONERS", fallback: "Prisoners" },
     jailCapacity: { id: "Properties.JAIL_CAPACITY", fallback: "Jail Capacity" },
+    patients: { id: "HealthcareInfoPanel.PATIENTS", fallback: "Patients" },
+    averageHealth: { id: "HealthcareInfoPanel.AVERAGE_HEALTH", fallback: "Average Health" },
+    patientCapacity: { id: "Properties.PATIENT_CAPACITY", fallback: "Patient Capacity" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",

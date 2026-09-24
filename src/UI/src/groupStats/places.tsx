@@ -14,6 +14,7 @@ const kPlaces: (Places | null)[] = [
     { label: VanillaLocale.prisoners, unit: Unit.Integer },
     // Shelters read out their capacity alone, with no occupancy share to name
     null,
+    { label: VanillaLocale.patients, unit: Unit.Integer },
 ]
 
 // What a building of this service type calls its own places, or null for a type with none to name.

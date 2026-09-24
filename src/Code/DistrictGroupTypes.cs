@@ -120,6 +120,8 @@ namespace DistrictGroups
         public long m_IncomeSum;
         // Resident households, excluding the tourists and commuters vanilla leaves out of its wealth average.
         public int m_HouseholdCount;
+        // Living residents of settled households, which is the set the settled averages are drawn from.
+        public int m_SettledResidentCount;
         // Summed Game.Buildings.CrimeProducer.m_Crime, divided by m_CrimeProducerCount for the average.
         public float m_CrimeSum;
         // Crime-producing buildings the sum was drawn from.
@@ -128,6 +130,10 @@ namespace DistrictGroups
         public float m_FireRiskSum;
         // Flammable buildings the sum was drawn from.
         public int m_FireRiskBuildingCount;
+        // Summed Citizen.m_Health over settled residents, divided by m_SettledResidentCount for the average.
+        public int m_HealthSum;
+        // Residents of this district currently occupying a hospital patient slot, wherever in the city that hospital is.
+        public int m_ActivePatientCount;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -138,10 +144,13 @@ namespace DistrictGroups
             m_WealthSum += other.m_WealthSum;
             m_IncomeSum += other.m_IncomeSum;
             m_HouseholdCount += other.m_HouseholdCount;
+            m_SettledResidentCount += other.m_SettledResidentCount;
             m_CrimeSum += other.m_CrimeSum;
             m_CrimeProducerCount += other.m_CrimeProducerCount;
             m_FireRiskSum += other.m_FireRiskSum;
             m_FireRiskBuildingCount += other.m_FireRiskBuildingCount;
+            m_HealthSum += other.m_HealthSum;
+            m_ActivePatientCount += other.m_ActivePatientCount;
         }
     }
 
@@ -203,6 +212,12 @@ namespace DistrictGroups
             stats.m_FireRiskBuildingCount == 0
                 ? DistrictGroupsUISystem.kNoValue
                 : (int)math.round(math.clamp(stats.m_FireRiskSum / stats.m_FireRiskBuildingCount, 0f, 100f));
+
+        // Average health across the district's settled residents, on Citizen.m_Health's own 0-100 scale, or kNoValue
+        public int Health(DistrictStats stats) =>
+            stats.m_SettledResidentCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.round((float)stats.m_HealthSum / stats.m_SettledResidentCount);
     }
 
     // A named, typed set of base districts.

@@ -34,6 +34,9 @@ namespace DistrictGroups
         // Flammable buildings, keyed to a district via CurrentDistrict; excludes fire stations and buildings already
         // on fire, which contribute no fire risk of their own.
         private EntityQuery m_FlammableBuildingQuery;
+        // Hospitals with at least one occupied patient slot; every patient is hopped back to their own home district
+        // rather than the hospital's, which may be anywhere in the city.
+        private EntityQuery m_HospitalQuery;
         // Holds the wealth thresholds the average household wealth is bucketed against.
         private EntityQuery m_CitizenHappinessParameterQuery;
         // Holds the crime accumulation ceiling a district's average crime is read as a share of.
@@ -53,6 +56,13 @@ namespace DistrictGroups
         private ComponentLookup<TouristHousehold> m_TouristHouseholds;
         private ComponentLookup<CommuterHousehold> m_CommuterHouseholds;
         private ComponentLookup<MovingAway> m_MovingAwayHouseholds;
+        // The hops from a hospital's patient back to the district their home is in: citizen -> household,
+        // household -> the building it rents or shelters in, building -> district.
+        private BufferLookup<Patient> m_Patients;
+        private ComponentLookup<HouseholdMember> m_HouseholdMembers;
+        private ComponentLookup<PropertyRenter> m_PropertyRenters;
+        private ComponentLookup<HomelessHousehold> m_HomelessHouseholds;
+        private ComponentLookup<CurrentDistrict> m_BuildingDistricts;
         // What a district's own membership is tested with while the scope is being collected.
         private ComponentLookup<District> m_DistrictAreas;
         private ComponentLookup<Game.Common.Deleted> m_DeletedEntities;
@@ -92,9 +102,13 @@ namespace DistrictGroups
         private NativeList<DistrictStats> m_ResidentResults;
         private NativeList<ScopedBuilding> m_CrimeProducerBuildings;
         private NativeList<ScopedBuilding> m_FlammableBuildings;
+        // Every hospital in the city, unnarrowed: a patient is credited to their own home district, which is not
+        // necessarily the one the hospital sits in.
+        private NativeList<Entity> m_Hospitals;
 
         private NativeList<SumAndCount> m_CrimeTotals;
         private NativeList<SumAndCount> m_FireRiskTotals;
+        private NativeList<int> m_PatientTotals;
 
         private JobHandle m_SweepHandle;
         private bool m_SweepInFlight;
@@ -156,6 +170,11 @@ namespace DistrictGroups
                 ComponentType.Exclude<Game.Events.OnFire>(),
                 ComponentType.Exclude<Game.Tools.Temp>(),
                 ComponentType.Exclude<Game.Common.Deleted>());
+            m_HospitalQuery = GetEntityQuery(
+                ComponentType.ReadOnly<Game.Buildings.Hospital>(),
+                ComponentType.ReadOnly<Patient>(),
+                ComponentType.Exclude<Game.Tools.Temp>(),
+                ComponentType.Exclude<Game.Common.Deleted>());
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
 
@@ -168,6 +187,11 @@ namespace DistrictGroups
             m_TouristHouseholds = GetComponentLookup<TouristHousehold>(true);
             m_CommuterHouseholds = GetComponentLookup<CommuterHousehold>(true);
             m_MovingAwayHouseholds = GetComponentLookup<MovingAway>(true);
+            m_Patients = GetBufferLookup<Patient>(true);
+            m_HouseholdMembers = GetComponentLookup<HouseholdMember>(true);
+            m_PropertyRenters = GetComponentLookup<PropertyRenter>(true);
+            m_HomelessHouseholds = GetComponentLookup<HomelessHousehold>(true);
+            m_BuildingDistricts = GetComponentLookup<CurrentDistrict>(true);
             m_DistrictAreas = GetComponentLookup<District>(true);
             m_DeletedEntities = GetComponentLookup<Game.Common.Deleted>(true);
             m_GroupMembers = GetBufferLookup<DistrictGroupMember>(true);
@@ -192,8 +216,10 @@ namespace DistrictGroups
             m_ResidentResults = new NativeList<DistrictStats>(Allocator.Persistent);
             m_CrimeProducerBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_FlammableBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
+            m_Hospitals = new NativeList<Entity>(Allocator.Persistent);
             m_CrimeTotals = new NativeList<SumAndCount>(Allocator.Persistent);
             m_FireRiskTotals = new NativeList<SumAndCount>(Allocator.Persistent);
+            m_PatientTotals = new NativeList<int>(Allocator.Persistent);
         }
 
         protected override void OnDestroy()
@@ -207,8 +233,10 @@ namespace DistrictGroups
             m_ResidentResults.Dispose();
             m_CrimeProducerBuildings.Dispose();
             m_FlammableBuildings.Dispose();
+            m_Hospitals.Dispose();
             m_CrimeTotals.Dispose();
             m_FireRiskTotals.Dispose();
+            m_PatientTotals.Dispose();
             base.OnDestroy();
         }
 
@@ -356,6 +384,7 @@ namespace DistrictGroups
             CollectResidentHomes();
             CollectScoped(m_CrimeProducerQuery, m_CrimeProducerBuildings);
             CollectScoped(m_FlammableBuildingQuery, m_FlammableBuildings);
+            CollectHospitals();
 
             /*
                 Every view onto a persistent list is taken before anything is scheduled: asking a list for
@@ -369,6 +398,8 @@ namespace DistrictGroups
             NativeArray<Entity> districts = m_ScopeDistricts.AsArray();
             NativeArray<ScopedBuilding> flammableBuildings = m_FlammableBuildings.AsArray();
             NativeArray<SumAndCount> fireRiskTotals = m_FireRiskTotals.AsArray();
+            NativeArray<Entity> hospitals = m_Hospitals.AsArray();
+            NativeArray<int> patientTotals = m_PatientTotals.AsArray();
 
             // Every sweep only reads the world and writes into an output of its own, so they all run alongside each other.
             JobHandle crime = new SweepCrimeJob
@@ -390,6 +421,17 @@ namespace DistrictGroups
                 m_RoadServiceCoverages = m_RoadServiceCoverages,
                 m_DistrictModifiers = m_DistrictModifiers,
                 m_Totals = fireRiskTotals,
+            }.Schedule(Dependency);
+            JobHandle patients = new SweepActivePatientsJob
+            {
+                m_Hospitals = hospitals,
+                m_Patients = m_Patients,
+                m_HouseholdMembers = m_HouseholdMembers,
+                m_PropertyRenters = m_PropertyRenters,
+                m_HomelessHouseholds = m_HomelessHouseholds,
+                m_BuildingDistricts = m_BuildingDistricts,
+                m_Slots = m_ScopeSlots,
+                m_Totals = patientTotals,
             }.Schedule(Dependency);
 
             JobHandle residents = new SweepResidentsJob
@@ -413,10 +455,13 @@ namespace DistrictGroups
             {
                 m_CrimeTotals = crimeTotals,
                 m_FireRiskTotals = fireRiskTotals,
+                m_PatientTotals = patientTotals,
                 m_ResidentHomes = residentHomes,
                 m_ResidentResults = residentResults,
                 m_Totals = totals,
-            }.Schedule(JobHandle.CombineDependencies(crime, fireRisk, residents));
+            }.Schedule(JobHandle.CombineDependencies(
+                JobHandle.CombineDependencies(crime, fireRisk),
+                JobHandle.CombineDependencies(patients, residents)));
 
             Dependency = m_SweepHandle;
             m_SweepInFlight = true;
@@ -434,6 +479,7 @@ namespace DistrictGroups
             ClearPerDistrict(m_SweepTotals);
             ClearPerDistrict(m_CrimeTotals);
             ClearPerDistrict(m_FireRiskTotals);
+            ClearPerDistrict(m_PatientTotals);
         }
 
         // Gives one per-district output an empty entry for every district in scope.
@@ -469,6 +515,15 @@ namespace DistrictGroups
             m_ResidentHomeCount = CollectScoped(m_ResidentialBuildingQuery, m_ResidentHomes);
             m_ResidentResults.Clear();
             m_ResidentResults.Resize(m_ResidentHomes.Length, NativeArrayOptions.UninitializedMemory);
+        }
+
+        // Every hospital in the city, since a patient is credited to their own home district rather than to whichever
+        // district the hospital itself sits in.
+        private void CollectHospitals()
+        {
+            using NativeArray<Entity> hospitals = m_HospitalQuery.ToEntityArray(Allocator.Temp);
+            m_Hospitals.Clear();
+            m_Hospitals.AddRange(hospitals);
         }
 
         // Hands the finished per-district totals to the readers.
@@ -510,7 +565,9 @@ namespace DistrictGroups
                 $"swept_building_count:{m_ResidentHomes.Length} scope_district_count:{m_ScopeDistricts.Length} " +
                 $"district_count:{m_PublishedStats.Count} population:{total.m_Population} household_count:{total.m_HouseholdCount} " +
                 $"crime_producer_count:{total.m_CrimeProducerCount} crime_sum:{total.m_CrimeSum:F1} " +
-                $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1}");
+                $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1} " +
+                $"settled_resident_count:{total.m_SettledResidentCount} health_sum:{total.m_HealthSum} " +
+                $"active_patient_count:{total.m_ActivePatientCount}");
         }
 
         // Points every lookup the sweeps hop through at the current frame's data.
@@ -525,6 +582,11 @@ namespace DistrictGroups
             m_TouristHouseholds.Update(this);
             m_CommuterHouseholds.Update(this);
             m_MovingAwayHouseholds.Update(this);
+            m_Patients.Update(this);
+            m_HouseholdMembers.Update(this);
+            m_PropertyRenters.Update(this);
+            m_HomelessHouseholds.Update(this);
+            m_BuildingDistricts.Update(this);
 
             m_CrimeProducers.Update(this);
 
@@ -651,11 +713,86 @@ namespace DistrictGroups
             }
         }
 
+        /*
+            Every occupied hospital patient slot in the city, credited back to the patient's own home district. Unlike
+            the other sweeps this one can't be narrowed to a district beforehand: which district a patient belongs to
+            only comes out of hopping from them to their household, to the building it lives in, and to its district.
+        */
+        private struct SweepActivePatientsJob : IJob
+        {
+            [ReadOnly] public NativeArray<Entity> m_Hospitals;
+            [ReadOnly] public BufferLookup<Patient> m_Patients;
+            [ReadOnly] public ComponentLookup<HouseholdMember> m_HouseholdMembers;
+            [ReadOnly] public ComponentLookup<PropertyRenter> m_PropertyRenters;
+            [ReadOnly] public ComponentLookup<HomelessHousehold> m_HomelessHouseholds;
+            [ReadOnly] public ComponentLookup<CurrentDistrict> m_BuildingDistricts;
+            [ReadOnly] public NativeHashMap<Entity, int> m_Slots;
+            public NativeArray<int> m_Totals;
+
+            public void Execute()
+            {
+                foreach (Entity hospital in m_Hospitals)
+                {
+                    if (!m_Patients.TryGetBuffer(hospital, out DynamicBuffer<Patient> patients))
+                    {
+                        continue;
+                    }
+
+                    foreach (Patient patient in patients)
+                    {
+                        if (TryGetHomeSlot(patient.m_Patient, out int slot))
+                        {
+                            m_Totals[slot]++;
+                        }
+                    }
+                }
+            }
+
+            // Hops from a citizen to the slot of the district the building they live in sits in, or false for a
+            // citizen with no in-scope home to attribute the patient to.
+            private bool TryGetHomeSlot(Entity citizen, out int slot)
+            {
+                slot = 0;
+                if (!m_HouseholdMembers.TryGetComponent(citizen, out HouseholdMember member))
+                {
+                    return false;
+                }
+
+                if (!m_BuildingDistricts.TryGetComponent(GetHomeBuilding(member.m_Household), out CurrentDistrict current))
+                {
+                    return false;
+                }
+
+                return m_Slots.TryGetValue(current.m_District, out slot);
+            }
+
+            /*
+                The building a household lives in, whether it rents the place or only shelters there. Vanilla keeps
+                the two on separate components and reads them in this order in BuildingUtils.GetHouseholdHomeBuilding,
+                so a household that has both is credited to the property it actually rents.
+            */
+            private Entity GetHomeBuilding(Entity household)
+            {
+                if (m_PropertyRenters.TryGetComponent(household, out PropertyRenter renter))
+                {
+                    return renter.m_Property;
+                }
+
+                if (m_HomelessHouseholds.TryGetComponent(household, out HomelessHousehold homeless))
+                {
+                    return homeless.m_TempHome;
+                }
+
+                return Entity.Null;
+            }
+        }
+
         // Adds what every sweep found into one set of totals per district in scope.
         private struct FoldSweepsJob : IJob
         {
             [ReadOnly] public NativeArray<SumAndCount> m_CrimeTotals;
             [ReadOnly] public NativeArray<SumAndCount> m_FireRiskTotals;
+            [ReadOnly] public NativeArray<int> m_PatientTotals;
             [ReadOnly] public NativeArray<ScopedBuilding> m_ResidentHomes;
             [ReadOnly] public NativeArray<DistrictStats> m_ResidentResults;
             public NativeArray<DistrictStats> m_Totals;
@@ -670,6 +807,7 @@ namespace DistrictGroups
                     totals.m_CrimeProducerCount = m_CrimeTotals[slot].m_Count;
                     totals.m_FireRiskSum = m_FireRiskTotals[slot].m_Sum;
                     totals.m_FireRiskBuildingCount = m_FireRiskTotals[slot].m_Count;
+                    totals.m_ActivePatientCount = m_PatientTotals[slot];
                     m_Totals[slot] = totals;
                 }
 
@@ -721,10 +859,10 @@ namespace DistrictGroups
             private void AccumulateHousehold(Entity household, ref DistrictStats stats)
             {
                 /*
-                    Vanilla's two sweeps disagree on which households they take, so each accumulator keeps its
-                    own filter: happiness counts every renter household's living citizens, while the wealth
-                    and income averages leave out tourists, commuters and households already on their way out
-                    of the city.
+                    Vanilla's sweeps disagree on which households they take, so each accumulator keeps its own
+                    filter: happiness counts every renter household's living citizens, the wealth and income
+                    averages leave out tourists, commuters and households already on their way out of the city,
+                    and the health average additionally leaves out a household that has not finished moving in.
                 */
 
                 bool isHousehold = m_Households.TryGetComponent(household, out Household householdData);
@@ -734,6 +872,12 @@ namespace DistrictGroups
                     return;
                 }
 
+                bool isTemporaryResident = m_TouristHouseholds.HasComponent(household)
+                    || m_CommuterHouseholds.HasComponent(household)
+                    || m_MovingAwayHouseholds.HasComponent(household);
+                bool hasMovedIn = (householdData.m_Flags & HouseholdFlags.MovedIn) != 0;
+                bool isSettled = !isTemporaryResident && hasMovedIn;
+
                 stats.m_Population += residents.Length;
                 foreach (HouseholdCitizen resident in residents)
                 {
@@ -742,13 +886,17 @@ namespace DistrictGroups
                     {
                         continue;
                     }
+
                     stats.m_HappinessSum += citizen.Happiness;
                     stats.m_LivingResidentCount++;
+
+                    if (isSettled)
+                    {
+                        stats.m_SettledResidentCount++;
+                        stats.m_HealthSum += citizen.m_Health;
+                    }
                 }
 
-                bool isTemporaryResident = m_TouristHouseholds.HasComponent(household)
-                    || m_CommuterHouseholds.HasComponent(household)
-                    || m_MovingAwayHouseholds.HasComponent(household);
                 bool hasWealth = m_Resources.TryGetBuffer(household, out DynamicBuffer<Resources> resources);
                 if (isTemporaryResident || !hasWealth)
                 {

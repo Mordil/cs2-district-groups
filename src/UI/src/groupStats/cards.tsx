@@ -102,6 +102,14 @@ const kCardStats: CardStat[][] = [
             label: <GameText label={VanillaLocale.shelterCapacity} />,
         }),
     ],
+    [
+        reading({
+            icon: gameIconSrc("Wellbeing"),
+            unit: Unit.Percentage,
+            of: (group) => group.health,
+            label: <GameText label={VanillaLocale.averageHealth} />,
+        }),
+    ],
 ]
 
 // What a group of this type reads out on its card beyond its district and building counts.

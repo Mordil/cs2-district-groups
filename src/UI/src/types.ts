@@ -23,6 +23,10 @@ export interface ResidentStats {
     crimeChance: number
     // Average fire hazard, on vanilla's own 0-100 scale
     fireRisk: number
+    // Average settled-resident health, on vanilla's own 0-100 scale
+    health: number
+    // Residents currently occupying a hospital patient slot somewhere in the city
+    activePatients: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows

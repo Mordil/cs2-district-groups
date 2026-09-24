@@ -333,6 +333,15 @@ namespace DistrictGroups
                     }
 
                     return;
+
+                case GroupServiceType.Healthcare:
+                    if (TryGetData(facility, ref m_Hospitals, out HospitalData hospital))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_BuildingPatients);
+                        capacity = hospital.m_PatientCapacity;
+                    }
+
+                    return;
             }
         }
 
@@ -384,9 +393,11 @@ namespace DistrictGroups
             m_InstalledUpgrades.Update(this);
             m_BuildingEfficiencies.Update(this);
             m_Occupants.Update(this);
+            m_BuildingPatients.Update(this);
             m_PoliceStations.Update(this);
             m_Prisons.Update(this);
             m_EmergencyShelters.Update(this);
+            m_Hospitals.Update(this);
         }
 
         // A member district, carrying the per-district numbers its overview row reads
@@ -419,6 +430,10 @@ namespace DistrictGroups
             writer.Write(reader.CrimeChance(stats));
             writer.PropertyName("fireRisk");
             writer.Write(reader.FireRisk(stats));
+            writer.PropertyName("health");
+            writer.Write(reader.Health(stats));
+            writer.PropertyName("activePatients");
+            writer.Write(stats.m_ActivePatientCount);
         }
     }
 }
