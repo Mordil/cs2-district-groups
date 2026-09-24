@@ -18,7 +18,7 @@ export const kGenericType = 0
 // AssignedBuilding.efficiency for a building the game has no efficiency to report for.
 export const kUnknownEfficiency = -1
 
-// ResidentStats.happiness/wealth for a district or group with no residents to average.
+// Any district or group figure the sweep had nothing to work out, which reads as kNoValue.
 export const kNoThreshold = -1
 
 // The size of the main panel, in rem CSS units

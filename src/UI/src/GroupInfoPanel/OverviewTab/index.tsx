@@ -6,7 +6,7 @@ import { Icon, Scrollable, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
 import { gameIconSrc, glyphIconSrc } from "../../components/icons"
-import { ThresholdValue } from "../../components/ThresholdValue"
+import { ThresholdValue } from "../../components/StatValue"
 import { VC, VF, VT } from "../../components/vanilla"
 import { kNoThreshold, kNoValue } from "../../constants"
 import { removeMember } from "../../triggers"

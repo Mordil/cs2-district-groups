@@ -237,7 +237,7 @@ export const happinessThreshold = (ordinal: number): VanillaLabel | null =>
 export const wealthThreshold = (ordinal: number): VanillaLabel | null =>
     kWealthThresholds[ordinal] ?? null
 
-type LocaleKey = keyof typeof kLocale
+export type LocaleKey = keyof typeof kLocale
 
 // translate() has no built-in {PLACEHOLDER} substitution (that's only wired
 // up for the JSX <LocalizedString> component's `args`), so plain-string
