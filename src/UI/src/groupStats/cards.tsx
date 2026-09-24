@@ -2,12 +2,13 @@ import { ReactNode } from "react"
 
 import { Unit } from "cs2/l10n"
 
-import { gameIconSrc } from "../components/icons"
+import { gameIconSrc, glyphIconSrc } from "../components/icons"
 import { StatValue } from "../components/StatValue"
 import { kGenericType } from "../constants"
 import { Group } from "../types"
+import { VanillaLocale } from "../utils/locale"
 
-import { ModText } from "./labels"
+import { GameText, ModText } from "./labels"
 
 // One readout on a group's card, beside its district and building counts.
 export interface CardStat {
@@ -39,6 +40,14 @@ const kCardStats: CardStat[][] = [
             unit: Unit.Integer,
             of: (group) => group.population,
             label: <ModText label="metadataPopulationTooltip" />,
+        }),
+    ],
+    [
+        reading({
+            icon: glyphIconSrc("Prisoner"),
+            unit: Unit.Percentage,
+            of: (group) => group.crimeChance,
+            label: <GameText label={VanillaLocale.averageCrimeProbability} />,
         }),
     ],
 ]

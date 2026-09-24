@@ -266,20 +266,88 @@ namespace DistrictGroups
             writer.Write(m_PrefabSystem.GetPrefabName(prefab));
         }
 
-        // An assigned service building, carrying the per-building numbers its buildings row reads
+        // An assigned service building, carrying the per-building numbers its buildings row reads.
+        //
+        // Its service type is settled first, so every figure is read off the one facility component that type names.
         private void WriteAssignedBuilding(IJsonWriter writer, Entity building)
         {
+            m_BuildingPrefabs.TryGetComponent(building, out PrefabRef prefabRef);
+            Facility facility = new Facility
+            {
+                m_Building = building,
+                m_Prefab = prefabRef.m_Prefab,
+                m_Type = m_GroupSystem.DetectServiceType(prefabRef.m_Prefab),
+            };
+            m_InstalledUpgrades.TryGetBuffer(building, out facility.m_Upgrades);
+            GetOccupancy(facility, out int occupants, out int capacity);
+
             writer.TypeBegin("AssignedBuilding");
             writer.PropertyName("entity");
             WriteEntity(writer, building);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(building) ? m_NameSystem.GetRenderedLabelName(building) : "<missing>");
             writer.PropertyName("type");
-            writer.Write((int)m_GroupSystem.DetectBuildingServiceType(building));
+            writer.Write((int)facility.m_Type);
             writer.PropertyName("efficiency");
             writer.Write(GetEfficiencyPercent(building));
+            writer.PropertyName("occupants");
+            writer.Write(occupants);
+            writer.PropertyName("capacity");
+            writer.Write(capacity);
             writer.TypeEnd();
         }
+
+        // How full a building's own places are, with installed upgrades folded in.
+        //
+        // Both read kNoValue for a building with no such places to report.
+        private void GetOccupancy(Facility facility, out int occupants, out int capacity)
+        {
+            occupants = kNoValue;
+            capacity = kNoValue;
+
+            switch (facility.m_Type)
+            {
+                // A police group holds both stations and prisons, and whichever the building is, its own capacity answers for it.
+                case GroupServiceType.Police:
+                    if (TryGetData(facility, ref m_PoliceStations, out PoliceStationData station))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_Occupants);
+                        capacity = station.m_JailCapacity;
+                        return;
+                    }
+
+                    if (TryGetData(facility, ref m_Prisons, out PrisonData prison))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_Occupants);
+                        capacity = prison.m_PrisonerCapacity;
+                    }
+
+                    return;
+            }
+        }
+
+        // One facility's own prefab data, with whatever its installed upgrades change about it folded in.
+        private bool TryGetData<T>(Facility facility, ref ComponentLookup<T> facilities, out T data)
+            where T : unmanaged, IComponentData, ICombineData<T>
+        {
+            if (!facilities.TryGetComponent(facility.m_Prefab, out data))
+            {
+                data = default;
+                return false;
+            }
+
+            if (facility.m_Upgrades.IsCreated && facility.m_Upgrades.Length != 0)
+            {
+                UpgradeUtils.CombineStats(ref data, facility.m_Upgrades, ref m_BuildingPrefabs, ref facilities);
+            }
+
+            return true;
+        }
+
+        // How many places of a kind a building has taken, as the length of the buffer it holds them in.
+        private int BufferLength<T>(Entity building, ref BufferLookup<T> holders)
+            where T : unmanaged, IBufferElementData =>
+            holders.TryGetBuffer(building, out DynamicBuffer<T> held) ? held.Length : 0;
 
         // A building's efficiency as the whole percent the game's own info panel shows, or kNoValue when the game reports none for it.
         private int GetEfficiencyPercent(Entity building)
@@ -302,7 +370,12 @@ namespace DistrictGroups
         // Points every lookup the building rows read through at the current frame's data.
         private void UpdateBuildingLookups()
         {
+            m_BuildingPrefabs.Update(this);
+            m_InstalledUpgrades.Update(this);
             m_BuildingEfficiencies.Update(this);
+            m_Occupants.Update(this);
+            m_PoliceStations.Update(this);
+            m_Prisons.Update(this);
         }
 
         // A member district, carrying the per-district numbers its overview row reads
@@ -331,6 +404,8 @@ namespace DistrictGroups
             writer.Write(reader.Wealth(stats));
             writer.PropertyName("income");
             writer.Write(reader.Income(stats));
+            writer.PropertyName("crimeChance");
+            writer.Write(reader.CrimeChance(stats));
         }
     }
 }

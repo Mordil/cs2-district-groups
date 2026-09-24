@@ -28,8 +28,12 @@ namespace DistrictGroups
 
         // Residential buildings, keyed to a district via CurrentDistrict.
         private EntityQuery m_ResidentialBuildingQuery;
+        // Crime-producing buildings, keyed to a district via CurrentDistrict.
+        private EntityQuery m_CrimeProducerQuery;
         // Holds the wealth thresholds the average household wealth is bucketed against.
         private EntityQuery m_CitizenHappinessParameterQuery;
+        // Holds the crime accumulation ceiling a district's average crime is read as a share of.
+        private EntityQuery m_PoliceConfigurationQuery;
 
         /*
             Every hop a sweep makes off a building - renters, their households, their citizens - goes
@@ -50,6 +54,8 @@ namespace DistrictGroups
         private ComponentLookup<Game.Common.Deleted> m_DeletedEntities;
         private BufferLookup<DistrictGroupMember> m_GroupMembers;
 
+        private ComponentLookup<Game.Buildings.CrimeProducer> m_CrimeProducers;
+
         /*
             Every district that belongs to a group, and the dense slot its totals are accumulated into.
 
@@ -68,6 +74,9 @@ namespace DistrictGroups
         // narrowed on the main thread so no job needs a scope test of its own.
         private NativeList<ScopedBuilding> m_ResidentHomes;
         private NativeList<DistrictStats> m_ResidentResults;
+        private NativeList<ScopedBuilding> m_CrimeProducerBuildings;
+
+        private NativeList<SumAndCount> m_CrimeTotals;
 
         private JobHandle m_SweepHandle;
         private bool m_SweepInFlight;
@@ -98,6 +107,12 @@ namespace DistrictGroups
             public int m_Slot;
         }
 
+        private struct SumAndCount
+        {
+            public float m_Sum;
+            public int m_Count;
+        }
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -110,7 +125,13 @@ namespace DistrictGroups
                 ComponentType.ReadOnly<ResidentialProperty>(),
                 ComponentType.Exclude<Game.Tools.Temp>(),
                 ComponentType.Exclude<Game.Common.Deleted>());
+            m_CrimeProducerQuery = GetEntityQuery(
+                ComponentType.ReadOnly<Game.Buildings.CrimeProducer>(),
+                ComponentType.ReadOnly<CurrentDistrict>(),
+                ComponentType.Exclude<Game.Tools.Temp>(),
+                ComponentType.Exclude<Game.Common.Deleted>());
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
+            m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
 
             m_Renters = GetBufferLookup<Renter>(true);
             m_HouseholdCitizens = GetBufferLookup<HouseholdCitizen>(true);
@@ -125,6 +146,8 @@ namespace DistrictGroups
             m_DeletedEntities = GetComponentLookup<Game.Common.Deleted>(true);
             m_GroupMembers = GetBufferLookup<DistrictGroupMember>(true);
 
+            m_CrimeProducers = GetComponentLookup<Game.Buildings.CrimeProducer>(true);
+
             m_ScopeDistricts = new NativeList<Entity>(Allocator.Persistent);
             m_ScopeSlots = new NativeHashMap<Entity, int>(16, Allocator.Persistent);
             m_ScopeSeen = new NativeHashSet<Entity>(16, Allocator.Persistent);
@@ -132,6 +155,8 @@ namespace DistrictGroups
 
             m_ResidentHomes = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_ResidentResults = new NativeList<DistrictStats>(Allocator.Persistent);
+            m_CrimeProducerBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
+            m_CrimeTotals = new NativeList<SumAndCount>(Allocator.Persistent);
         }
 
         protected override void OnDestroy()
@@ -143,6 +168,8 @@ namespace DistrictGroups
             m_SweepTotals.Dispose();
             m_ResidentHomes.Dispose();
             m_ResidentResults.Dispose();
+            m_CrimeProducerBuildings.Dispose();
+            m_CrimeTotals.Dispose();
             base.OnDestroy();
         }
 
@@ -207,7 +234,11 @@ namespace DistrictGroups
             CitizenHappinessParameterData wealthBands = hasWealthBands
                 ? m_CitizenHappinessParameterQuery.GetSingleton<CitizenHappinessParameterData>()
                 : default;
-            return new DistrictStatsReader(hasWealthBands, wealthBands);
+            float maxCrimeAccumulation = m_PoliceConfigurationQuery.IsEmptyIgnoreFilter
+                ? 0f
+                : m_PoliceConfigurationQuery.GetSingleton<PoliceConfigurationData>().m_MaxCrimeAccumulation;
+
+            return new DistrictStatsReader(hasWealthBands, wealthBands, maxCrimeAccumulation);
         }
 
         /*
@@ -284,6 +315,7 @@ namespace DistrictGroups
             RebuildScopeSlots();
 
             CollectResidentHomes();
+            CollectScoped(m_CrimeProducerQuery, m_CrimeProducerBuildings);
 
             /*
                 Every view onto a persistent list is taken before anything is scheduled: asking a list for
@@ -292,6 +324,16 @@ namespace DistrictGroups
             NativeArray<DistrictStats> totals = m_SweepTotals.AsArray();
             NativeArray<ScopedBuilding> residentHomes = m_ResidentHomes.AsArray();
             NativeArray<DistrictStats> residentResults = m_ResidentResults.AsArray();
+            NativeArray<ScopedBuilding> crimeProducers = m_CrimeProducerBuildings.AsArray();
+            NativeArray<SumAndCount> crimeTotals = m_CrimeTotals.AsArray();
+
+            // Every sweep only reads the world and writes into an output of its own, so they all run alongside each other.
+            JobHandle crime = new SweepCrimeJob
+            {
+                m_Buildings = crimeProducers,
+                m_CrimeProducers = m_CrimeProducers,
+                m_Totals = crimeTotals,
+            }.Schedule(Dependency);
 
             JobHandle residents = new SweepResidentsJob
             {
@@ -312,10 +354,11 @@ namespace DistrictGroups
             // fold runs on a worker thread too; the main thread only ever reads the finished totals.
             m_SweepHandle = new FoldSweepsJob
             {
+                m_CrimeTotals = crimeTotals,
                 m_ResidentHomes = residentHomes,
                 m_ResidentResults = residentResults,
                 m_Totals = totals,
-            }.Schedule(residents);
+            }.Schedule(JobHandle.CombineDependencies(crime, residents));
 
             Dependency = m_SweepHandle;
             m_SweepInFlight = true;
@@ -331,6 +374,7 @@ namespace DistrictGroups
                 m_ScopeSlots.Add(m_ScopeDistricts[slot], slot);
             }
             ClearPerDistrict(m_SweepTotals);
+            ClearPerDistrict(m_CrimeTotals);
         }
 
         // Gives one per-district output an empty entry for every district in scope.
@@ -405,7 +449,8 @@ namespace DistrictGroups
                 $"schedule_ms:{m_SweepScheduleMs:F3} block_ms:{blockMs:F3} publish_ms:{publishMs:F3} " +
                 $"latency_ms:{latencyMs:F3} finished_early:{finishedUnwatched} building_count:{m_ResidentHomeCount} " +
                 $"swept_building_count:{m_ResidentHomes.Length} scope_district_count:{m_ScopeDistricts.Length} " +
-                $"district_count:{m_PublishedStats.Count} population:{total.m_Population} household_count:{total.m_HouseholdCount}");
+                $"district_count:{m_PublishedStats.Count} population:{total.m_Population} household_count:{total.m_HouseholdCount} " +
+                $"crime_producer_count:{total.m_CrimeProducerCount} crime_sum:{total.m_CrimeSum:F1}");
         }
 
         // Points every lookup the sweeps hop through at the current frame's data.
@@ -420,17 +465,53 @@ namespace DistrictGroups
             m_TouristHouseholds.Update(this);
             m_CommuterHouseholds.Update(this);
             m_MovingAwayHouseholds.Update(this);
+
+            m_CrimeProducers.Update(this);
+        }
+
+        // Already-accumulated crime, added straight into each producer's own district.
+        private struct SweepCrimeJob : IJob
+        {
+            [ReadOnly] public NativeArray<ScopedBuilding> m_Buildings;
+            [ReadOnly] public ComponentLookup<Game.Buildings.CrimeProducer> m_CrimeProducers;
+            public NativeArray<SumAndCount> m_Totals;
+
+            public void Execute()
+            {
+                foreach (ScopedBuilding scoped in m_Buildings)
+                {
+                    if (!m_CrimeProducers.TryGetComponent(scoped.m_Building, out Game.Buildings.CrimeProducer producer))
+                    {
+                        continue;
+                    }
+
+                    SumAndCount totals = m_Totals[scoped.m_Slot];
+                    totals.m_Sum += producer.m_Crime;
+                    totals.m_Count++;
+                    m_Totals[scoped.m_Slot] = totals;
+                }
+            }
         }
 
         // Adds what every sweep found into one set of totals per district in scope.
         private struct FoldSweepsJob : IJob
         {
+            [ReadOnly] public NativeArray<SumAndCount> m_CrimeTotals;
             [ReadOnly] public NativeArray<ScopedBuilding> m_ResidentHomes;
             [ReadOnly] public NativeArray<DistrictStats> m_ResidentResults;
             public NativeArray<DistrictStats> m_Totals;
 
             public void Execute()
             {
+                // The district-keyed sweeps each own their own fields, so their figures are taken rather than added to.
+                for (int slot = 0; slot < m_Totals.Length; slot++)
+                {
+                    DistrictStats totals = m_Totals[slot];
+                    totals.m_CrimeSum = m_CrimeTotals[slot].m_Sum;
+                    totals.m_CrimeProducerCount = m_CrimeTotals[slot].m_Count;
+                    m_Totals[slot] = totals;
+                }
+
                 for (int i = 0; i < m_ResidentHomes.Length; i++)
                 {
                     int slot = m_ResidentHomes[i].m_Slot;

@@ -10,18 +10,17 @@ export interface DistrictMember extends ResidentStats {
 /*
     The resident figures a district, or a whole group, reads out.
 
-    Happiness and wealth arrive as the ordinal of the band their average landed in rather than as a
-    raw average, and are kNoValue when there were no residents to average.
+    Every figure arrives for every group type, since a bound type's shape can't vary between instances.
     
-    Income has no such band in vanilla, so it arrives as the raw average currency figure.
-    
-    `kNoValue` when there were no households to average.
+    A figure the sweep had nothing to work out arrives as `kNoValue`.
 */
 export interface ResidentStats {
     population: number
     happiness: number
     wealth: number
     income: number
+    // Average crime accumulation, as a whole percent of the game's own maximum
+    crimeChance: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows
@@ -31,6 +30,10 @@ export interface AssignedBuilding {
     type: number
     // Whole-percent efficiency, or kNoValue when the building reports none
     efficiency: number
+    // Places taken, or kNoValue when the building has no such places to report
+    occupants: number
+    // Places there are, with installed upgrades folded in; kNoValue likewise
+    capacity: number
 }
 
 // A service building of the currently filtered type, with the assignment state its row needs

@@ -49,8 +49,15 @@ namespace DistrictGroups
             new Dictionary<Entity, List<Entity>>();
 
         // What a building row and a policy row are read off.
+        private ComponentLookup<PrefabRef> m_BuildingPrefabs;
+        private BufferLookup<Game.Buildings.InstalledUpgrade> m_InstalledUpgrades;
         private BufferLookup<Game.Buildings.Efficiency> m_BuildingEfficiencies;
+        private BufferLookup<Game.Buildings.Occupant> m_Occupants;
         private BufferLookup<Policy> m_DistrictPolicies;
+
+        // The one prefab component each service type keeps its own places on.
+        private ComponentLookup<PoliceStationData> m_PoliceStations;
+        private ComponentLookup<PrisonData> m_Prisons;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -74,6 +81,16 @@ namespace DistrictGroups
 
         // Scratch space for the focused group's member districts, reused by every policy payload.
         private readonly List<PolicyDistrict> m_PolicyDistricts = new List<PolicyDistrict>();
+
+        // One assigned building as its row reads it, holding what each of its figures would otherwise resolve again.
+        private struct Facility
+        {
+            public Entity m_Building;
+            public Entity m_Prefab;
+            public GroupServiceType m_Type;
+            // Uncreated for a building carrying no upgrades, which is most of them.
+            public DynamicBuffer<Game.Buildings.InstalledUpgrade> m_Upgrades;
+        }
 
         // One member district as the policy payload reads it, holding what every policy would otherwise resolve again.
         private readonly struct PolicyDistrict
@@ -121,8 +138,14 @@ namespace DistrictGroups
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
             m_AssignmentQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupAssignment>());
 
+            m_BuildingPrefabs = GetComponentLookup<PrefabRef>(true);
+            m_InstalledUpgrades = GetBufferLookup<Game.Buildings.InstalledUpgrade>(true);
             m_BuildingEfficiencies = GetBufferLookup<Game.Buildings.Efficiency>(true);
+            m_Occupants = GetBufferLookup<Game.Buildings.Occupant>(true);
             m_DistrictPolicies = GetBufferLookup<Policy>(true);
+
+            m_PoliceStations = GetComponentLookup<PoliceStationData>(true);
+            m_Prisons = GetComponentLookup<PrisonData>(true);
 
             SetupRootBindings();
             SetupOverlayBindings();

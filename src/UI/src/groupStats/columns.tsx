@@ -1,12 +1,15 @@
 import { Unit } from "cs2/l10n"
+import { Tooltip } from "cs2/ui"
 
 import { DataColumn } from "../components/DataTable"
+import { Occupancy, PlacesTooltip, hasCapacity, occupancyShare } from "../components/OccupancyStats"
 import { StatValue, ThresholdValue } from "../components/StatValue"
 import { kGenericType } from "../constants"
 import { AssignedBuilding, DistrictMember } from "../types"
-import { VanillaLocale, happinessThreshold, wealthThreshold } from "../utils/locale"
+import { VanillaLabel, VanillaLocale, happinessThreshold, wealthThreshold } from "../utils/locale"
 
 import { GameText, ModText } from "./labels"
+import { placesOf } from "./places"
 
 // Ranks rows by one of their figures.
 const byStat = <T,>(of: (row: T) => number) => (a: T, b: T) => of(a) - of(b)
@@ -53,14 +56,48 @@ const incomeColumn: DataColumn<DistrictMember> = {
     render: (member) => <StatValue value={member.income} unit={Unit.MoneyPerMonth} />,
 }
 
+const crimeChanceColumn: DataColumn<DistrictMember> = {
+    id: "crimeChance",
+    label: <GameText label={VanillaLocale.crimeProbability} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.crimeChance),
+    render: (member) => <StatValue value={member.crimeChance} unit={Unit.Percentage} />,
+}
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
+    [districtColumn, populationColumn, crimeChanceColumn],
 ]
 
 // What a group of this type lists about each of its member districts.
 export const overviewColumns = (type: number): DataColumn<DistrictMember>[] =>
     kOverviewColumns[type] ?? kOverviewColumns[kGenericType]
+
+// How full one building's own places are, with the places behind that share on hover.
+const CapacityCell = ({ building }: { building: AssignedBuilding }) => {
+    const occupancy = <Occupancy occupants={building.occupants} capacity={building.capacity} />
+    const places = placesOf(building.type)
+
+    if (!hasCapacity(building.capacity) || places === null) {
+        return occupancy
+    }
+
+    return (
+        <Tooltip
+            tooltip={
+                <PlacesTooltip
+                    label={<GameText label={places.label} />}
+                    unit={places.unit}
+                    claimed={building.occupants}
+                    capacity={building.capacity}
+                />
+            }
+        >
+            <div>{occupancy}</div>
+        </Tooltip>
+    )
+}
 
 const buildingColumn: DataColumn<AssignedBuilding> = {
     id: "building",
@@ -69,6 +106,15 @@ const buildingColumn: DataColumn<AssignedBuilding> = {
     compare: (a, b) => a.name.localeCompare(b.name),
     render: (building) => building.name,
 }
+
+// How full each building's own places are, under the game's own name for that type's capacity.
+const capacityColumn = (label: VanillaLabel): DataColumn<AssignedBuilding> => ({
+    id: "capacity",
+    label: <GameText label={label} />,
+    descendingFirst: true,
+    compare: (a, b) => occupancyShare(a) - occupancyShare(b),
+    render: (building) => <CapacityCell building={building} />,
+})
 
 const efficiencyColumn: DataColumn<AssignedBuilding> = {
     id: "efficiency",
@@ -81,6 +127,7 @@ const efficiencyColumn: DataColumn<AssignedBuilding> = {
 // The facility columns each group type lists after name and type, indexed by GroupServiceType - order must match the C# enum.
 const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [efficiencyColumn],
+    [capacityColumn(VanillaLocale.jailCapacity), efficiencyColumn],
 ]
 
 // What a group of this type lists about each of its assigned buildings.

@@ -4,6 +4,7 @@ using Game.Prefabs;
 using System;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace DistrictGroups
@@ -119,6 +120,10 @@ namespace DistrictGroups
         public long m_IncomeSum;
         // Resident households, excluding the tourists and commuters vanilla leaves out of its wealth average.
         public int m_HouseholdCount;
+        // Summed Game.Buildings.CrimeProducer.m_Crime, divided by m_CrimeProducerCount for the average.
+        public float m_CrimeSum;
+        // Crime-producing buildings the sum was drawn from.
+        public int m_CrimeProducerCount;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -129,6 +134,8 @@ namespace DistrictGroups
             m_WealthSum += other.m_WealthSum;
             m_IncomeSum += other.m_IncomeSum;
             m_HouseholdCount += other.m_HouseholdCount;
+            m_CrimeSum += other.m_CrimeSum;
+            m_CrimeProducerCount += other.m_CrimeProducerCount;
         }
     }
 
@@ -138,12 +145,17 @@ namespace DistrictGroups
     {
         private readonly bool m_HasWealthBands;
         private readonly CitizenHappinessParameterData m_WealthBands;
+        private readonly float m_MaxCrimeAccumulation;
 
         // Captures the city-wide parameters one payload's figures are measured against.
-        public DistrictStatsReader(bool hasWealthBands, CitizenHappinessParameterData wealthBands)
+        public DistrictStatsReader(
+            bool hasWealthBands,
+            CitizenHappinessParameterData wealthBands,
+            float maxCrimeAccumulation)
         {
             m_HasWealthBands = hasWealthBands;
             m_WealthBands = wealthBands;
+            m_MaxCrimeAccumulation = maxCrimeAccumulation;
         }
 
         // Which happiness band the average resident falls in, or kNoValue
@@ -167,6 +179,18 @@ namespace DistrictGroups
 
         public int Income(DistrictStats stats) =>
             stats.m_HouseholdCount == 0 ? DistrictGroupsUISystem.kNoValue : (int)(stats.m_IncomeSum / stats.m_HouseholdCount);
+
+        // Average crime accumulation as a whole percent of PoliceConfigurationData.m_MaxCrimeAccumulation, or kNoValue
+        public int CrimeChance(DistrictStats stats)
+        {
+            if (stats.m_CrimeProducerCount == 0 || m_MaxCrimeAccumulation <= 0f)
+            {
+                return DistrictGroupsUISystem.kNoValue;
+            }
+
+            float averageCrime = stats.m_CrimeSum / stats.m_CrimeProducerCount;
+            return (int)math.round(100f * math.saturate(averageCrime / m_MaxCrimeAccumulation));
+        }
     }
 
     // A named, typed set of base districts.

@@ -202,6 +202,13 @@ export const VanillaLocale = {
     buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },
     fireAndRescueType: { id: "Infoviews.INFOVIEW[FireRescue]", fallback: "Fire & Rescue" },
+    crimeProbability: { id: "Infoviews.INFOMODE[Crime Probability]", fallback: "Crime Probability" },
+    averageCrimeProbability: {
+        id: "PoliceInfoPanel.AVERAGE_CRIME_PROBABILITY",
+        fallback: "Average Crime Probability",
+    },
+    prisoners: { id: "SelectedInfoPanel.PRISON_PRISONERS", fallback: "Prisoners" },
+    jailCapacity: { id: "Properties.JAIL_CAPACITY", fallback: "Jail Capacity" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",
