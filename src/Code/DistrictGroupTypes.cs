@@ -40,6 +40,23 @@ namespace DistrictGroups
         Post = 10,
     }
 
+    // Shared facts about a group's service type.
+    public static class GroupServiceTypes
+    {
+        // The school level an education type teaches, or null for every other type.
+        public static SchoolLevel? GetSchoolLevel(GroupServiceType type)
+        {
+            switch (type)
+            {
+                case GroupServiceType.EducationElementary: return SchoolLevel.Elementary;
+                case GroupServiceType.EducationHighSchool: return SchoolLevel.HighSchool;
+                case GroupServiceType.EducationCollege: return SchoolLevel.College;
+                case GroupServiceType.EducationUniversity: return SchoolLevel.University;
+                default: return null;
+            }
+        }
+    }
+
     // A district policy as the group panel lists it, with the prefab display data its row reads.
     public readonly struct DistrictPolicy : IComparable<DistrictPolicy>
     {
@@ -122,6 +139,10 @@ namespace DistrictGroups
         public int m_HouseholdCount;
         // Living residents of settled households, which is the set the settled averages are drawn from.
         public int m_SettledResidentCount;
+        // Summed chance that a settled resident enters each of the city's four school levels, one lane per level.
+        public float4 m_EligibleSums;
+        // Settled residents already enrolled at each school level, one lane per level - a subset of m_EligibleSums.
+        public int4 m_EnrolledCounts;
         // Summed Game.Buildings.CrimeProducer.m_Crime, divided by m_CrimeProducerCount for the average.
         public float m_CrimeSum;
         // Crime-producing buildings the sum was drawn from.
@@ -163,6 +184,8 @@ namespace DistrictGroups
             m_IncomeSum += other.m_IncomeSum;
             m_HouseholdCount += other.m_HouseholdCount;
             m_SettledResidentCount += other.m_SettledResidentCount;
+            m_EligibleSums += other.m_EligibleSums;
+            m_EnrolledCounts += other.m_EnrolledCounts;
             m_CrimeSum += other.m_CrimeSum;
             m_CrimeProducerCount += other.m_CrimeProducerCount;
             m_FireRiskSum += other.m_FireRiskSum;
@@ -173,6 +196,14 @@ namespace DistrictGroups
             m_DeathRateResidentCount += other.m_DeathRateResidentCount;
             m_GarbageAccumulationSum += other.m_GarbageAccumulationSum;
             m_GarbageProducerCount += other.m_GarbageProducerCount;
+        }
+
+        // The m_EligibleSums/m_EnrolledCounts lane a school level is counted in, or false for a level outside the city's
+        // own four tiers.
+        public static bool TryGetSchoolLane(int schoolLevel, out int lane)
+        {
+            lane = schoolLevel - (int)SchoolLevel.Elementary;
+            return schoolLevel >= (int)SchoolLevel.Elementary && schoolLevel <= (int)SchoolLevel.University;
         }
     }
 
@@ -216,6 +247,19 @@ namespace DistrictGroups
 
         public int Income(DistrictStats stats) =>
             stats.m_HouseholdCount == 0 ? DistrictGroupsUISystem.kNoValue : (int)(stats.m_IncomeSum / stats.m_HouseholdCount);
+
+        // How many residents could enter this school level, rounded up from summed probabilities the way vanilla's
+        // education infoview rounds it, or kNoValue for a group that teaches no level.
+        public int Eligible(DistrictStats stats, SchoolLevel? level) =>
+            level.HasValue && DistrictStats.TryGetSchoolLane((int)level.Value, out int lane)
+                ? (int)math.ceil(stats.m_EligibleSums[lane])
+                : DistrictGroupsUISystem.kNoValue;
+
+        // How many residents are already enrolled at this school level, or kNoValue for a group that teaches no level.
+        public int Enrolled(DistrictStats stats, SchoolLevel? level) =>
+            level.HasValue && DistrictStats.TryGetSchoolLane((int)level.Value, out int lane)
+                ? stats.m_EnrolledCounts[lane]
+                : DistrictGroupsUISystem.kNoValue;
 
         // Average crime accumulation as a whole percent of PoliceConfigurationData.m_MaxCrimeAccumulation, or kNoValue
         public int CrimeChance(DistrictStats stats)

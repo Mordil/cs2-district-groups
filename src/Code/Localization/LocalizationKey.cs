@@ -44,6 +44,7 @@
         public const string BuildingsTabLabel = "DistrictGroups.UI[BuildingsTabLabel]";
         public const string PoliciesTabLabel = "DistrictGroups.UI[PoliciesTabLabel]";
         public const string TypeColumnLabel = "DistrictGroups.UI[TypeColumnLabel]";
+        public const string EligibleColumnLabel = "DistrictGroups.UI[EligibleColumnLabel]";
         public const string NoDistrictsInGroup = "DistrictGroups.UI[NoDistrictsInGroup]";
         public const string NoBuildingsInGroup = "DistrictGroups.UI[NoBuildingsInGroup]";
         public const string ApplyPolicyToGroupTooltip = "DistrictGroups.UI[ApplyPolicyToGroupTooltip]";

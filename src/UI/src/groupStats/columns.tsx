@@ -105,6 +105,26 @@ const garbageGenerationColumn: DataColumn<DistrictMember> = {
     render: (member) => <StatValue value={member.garbageGeneration} unit={Unit.WeightPerMonth} />,
 }
 
+const eligibleColumn: DataColumn<DistrictMember> = {
+    id: "eligible",
+    label: <ModText label="eligibleColumnLabel" />,
+    descendingFirst: true,
+    compare: byStat((member) => member.eligible),
+    render: (member) => <StatValue value={member.eligible} unit={Unit.Integer} />,
+}
+
+// Residents already in school beside the eligible count, so a district's own coverage shows without weighing it
+// against any one group's capacity.
+const enrolledColumn: DataColumn<DistrictMember> = {
+    id: "enrolled",
+    label: <GameText label={VanillaLocale.students} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.enrolled),
+    render: (member) => <StatValue value={member.enrolled} unit={Unit.Integer} />,
+}
+
+const kEducationOverview = [districtColumn, populationColumn, eligibleColumn, enrolledColumn]
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
@@ -113,6 +133,10 @@ const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, healthColumn, activePatientsColumn],
     [districtColumn, populationColumn, deathsPerDayColumn],
     [districtColumn, populationColumn, garbageGenerationColumn],
+    kEducationOverview,
+    kEducationOverview,
+    kEducationOverview,
+    kEducationOverview,
 ]
 
 // What a group of this type lists about each of its member districts.
@@ -194,6 +218,8 @@ const efficiencyColumn: DataColumn<AssignedBuilding> = {
     render: (building) => <StatValue value={building.efficiency} unit={Unit.Percentage} />,
 }
 
+const kSchoolBuildings = [capacityColumn(VanillaLocale.studentCapacity), efficiencyColumn]
+
 // The facility columns each group type lists after name and type, indexed by GroupServiceType - order must match the C# enum.
 const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [efficiencyColumn],
@@ -210,6 +236,10 @@ const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
         capacityColumn(VanillaLocale.garbageStorage),
         efficiencyColumn,
     ],
+    kSchoolBuildings,
+    kSchoolBuildings,
+    kSchoolBuildings,
+    kSchoolBuildings,
 ]
 
 // What a group of this type lists about each of its assigned buildings.

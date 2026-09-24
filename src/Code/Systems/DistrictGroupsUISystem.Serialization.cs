@@ -26,6 +26,8 @@ namespace DistrictGroups
             foreach (Entity group in groups)
             {
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
+                // The tier the group's own type teaches, whose education figures are the only ones it reads.
+                SchoolLevel? schoolLevel = GroupServiceTypes.GetSchoolLevel(data.m_Type);
                 DynamicBuffer<DistrictGroupMember> members =
                     EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
 
@@ -38,12 +40,12 @@ namespace DistrictGroups
                 writer.Write((int)data.m_Type);
                 writer.PropertyName("color");
                 writer.Write(data.m_Color);
-                WriteResidentStats(writer, SumMemberStats(members), reader);
+                WriteResidentStats(writer, SumMemberStats(members), reader, schoolLevel);
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)
                 {
-                    WriteDistrictMember(writer, member.m_District, reader);
+                    WriteDistrictMember(writer, member.m_District, reader, schoolLevel);
                 }
                 writer.ArrayEnd();
                 writer.PropertyName("buildings");
@@ -333,6 +335,18 @@ namespace DistrictGroups
 
             switch (facility.m_Type)
             {
+                case GroupServiceType.EducationElementary:
+                case GroupServiceType.EducationHighSchool:
+                case GroupServiceType.EducationCollege:
+                case GroupServiceType.EducationUniversity:
+                    if (TryGetData(facility, ref m_Schools, out SchoolData school))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_BuildingStudents);
+                        capacity = school.m_StudentCapacity;
+                    }
+
+                    return;
+
                 // A police group holds both stations and prisons, and whichever the building is, its own capacity answers for it.
                 case GroupServiceType.Police:
                     if (TryGetData(facility, ref m_PoliceStations, out PoliceStationData station))
@@ -476,9 +490,11 @@ namespace DistrictGroups
             m_InstalledUpgrades.Update(this);
             m_BuildingEfficiencies.Update(this);
             m_BuildingResources.Update(this);
+            m_BuildingStudents.Update(this);
             m_Occupants.Update(this);
             m_BuildingPatients.Update(this);
             m_DeathcareState.Update(this);
+            m_Schools.Update(this);
             m_PoliceStations.Update(this);
             m_Prisons.Update(this);
             m_EmergencyShelters.Update(this);
@@ -492,7 +508,7 @@ namespace DistrictGroups
         }
 
         // A member district, carrying the per-district numbers its overview row reads
-        private void WriteDistrictMember(IJsonWriter writer, Entity entity, DistrictStatsReader reader)
+        private void WriteDistrictMember(IJsonWriter writer, Entity entity, DistrictStatsReader reader, SchoolLevel? schoolLevel)
         {
             m_StatsSystem.TryGetDistrictStats(entity, out DistrictStats stats);
 
@@ -501,13 +517,13 @@ namespace DistrictGroups
             WriteEntity(writer, entity);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(entity) ? m_NameSystem.GetRenderedLabelName(entity) : "<missing>");
-            WriteResidentStats(writer, stats, reader);
+            WriteResidentStats(writer, stats, reader, schoolLevel);
             writer.TypeEnd();
         }
 
         // Writes all the stats from the reader into the JSON data buffer.
         // Stats with `kNoValue` means the district or group had nothing to report for that figure.
-        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats, DistrictStatsReader reader)
+        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats, DistrictStatsReader reader, SchoolLevel? schoolLevel)
         {
             writer.PropertyName("population");
             writer.Write(stats.m_Population);
@@ -517,6 +533,10 @@ namespace DistrictGroups
             writer.Write(reader.Wealth(stats));
             writer.PropertyName("income");
             writer.Write(reader.Income(stats));
+            writer.PropertyName("eligible");
+            writer.Write(reader.Eligible(stats, schoolLevel));
+            writer.PropertyName("enrolled");
+            writer.Write(reader.Enrolled(stats, schoolLevel));
             writer.PropertyName("crimeChance");
             writer.Write(reader.CrimeChance(stats));
             writer.PropertyName("fireRisk");

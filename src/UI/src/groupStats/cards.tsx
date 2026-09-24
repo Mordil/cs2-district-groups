@@ -44,6 +44,7 @@ export interface CardStat {
 
 interface ReadingProps {
     icon: string
+    tinted?: boolean
     unit: Unit
     // The figure the group reports directly
     of: (group: Group) => number
@@ -51,8 +52,9 @@ interface ReadingProps {
 }
 
 // A figure the group reports directly, under the name the game or the mod gives it.
-const reading = ({ icon, unit, of, label }: ReadingProps): CardStat => ({
+const reading = ({ icon, tinted, unit, of, label }: ReadingProps): CardStat => ({
     icon,
+    tinted,
     render: (group) => <StatValue value={of(group)} unit={unit} />,
     tooltip: () => label,
 })
@@ -79,6 +81,24 @@ const load = ({ icon, tinted, unit, demand, supply, label }: LoadProps): CardSta
 
 const places = (capacity: GroupCapacity) => capacity.places
 const processing = (capacity: GroupCapacity) => capacity.processing
+
+const kEducationCard: CardStat[] = [
+    reading({
+        icon: glyphIconSrc("Student"),
+        tinted: true,
+        unit: Unit.Integer,
+        of: (group) => group.enrolled,
+        label: <GameText label={VanillaLocale.students} />,
+    }),
+    load({
+        icon: modIconSrc("throughput"),
+        tinted: true,
+        unit: Unit.Integer,
+        demand: (group) => group.eligible,
+        supply: places,
+        label: <GameText label={VanillaLocale.demand} />,
+    }),
+]
 
 // What each group type reads out on its card, indexed by GroupServiceType - order must match the C# enum.
 const kCardStats: CardStat[][] = [
@@ -150,6 +170,10 @@ const kCardStats: CardStat[][] = [
             label: <GameText label={VanillaLocale.garbageProcessingCapacity} />,
         }),
     ],
+    kEducationCard,
+    kEducationCard,
+    kEducationCard,
+    kEducationCard,
 ]
 
 // What a group of this type reads out on its card beyond its district and building counts.

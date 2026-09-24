@@ -28,6 +28,10 @@ namespace DistrictGroups
     public partial class DistrictStatsSystem : GameSystemBase
     {
         private const int kSweepBatchSize = 16;
+        // How old a child is before vanilla counts them as needing an elementary place, in days.
+        private const int kElementaryEligibleAgeDays = 10;
+        // How many rejections vanilla lets a citizen collect before it stops offering them higher education.
+        private const int kMaxFailedEducationAttempts = 3;
 
         // Residential buildings, keyed to a district via CurrentDistrict.
         private EntityQuery m_ResidentialBuildingQuery;
@@ -49,6 +53,8 @@ namespace DistrictGroups
         private EntityQuery m_PoliceConfigurationQuery;
         // Holds the death-rate curve a resident's chance of dying of old age is read off.
         private EntityQuery m_HealthcareParameterQuery;
+        // Holds the probabilities a citizen's chance of entering a school level is weighed with.
+        private EntityQuery m_EducationParameterQuery;
         // Holds the year length a resident's age is turned into a share of a full lifetime with.
         private EntityQuery m_TimeSettingsQuery;
         // Holds the calendar a resident's age is read off.
@@ -68,6 +74,9 @@ namespace DistrictGroups
         private ComponentLookup<TouristHousehold> m_TouristHouseholds;
         private ComponentLookup<CommuterHousehold> m_CommuterHouseholds;
         private ComponentLookup<MovingAway> m_MovingAwayHouseholds;
+        private ComponentLookup<Game.Citizens.Student> m_Students;
+        private ComponentLookup<Worker> m_Workers;
+        private ComponentLookup<HasJobSeeker> m_JobSeekers;
         // The hops from a hospital's patient back to the district their home is in: citizen -> household,
         // household -> the building it rents or shelters in, building -> district.
         private BufferLookup<Patient> m_Patients;
@@ -167,6 +176,8 @@ namespace DistrictGroups
         private int m_ResidentHomeCount;
         private bool m_SweepDeathcareReady;
         private bool m_SweepGarbageReady;
+        private bool m_SweepEducationReady;
+        private bool m_SweepHasCityModifiers;
         private double m_SweepScheduleMs;
         private readonly System.Diagnostics.Stopwatch m_SweepClock = new System.Diagnostics.Stopwatch();
 
@@ -234,6 +245,7 @@ namespace DistrictGroups
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
             m_HealthcareParameterQuery = GetEntityQuery(ComponentType.ReadOnly<HealthcareParameterData>());
+            m_EducationParameterQuery = GetEntityQuery(ComponentType.ReadOnly<EducationParameterData>());
             m_TimeSettingsQuery = GetEntityQuery(ComponentType.ReadOnly<TimeSettingsData>());
             m_TimeDataQuery = GetEntityQuery(ComponentType.ReadOnly<Game.Common.TimeData>());
 
@@ -246,6 +258,9 @@ namespace DistrictGroups
             m_TouristHouseholds = GetComponentLookup<TouristHousehold>(true);
             m_CommuterHouseholds = GetComponentLookup<CommuterHousehold>(true);
             m_MovingAwayHouseholds = GetComponentLookup<MovingAway>(true);
+            m_Students = GetComponentLookup<Game.Citizens.Student>(true);
+            m_Workers = GetComponentLookup<Worker>(true);
+            m_JobSeekers = GetComponentLookup<HasJobSeeker>(true);
             m_Patients = GetBufferLookup<Patient>(true);
             m_HouseholdMembers = GetComponentLookup<HouseholdMember>(true);
             m_PropertyRenters = GetComponentLookup<PropertyRenter>(true);
@@ -461,6 +476,10 @@ namespace DistrictGroups
             m_SweepGarbageReady = garbage.m_Valid;
             CollectGarbageProducers(garbage.m_Valid);
 
+            EducationContext education = GetEducationContext();
+            m_SweepEducationReady = education.m_Valid;
+            m_SweepHasCityModifiers = education.m_Valid && EntityManager.HasBuffer<CityModifier>(education.m_City);
+
             DeathcareContext deathcare = GetDeathcareContext();
             m_SweepDeathcareReady = deathcare.m_Valid;
 
@@ -526,6 +545,11 @@ namespace DistrictGroups
                 m_TouristHouseholds = m_TouristHouseholds,
                 m_CommuterHouseholds = m_CommuterHouseholds,
                 m_MovingAwayHouseholds = m_MovingAwayHouseholds,
+                m_Students = m_Students,
+                m_Workers = m_Workers,
+                m_JobSeekers = m_JobSeekers,
+                m_CityModifiers = m_CityModifiers,
+                m_Education = education,
                 m_Deathcare = deathcare,
                 m_Results = residentResults,
             }.Schedule(residentHomes.Length, kSweepBatchSize, Dependency);
@@ -688,6 +712,11 @@ namespace DistrictGroups
                 $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1} " +
                 $"settled_resident_count:{total.m_SettledResidentCount} health_sum:{total.m_HealthSum} " +
                 $"active_patient_count:{total.m_ActivePatientCount} deathcare_ready:{m_SweepDeathcareReady} " +
+                $"education_ready:{m_SweepEducationReady} city_modifiers:{m_SweepHasCityModifiers} " +
+                $"eligible_elementary:{total.m_EligibleSums.x:F1} eligible_high_school:{total.m_EligibleSums.y:F1} " +
+                $"eligible_college:{total.m_EligibleSums.z:F1} eligible_university:{total.m_EligibleSums.w:F1} " +
+                $"enrolled_elementary:{total.m_EnrolledCounts.x} enrolled_high_school:{total.m_EnrolledCounts.y} " +
+                $"enrolled_college:{total.m_EnrolledCounts.z} enrolled_university:{total.m_EnrolledCounts.w} " +
                 $"garbage_ready:{m_SweepGarbageReady} swept_garbage_producer_count:{m_GarbageProducers.Length} " +
                 $"garbage_producer_count:{total.m_GarbageProducerCount} " +
                 $"garbage_accumulation_sum:{total.m_GarbageAccumulationSum:F1} " +
@@ -707,6 +736,26 @@ namespace DistrictGroups
                 m_Valid = true,
                 m_City = m_CitySystem.City,
                 m_Parameters = m_GarbageParameterQuery.GetSingleton<GarbageParameterData>(),
+            };
+        }
+
+        // The city-wide inputs vanilla weighs a citizen's chance of entering a school level against.
+        private EducationContext GetEducationContext()
+        {
+            if (m_EducationParameterQuery.IsEmptyIgnoreFilter
+                || m_TimeDataQuery.IsEmptyIgnoreFilter
+                || m_CitySystem.City == Entity.Null)
+            {
+                return default;
+            }
+
+            return new EducationContext
+            {
+                m_Valid = true,
+                m_City = m_CitySystem.City,
+                m_Parameters = m_EducationParameterQuery.GetSingleton<EducationParameterData>(),
+                m_TimeData = m_TimeDataQuery.GetSingleton<Game.Common.TimeData>(),
+                m_SimulationFrame = m_SimulationSystem.frameIndex,
             };
         }
 
@@ -761,6 +810,9 @@ namespace DistrictGroups
             m_TouristHouseholds.Update(this);
             m_CommuterHouseholds.Update(this);
             m_MovingAwayHouseholds.Update(this);
+            m_Students.Update(this);
+            m_Workers.Update(this);
+            m_JobSeekers.Update(this);
             m_Patients.Update(this);
             m_HouseholdMembers.Update(this);
             m_PropertyRenters.Update(this);
@@ -794,6 +846,17 @@ namespace DistrictGroups
             public bool m_Valid;
             public Entity m_City;
             public GarbageParameterData m_Parameters;
+        }
+
+        // Whatever is the same for every citizen the eligibility half of the resident sweep weighs.
+        private struct EducationContext
+        {
+            // Whether the city had these loaded when the sweep was scheduled.
+            public bool m_Valid;
+            public Entity m_City;
+            public EducationParameterData m_Parameters;
+            public Game.Common.TimeData m_TimeData;
+            public uint m_SimulationFrame;
         }
 
         // The city-wide inputs the game weighs a citizen's chance of dying against.
@@ -1132,18 +1195,32 @@ namespace DistrictGroups
             [ReadOnly] public ComponentLookup<TouristHousehold> m_TouristHouseholds;
             [ReadOnly] public ComponentLookup<CommuterHousehold> m_CommuterHouseholds;
             [ReadOnly] public ComponentLookup<MovingAway> m_MovingAwayHouseholds;
+            [ReadOnly] public ComponentLookup<Game.Citizens.Student> m_Students;
+            [ReadOnly] public ComponentLookup<Worker> m_Workers;
+            [ReadOnly] public ComponentLookup<HasJobSeeker> m_JobSeekers;
+            [ReadOnly] public BufferLookup<CityModifier> m_CityModifiers;
+            public EducationContext m_Education;
             public DeathcareContext m_Deathcare;
             [WriteOnly] public NativeArray<DistrictStats> m_Results;
 
             public void Execute(int index)
             {
+                // The city, and so its modifiers, is the same for every citizen, so the lookup is done once per building.
+                DynamicBuffer<CityModifier> cityModifiers = default;
+                bool hasCityModifiers = m_Education.m_Valid
+                    && m_CityModifiers.TryGetBuffer(m_Education.m_City, out cityModifiers);
+
                 DistrictStats stats = default;
-                AccumulateBuilding(m_Buildings[index].m_Building, ref stats);
+                AccumulateBuilding(m_Buildings[index].m_Building, hasCityModifiers, cityModifiers, ref stats);
                 m_Results[index] = stats;
             }
 
             // Adds one residential building's renter households to the totals.
-            private void AccumulateBuilding(Entity building, ref DistrictStats stats)
+            private void AccumulateBuilding(
+                Entity building,
+                bool hasCityModifiers,
+                DynamicBuffer<CityModifier> cityModifiers,
+                ref DistrictStats stats)
             {
                 if (!m_Renters.TryGetBuffer(building, out DynamicBuffer<Renter> renters))
                 {
@@ -1151,17 +1228,22 @@ namespace DistrictGroups
                 }
                 foreach (Renter renter in renters)
                 {
-                    AccumulateHousehold(renter.m_Renter, ref stats);
+                    AccumulateHousehold(renter.m_Renter, hasCityModifiers, cityModifiers, ref stats);
                 }
             }
 
-            private void AccumulateHousehold(Entity household, ref DistrictStats stats)
+            private void AccumulateHousehold(
+                Entity household,
+                bool hasCityModifiers,
+                DynamicBuffer<CityModifier> cityModifiers,
+                ref DistrictStats stats)
             {
                 /*
                     Vanilla's sweeps disagree on which households they take, so each accumulator keeps its own
                     filter: happiness counts every renter household's living citizens, the wealth and income
                     averages leave out tourists, commuters and households already on their way out of the city,
-                    and the health average additionally leaves out a household that has not finished moving in.
+                    and the health and education totals additionally leave out a household that has not finished
+                    moving in - it has nobody in the city to treat or school yet.
                 */
 
                 bool isHousehold = m_Households.TryGetComponent(household, out Household householdData);
@@ -1197,6 +1279,7 @@ namespace DistrictGroups
                     {
                         stats.m_SettledResidentCount++;
                         stats.m_HealthSum += citizen.m_Health;
+                        AccumulateEligibility(resident.m_Citizen, citizen, hasCityModifiers, cityModifiers, ref stats);
                     }
                 }
 
@@ -1209,6 +1292,115 @@ namespace DistrictGroups
                 stats.m_IncomeSum += householdData.m_Income;
                 stats.m_HouseholdCount++;
             }
+
+            // Adds one settled resident's chance of entering each school level to the totals.
+            private void AccumulateEligibility(
+                Entity resident,
+                Citizen citizen,
+                bool hasCityModifiers,
+                DynamicBuffer<CityModifier> cityModifiers,
+                ref DistrictStats stats)
+            {
+                /*
+                    Eligibility is a chance rather than a fact, so vanilla adds up each citizen's odds of applying and
+                    rounds the total up. A citizen chasing a job is left out entirely, and one already enrolled counts as
+                    a certainty for their own level and nothing else.
+
+                    HasJobSeeker is enableable and sits on a citizen whether or not they're looking for work, so its
+                    enabled bit has to be asked for separately; HasComponent alone makes every citizen look like a seeker.
+                */
+                bool isSeekingJob = m_JobSeekers.HasComponent(resident) && m_JobSeekers.IsComponentEnabled(resident);
+                if (!m_Education.m_Valid || isSeekingJob)
+                {
+                    return;
+                }
+
+                if (m_Students.TryGetComponent(resident, out Game.Citizens.Student student))
+                {
+                    AddEligible(ref stats, student.m_Level, 1f);
+                    AddEnrolled(ref stats, student.m_Level);
+                    return;
+                }
+
+                CitizenAge age = citizen.GetAge();
+                if (age == CitizenAge.Child)
+                {
+                    int ageInDays = TimeSystem.GetDay(m_Education.m_SimulationFrame, m_Education.m_TimeData) - citizen.m_BirthDay;
+                    if (ageInDays >= kElementaryEligibleAgeDays)
+                    {
+                        AddEligible(ref stats, (int)SchoolLevel.Elementary, 1f);
+                    }
+
+                    return;
+                }
+
+                // Only the odds of applying are weighed against the city's modifiers, so a city with none still
+                // reports its students and school-age children.
+                if (!hasCityModifiers)
+                {
+                    return;
+                }
+
+                int finished = citizen.GetEducationLevel();
+                bool isWorker = m_Workers.HasComponent(resident);
+                float willingness = citizen.GetPseudoRandom(CitizenPseudoRandom.StudyWillingness).NextFloat();
+
+                if (finished == (int)SchoolLevel.Elementary && age <= CitizenAge.Adult)
+                {
+                    AddEligible(
+                        ref stats,
+                        (int)SchoolLevel.HighSchool,
+                        EnteringProbability(SchoolLevel.HighSchool, age, isWorker, citizen, willingness, cityModifiers));
+                    return;
+                }
+
+                // A citizen out of high school picks between university and college, so the college odds are only
+                // whatever is left once university has taken its share.
+                if (finished == (int)SchoolLevel.HighSchool && citizen.GetFailedEducationCount() < kMaxFailedEducationAttempts)
+                {
+                    float university =
+                        EnteringProbability(SchoolLevel.University, age, isWorker, citizen, willingness, cityModifiers);
+                    AddEligible(ref stats, (int)SchoolLevel.University, university);
+                    AddEligible(
+                        ref stats,
+                        (int)SchoolLevel.College,
+                        (1f - university)
+                            * EnteringProbability(SchoolLevel.College, age, isWorker, citizen, willingness, cityModifiers));
+                }
+            }
+
+            private static void AddEligible(ref DistrictStats stats, int schoolLevel, float chance)
+            {
+                if (DistrictStats.TryGetSchoolLane(schoolLevel, out int lane))
+                {
+                    stats.m_EligibleSums[lane] += chance;
+                }
+            }
+
+            private static void AddEnrolled(ref DistrictStats stats, int schoolLevel)
+            {
+                if (DistrictStats.TryGetSchoolLane(schoolLevel, out int lane))
+                {
+                    stats.m_EnrolledCounts[lane]++;
+                }
+            }
+
+            // The chance vanilla gives this citizen of applying to the given school level.
+            private float EnteringProbability(
+                SchoolLevel schoolLevel,
+                CitizenAge age,
+                bool isWorker,
+                Citizen citizen,
+                float willingness,
+                DynamicBuffer<CityModifier> cityModifiers) =>
+                ApplyToSchoolSystem.GetEnteringProbability(
+                    age,
+                    isWorker,
+                    (int)schoolLevel,
+                    citizen.m_WellBeing,
+                    willingness,
+                    cityModifiers,
+                    ref m_Education.m_Parameters);
 
             // Adds one living resident's chance of dying today to the totals.
             private void AccumulateDeathChance(Entity resident, Citizen citizen, ref DistrictStats stats)

@@ -8,6 +8,8 @@ export interface Places {
     unit: Unit
 }
 
+const kStudents: Places = { label: VanillaLocale.students, unit: Unit.Integer }
+
 // Indexed by GroupServiceType - order must match the C# enum. Civic holds buildings of every type, so it has nothing to name.
 const kPlaces: (Places | null)[] = [
     null,
@@ -17,6 +19,10 @@ const kPlaces: (Places | null)[] = [
     { label: VanillaLocale.patients, unit: Unit.Integer },
     { label: VanillaLocale.deceased, unit: Unit.Integer },
     { label: VanillaLocale.storedGarbage, unit: Unit.Weight },
+    kStudents,
+    kStudents,
+    kStudents,
+    kStudents,
 ]
 
 // What a building of this service type calls its own places, or null for a type with none to name.

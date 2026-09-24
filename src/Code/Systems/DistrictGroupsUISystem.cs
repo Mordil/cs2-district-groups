@@ -53,12 +53,14 @@ namespace DistrictGroups
         private BufferLookup<Game.Buildings.InstalledUpgrade> m_InstalledUpgrades;
         private BufferLookup<Game.Buildings.Efficiency> m_BuildingEfficiencies;
         private BufferLookup<Game.Economy.Resources> m_BuildingResources;
+        private BufferLookup<Game.Buildings.Student> m_BuildingStudents;
         private BufferLookup<Game.Buildings.Occupant> m_Occupants;
         private BufferLookup<Game.Buildings.Patient> m_BuildingPatients;
         private ComponentLookup<Game.Buildings.DeathcareFacility> m_DeathcareState;
         private BufferLookup<Policy> m_DistrictPolicies;
 
         // The one prefab component each service type keeps its own places and throughput on.
+        private ComponentLookup<SchoolData> m_Schools;
         private ComponentLookup<PoliceStationData> m_PoliceStations;
         private ComponentLookup<PrisonData> m_Prisons;
         private ComponentLookup<EmergencyShelterData> m_EmergencyShelters;
@@ -155,11 +157,13 @@ namespace DistrictGroups
             m_InstalledUpgrades = GetBufferLookup<Game.Buildings.InstalledUpgrade>(true);
             m_BuildingEfficiencies = GetBufferLookup<Game.Buildings.Efficiency>(true);
             m_BuildingResources = GetBufferLookup<Game.Economy.Resources>(true);
+            m_BuildingStudents = GetBufferLookup<Game.Buildings.Student>(true);
             m_Occupants = GetBufferLookup<Game.Buildings.Occupant>(true);
             m_BuildingPatients = GetBufferLookup<Game.Buildings.Patient>(true);
             m_DeathcareState = GetComponentLookup<Game.Buildings.DeathcareFacility>(true);
             m_DistrictPolicies = GetBufferLookup<Policy>(true);
 
+            m_Schools = GetComponentLookup<SchoolData>(true);
             m_PoliceStations = GetComponentLookup<PoliceStationData>(true);
             m_Prisons = GetComponentLookup<PrisonData>(true);
             m_EmergencyShelters = GetComponentLookup<EmergencyShelterData>(true);

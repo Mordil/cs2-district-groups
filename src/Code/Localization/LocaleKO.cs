@@ -112,6 +112,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "건물" },
                 { LocalizationKey.PoliciesTabLabel, "정책" },
                 { LocalizationKey.TypeColumnLabel, "유형" },
+                { LocalizationKey.EligibleColumnLabel, "적합" },
                 { LocalizationKey.NoDistrictsInGroup, "이 그룹에는 지구가 없습니다.\n지구 선택 버튼으로 지구를 추가하세요." },
                 { LocalizationKey.NoBuildingsInGroup, "이 그룹에는 아직 배정된 건물이 없습니다." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "이 그룹의 모든 지구 {COUNT}곳에 정책을 적용합니다." },

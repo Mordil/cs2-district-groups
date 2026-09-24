@@ -19,6 +19,10 @@ export interface ResidentStats {
     happiness: number
     wealth: number
     income: number
+    // Residents who could enter the group's own school level, rounded up from summed probabilities
+    eligible: number
+    // Residents already enrolled at the group's own school level - a subset of eligible
+    enrolled: number
     // Average crime accumulation, as a whole percent of the game's own maximum
     crimeChance: number
     // Average fire hazard, on vanilla's own 0-100 scale
