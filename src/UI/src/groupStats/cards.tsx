@@ -3,7 +3,13 @@ import { ReactNode } from "react"
 import { Unit } from "cs2/l10n"
 
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
-import { Load, PlacesTooltip, assignedCapacity } from "../components/OccupancyStats"
+import {
+    Load,
+    PlacesTooltip,
+    assignedCapacity,
+    assignedOccupants,
+    assignedProcessingCapacity,
+} from "../components/OccupancyStats"
 import { StatValue } from "../components/StatValue"
 import { kGenericType } from "../constants"
 import { AssignedBuilding, Group } from "../types"
@@ -13,13 +19,18 @@ import { GameText, ModText } from "./labels"
 
 // What a group's own assigned buildings add up to, which its type's demand figures are weighed against.
 export interface GroupCapacity {
-    // The places the buildings provide
+    // The places the buildings provide, and how many of those places are already taken
     places: number
+    taken: number
+    // What they work through in a day, for the types whose own demand figure is a rate
+    processing: number
 }
 
 // Sums a group's buildings once per card, rather than once per readout that needs them.
 export const groupCapacity = (buildings: AssignedBuilding[]): GroupCapacity => ({
     places: assignedCapacity(buildings),
+    taken: assignedOccupants(buildings),
+    processing: assignedProcessingCapacity(buildings),
 })
 
 // One readout on a group's card, beside its district and building counts.
@@ -67,6 +78,7 @@ const load = ({ icon, tinted, unit, demand, supply, label }: LoadProps): CardSta
 })
 
 const places = (capacity: GroupCapacity) => capacity.places
+const processing = (capacity: GroupCapacity) => capacity.processing
 
 // What each group type reads out on its card, indexed by GroupServiceType - order must match the C# enum.
 const kCardStats: CardStat[][] = [
@@ -108,6 +120,24 @@ const kCardStats: CardStat[][] = [
             unit: Unit.Percentage,
             of: (group) => group.health,
             label: <GameText label={VanillaLocale.averageHealth} />,
+        }),
+    ],
+    // A crematorium keeps up at a rate while a cemetery fills plots it never gets back, so deathcare weighs both.
+    [
+        load({
+            icon: gameIconSrc("Deathcare"),
+            unit: Unit.Integer,
+            demand: (_group, capacity) => capacity.taken,
+            supply: places,
+            label: <GameText label={VanillaLocale.deceased} />,
+        }),
+        load({
+            icon: modIconSrc("throughput"),
+            tinted: true,
+            unit: Unit.BodiesPerMonth,
+            demand: (group) => group.deathsPerDay,
+            supply: processing,
+            label: <GameText label={VanillaLocale.deceasedProcessingCapacity} />,
         }),
     ],
 ]

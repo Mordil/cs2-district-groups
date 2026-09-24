@@ -218,6 +218,12 @@ export const VanillaLocale = {
     patients: { id: "HealthcareInfoPanel.PATIENTS", fallback: "Patients" },
     averageHealth: { id: "HealthcareInfoPanel.AVERAGE_HEALTH", fallback: "Average Health" },
     patientCapacity: { id: "Properties.PATIENT_CAPACITY", fallback: "Patient Capacity" },
+    deceased: { id: "SelectedInfoPanel.DEATHCARE_BODIES", fallback: "Deceased" },
+    deceasedStorage: { id: "Properties.DECEASED_STORAGE", fallback: "Storage Capacity" },
+    deceasedProcessingCapacity: {
+        id: "Properties.DECEASED_PROCESSING_CAPACITY",
+        fallback: "Processing Capacity",
+    },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",

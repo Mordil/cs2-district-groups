@@ -88,12 +88,22 @@ const activePatientsColumn: DataColumn<DistrictMember> = {
     render: (member) => <StatValue value={member.activePatients} unit={Unit.Integer} />,
 }
 
+const deathsPerDayColumn: DataColumn<DistrictMember> = {
+    id: "deathsPerDay",
+    label: <GameText label={VanillaLocale.deceased} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.deathsPerDay),
+    // intentionally uses IntegerPerMonth because of a bug with BodiesPerMonth between the mod model & game model
+    render: (member) => <StatValue value={member.deathsPerDay} unit={Unit.IntegerPerMonth} />,
+}
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
     [districtColumn, populationColumn, crimeChanceColumn],
     [districtColumn, populationColumn, fireRiskColumn],
     [districtColumn, populationColumn, healthColumn, activePatientsColumn],
+    [districtColumn, populationColumn, deathsPerDayColumn],
 ]
 
 // What a group of this type lists about each of its member districts.
@@ -153,6 +163,20 @@ const shelterCapacityColumn: DataColumn<AssignedBuilding> = {
     ),
 }
 
+// What each building works through in a day, as opposed to what it can hold; one that only ever fills up reads as unreported.
+const processingColumn = (label: VanillaLabel, unit: Unit): DataColumn<AssignedBuilding> => ({
+    id: "processing",
+    label: <GameText label={label} />,
+    descendingFirst: true,
+    compare: byStat((building) => building.processingCapacity),
+    render: (building) => (
+        <StatValue
+            value={hasCapacity(building.processingCapacity) ? building.processingCapacity : kNoValue}
+            unit={unit}
+        />
+    ),
+})
+
 const efficiencyColumn: DataColumn<AssignedBuilding> = {
     id: "efficiency",
     label: <GameText label={VanillaLocale.efficiencyColumn} />,
@@ -167,6 +191,11 @@ const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     [capacityColumn(VanillaLocale.jailCapacity), efficiencyColumn],
     [shelterCapacityColumn, efficiencyColumn],
     [capacityColumn(VanillaLocale.patientCapacity), efficiencyColumn],
+    [
+        capacityColumn(VanillaLocale.deceasedStorage),
+        processingColumn(VanillaLocale.deceasedProcessingCapacity, Unit.IntegerPerMonth),
+        efficiencyColumn,
+    ],
 ]
 
 // What a group of this type lists about each of its assigned buildings.

@@ -5,6 +5,7 @@ using Game.Buildings;
 using Game.Citizens;
 using Game.Economy;
 using Game.Prefabs;
+using Game.Simulation;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
@@ -41,6 +42,12 @@ namespace DistrictGroups
         private EntityQuery m_CitizenHappinessParameterQuery;
         // Holds the crime accumulation ceiling a district's average crime is read as a share of.
         private EntityQuery m_PoliceConfigurationQuery;
+        // Holds the death-rate curve a resident's chance of dying of old age is read off.
+        private EntityQuery m_HealthcareParameterQuery;
+        // Holds the year length a resident's age is turned into a share of a full lifetime with.
+        private EntityQuery m_TimeSettingsQuery;
+        // Holds the calendar a resident's age is read off.
+        private EntityQuery m_TimeDataQuery;
 
         /*
             Every hop a sweep makes off a building - renters, their households, their citizens - goes
@@ -127,8 +134,20 @@ namespace DistrictGroups
         public int StatsVersion { get; private set; }
 
         private DistrictGroupSystem m_GroupSystem;
+        private SimulationSystem m_SimulationSystem;
+        private DeathCheckSystem m_DeathCheckSystem;
+        private TimeSystem m_TimeSystem;
+
+        /*
+            HealthcareParameterData carries two death-rate curves, and a city started before the newer one was
+            introduced keeps reading the legacy one forever. Which one is live is a private field on DeathCheckSystem
+            with no accessor, so it's read by reflection; a build where it's been renamed away falls back to the newer
+            curve, which every city started since uses.
+        */
+        private System.Reflection.FieldInfo m_UseNewDeathRateField;
 
         private int m_ResidentHomeCount;
+        private bool m_SweepDeathcareReady;
         private double m_SweepScheduleMs;
         private readonly System.Diagnostics.Stopwatch m_SweepClock = new System.Diagnostics.Stopwatch();
 
@@ -149,6 +168,13 @@ namespace DistrictGroups
         {
             base.OnCreate();
             m_GroupSystem = World.GetOrCreateSystemManaged<DistrictGroupSystem>();
+            m_SimulationSystem = World.GetOrCreateSystemManaged<SimulationSystem>();
+            m_DeathCheckSystem = World.GetOrCreateSystemManaged<DeathCheckSystem>();
+            m_TimeSystem = World.GetOrCreateSystemManaged<TimeSystem>();
+            m_UseNewDeathRateField = typeof(DeathCheckSystem).GetField(
+                "m_UseNewCurve",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            Mod.log.Info($"Resolved death rate curve selector; found:{m_UseNewDeathRateField != null}");
 
             m_ResidentialBuildingQuery = GetEntityQuery(
                 ComponentType.ReadOnly<Building>(),
@@ -177,6 +203,9 @@ namespace DistrictGroups
                 ComponentType.Exclude<Game.Common.Deleted>());
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
+            m_HealthcareParameterQuery = GetEntityQuery(ComponentType.ReadOnly<HealthcareParameterData>());
+            m_TimeSettingsQuery = GetEntityQuery(ComponentType.ReadOnly<TimeSettingsData>());
+            m_TimeDataQuery = GetEntityQuery(ComponentType.ReadOnly<Game.Common.TimeData>());
 
             m_Renters = GetBufferLookup<Renter>(true);
             m_HouseholdCitizens = GetBufferLookup<HouseholdCitizen>(true);
@@ -386,6 +415,9 @@ namespace DistrictGroups
             CollectScoped(m_FlammableBuildingQuery, m_FlammableBuildings);
             CollectHospitals();
 
+            DeathcareContext deathcare = GetDeathcareContext();
+            m_SweepDeathcareReady = deathcare.m_Valid;
+
             /*
                 Every view onto a persistent list is taken before anything is scheduled: asking a list for
                 one again once a job has been handed it is what the job safety system is there to catch.
@@ -446,6 +478,7 @@ namespace DistrictGroups
                 m_TouristHouseholds = m_TouristHouseholds,
                 m_CommuterHouseholds = m_CommuterHouseholds,
                 m_MovingAwayHouseholds = m_MovingAwayHouseholds,
+                m_Deathcare = deathcare,
                 m_Results = residentResults,
             }.Schedule(residentHomes.Length, kSweepBatchSize, Dependency);
 
@@ -567,7 +600,47 @@ namespace DistrictGroups
                 $"crime_producer_count:{total.m_CrimeProducerCount} crime_sum:{total.m_CrimeSum:F1} " +
                 $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1} " +
                 $"settled_resident_count:{total.m_SettledResidentCount} health_sum:{total.m_HealthSum} " +
-                $"active_patient_count:{total.m_ActivePatientCount}");
+                $"active_patient_count:{total.m_ActivePatientCount} deathcare_ready:{m_SweepDeathcareReady} " +
+                $"death_rate_resident_count:{total.m_DeathRateResidentCount} death_rate_sum:{total.m_DeathRateSum:F2}");
+        }
+
+        // The city-wide inputs the game weighs a resident's chance of dying against.
+        private DeathcareContext GetDeathcareContext()
+        {
+            if (m_HealthcareParameterQuery.IsEmptyIgnoreFilter
+                || m_TimeSettingsQuery.IsEmptyIgnoreFilter
+                || m_TimeDataQuery.IsEmptyIgnoreFilter)
+            {
+                return default;
+            }
+
+            TimeSettingsData timeSettings = m_TimeSettingsQuery.GetSingleton<TimeSettingsData>();
+            if (timeSettings.m_DaysPerYear <= 0)
+            {
+                return default;
+            }
+
+            return new DeathcareContext
+            {
+                m_Valid = true,
+                m_Parameters = m_HealthcareParameterQuery.GetSingleton<HealthcareParameterData>(),
+                m_UseNewCurve = UsesNewDeathRateCurve(),
+                m_DaysPerYear = timeSettings.m_DaysPerYear,
+                m_TimeData = m_TimeDataQuery.GetSingleton<Game.Common.TimeData>(),
+                m_SimulationFrame = m_SimulationSystem.frameIndex,
+                m_NormalizedTime = m_TimeSystem.normalizedTime,
+            };
+        }
+
+        // Which of the two death-rate curves this save is being run against - see m_UseNewDeathRateField.
+        private bool UsesNewDeathRateCurve()
+        {
+            if (m_UseNewDeathRateField == null || m_DeathCheckSystem == null)
+            {
+                return true;
+            }
+
+            return m_UseNewDeathRateField.GetValue(m_DeathCheckSystem) is bool useNewCurve && useNewCurve;
         }
 
         // Points every lookup the sweeps hop through at the current frame's data.
@@ -598,6 +671,21 @@ namespace DistrictGroups
             m_BuildingsUnderConstruction.Update(this);
             m_RoadServiceCoverages.Update(this);
             m_DistrictModifiers.Update(this);
+        }
+
+        // The city-wide inputs the game weighs a citizen's chance of dying against.
+        private struct DeathcareContext
+        {
+            // Whether the city had these loaded when the sweep was scheduled.
+            public bool m_Valid;
+            public HealthcareParameterData m_Parameters;
+            // Which of the two curves in the parameters this save is being run against.
+            public bool m_UseNewCurve;
+            public int m_DaysPerYear;
+            public Game.Common.TimeData m_TimeData;
+            public uint m_SimulationFrame;
+            // Where in the day the sweep is reading from, which is where the game centres a citizen's age.
+            public float m_NormalizedTime;
         }
 
         // Already-accumulated crime, added straight into each producer's own district.
@@ -834,6 +922,7 @@ namespace DistrictGroups
             [ReadOnly] public ComponentLookup<TouristHousehold> m_TouristHouseholds;
             [ReadOnly] public ComponentLookup<CommuterHousehold> m_CommuterHouseholds;
             [ReadOnly] public ComponentLookup<MovingAway> m_MovingAwayHouseholds;
+            public DeathcareContext m_Deathcare;
             [WriteOnly] public NativeArray<DistrictStats> m_Results;
 
             public void Execute(int index)
@@ -890,6 +979,10 @@ namespace DistrictGroups
                     stats.m_HappinessSum += citizen.Happiness;
                     stats.m_LivingResidentCount++;
 
+                    // Vanilla's own death check filters on nothing but being a living citizen, so a household on its
+                    // way out of the city is still losing people here.
+                    AccumulateDeathChance(resident.m_Citizen, citizen, ref stats);
+
                     if (isSettled)
                     {
                         stats.m_SettledResidentCount++;
@@ -905,6 +998,80 @@ namespace DistrictGroups
                 stats.m_WealthSum += EconomyUtils.GetHouseholdTotalWealth(householdData, resources);
                 stats.m_IncomeSum += householdData.m_Income;
                 stats.m_HouseholdCount++;
+            }
+
+            // Adds one living resident's chance of dying today to the totals.
+            private void AccumulateDeathChance(Entity resident, Citizen citizen, ref DistrictStats stats)
+            {
+                if (!m_Deathcare.m_Valid)
+                {
+                    return;
+                }
+
+                stats.m_DeathRateResidentCount++;
+
+                /*
+                    The two causes run on different clocks: illness is rolled afresh every update slice, so a day of it is
+                    that many slices' worth, while old age is settled once a day. They're also read as independent, even
+                    though the game only rolls for illness once old age has spared the citizen; the overlap is far inside
+                    the rounding of a whole-body figure.
+                */
+                stats.m_DeathRateSum += OldAgeChancePerDay(citizen)
+                    + (DeathCheckSystem.kUpdatesPerDay * IllnessChance(resident, citizen));
+            }
+
+            /*
+                A resident's chance of dying of old age today. The death-rate curve isn't a chance but the threshold a
+                number the citizen has carried since birth is compared against, and they die the moment the curve climbs
+                past it. So today's cost is how far the curve climbs over the day, as a share of the range a still-living
+                citizen's number can be in: above where the curve stands now, and below the top.
+            */
+            private float OldAgeChancePerDay(Citizen citizen)
+            {
+                // The game centres a citizen's age on the middle of the day it's checking, not the boundary.
+                float ageInDays = citizen.GetAgeInDays(m_Deathcare.m_SimulationFrame, m_Deathcare.m_TimeData)
+                    + m_Deathcare.m_NormalizedTime
+                    - 0.5f;
+                float lifetimeDays = m_Deathcare.m_DaysPerYear * DeathCheckSystem.kMaxAgeInGameYear;
+
+                float today = DeathThreshold(ageInDays / lifetimeDays);
+                float survivingRange = 1f - today;
+                if (survivingRange <= math.EPSILON)
+                {
+                    return 1f;
+                }
+
+                float tomorrow = DeathThreshold((ageInDays + 1f) / lifetimeDays);
+                return math.saturate(math.max(0f, tomorrow - today) / survivingRange);
+            }
+
+            // Where the death-rate curve this save is being run against stands at a share of a full lifetime.
+            private float DeathThreshold(float lifetimeShare) =>
+                math.saturate(
+                    m_Deathcare.m_UseNewCurve
+                        ? m_Deathcare.m_Parameters.m_DeathRate.Evaluate(lifetimeShare)
+                        : m_Deathcare.m_Parameters.m_LegacyDeathRate.Evaluate(lifetimeShare));
+
+            /*
+                A sick or injured resident's chance of dying of it in one update slice, which the game works out from
+                how far their health has fallen: every full ten points lost is worth more than the last, on top of a
+                floor however mild the illness. The game kills the citizen when a draw below the scale comes out at or
+                under their figure, so the figure itself counts as a losing draw.
+            */
+            private float IllnessChance(Entity resident, Citizen citizen)
+            {
+                const int kIllnessChanceFloor = 8;
+                const int kIllnessChanceScale = 1000;
+
+                if (!m_HealthProblems.TryGetComponent(resident, out HealthProblem problem)
+                    || (problem.m_Flags & (HealthProblemFlags.Sick | HealthProblemFlags.Injured)) == 0)
+                {
+                    return 0f;
+                }
+
+                int healthLost = 10 - citizen.m_Health / 10;
+                return ((healthLost * healthLost) + kIllnessChanceFloor + 1)
+                    / (float)(DeathCheckSystem.kUpdatesPerDay * kIllnessChanceScale);
             }
         }
     }

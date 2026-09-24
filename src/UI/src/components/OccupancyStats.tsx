@@ -74,3 +74,23 @@ export const assignedCapacity = (buildings: AssignedBuilding[]) =>
             hasCapacity(building.capacity) && !isStalled(building) ? total + building.capacity : total,
         0
     )
+
+// The places a group's own buildings have taken, over the same buildings assignedCapacity counts the places of.
+export const assignedOccupants = (buildings: AssignedBuilding[]) =>
+    buildings.reduce(
+        (total, building) =>
+            hasCapacity(building.capacity) && !isStalled(building) && building.occupants >= 0
+                ? total + building.occupants
+                : total,
+        0
+    )
+
+// What a group's own buildings work through in a day, leaving out any that has stalled.
+export const assignedProcessingCapacity = (buildings: AssignedBuilding[]) =>
+    buildings.reduce(
+        (total, building) =>
+            hasCapacity(building.processingCapacity) && !isStalled(building)
+                ? total + building.processingCapacity
+                : total,
+        0
+    )

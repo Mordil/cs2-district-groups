@@ -294,7 +294,26 @@ namespace DistrictGroups
             writer.Write(occupants);
             writer.PropertyName("capacity");
             writer.Write(capacity);
+            writer.PropertyName("processingCapacity");
+            writer.Write(GetProcessingCapacity(facility));
             writer.TypeEnd();
+        }
+
+        /*
+            How much a facility can work through in a day, as opposed to how much it can hold, for the types whose
+            demand is a rate. A cemetery buries the deceased rather than processing them away, so it reports none.
+        */
+        private int GetProcessingCapacity(Facility facility)
+        {
+            if (facility.m_Type == GroupServiceType.Deathcare
+                && TryGetData(facility, ref m_DeathcareFacilities, out DeathcareFacilityData deathcare))
+            {
+                // The facility's tick adds a 1024th of this rate every 256 frames, and a day is 262144 frames,
+                // so the rate is already the whole number of bodies a day at full efficiency.
+                return (int)math.round(deathcare.m_ProcessingRate);
+            }
+
+            return kNoValue;
         }
 
         // How full a building's own places are, with installed upgrades folded in.
@@ -339,6 +358,23 @@ namespace DistrictGroups
                     {
                         occupants = BufferLength(facility.m_Building, ref m_BuildingPatients);
                         capacity = hospital.m_PatientCapacity;
+                    }
+
+                    return;
+
+                case GroupServiceType.Deathcare:
+                    if (TryGetData(facility, ref m_DeathcareFacilities, out DeathcareFacilityData deathcare))
+                    {
+                        /*
+                            A deathcare facility holds the deceased in two places at once: the Patient buffer is who has
+                            arrived and is still waiting, and m_LongTermStoredCount is who has been buried. The sum is the
+                            same one the game's own facility tick tests against capacity to decide it's full.
+                        */
+                        int buried = m_DeathcareState.TryGetComponent(
+                            facility.m_Building,
+                            out Game.Buildings.DeathcareFacility state) ? state.m_LongTermStoredCount : 0;
+                        occupants = BufferLength(facility.m_Building, ref m_BuildingPatients) + buried;
+                        capacity = deathcare.m_StorageCapacity;
                     }
 
                     return;
@@ -394,10 +430,12 @@ namespace DistrictGroups
             m_BuildingEfficiencies.Update(this);
             m_Occupants.Update(this);
             m_BuildingPatients.Update(this);
+            m_DeathcareState.Update(this);
             m_PoliceStations.Update(this);
             m_Prisons.Update(this);
             m_EmergencyShelters.Update(this);
             m_Hospitals.Update(this);
+            m_DeathcareFacilities.Update(this);
         }
 
         // A member district, carrying the per-district numbers its overview row reads
@@ -434,6 +472,8 @@ namespace DistrictGroups
             writer.Write(reader.Health(stats));
             writer.PropertyName("activePatients");
             writer.Write(stats.m_ActivePatientCount);
+            writer.PropertyName("deathsPerDay");
+            writer.Write(reader.DeathsPerDay(stats));
         }
     }
 }

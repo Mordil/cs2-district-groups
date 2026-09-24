@@ -134,6 +134,15 @@ namespace DistrictGroups
         public int m_HealthSum;
         // Residents of this district currently occupying a hospital patient slot, wherever in the city that hospital is.
         public int m_ActivePatientCount;
+        /*
+            Summed chance that a living resident dies today, across both ways the game kills a citizen: old age, drawn
+            from how far the death-rate curve climbs over the day, and illness, read off how far their health has fallen.
+            A sum of chances, so it reads as an expected body count for the day rather than a headcount.
+        */
+        public float m_DeathRateSum;
+        // Living residents the death chances were drawn from. Not a denominator, but it tells a district that loses
+        // nobody apart from a sweep that ran before the city had loaded the parameters the rate is weighed against.
+        public int m_DeathRateResidentCount;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -151,6 +160,8 @@ namespace DistrictGroups
             m_FireRiskBuildingCount += other.m_FireRiskBuildingCount;
             m_HealthSum += other.m_HealthSum;
             m_ActivePatientCount += other.m_ActivePatientCount;
+            m_DeathRateSum += other.m_DeathRateSum;
+            m_DeathRateResidentCount += other.m_DeathRateResidentCount;
         }
     }
 
@@ -218,6 +229,12 @@ namespace DistrictGroups
             stats.m_SettledResidentCount == 0
                 ? DistrictGroupsUISystem.kNoValue
                 : (int)math.round((float)stats.m_HealthSum / stats.m_SettledResidentCount);
+
+        // How many of the district's residents die in a day, rounded up from summed chances, or kNoValue
+        public int DeathsPerDay(DistrictStats stats) =>
+            stats.m_DeathRateResidentCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.ceil(math.max(0f, stats.m_DeathRateSum));
     }
 
     // A named, typed set of base districts.

@@ -27,6 +27,8 @@ export interface ResidentStats {
     health: number
     // Residents currently occupying a hospital patient slot somewhere in the city
     activePatients: number
+    // Residents the district loses in a day, rounded up from summed chances
+    deathsPerDay: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows
@@ -40,6 +42,8 @@ export interface AssignedBuilding {
     occupants: number
     // Places there are, with installed upgrades folded in; kNoValue likewise
     capacity: number
+    // What the building works through in a day, with installed upgrades folded in; kNoValue for a type with no throughput
+    processingCapacity: number
 }
 
 // A service building of the currently filtered type, with the assignment state its row needs

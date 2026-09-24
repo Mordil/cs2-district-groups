@@ -54,13 +54,15 @@ namespace DistrictGroups
         private BufferLookup<Game.Buildings.Efficiency> m_BuildingEfficiencies;
         private BufferLookup<Game.Buildings.Occupant> m_Occupants;
         private BufferLookup<Game.Buildings.Patient> m_BuildingPatients;
+        private ComponentLookup<Game.Buildings.DeathcareFacility> m_DeathcareState;
         private BufferLookup<Policy> m_DistrictPolicies;
 
-        // The one prefab component each service type keeps its own places on.
+        // The one prefab component each service type keeps its own places and throughput on.
         private ComponentLookup<PoliceStationData> m_PoliceStations;
         private ComponentLookup<PrisonData> m_Prisons;
         private ComponentLookup<EmergencyShelterData> m_EmergencyShelters;
         private ComponentLookup<HospitalData> m_Hospitals;
+        private ComponentLookup<DeathcareFacilityData> m_DeathcareFacilities;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -146,12 +148,14 @@ namespace DistrictGroups
             m_BuildingEfficiencies = GetBufferLookup<Game.Buildings.Efficiency>(true);
             m_Occupants = GetBufferLookup<Game.Buildings.Occupant>(true);
             m_BuildingPatients = GetBufferLookup<Game.Buildings.Patient>(true);
+            m_DeathcareState = GetComponentLookup<Game.Buildings.DeathcareFacility>(true);
             m_DistrictPolicies = GetBufferLookup<Policy>(true);
 
             m_PoliceStations = GetComponentLookup<PoliceStationData>(true);
             m_Prisons = GetComponentLookup<PrisonData>(true);
             m_EmergencyShelters = GetComponentLookup<EmergencyShelterData>(true);
             m_Hospitals = GetComponentLookup<HospitalData>(true);
+            m_DeathcareFacilities = GetComponentLookup<DeathcareFacilityData>(true);
 
             SetupRootBindings();
             SetupOverlayBindings();
