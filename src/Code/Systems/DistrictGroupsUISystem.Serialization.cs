@@ -281,12 +281,12 @@ namespace DistrictGroups
             writer.TypeEnd();
         }
 
-        // A building's efficiency as the whole percent the game's own info panel shows, or kUnknownEfficiency when the game reports none for it.
+        // A building's efficiency as the whole percent the game's own info panel shows, or kNoValue when the game reports none for it.
         private int GetEfficiencyPercent(Entity building)
         {
             if (!m_BuildingEfficiencies.TryGetBuffer(building, out DynamicBuffer<Efficiency> efficiencies))
             {
-                return kUnknownEfficiency;
+                return kNoValue;
             }
 
             float efficiency = 1f;
@@ -320,7 +320,7 @@ namespace DistrictGroups
         }
 
         // Writes all the stats from the reader into the JSON data buffer.
-        // Stats with `kNoThreshold` means the district or group had nothing to report for that figure.
+        // Stats with `kNoValue` means the district or group had nothing to report for that figure.
         private void WriteResidentStats(IJsonWriter writer, DistrictStats stats, DistrictStatsReader reader)
         {
             writer.PropertyName("population");

@@ -11,11 +11,11 @@ export interface DistrictMember extends ResidentStats {
     The resident figures a district, or a whole group, reads out.
 
     Happiness and wealth arrive as the ordinal of the band their average landed in rather than as a
-    raw average, and are kNoThreshold when there were no residents to average.
+    raw average, and are kNoValue when there were no residents to average.
     
     Income has no such band in vanilla, so it arrives as the raw average currency figure.
     
-    `kNoThreshold` when there were no households to average.
+    `kNoValue` when there were no households to average.
 */
 export interface ResidentStats {
     population: number
@@ -29,7 +29,7 @@ export interface AssignedBuilding {
     entity: Entity
     name: string
     type: number
-    // Whole-percent efficiency, or kUnknownEfficiency when the building reports none
+    // Whole-percent efficiency, or kNoValue when the building reports none
     efficiency: number
 }
 

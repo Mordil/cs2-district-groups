@@ -229,11 +229,11 @@ const kWealthThresholds: VanillaLabel[] = [
     { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Wealthy]", fallback: "Wealthy" },
 ]
 
-// The label for a happiness band, or null for the kNoThreshold ordinal.
+// The label for a happiness band, or null for the kNoValue ordinal.
 export const happinessThreshold = (ordinal: number): VanillaLabel | null =>
     kHappinessThresholds[ordinal] ?? null
 
-// The label for a household-wealth band, or null for the kNoThreshold ordinal.
+// The label for a household-wealth band, or null for the kNoValue ordinal.
 export const wealthThreshold = (ordinal: number): VanillaLabel | null =>
     kWealthThresholds[ordinal] ?? null
 

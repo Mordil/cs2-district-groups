@@ -136,9 +136,6 @@ namespace DistrictGroups
     // Turns a district's or a group's swept sums into the figures its panels read out.
     public readonly struct DistrictStatsReader
     {
-        // What a figure reads as when the sweep had nothing to work it out from.
-        public const int kNoThreshold = -1;
-
         private readonly bool m_HasWealthBands;
         private readonly CitizenHappinessParameterData m_WealthBands;
 
@@ -149,19 +146,19 @@ namespace DistrictGroups
             m_WealthBands = wealthBands;
         }
 
-        // Which happiness band the average resident falls in, or kNoThreshold
+        // Which happiness band the average resident falls in, or kNoValue
         public int Happiness(DistrictStats stats) =>
             stats.m_LivingResidentCount == 0
-                ? kNoThreshold
+                ? DistrictGroupsUISystem.kNoValue
                 : (int)Game.Citizens.CitizenUtils.GetHappinessKey(
                     stats.m_HappinessSum / stats.m_LivingResidentCount);
 
-        // Which wealth band the average household falls in, or kNoThreshold
+        // Which wealth band the average household falls in, or kNoValue
         public int Wealth(DistrictStats stats)
         {
             if (stats.m_HouseholdCount == 0 || !m_HasWealthBands)
             {
-                return kNoThreshold;
+                return DistrictGroupsUISystem.kNoValue;
             }
             int averageWealth = (int)(stats.m_WealthSum / stats.m_HouseholdCount);
             CitizenHappinessParameterData bands = m_WealthBands;
@@ -169,7 +166,7 @@ namespace DistrictGroups
         }
 
         public int Income(DistrictStats stats) =>
-            stats.m_HouseholdCount == 0 ? kNoThreshold : (int)(stats.m_IncomeSum / stats.m_HouseholdCount);
+            stats.m_HouseholdCount == 0 ? DistrictGroupsUISystem.kNoValue : (int)(stats.m_IncomeSum / stats.m_HouseholdCount);
     }
 
     // A named, typed set of base districts.

@@ -4,7 +4,7 @@ import { LocalizedNumber, Unit } from "cs2/l10n"
 import { Tooltip } from "cs2/ui"
 
 import { VC, VF } from "../../components/vanilla"
-import { kNoValue } from "../../constants"
+import { kNoValueText } from "../../constants"
 import { PolicySlider } from "../../types"
 import { useTranslation } from "../../utils/locale"
 
@@ -64,7 +64,7 @@ export const PolicyValueSlider = ({ slider, value, mixed, onCommit }: PolicyValu
 
     const readOut = (
         <div className={css.sliderValue}>
-            {showMixed ? kNoValue : <LocalizedNumber value={shown} unit={(slider.unit || Unit.Integer) as Unit} />}
+            {showMixed ? kNoValueText : <LocalizedNumber value={shown} unit={(slider.unit || Unit.Integer) as Unit} />}
         </div>
     )
 
