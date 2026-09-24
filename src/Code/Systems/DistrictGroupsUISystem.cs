@@ -39,6 +39,18 @@ namespace DistrictGroups
         private SelectionToolSystem m_SelectionToolSystem;
         private GamePanelUISystem m_GamePanelUISystem;
         private EntityQuery m_GroupQuery;
+        // Every building currently assigned to a group. Disabled means unassigned, and a query over an
+        // enableable component leaves those out.
+        private EntityQuery m_AssignmentQuery;
+
+        // Which buildings belong to which group, bucketed once for a whole payload. Lists are reused
+        // between payloads, so a steady state of refreshes allocates nothing.
+        private readonly Dictionary<Entity, List<Entity>> m_BuildingsByGroup =
+            new Dictionary<Entity, List<Entity>>();
+
+        // What a building row and a policy row are read off.
+        private BufferLookup<Game.Buildings.Efficiency> m_BuildingEfficiencies;
+        private BufferLookup<Policy> m_DistrictPolicies;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -107,6 +119,10 @@ namespace DistrictGroups
             m_SelectionToolSystem = World.GetOrCreateSystemManaged<SelectionToolSystem>();
             m_GamePanelUISystem = World.GetOrCreateSystemManaged<GamePanelUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
+            m_AssignmentQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupAssignment>());
+
+            m_BuildingEfficiencies = GetBufferLookup<Game.Buildings.Efficiency>(true);
+            m_DistrictPolicies = GetBufferLookup<Policy>(true);
 
             SetupRootBindings();
             SetupOverlayBindings();

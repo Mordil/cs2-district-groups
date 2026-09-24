@@ -1,4 +1,3 @@
-using Colossal.Entities;
 using Colossal.UI.Binding;
 using Game.Buildings;
 using Game.Policies;
@@ -16,15 +15,19 @@ namespace DistrictGroups
     {
         private void WriteGroups(IJsonWriter writer)
         {
+            m_StatsSystem.RequestStats();
+            DistrictStatsReader reader = m_StatsSystem.GetStatsReader();
+            UpdateBuildingLookups();
+            CollectAssignedBuildings();
+
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
-            Dictionary<Entity, DistrictStats> districtStats = m_StatsSystem.GetDistrictStats();
             writer.ArrayBegin(groups.Length);
             foreach (Entity group in groups)
             {
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
-                DistrictStats groupStats = m_StatsSystem.GetGroupStats(group, districtStats);
-                DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
-                using NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp);
+                DynamicBuffer<DistrictGroupMember> members =
+                    EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
+
                 writer.TypeBegin("Group");
                 writer.PropertyName("entity");
                 WriteEntity(writer, group);
@@ -34,22 +37,72 @@ namespace DistrictGroups
                 writer.Write((int)data.m_Type);
                 writer.PropertyName("color");
                 writer.Write(data.m_Color);
-                WriteResidentStats(writer, groupStats);
+                WriteResidentStats(writer, SumMemberStats(members), reader);
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)
                 {
-                    WriteDistrictMember(writer, member.m_District, districtStats);
+                    WriteDistrictMember(writer, member.m_District, reader);
                 }
                 writer.ArrayEnd();
                 writer.PropertyName("buildings");
-                writer.ArrayBegin(assignedBuildings.Length);
-                foreach (Entity building in assignedBuildings)
-                {
-                    WriteAssignedBuilding(writer, building);
-                }
-                writer.ArrayEnd();
+                WriteAssignedBuildings(writer, group);
                 writer.TypeEnd();
+            }
+            writer.ArrayEnd();
+        }
+
+        // The group's member districts added together, so its averages are population-weighted.
+        private DistrictStats SumMemberStats(DynamicBuffer<DistrictGroupMember> members)
+        {
+            DistrictStats total = default;
+            foreach (DistrictGroupMember member in members)
+            {
+                if (m_StatsSystem.TryGetDistrictStats(member.m_District, out DistrictStats memberStats))
+                {
+                    total.Add(memberStats);
+                }
+            }
+            return total;
+        }
+
+        // Buckets every assigned building by the group it belongs to in a single pass.
+        private void CollectAssignedBuildings()
+        {
+            foreach (KeyValuePair<Entity, List<Entity>> entry in m_BuildingsByGroup)
+            {
+                entry.Value.Clear();
+            }
+
+            using NativeArray<Entity> buildings = m_AssignmentQuery.ToEntityArray(Allocator.Temp);
+            using NativeArray<DistrictGroupAssignment> assignments =
+                m_AssignmentQuery.ToComponentDataArray<DistrictGroupAssignment>(Allocator.Temp);
+
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                Entity group = assignments[i].m_Group;
+                if (!m_BuildingsByGroup.TryGetValue(group, out List<Entity> assigned))
+                {
+                    assigned = new List<Entity>();
+                    m_BuildingsByGroup.Add(group, assigned);
+                }
+                assigned.Add(buildings[i]);
+            }
+        }
+
+        private void WriteAssignedBuildings(IJsonWriter writer, Entity group)
+        {
+            if (!m_BuildingsByGroup.TryGetValue(group, out List<Entity> buildings))
+            {
+                writer.ArrayBegin(0);
+                writer.ArrayEnd();
+                return;
+            }
+
+            writer.ArrayBegin(buildings.Count);
+            foreach (Entity building in buildings)
+            {
+                WriteAssignedBuilding(writer, building);
             }
             writer.ArrayEnd();
         }
@@ -57,6 +110,8 @@ namespace DistrictGroups
         private void WriteGroupPolicies(IJsonWriter writer)
         {
             IReadOnlyList<DistrictPolicy> policies = m_PolicySystem.Policies;
+            m_DistrictPolicies.Update(this);
+
             CollectPolicyDistricts(m_GroupSystem.FocusedGroup);
 
             writer.ArrayBegin(policies.Count);
@@ -111,18 +166,20 @@ namespace DistrictGroups
 
             m_PolicyDistricts.Clear();
 
-            if (!EntityManager.TryGetBuffer(group, isReadOnly: true, out DynamicBuffer<DistrictGroupMember> members))
+            if (!EntityManager.HasBuffer<DistrictGroupMember>(group))
             {
                 return;
             }
 
+            DynamicBuffer<DistrictGroupMember> members =
+                EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
             foreach (DistrictGroupMember member in members)
             {
                 string name = EntityManager.Exists(member.m_District)
                     ? m_NameSystem.GetRenderedLabelName(member.m_District)
                     : "<missing>";
                 // A district with no policy buffer leaves an uncreated one behind, which the state read already handles.
-                EntityManager.TryGetBuffer(member.m_District, isReadOnly: true, out DynamicBuffer<Policy> policies);
+                m_DistrictPolicies.TryGetBuffer(member.m_District, out DynamicBuffer<Policy> policies);
                 m_PolicyDistricts.Add(new PolicyDistrict(member.m_District, name, policies));
             }
         }
@@ -227,7 +284,7 @@ namespace DistrictGroups
         // A building's efficiency as the whole percent the game's own info panel shows, or kUnknownEfficiency when the game reports none for it.
         private int GetEfficiencyPercent(Entity building)
         {
-            if (!EntityManager.TryGetBuffer(building, isReadOnly: true, out DynamicBuffer<Efficiency> efficiencies))
+            if (!m_BuildingEfficiencies.TryGetBuffer(building, out DynamicBuffer<Efficiency> efficiencies))
             {
                 return kUnknownEfficiency;
             }
@@ -242,40 +299,38 @@ namespace DistrictGroups
             return efficiency > 0f ? math.max(1, (int)math.round(100f * efficiency)) : 0;
         }
 
-        // A member district, carrying the per-district numbers its overview row reads
-        private void WriteDistrictMember(IJsonWriter writer, Entity entity, Dictionary<Entity, DistrictStats> districtStats)
+        // Points every lookup the building rows read through at the current frame's data.
+        private void UpdateBuildingLookups()
         {
-            districtStats.TryGetValue(entity, out DistrictStats stats);
+            m_BuildingEfficiencies.Update(this);
+        }
+
+        // A member district, carrying the per-district numbers its overview row reads
+        private void WriteDistrictMember(IJsonWriter writer, Entity entity, DistrictStatsReader reader)
+        {
+            m_StatsSystem.TryGetDistrictStats(entity, out DistrictStats stats);
 
             writer.TypeBegin("DistrictMember");
             writer.PropertyName("entity");
             WriteEntity(writer, entity);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(entity) ? m_NameSystem.GetRenderedLabelName(entity) : "<missing>");
-            WriteResidentStats(writer, stats);
+            WriteResidentStats(writer, stats, reader);
             writer.TypeEnd();
         }
 
-        /*
-            Happiness and wealth go over as the ordinal of the band the average lands in rather than the raw
-            average, because bucketing wealth needs a game parameter singleton the UI cannot reach, and the
-            panel only ever shows the band's name anyway.
-            
-            Income has no such band, so it goes over as the raw average currency figure instead.
-            
-            DistrictStatsSystem.kNoThreshold means the district
-            or group had no residents (or no households, for wealth/income) to average.
-        */
-        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats)
+        // Writes all the stats from the reader into the JSON data buffer.
+        // Stats with `kNoThreshold` means the district or group had nothing to report for that figure.
+        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats, DistrictStatsReader reader)
         {
             writer.PropertyName("population");
             writer.Write(stats.m_Population);
             writer.PropertyName("happiness");
-            writer.Write(DistrictStatsSystem.GetHappinessThreshold(stats));
+            writer.Write(reader.Happiness(stats));
             writer.PropertyName("wealth");
-            writer.Write(m_StatsSystem.GetWealthThreshold(stats));
+            writer.Write(reader.Wealth(stats));
             writer.PropertyName("income");
-            writer.Write(DistrictStatsSystem.GetAverageIncome(stats));
+            writer.Write(reader.Income(stats));
         }
     }
 }
