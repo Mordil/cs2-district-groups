@@ -4,6 +4,7 @@ using Game.Prefabs;
 using System;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace DistrictGroups
@@ -37,6 +38,23 @@ namespace DistrictGroups
         EducationCollege = 8,
         EducationUniversity = 9,
         Post = 10,
+    }
+
+    // Shared facts about a group's service type.
+    public static class GroupServiceTypes
+    {
+        // The school level an education type teaches, or null for every other type.
+        public static SchoolLevel? GetSchoolLevel(GroupServiceType type)
+        {
+            switch (type)
+            {
+                case GroupServiceType.EducationElementary: return SchoolLevel.Elementary;
+                case GroupServiceType.EducationHighSchool: return SchoolLevel.HighSchool;
+                case GroupServiceType.EducationCollege: return SchoolLevel.College;
+                case GroupServiceType.EducationUniversity: return SchoolLevel.University;
+                default: return null;
+            }
+        }
     }
 
     // A district policy as the group panel lists it, with the prefab display data its row reads.
@@ -107,7 +125,7 @@ namespace DistrictGroups
     // so adding two districts together yields the population-weighted average and not the average of averages.
     public struct DistrictStats
     {
-        // Everyone living in the district's residential buildings.
+        // Everyone living in the district, whether their household rents the place or only shelters there.
         public int m_Population;
         // Summed Citizen.Happiness, divided by m_LivingResidentCount for the average.
         public int m_HappinessSum;
@@ -119,6 +137,45 @@ namespace DistrictGroups
         public long m_IncomeSum;
         // Resident households, excluding the tourists and commuters vanilla leaves out of its wealth average.
         public int m_HouseholdCount;
+        // Living residents of settled households, which is the set the settled averages are drawn from.
+        public int m_SettledResidentCount;
+        // Summed chance that a settled resident enters each of the city's four school levels, one lane per level.
+        public float4 m_EligibleSums;
+        // Settled residents already enrolled at each school level, one lane per level - a subset of m_EligibleSums.
+        public int4 m_EnrolledCounts;
+        // Summed Game.Buildings.CrimeProducer.m_Crime, divided by m_CrimeProducerCount for the average.
+        public float m_CrimeSum;
+        // Crime-producing buildings the sum was drawn from.
+        public int m_CrimeProducerCount;
+        // Summed fire-hazard risk factor, divided by m_FireRiskBuildingCount for the average.
+        public float m_FireRiskSum;
+        // Flammable buildings the sum was drawn from.
+        public int m_FireRiskBuildingCount;
+        // Summed Citizen.m_Health over settled residents, divided by m_SettledResidentCount for the average.
+        public int m_HealthSum;
+        // Residents of this district currently occupying a hospital patient slot, wherever in the city that hospital is.
+        public int m_ActivePatientCount;
+        /*
+            Summed chance that a living resident dies today, across both ways the game kills a citizen: old age, drawn
+            from how far the death-rate curve climbs over the day, and illness, read off how far their health has fallen.
+            A sum of chances, so it reads as an expected body count for the day rather than a headcount.
+        */
+        public float m_DeathRateSum;
+        // Living residents the death chances were drawn from. Not a denominator, but it tells a district that loses
+        // nobody apart from a sweep that ran before the city had loaded the parameters the rate is weighed against.
+        public int m_DeathRateResidentCount;
+        /*
+            Garbage the district's garbage-producing buildings generate per day, from ConsumptionData.m_GarbageAccumulation.
+            A rate rather than GarbageProducer.m_Garbage's uncollected pile: the pile measures whether trucks keep up,
+            while the rate measures what the district causes, which is what a group's processing has to match.
+        */
+        public float m_GarbageAccumulationSum;
+        // Garbage-producing buildings the rate was drawn from, which tells a district that generates nothing apart
+        // from a sweep that saw nothing.
+        public int m_GarbageProducerCount;
+        // Summed MailProducer backlog, sending plus receiving, across the district's mail-producing buildings - the mail
+        // waiting on the group's post facilities' storage.
+        public int m_MailGenerationSum;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -129,7 +186,121 @@ namespace DistrictGroups
             m_WealthSum += other.m_WealthSum;
             m_IncomeSum += other.m_IncomeSum;
             m_HouseholdCount += other.m_HouseholdCount;
+            m_SettledResidentCount += other.m_SettledResidentCount;
+            m_EligibleSums += other.m_EligibleSums;
+            m_EnrolledCounts += other.m_EnrolledCounts;
+            m_CrimeSum += other.m_CrimeSum;
+            m_CrimeProducerCount += other.m_CrimeProducerCount;
+            m_FireRiskSum += other.m_FireRiskSum;
+            m_FireRiskBuildingCount += other.m_FireRiskBuildingCount;
+            m_HealthSum += other.m_HealthSum;
+            m_ActivePatientCount += other.m_ActivePatientCount;
+            m_DeathRateSum += other.m_DeathRateSum;
+            m_DeathRateResidentCount += other.m_DeathRateResidentCount;
+            m_GarbageAccumulationSum += other.m_GarbageAccumulationSum;
+            m_GarbageProducerCount += other.m_GarbageProducerCount;
+            m_MailGenerationSum += other.m_MailGenerationSum;
         }
+
+        // The m_EligibleSums/m_EnrolledCounts lane a school level is counted in, or false for a level outside the city's
+        // own four tiers.
+        public static bool TryGetSchoolLane(int schoolLevel, out int lane)
+        {
+            lane = schoolLevel - (int)SchoolLevel.Elementary;
+            return schoolLevel >= (int)SchoolLevel.Elementary && schoolLevel <= (int)SchoolLevel.University;
+        }
+    }
+
+
+    // Turns a district's or a group's swept sums into the figures its panels read out.
+    public readonly struct DistrictStatsReader
+    {
+        private readonly bool m_HasWealthBands;
+        private readonly CitizenHappinessParameterData m_WealthBands;
+        private readonly float m_MaxCrimeAccumulation;
+
+        // Captures the city-wide parameters one payload's figures are measured against.
+        public DistrictStatsReader(
+            bool hasWealthBands,
+            CitizenHappinessParameterData wealthBands,
+            float maxCrimeAccumulation)
+        {
+            m_HasWealthBands = hasWealthBands;
+            m_WealthBands = wealthBands;
+            m_MaxCrimeAccumulation = maxCrimeAccumulation;
+        }
+
+        // Which happiness band the average resident falls in, or kNoValue
+        public int Happiness(DistrictStats stats) =>
+            stats.m_LivingResidentCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)Game.Citizens.CitizenUtils.GetHappinessKey(
+                    stats.m_HappinessSum / stats.m_LivingResidentCount);
+
+        // Which wealth band the average household falls in, or kNoValue
+        public int Wealth(DistrictStats stats)
+        {
+            if (stats.m_HouseholdCount == 0 || !m_HasWealthBands)
+            {
+                return DistrictGroupsUISystem.kNoValue;
+            }
+            int averageWealth = (int)(stats.m_WealthSum / stats.m_HouseholdCount);
+            CitizenHappinessParameterData bands = m_WealthBands;
+            return (int)Game.UI.InGame.CitizenUIUtils.GetHouseholdWealthKey(averageWealth, bands);
+        }
+
+        public int Income(DistrictStats stats) =>
+            stats.m_HouseholdCount == 0 ? DistrictGroupsUISystem.kNoValue : (int)(stats.m_IncomeSum / stats.m_HouseholdCount);
+
+        // How many residents could enter this school level, rounded up from summed probabilities the way vanilla's
+        // education infoview rounds it, or kNoValue for a group that teaches no level.
+        public int Eligible(DistrictStats stats, SchoolLevel? level) =>
+            level.HasValue && DistrictStats.TryGetSchoolLane((int)level.Value, out int lane)
+                ? (int)math.ceil(stats.m_EligibleSums[lane])
+                : DistrictGroupsUISystem.kNoValue;
+
+        // How many residents are already enrolled at this school level, or kNoValue for a group that teaches no level.
+        public int Enrolled(DistrictStats stats, SchoolLevel? level) =>
+            level.HasValue && DistrictStats.TryGetSchoolLane((int)level.Value, out int lane)
+                ? stats.m_EnrolledCounts[lane]
+                : DistrictGroupsUISystem.kNoValue;
+
+        // Average crime accumulation as a whole percent of PoliceConfigurationData.m_MaxCrimeAccumulation, or kNoValue
+        public int CrimeChance(DistrictStats stats)
+        {
+            if (stats.m_CrimeProducerCount == 0 || m_MaxCrimeAccumulation <= 0f)
+            {
+                return DistrictGroupsUISystem.kNoValue;
+            }
+
+            float averageCrime = stats.m_CrimeSum / stats.m_CrimeProducerCount;
+            return (int)math.round(100f * math.saturate(averageCrime / m_MaxCrimeAccumulation));
+        }
+
+        // Average fire risk across the district's flammable buildings, on vanilla's own 0-100 fire-hazard scale, or kNoValue
+        public int FireRisk(DistrictStats stats) =>
+            stats.m_FireRiskBuildingCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.round(math.clamp(stats.m_FireRiskSum / stats.m_FireRiskBuildingCount, 0f, 100f));
+
+        // Average health across the district's settled residents, on Citizen.m_Health's own 0-100 scale, or kNoValue
+        public int Health(DistrictStats stats) =>
+            stats.m_SettledResidentCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.round((float)stats.m_HealthSum / stats.m_SettledResidentCount);
+
+        // How many of the district's residents die in a day, rounded up from summed chances, or kNoValue
+        public int DeathsPerDay(DistrictStats stats) =>
+            stats.m_DeathRateResidentCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.ceil(math.max(0f, stats.m_DeathRateSum));
+
+        // The garbage the district's own buildings generate per day, as a whole unit, or kNoValue when the sweep
+        // found no garbage-producing buildings there at all.
+        public int GarbageGeneration(DistrictStats stats) =>
+            stats.m_GarbageProducerCount == 0
+                ? DistrictGroupsUISystem.kNoValue
+                : (int)math.round(math.max(0f, stats.m_GarbageAccumulationSum));
     }
 
     // A named, typed set of base districts.

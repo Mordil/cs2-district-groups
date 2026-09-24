@@ -10,18 +10,33 @@ export interface DistrictMember extends ResidentStats {
 /*
     The resident figures a district, or a whole group, reads out.
 
-    Happiness and wealth arrive as the ordinal of the band their average landed in rather than as a
-    raw average, and are kNoThreshold when there were no residents to average.
+    Every figure arrives for every group type, since a bound type's shape can't vary between instances.
     
-    Income has no such band in vanilla, so it arrives as the raw average currency figure.
-    
-    `kNoThreshold` when there were no households to average.
+    A figure the sweep had nothing to work out arrives as `kNoValue`.
 */
 export interface ResidentStats {
     population: number
     happiness: number
     wealth: number
     income: number
+    // Residents who could enter the group's own school level, rounded up from summed probabilities
+    eligible: number
+    // Residents already enrolled at the group's own school level - a subset of eligible
+    enrolled: number
+    // Average crime accumulation, as a whole percent of the game's own maximum
+    crimeChance: number
+    // Average fire hazard, on vanilla's own 0-100 scale
+    fireRisk: number
+    // Average settled-resident health, on vanilla's own 0-100 scale
+    health: number
+    // Residents currently occupying a hospital patient slot somewhere in the city
+    activePatients: number
+    // Residents the district loses in a day, rounded up from summed chances
+    deathsPerDay: number
+    // Garbage the district's own buildings generate per day
+    garbageGeneration: number
+    // Mail waiting to be sent or received across the district's mail-producing buildings
+    mailGeneration: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows
@@ -29,8 +44,14 @@ export interface AssignedBuilding {
     entity: Entity
     name: string
     type: number
-    // Whole-percent efficiency, or kUnknownEfficiency when the building reports none
+    // Whole-percent efficiency, or kNoValue when the building reports none
     efficiency: number
+    // Places taken, or kNoValue when the building has no such places to report
+    occupants: number
+    // Places there are, with installed upgrades folded in; kNoValue likewise
+    capacity: number
+    // What the building works through in a day, with installed upgrades folded in; kNoValue for a type with no throughput
+    processingCapacity: number
 }
 
 // A service building of the currently filtered type, with the assignment state its row needs

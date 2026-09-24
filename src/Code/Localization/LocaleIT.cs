@@ -112,6 +112,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "Edifici" },
                 { LocalizationKey.PoliciesTabLabel, "Politiche" },
                 { LocalizationKey.TypeColumnLabel, "Tipo" },
+                { LocalizationKey.EligibleColumnLabel, "Idonei" },
                 { LocalizationKey.NoDistrictsInGroup, "Non ci sono quartieri in questo gruppo.\nAggiungi quartieri con il pulsante SELEZIONA QUARTIERI." },
                 { LocalizationKey.NoBuildingsInGroup, "Questo gruppo non ha ancora edifici assegnati." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Applica la politica a tutti i {COUNT} quartieri di questo gruppo." },
@@ -119,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "I quartieri di questo gruppo hanno valori diversi." },
                 { LocalizationKey.MetadataDistrictsTooltip, "Quartieri" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Edifici assegnati" },
-                { LocalizationKey.MetadataPopulationTooltip, "Popolazione" },
-                { LocalizationKey.MetadataHappinessTooltip, "Felicità media" },
-                { LocalizationKey.MetadataWealthTooltip, "Ricchezza media" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Mostra sovrimpressione ed edifici" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**GRUPPI DI QUARTIERI**" },

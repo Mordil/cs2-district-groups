@@ -1,6 +1,7 @@
 $horizontal-padding: 16rem;
 
 $row-inset: $horizontal-padding;
+$accent-tint: rgba(75, 195, 241, 0.1);
 
 $row-cell-padding: 6rem;
 $header-label-padding: 6rem;
@@ -22,6 +23,26 @@ $header-label-padding: 6rem;
 .columnHeaderButton {
     margin-left: -$header-label-padding;
     margin-right: -$header-label-padding;
+}
+
+/*
+    The vanilla button label forces white-space: nowrap and shrinks its own font to fit,
+    which squeezes a longer header illegibly small, so it wraps to a second line instead.
+*/
+.columnHeaderLabel {
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2em;
+}
+
+.totalRow {
+    --normalColor: #{$accent-tint};
+    --hoverColorNormal: var(--normalColor);
+    margin-left: $row-inset;
+    margin-right: $row-inset;
+    border-bottom-style: solid;
+    border-bottom-width: var(--stroke2);
+    border-bottom-color: var(--accentColorDark);
 }
 
 .list {
@@ -55,7 +76,7 @@ $header-label-padding: 6rem;
     white-space: nowrap;
 }
 
-.typeName {
+.text {
     max-width: 100%;
     white-space: normal;
     overflow-wrap: break-word;
@@ -66,4 +87,5 @@ $header-label-padding: 6rem;
     background-color: var(--sectionBackgroundColor);
     color: var(--textColorDim);
     font-size: var(--fontSizeM);
+    white-space: pre-wrap;
 }

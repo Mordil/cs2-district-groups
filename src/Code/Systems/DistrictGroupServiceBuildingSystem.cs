@@ -42,7 +42,6 @@ namespace DistrictGroups
         private EntityQuery m_NotificationIconPrefabQuery;
 
         private Dictionary<GroupServiceType, EntityQuery> m_TypeQueries;
-        private Dictionary<GroupServiceType, byte> m_SchoolEducationLevels;
 
         private readonly Dictionary<GroupServiceType, Entity> m_IconPrefabEntities = new Dictionary<GroupServiceType, Entity>();
 
@@ -99,15 +98,6 @@ namespace DistrictGroups
                 { GroupServiceType.EducationCollege, schoolQuery },
                 { GroupServiceType.EducationUniversity, schoolQuery },
                 { GroupServiceType.Post, BuildQuery(ComponentType.ReadOnly<Game.Buildings.PostFacility>()) },
-            };
-
-            // Vanilla's SchoolLevel enum: Elementary=1, HighSchool=2, College=3, University=4.
-            m_SchoolEducationLevels = new Dictionary<GroupServiceType, byte>
-            {
-                { GroupServiceType.EducationElementary, 1 },
-                { GroupServiceType.EducationHighSchool, 2 },
-                { GroupServiceType.EducationCollege, 3 },
-                { GroupServiceType.EducationUniversity, 4 },
             };
         }
 
@@ -318,7 +308,7 @@ namespace DistrictGroups
                 return new NativeArray<Entity>(0, allocator);
             }
 
-            bool isSchoolType = m_SchoolEducationLevels.TryGetValue(type, out byte requiredLevel);
+            SchoolLevel? requiredLevel = GroupServiceTypes.GetSchoolLevel(type);
 
             using NativeArray<Entity> candidates = query.ToEntityArray(Allocator.Temp);
             using NativeList<Entity> filtered = new NativeList<Entity>(candidates.Length, Allocator.Temp);
@@ -329,7 +319,7 @@ namespace DistrictGroups
                 {
                     continue;
                 }
-                if (isSchoolType && !MatchesEducationLevel(building, requiredLevel))
+                if (requiredLevel.HasValue && !MatchesEducationLevel(building, requiredLevel.Value))
                 {
                     continue;
                 }
@@ -343,11 +333,11 @@ namespace DistrictGroups
         }
 
         // Every school tier shares one query, so the prefab's education level is what separates them.
-        private bool MatchesEducationLevel(Entity building, byte requiredLevel)
+        private bool MatchesEducationLevel(Entity building, SchoolLevel requiredLevel)
         {
             Entity prefab = EntityManager.GetComponentData<PrefabRef>(building).m_Prefab;
             return EntityManager.HasComponent<SchoolData>(prefab)
-                && EntityManager.GetComponentData<SchoolData>(prefab).m_EducationLevel == requiredLevel;
+                && EntityManager.GetComponentData<SchoolData>(prefab).m_EducationLevel == (byte)requiredLevel;
         }
 
         // Finds the entity of the existing NotificationIconPrefab named for this type

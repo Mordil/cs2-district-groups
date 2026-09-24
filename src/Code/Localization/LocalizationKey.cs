@@ -44,6 +44,7 @@
         public const string BuildingsTabLabel = "DistrictGroups.UI[BuildingsTabLabel]";
         public const string PoliciesTabLabel = "DistrictGroups.UI[PoliciesTabLabel]";
         public const string TypeColumnLabel = "DistrictGroups.UI[TypeColumnLabel]";
+        public const string EligibleColumnLabel = "DistrictGroups.UI[EligibleColumnLabel]";
         public const string NoDistrictsInGroup = "DistrictGroups.UI[NoDistrictsInGroup]";
         public const string NoBuildingsInGroup = "DistrictGroups.UI[NoBuildingsInGroup]";
         public const string ApplyPolicyToGroupTooltip = "DistrictGroups.UI[ApplyPolicyToGroupTooltip]";
@@ -51,9 +52,6 @@
         public const string MixedPolicyValueTooltip = "DistrictGroups.UI[MixedPolicyValueTooltip]";
         public const string MetadataDistrictsTooltip = "DistrictGroups.UI[MetadataDistrictsTooltip]";
         public const string MetadataBuildingsTooltip = "DistrictGroups.UI[MetadataBuildingsTooltip]";
-        public const string MetadataPopulationTooltip = "DistrictGroups.UI[MetadataPopulationTooltip]";
-        public const string MetadataHappinessTooltip = "DistrictGroups.UI[MetadataHappinessTooltip]";
-        public const string MetadataWealthTooltip = "DistrictGroups.UI[MetadataWealthTooltip]";
         public const string ShowOverlayAndBuildingsLabel = "DistrictGroups.UI[ShowOverlayAndBuildingsLabel]";
 
         public const string ToggleTooltipTitle = "DistrictGroups.UI[ToggleTooltipTitle]";

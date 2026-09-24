@@ -1,6 +1,6 @@
-using Colossal.Entities;
 using Colossal.UI.Binding;
 using Game.Buildings;
+using Game.Economy;
 using Game.Policies;
 using Game.Prefabs;
 using System;
@@ -16,15 +16,21 @@ namespace DistrictGroups
     {
         private void WriteGroups(IJsonWriter writer)
         {
+            m_StatsSystem.RequestStats();
+            DistrictStatsReader reader = m_StatsSystem.GetStatsReader();
+            UpdateBuildingLookups();
+            CollectAssignedBuildings();
+
             using NativeArray<Entity> groups = m_GroupQuery.ToEntityArray(Allocator.Temp);
-            Dictionary<Entity, DistrictStats> districtStats = m_StatsSystem.GetDistrictStats();
             writer.ArrayBegin(groups.Length);
             foreach (Entity group in groups)
             {
                 DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
-                DistrictStats groupStats = m_StatsSystem.GetGroupStats(group, districtStats);
-                DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
-                using NativeArray<Entity> assignedBuildings = m_GroupSystem.GetAssignedBuildings(group, Allocator.Temp);
+                // The tier the group's own type teaches, whose education figures are the only ones it reads.
+                SchoolLevel? schoolLevel = GroupServiceTypes.GetSchoolLevel(data.m_Type);
+                DynamicBuffer<DistrictGroupMember> members =
+                    EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
+
                 writer.TypeBegin("Group");
                 writer.PropertyName("entity");
                 WriteEntity(writer, group);
@@ -34,22 +40,72 @@ namespace DistrictGroups
                 writer.Write((int)data.m_Type);
                 writer.PropertyName("color");
                 writer.Write(data.m_Color);
-                WriteResidentStats(writer, groupStats);
+                WriteResidentStats(writer, SumMemberStats(members), reader, schoolLevel);
                 writer.PropertyName("members");
                 writer.ArrayBegin(members.Length);
                 foreach (DistrictGroupMember member in members)
                 {
-                    WriteDistrictMember(writer, member.m_District, districtStats);
+                    WriteDistrictMember(writer, member.m_District, reader, schoolLevel);
                 }
                 writer.ArrayEnd();
                 writer.PropertyName("buildings");
-                writer.ArrayBegin(assignedBuildings.Length);
-                foreach (Entity building in assignedBuildings)
-                {
-                    WriteAssignedBuilding(writer, building);
-                }
-                writer.ArrayEnd();
+                WriteAssignedBuildings(writer, group);
                 writer.TypeEnd();
+            }
+            writer.ArrayEnd();
+        }
+
+        // The group's member districts added together, so its averages are population-weighted.
+        private DistrictStats SumMemberStats(DynamicBuffer<DistrictGroupMember> members)
+        {
+            DistrictStats total = default;
+            foreach (DistrictGroupMember member in members)
+            {
+                if (m_StatsSystem.TryGetDistrictStats(member.m_District, out DistrictStats memberStats))
+                {
+                    total.Add(memberStats);
+                }
+            }
+            return total;
+        }
+
+        // Buckets every assigned building by the group it belongs to in a single pass.
+        private void CollectAssignedBuildings()
+        {
+            foreach (KeyValuePair<Entity, List<Entity>> entry in m_BuildingsByGroup)
+            {
+                entry.Value.Clear();
+            }
+
+            using NativeArray<Entity> buildings = m_AssignmentQuery.ToEntityArray(Allocator.Temp);
+            using NativeArray<DistrictGroupAssignment> assignments =
+                m_AssignmentQuery.ToComponentDataArray<DistrictGroupAssignment>(Allocator.Temp);
+
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                Entity group = assignments[i].m_Group;
+                if (!m_BuildingsByGroup.TryGetValue(group, out List<Entity> assigned))
+                {
+                    assigned = new List<Entity>();
+                    m_BuildingsByGroup.Add(group, assigned);
+                }
+                assigned.Add(buildings[i]);
+            }
+        }
+
+        private void WriteAssignedBuildings(IJsonWriter writer, Entity group)
+        {
+            if (!m_BuildingsByGroup.TryGetValue(group, out List<Entity> buildings))
+            {
+                writer.ArrayBegin(0);
+                writer.ArrayEnd();
+                return;
+            }
+
+            writer.ArrayBegin(buildings.Count);
+            foreach (Entity building in buildings)
+            {
+                WriteAssignedBuilding(writer, building);
             }
             writer.ArrayEnd();
         }
@@ -57,6 +113,8 @@ namespace DistrictGroups
         private void WriteGroupPolicies(IJsonWriter writer)
         {
             IReadOnlyList<DistrictPolicy> policies = m_PolicySystem.Policies;
+            m_DistrictPolicies.Update(this);
+
             CollectPolicyDistricts(m_GroupSystem.FocusedGroup);
 
             writer.ArrayBegin(policies.Count);
@@ -111,18 +169,20 @@ namespace DistrictGroups
 
             m_PolicyDistricts.Clear();
 
-            if (!EntityManager.TryGetBuffer(group, isReadOnly: true, out DynamicBuffer<DistrictGroupMember> members))
+            if (!EntityManager.HasBuffer<DistrictGroupMember>(group))
             {
                 return;
             }
 
+            DynamicBuffer<DistrictGroupMember> members =
+                EntityManager.GetBuffer<DistrictGroupMember>(group, isReadOnly: true);
             foreach (DistrictGroupMember member in members)
             {
                 string name = EntityManager.Exists(member.m_District)
                     ? m_NameSystem.GetRenderedLabelName(member.m_District)
                     : "<missing>";
                 // A district with no policy buffer leaves an uncreated one behind, which the state read already handles.
-                EntityManager.TryGetBuffer(member.m_District, isReadOnly: true, out DynamicBuffer<Policy> policies);
+                m_DistrictPolicies.TryGetBuffer(member.m_District, out DynamicBuffer<Policy> policies);
                 m_PolicyDistricts.Add(new PolicyDistrict(member.m_District, name, policies));
             }
         }
@@ -209,27 +269,223 @@ namespace DistrictGroups
             writer.Write(m_PrefabSystem.GetPrefabName(prefab));
         }
 
-        // An assigned service building, carrying the per-building numbers its buildings row reads
+        // An assigned service building, carrying the per-building numbers its buildings row reads.
+        //
+        // Its service type is settled first, so every figure is read off the one facility component that type names.
         private void WriteAssignedBuilding(IJsonWriter writer, Entity building)
         {
+            m_BuildingPrefabs.TryGetComponent(building, out PrefabRef prefabRef);
+            Facility facility = new Facility
+            {
+                m_Building = building,
+                m_Prefab = prefabRef.m_Prefab,
+                m_Type = m_GroupSystem.DetectServiceType(prefabRef.m_Prefab),
+            };
+            m_InstalledUpgrades.TryGetBuffer(building, out facility.m_Upgrades);
+            GetOccupancy(facility, out int occupants, out int capacity);
+
             writer.TypeBegin("AssignedBuilding");
             writer.PropertyName("entity");
             WriteEntity(writer, building);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(building) ? m_NameSystem.GetRenderedLabelName(building) : "<missing>");
             writer.PropertyName("type");
-            writer.Write((int)m_GroupSystem.DetectBuildingServiceType(building));
+            writer.Write((int)facility.m_Type);
             writer.PropertyName("efficiency");
             writer.Write(GetEfficiencyPercent(building));
+            writer.PropertyName("occupants");
+            writer.Write(occupants);
+            writer.PropertyName("capacity");
+            writer.Write(capacity);
+            writer.PropertyName("processingCapacity");
+            writer.Write(GetProcessingCapacity(facility));
             writer.TypeEnd();
         }
 
-        // A building's efficiency as the whole percent the game's own info panel shows, or kUnknownEfficiency when the game reports none for it.
+        /*
+            How much a facility can work through in a day, as opposed to how much it can hold, for the types whose
+            demand is a rate. A cemetery buries the deceased rather than processing them away, so it reports none.
+        */
+        private int GetProcessingCapacity(Facility facility)
+        {
+            if (facility.m_Type == GroupServiceType.Garbage
+                && TryGetData(facility, ref m_GarbageFacilities, out GarbageFacilityData garbage))
+            {
+                return garbage.m_ProcessingSpeed;
+            }
+
+            if (facility.m_Type == GroupServiceType.Deathcare
+                && TryGetData(facility, ref m_DeathcareFacilities, out DeathcareFacilityData deathcare))
+            {
+                // The facility's tick adds a 1024th of this rate every 256 frames, and a day is 262144 frames,
+                // so the rate is already the whole number of bodies a day at full efficiency.
+                return (int)math.round(deathcare.m_ProcessingRate);
+            }
+
+            return kNoValue;
+        }
+
+        // How full a building's own places are, with installed upgrades folded in.
+        //
+        // Both read kNoValue for a building with no such places to report.
+        private void GetOccupancy(Facility facility, out int occupants, out int capacity)
+        {
+            occupants = kNoValue;
+            capacity = kNoValue;
+
+            switch (facility.m_Type)
+            {
+                case GroupServiceType.EducationElementary:
+                case GroupServiceType.EducationHighSchool:
+                case GroupServiceType.EducationCollege:
+                case GroupServiceType.EducationUniversity:
+                    if (TryGetData(facility, ref m_Schools, out SchoolData school))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_BuildingStudents);
+                        capacity = school.m_StudentCapacity;
+                    }
+
+                    return;
+
+                // A police group holds both stations and prisons, and whichever the building is, its own capacity answers for it.
+                case GroupServiceType.Police:
+                    if (TryGetData(facility, ref m_PoliceStations, out PoliceStationData station))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_Occupants);
+                        capacity = station.m_JailCapacity;
+                        return;
+                    }
+
+                    if (TryGetData(facility, ref m_Prisons, out PrisonData prison))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_Occupants);
+                        capacity = prison.m_PrisonerCapacity;
+                    }
+
+                    return;
+
+                // A fire group holds stations as well as shelters, and only a shelter holds anybody.
+                case GroupServiceType.Fire:
+                    if (TryGetData(facility, ref m_EmergencyShelters, out EmergencyShelterData shelter))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_Occupants);
+                        capacity = shelter.m_ShelterCapacity;
+                    }
+
+                    return;
+
+                case GroupServiceType.Healthcare:
+                    if (TryGetData(facility, ref m_Hospitals, out HospitalData hospital))
+                    {
+                        occupants = BufferLength(facility.m_Building, ref m_BuildingPatients);
+                        capacity = hospital.m_PatientCapacity;
+                    }
+
+                    return;
+
+                case GroupServiceType.Post:
+                    if (TryGetData(facility, ref m_PostFacilities, out PostFacilityData post))
+                    {
+                        // Stored mail sits in the building's own Resources buffer as three sub-types - unsorted, sorted
+                        // for local delivery, and sorted for outgoing transport - which together are how full it is.
+                        occupants = m_BuildingResources.TryGetBuffer(facility.m_Building, out DynamicBuffer<Resources> mail)
+                            ? EconomyUtils.GetResources(Resource.UnsortedMail, mail)
+                                + EconomyUtils.GetResources(Resource.LocalMail, mail)
+                                + EconomyUtils.GetResources(Resource.OutgoingMail, mail)
+                            : 0;
+                        capacity = post.m_MailCapacity;
+                    }
+
+                    return;
+
+                case GroupServiceType.Deathcare:
+                    if (TryGetData(facility, ref m_DeathcareFacilities, out DeathcareFacilityData deathcare))
+                    {
+                        /*
+                            A deathcare facility holds the deceased in two places at once: the Patient buffer is who has
+                            arrived and is still waiting, and m_LongTermStoredCount is who has been buried. The sum is the
+                            same one the game's own facility tick tests against capacity to decide it's full.
+                        */
+                        int buried = m_DeathcareState.TryGetComponent(
+                            facility.m_Building,
+                            out Game.Buildings.DeathcareFacility state) ? state.m_LongTermStoredCount : 0;
+                        occupants = BufferLength(facility.m_Building, ref m_BuildingPatients) + buried;
+                        capacity = deathcare.m_StorageCapacity;
+                    }
+
+                    return;
+
+                case GroupServiceType.Garbage:
+                    if (TryGetData(facility, ref m_GarbageFacilities, out GarbageFacilityData garbage))
+                    {
+                        occupants = m_BuildingResources.TryGetBuffer(facility.m_Building, out DynamicBuffer<Resources> stored)
+                            ? EconomyUtils.GetResources(Resource.Garbage, stored)
+                            : 0;
+                        capacity = garbage.m_GarbageCapacity;
+                        AddStorageAreas(facility.m_Building, ref occupants, ref capacity);
+                    }
+
+                    return;
+            }
+        }
+
+        /*
+            A landfill's dumping area is drawn by the player, and most of its real capacity lives there rather than in the
+            prefab figure. Vanilla's own garbage infoview does this same walk but never resets its running total between
+            buildings in a chunk, so accumulating into one building's own totals is what avoids inheriting that.
+        */
+        private void AddStorageAreas(Entity building, ref int occupants, ref int capacity)
+        {
+            if (!m_SubAreas.TryGetBuffer(building, out DynamicBuffer<Game.Areas.SubArea> subAreas))
+            {
+                return;
+            }
+
+            foreach (Game.Areas.SubArea subArea in subAreas)
+            {
+                Entity area = subArea.m_Area;
+                if (!m_AreaStorages.TryGetComponent(area, out Game.Areas.Storage storage)
+                    || !m_BuildingPrefabs.TryGetComponent(area, out PrefabRef areaPrefab)
+                    || !m_PrefabStorageAreas.TryGetComponent(areaPrefab.m_Prefab, out StorageAreaData storageArea)
+                    || !m_AreaGeometries.TryGetComponent(area, out Game.Areas.Geometry geometry))
+                {
+                    continue;
+                }
+
+                capacity += Game.Areas.AreaUtils.CalculateStorageCapacity(geometry, storageArea);
+                occupants += storage.m_Amount;
+            }
+        }
+
+        // One facility's own prefab data, with whatever its installed upgrades change about it folded in.
+        private bool TryGetData<T>(Facility facility, ref ComponentLookup<T> facilities, out T data)
+            where T : unmanaged, IComponentData, ICombineData<T>
+        {
+            if (!facilities.TryGetComponent(facility.m_Prefab, out data))
+            {
+                data = default;
+                return false;
+            }
+
+            if (facility.m_Upgrades.IsCreated && facility.m_Upgrades.Length != 0)
+            {
+                UpgradeUtils.CombineStats(ref data, facility.m_Upgrades, ref m_BuildingPrefabs, ref facilities);
+            }
+
+            return true;
+        }
+
+        // How many places of a kind a building has taken, as the length of the buffer it holds them in.
+        private int BufferLength<T>(Entity building, ref BufferLookup<T> holders)
+            where T : unmanaged, IBufferElementData =>
+            holders.TryGetBuffer(building, out DynamicBuffer<T> held) ? held.Length : 0;
+
+        // A building's efficiency as the whole percent the game's own info panel shows, or kNoValue when the game reports none for it.
         private int GetEfficiencyPercent(Entity building)
         {
-            if (!EntityManager.TryGetBuffer(building, isReadOnly: true, out DynamicBuffer<Efficiency> efficiencies))
+            if (!m_BuildingEfficiencies.TryGetBuffer(building, out DynamicBuffer<Efficiency> efficiencies))
             {
-                return kUnknownEfficiency;
+                return kNoValue;
             }
 
             float efficiency = 1f;
@@ -242,40 +498,75 @@ namespace DistrictGroups
             return efficiency > 0f ? math.max(1, (int)math.round(100f * efficiency)) : 0;
         }
 
-        // A member district, carrying the per-district numbers its overview row reads
-        private void WriteDistrictMember(IJsonWriter writer, Entity entity, Dictionary<Entity, DistrictStats> districtStats)
+        // Points every lookup the building rows read through at the current frame's data.
+        private void UpdateBuildingLookups()
         {
-            districtStats.TryGetValue(entity, out DistrictStats stats);
+            m_BuildingPrefabs.Update(this);
+            m_InstalledUpgrades.Update(this);
+            m_BuildingEfficiencies.Update(this);
+            m_BuildingResources.Update(this);
+            m_BuildingStudents.Update(this);
+            m_Occupants.Update(this);
+            m_BuildingPatients.Update(this);
+            m_DeathcareState.Update(this);
+            m_Schools.Update(this);
+            m_PoliceStations.Update(this);
+            m_Prisons.Update(this);
+            m_EmergencyShelters.Update(this);
+            m_Hospitals.Update(this);
+            m_PostFacilities.Update(this);
+            m_GarbageFacilities.Update(this);
+            m_DeathcareFacilities.Update(this);
+            m_SubAreas.Update(this);
+            m_AreaStorages.Update(this);
+            m_AreaGeometries.Update(this);
+            m_PrefabStorageAreas.Update(this);
+        }
+
+        // A member district, carrying the per-district numbers its overview row reads
+        private void WriteDistrictMember(IJsonWriter writer, Entity entity, DistrictStatsReader reader, SchoolLevel? schoolLevel)
+        {
+            m_StatsSystem.TryGetDistrictStats(entity, out DistrictStats stats);
 
             writer.TypeBegin("DistrictMember");
             writer.PropertyName("entity");
             WriteEntity(writer, entity);
             writer.PropertyName("name");
             writer.Write(EntityManager.Exists(entity) ? m_NameSystem.GetRenderedLabelName(entity) : "<missing>");
-            WriteResidentStats(writer, stats);
+            WriteResidentStats(writer, stats, reader, schoolLevel);
             writer.TypeEnd();
         }
 
-        /*
-            Happiness and wealth go over as the ordinal of the band the average lands in rather than the raw
-            average, because bucketing wealth needs a game parameter singleton the UI cannot reach, and the
-            panel only ever shows the band's name anyway.
-            
-            Income has no such band, so it goes over as the raw average currency figure instead.
-            
-            DistrictStatsSystem.kNoThreshold means the district
-            or group had no residents (or no households, for wealth/income) to average.
-        */
-        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats)
+        // Writes all the stats from the reader into the JSON data buffer.
+        // Stats with `kNoValue` means the district or group had nothing to report for that figure.
+        private void WriteResidentStats(IJsonWriter writer, DistrictStats stats, DistrictStatsReader reader, SchoolLevel? schoolLevel)
         {
             writer.PropertyName("population");
             writer.Write(stats.m_Population);
             writer.PropertyName("happiness");
-            writer.Write(DistrictStatsSystem.GetHappinessThreshold(stats));
+            writer.Write(reader.Happiness(stats));
             writer.PropertyName("wealth");
-            writer.Write(m_StatsSystem.GetWealthThreshold(stats));
+            writer.Write(reader.Wealth(stats));
             writer.PropertyName("income");
-            writer.Write(DistrictStatsSystem.GetAverageIncome(stats));
+            writer.Write(reader.Income(stats));
+            writer.PropertyName("eligible");
+            writer.Write(reader.Eligible(stats, schoolLevel));
+            writer.PropertyName("enrolled");
+            writer.Write(reader.Enrolled(stats, schoolLevel));
+            writer.PropertyName("crimeChance");
+            writer.Write(reader.CrimeChance(stats));
+            writer.PropertyName("fireRisk");
+            writer.Write(reader.FireRisk(stats));
+            writer.PropertyName("health");
+            writer.Write(reader.Health(stats));
+            writer.PropertyName("activePatients");
+            writer.Write(stats.m_ActivePatientCount);
+            writer.PropertyName("mailGeneration");
+            writer.Write(stats.m_MailGenerationSum);
+            writer.PropertyName("deathsPerDay");
+            writer.Write(reader.DeathsPerDay(stats));
+            writer.PropertyName("garbageGeneration");
+            writer.Write(reader.GarbageGeneration(stats));
         }
     }
 }

@@ -112,6 +112,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "建築" },
                 { LocalizationKey.PoliciesTabLabel, "政策" },
                 { LocalizationKey.TypeColumnLabel, "類型" },
+                { LocalizationKey.EligibleColumnLabel, "符合資格" },
                 { LocalizationKey.NoDistrictsInGroup, "此群組中沒有行政區。\n請使用「選擇行政區」按鈕新增行政區。" },
                 { LocalizationKey.NoBuildingsInGroup, "此群組尚無已指派建築。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "將該政策套用至此群組的全部 {COUNT} 個行政區。" },
@@ -119,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "此群組中各行政區的數值不同。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
-                { LocalizationKey.MetadataPopulationTooltip, "人口" },
-                { LocalizationKey.MetadataHappinessTooltip, "平均幸福指數" },
-                { LocalizationKey.MetadataWealthTooltip, "平均財富" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "顯示覆蓋圖和建築" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**行政區群組**" },

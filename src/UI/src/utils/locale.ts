@@ -42,6 +42,7 @@ export const kLocale = {
     buildingsTabLabel: id("BuildingsTabLabel"),
     policiesTabLabel: id("PoliciesTabLabel"),
     typeColumnLabel: id("TypeColumnLabel"),
+    eligibleColumnLabel: id("EligibleColumnLabel"),
     noDistrictsInGroup: id("NoDistrictsInGroup"),
     noBuildingsInGroup: id("NoBuildingsInGroup"),
     applyPolicyToGroupTooltip: id("ApplyPolicyToGroupTooltip"),
@@ -49,9 +50,6 @@ export const kLocale = {
     mixedPolicyValueTooltip: id("MixedPolicyValueTooltip"),
     metadataDistrictsTooltip: id("MetadataDistrictsTooltip"),
     metadataBuildingsTooltip: id("MetadataBuildingsTooltip"),
-    metadataPopulationTooltip: id("MetadataPopulationTooltip"),
-    metadataHappinessTooltip: id("MetadataHappinessTooltip"),
-    metadataWealthTooltip: id("MetadataWealthTooltip"),
     showOverlayAndBuildingsLabel: id("ShowOverlayAndBuildingsLabel"),
 
     toggleTooltipTitle: id("ToggleTooltipTitle"),
@@ -132,6 +130,7 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     buildingsTabLabel: "Buildings",
     policiesTabLabel: "Policies",
     typeColumnLabel: "Type",
+    eligibleColumnLabel: "Eligible",
     noDistrictsInGroup: "There are no districts in this group.\nAdd districts with the SELECT DISTRICTS button.",
     noBuildingsInGroup: "This group has no assigned buildings yet.",
     applyPolicyToGroupTooltip: "Applies the policy to all {COUNT} districts in this group.",
@@ -139,9 +138,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     mixedPolicyValueTooltip: "Districts in this group are set to different values.",
     metadataDistrictsTooltip: "Districts",
     metadataBuildingsTooltip: "Assigned buildings",
-    metadataPopulationTooltip: "Population",
-    metadataHappinessTooltip: "Average happiness",
-    metadataWealthTooltip: "Average wealth",
     showOverlayAndBuildingsLabel: "Show overlay and buildings",
 
     toggleTooltipTitle: "**DISTRICT GROUPS**",
@@ -198,10 +194,56 @@ export const VanillaLocale = {
     populationColumn: { id: "Glossary.SECTION_TITLE[Population]", fallback: "Population" },
     happinessColumn: { id: "Glossary.SECTION_TITLE[Happiness]", fallback: "Happiness" },
     wealthColumn: { id: "StatisticsPanel.STAT_TITLE[Wealth]", fallback: "Wealth" },
+    averageHouseholdWealth: {
+        id: "SelectedInfoPanel.AVERAGE_HOUSEHOLD_WEALTH",
+        fallback: "Average wealth",
+    },
     incomeColumn: { id: "StatisticsPanel.STAT_TITLE[Income]", fallback: "Income" },
     buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },
     fireAndRescueType: { id: "Infoviews.INFOVIEW[FireRescue]", fallback: "Fire & Rescue" },
+    fireHazard: { id: "Infoviews.INFOMODE[FireHazard]", fallback: "Fire Hazard" },
+    averageFireHazard: {
+        id: "FireAndRescueInfoPanel.AVERAGE_FIRE_HAZARD",
+        fallback: "Average Fire Hazard",
+    },
+    shelterCapacity: { id: "Properties.SHELTER_CAPACITY", fallback: "Shelter Capacity" },
+    crimeProbability: { id: "Infoviews.INFOMODE[Crime Probability]", fallback: "Crime Probability" },
+    averageCrimeProbability: {
+        id: "PoliceInfoPanel.AVERAGE_CRIME_PROBABILITY",
+        fallback: "Average Crime Probability",
+    },
+    prisoners: { id: "SelectedInfoPanel.PRISON_PRISONERS", fallback: "Prisoners" },
+    jailCapacity: { id: "Properties.JAIL_CAPACITY", fallback: "Jail Capacity" },
+    patients: { id: "HealthcareInfoPanel.PATIENTS", fallback: "Patients" },
+    averageHealth: { id: "HealthcareInfoPanel.AVERAGE_HEALTH", fallback: "Average Health" },
+    patientCapacity: { id: "Properties.PATIENT_CAPACITY", fallback: "Patient Capacity" },
+    deceased: { id: "SelectedInfoPanel.DEATHCARE_BODIES", fallback: "Deceased" },
+    deceasedStorage: { id: "Properties.DECEASED_STORAGE", fallback: "Storage Capacity" },
+    deceasedProcessingCapacity: {
+        id: "Properties.DECEASED_PROCESSING_CAPACITY",
+        fallback: "Processing Capacity",
+    },
+    storedGarbage: {
+        id: "SelectedInfoPanel.GARBAGE_MANAGEMENT_STORED_GARBAGE",
+        fallback: "Stored Garbage",
+    },
+    garbageAccumulation: {
+        id: "Infoviews.INFOMODE[Garbage Accumulation]",
+        fallback: "Garbage Accumulation",
+    },
+    garbageStorage: { id: "Properties.GARBAGE_STORAGE", fallback: "Storage Capacity" },
+    garbageProcessingCapacity: {
+        id: "Properties.GARBAGE_PROCESSING_CAPACITY",
+        fallback: "Processing Capacity",
+    },
+    students: { id: "EducationInfoPanel.STUDENT_COUNT", fallback: "Students" },
+    studentCapacity: { id: "Properties.STUDENT_CAPACITY", fallback: "Student Capacity" },
+    demand: { id: "Glossary.SECTION_TITLE[Demand]", fallback: "Demand" },
+    mail: { id: "SelectedInfoPanel.MAIL", fallback: "Mail" },
+    storedMail: { id: "SelectedInfoPanel.MAIL_STORED_MAIL[Stored]", fallback: "Stored Mail" },
+    mailAccumulation: { id: "Infoviews.INFOMODE[Mail Accumulation]", fallback: "Mail Accumulation" },
+    mailStorage: { id: "Properties.MAIL_STORAGE_CAPACITY", fallback: "Storage Capacity" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",
@@ -229,15 +271,15 @@ const kWealthThresholds: VanillaLabel[] = [
     { id: "WealthInfoPanel.AVERAGE_WEALTH_KEY[Wealthy]", fallback: "Wealthy" },
 ]
 
-// The label for a happiness band, or null for the kNoThreshold ordinal.
+// The label for a happiness band, or null for the kNoValue ordinal.
 export const happinessThreshold = (ordinal: number): VanillaLabel | null =>
     kHappinessThresholds[ordinal] ?? null
 
-// The label for a household-wealth band, or null for the kNoThreshold ordinal.
+// The label for a household-wealth band, or null for the kNoValue ordinal.
 export const wealthThreshold = (ordinal: number): VanillaLabel | null =>
     kWealthThresholds[ordinal] ?? null
 
-type LocaleKey = keyof typeof kLocale
+export type LocaleKey = keyof typeof kLocale
 
 // translate() has no built-in {PLACEHOLDER} substitution (that's only wired
 // up for the JSX <LocalizedString> component's `args`), so plain-string

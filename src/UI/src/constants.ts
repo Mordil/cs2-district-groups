@@ -12,14 +12,12 @@ export const kIconStylePaths = [
 // The constant that any UI panels that should be offset from the top of the screen, as REM units.
 export const kUITopOffset = 60;
 
-// GroupServiceType.Generic - the "no type selected" sentinel for the type filter.
+// GroupServiceType.Generic - the "no type selected" sentinel for the type filter, and the fallback entry of
+// every per-type table under groupStats.
 export const kGenericType = 0
 
-// AssignedBuilding.efficiency for a building the game has no efficiency to report for.
-export const kUnknownEfficiency = -1
-
-// ResidentStats.happiness/wealth for a district or group with no residents to average.
-export const kNoThreshold = -1
+// Any figure there is nothing to report for, which reads as kNoValueText.
+export const kNoValue = -1
 
 // The size of the main panel, in rem CSS units
 export const kPanelWidth = 490
@@ -28,7 +26,7 @@ export const kPanelWidth = 490
 export const kGroupInfoPanelMaxWidth = kPanelWidth * 1.25
 
 // Stands in for a district stat that is unreported.
-export const kNoValue = "—"
+export const kNoValueText = "—"
 
 // Indexed by GroupServiceType - order must match the C# enum.
 // 

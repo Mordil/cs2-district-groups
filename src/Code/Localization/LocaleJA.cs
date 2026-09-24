@@ -112,6 +112,7 @@ namespace DistrictGroups
                 { LocalizationKey.BuildingsTabLabel, "建物" },
                 { LocalizationKey.PoliciesTabLabel, "条例" },
                 { LocalizationKey.TypeColumnLabel, "タイプ" },
+                { LocalizationKey.EligibleColumnLabel, "対象人数" },
                 { LocalizationKey.NoDistrictsInGroup, "このグループには特区がありません。\n「特区を選択」ボタンで特区を追加してください。" },
                 { LocalizationKey.NoBuildingsInGroup, "このグループにはまだ割り当てられた建物がありません。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "このグループの{COUNT}件すべての特区に条例を適用します。" },
@@ -119,9 +120,6 @@ namespace DistrictGroups
                 { LocalizationKey.MixedPolicyValueTooltip, "このグループの特区には異なる値が設定されています。" },
                 { LocalizationKey.MetadataDistrictsTooltip, "特区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
-                { LocalizationKey.MetadataPopulationTooltip, "人口" },
-                { LocalizationKey.MetadataHappinessTooltip, "平均幸福度" },
-                { LocalizationKey.MetadataWealthTooltip, "平均資産" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "オーバーレイと施設を表示" },
 
                 { LocalizationKey.ToggleTooltipTitle, "**特区グループ**" },

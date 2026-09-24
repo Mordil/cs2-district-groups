@@ -19,8 +19,8 @@ namespace DistrictGroups
         /* This needs to be the same as in mod.json */
         public const string kBindingGroup = "district-groups";
 
-        // Sent as a building's efficiency when the game has none to report for it, so the UI can show a placeholder instead of a misleading zero.
-        public const int kUnknownEfficiency = -1;
+        // Sent for any figure there is nothing to report for, so the UI can show a placeholder instead of a misleading zero.
+        public const int kNoValue = -1;
 
         private DistrictGroupSystem m_GroupSystem;
         private DistrictStatsSystem m_StatsSystem;
@@ -39,6 +39,41 @@ namespace DistrictGroups
         private SelectionToolSystem m_SelectionToolSystem;
         private GamePanelUISystem m_GamePanelUISystem;
         private EntityQuery m_GroupQuery;
+        // Every building currently assigned to a group. Disabled means unassigned, and a query over an
+        // enableable component leaves those out.
+        private EntityQuery m_AssignmentQuery;
+
+        // Which buildings belong to which group, bucketed once for a whole payload. Lists are reused
+        // between payloads, so a steady state of refreshes allocates nothing.
+        private readonly Dictionary<Entity, List<Entity>> m_BuildingsByGroup =
+            new Dictionary<Entity, List<Entity>>();
+
+        // What a building row and a policy row are read off.
+        private ComponentLookup<PrefabRef> m_BuildingPrefabs;
+        private BufferLookup<Game.Buildings.InstalledUpgrade> m_InstalledUpgrades;
+        private BufferLookup<Game.Buildings.Efficiency> m_BuildingEfficiencies;
+        private BufferLookup<Game.Economy.Resources> m_BuildingResources;
+        private BufferLookup<Game.Buildings.Student> m_BuildingStudents;
+        private BufferLookup<Game.Buildings.Occupant> m_Occupants;
+        private BufferLookup<Game.Buildings.Patient> m_BuildingPatients;
+        private ComponentLookup<Game.Buildings.DeathcareFacility> m_DeathcareState;
+        private BufferLookup<Policy> m_DistrictPolicies;
+
+        // The one prefab component each service type keeps its own places and throughput on.
+        private ComponentLookup<SchoolData> m_Schools;
+        private ComponentLookup<PoliceStationData> m_PoliceStations;
+        private ComponentLookup<PrisonData> m_Prisons;
+        private ComponentLookup<EmergencyShelterData> m_EmergencyShelters;
+        private ComponentLookup<HospitalData> m_Hospitals;
+        private ComponentLookup<PostFacilityData> m_PostFacilities;
+        private ComponentLookup<GarbageFacilityData> m_GarbageFacilities;
+        private ComponentLookup<DeathcareFacilityData> m_DeathcareFacilities;
+
+        // What a landfill's player-drawn dumping areas are measured with.
+        private BufferLookup<Game.Areas.SubArea> m_SubAreas;
+        private ComponentLookup<Game.Areas.Storage> m_AreaStorages;
+        private ComponentLookup<Game.Areas.Geometry> m_AreaGeometries;
+        private ComponentLookup<StorageAreaData> m_PrefabStorageAreas;
 
         // Remembers whatever the vanilla info panel was showing (if anything)
         // at the moment our panel opened, so closing our panel restores it —
@@ -62,6 +97,16 @@ namespace DistrictGroups
 
         // Scratch space for the focused group's member districts, reused by every policy payload.
         private readonly List<PolicyDistrict> m_PolicyDistricts = new List<PolicyDistrict>();
+
+        // One assigned building as its row reads it, holding what each of its figures would otherwise resolve again.
+        private struct Facility
+        {
+            public Entity m_Building;
+            public Entity m_Prefab;
+            public GroupServiceType m_Type;
+            // Uncreated for a building carrying no upgrades, which is most of them.
+            public DynamicBuffer<Game.Buildings.InstalledUpgrade> m_Upgrades;
+        }
 
         // One member district as the policy payload reads it, holding what every policy would otherwise resolve again.
         private readonly struct PolicyDistrict
@@ -107,6 +152,31 @@ namespace DistrictGroups
             m_SelectionToolSystem = World.GetOrCreateSystemManaged<SelectionToolSystem>();
             m_GamePanelUISystem = World.GetOrCreateSystemManaged<GamePanelUISystem>();
             m_GroupQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupData>());
+            m_AssignmentQuery = GetEntityQuery(ComponentType.ReadOnly<DistrictGroupAssignment>());
+
+            m_BuildingPrefabs = GetComponentLookup<PrefabRef>(true);
+            m_InstalledUpgrades = GetBufferLookup<Game.Buildings.InstalledUpgrade>(true);
+            m_BuildingEfficiencies = GetBufferLookup<Game.Buildings.Efficiency>(true);
+            m_BuildingResources = GetBufferLookup<Game.Economy.Resources>(true);
+            m_BuildingStudents = GetBufferLookup<Game.Buildings.Student>(true);
+            m_Occupants = GetBufferLookup<Game.Buildings.Occupant>(true);
+            m_BuildingPatients = GetBufferLookup<Game.Buildings.Patient>(true);
+            m_DeathcareState = GetComponentLookup<Game.Buildings.DeathcareFacility>(true);
+            m_DistrictPolicies = GetBufferLookup<Policy>(true);
+
+            m_Schools = GetComponentLookup<SchoolData>(true);
+            m_PoliceStations = GetComponentLookup<PoliceStationData>(true);
+            m_Prisons = GetComponentLookup<PrisonData>(true);
+            m_EmergencyShelters = GetComponentLookup<EmergencyShelterData>(true);
+            m_Hospitals = GetComponentLookup<HospitalData>(true);
+            m_PostFacilities = GetComponentLookup<PostFacilityData>(true);
+            m_GarbageFacilities = GetComponentLookup<GarbageFacilityData>(true);
+            m_DeathcareFacilities = GetComponentLookup<DeathcareFacilityData>(true);
+
+            m_SubAreas = GetBufferLookup<Game.Areas.SubArea>(true);
+            m_AreaStorages = GetComponentLookup<Game.Areas.Storage>(true);
+            m_AreaGeometries = GetComponentLookup<Game.Areas.Geometry>(true);
+            m_PrefabStorageAreas = GetComponentLookup<StorageAreaData>(true);
 
             SetupRootBindings();
             SetupOverlayBindings();
