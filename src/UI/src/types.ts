@@ -35,6 +35,8 @@ export interface ResidentStats {
     deathsPerDay: number
     // Garbage the district's own buildings generate per day
     garbageGeneration: number
+    // Mail waiting to be sent or received across the district's mail-producing buildings
+    mailGeneration: number
 }
 
 // A service building assigned to a group, with the per-building numbers its buildings row shows

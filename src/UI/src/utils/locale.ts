@@ -242,6 +242,10 @@ export const VanillaLocale = {
     students: { id: "EducationInfoPanel.STUDENT_COUNT", fallback: "Students" },
     studentCapacity: { id: "Properties.STUDENT_CAPACITY", fallback: "Student Capacity" },
     demand: { id: "Glossary.SECTION_TITLE[Demand]", fallback: "Demand" },
+    mail: { id: "SelectedInfoPanel.MAIL", fallback: "Mail" },
+    storedMail: { id: "SelectedInfoPanel.MAIL_STORED_MAIL[Stored]", fallback: "Stored Mail" },
+    mailAccumulation: { id: "Infoviews.INFOMODE[Mail Accumulation]", fallback: "Mail Accumulation" },
+    mailStorage: { id: "Properties.MAIL_STORAGE_CAPACITY", fallback: "Storage Capacity" },
     focusTooltip: {
         id: "SelectedInfoPanel.TOOLTIP[ActionsSectionFocus]",
         fallback: "Center the camera on the selected item.",

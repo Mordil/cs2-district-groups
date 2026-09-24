@@ -125,6 +125,14 @@ const enrolledColumn: DataColumn<DistrictMember> = {
 
 const kEducationOverview = [districtColumn, populationColumn, eligibleColumn, enrolledColumn]
 
+const mailGenerationColumn: DataColumn<DistrictMember> = {
+    id: "mailGeneration",
+    label: <GameText label={VanillaLocale.mailAccumulation} />,
+    descendingFirst: true,
+    compare: byStat((member) => member.mailGeneration),
+    render: (member) => <StatValue value={member.mailGeneration} unit={Unit.Integer} />,
+}
+
 // The district columns each group type lists, indexed by GroupServiceType - order must match the C# enum.
 const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     [districtColumn, populationColumn, happinessColumn, wealthColumn, incomeColumn],
@@ -137,6 +145,7 @@ const kOverviewColumns: DataColumn<DistrictMember>[][] = [
     kEducationOverview,
     kEducationOverview,
     kEducationOverview,
+    [districtColumn, populationColumn, mailGenerationColumn],
 ]
 
 // What a group of this type lists about each of its member districts.
@@ -240,6 +249,7 @@ const kBuildingColumns: DataColumn<AssignedBuilding>[][] = [
     kSchoolBuildings,
     kSchoolBuildings,
     kSchoolBuildings,
+    [capacityColumn(VanillaLocale.mailStorage), efficiencyColumn],
 ]
 
 // What a group of this type lists about each of its assigned buildings.

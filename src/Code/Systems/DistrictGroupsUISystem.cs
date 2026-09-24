@@ -65,6 +65,7 @@ namespace DistrictGroups
         private ComponentLookup<PrisonData> m_Prisons;
         private ComponentLookup<EmergencyShelterData> m_EmergencyShelters;
         private ComponentLookup<HospitalData> m_Hospitals;
+        private ComponentLookup<PostFacilityData> m_PostFacilities;
         private ComponentLookup<GarbageFacilityData> m_GarbageFacilities;
         private ComponentLookup<DeathcareFacilityData> m_DeathcareFacilities;
 
@@ -168,6 +169,7 @@ namespace DistrictGroups
             m_Prisons = GetComponentLookup<PrisonData>(true);
             m_EmergencyShelters = GetComponentLookup<EmergencyShelterData>(true);
             m_Hospitals = GetComponentLookup<HospitalData>(true);
+            m_PostFacilities = GetComponentLookup<PostFacilityData>(true);
             m_GarbageFacilities = GetComponentLookup<GarbageFacilityData>(true);
             m_DeathcareFacilities = GetComponentLookup<DeathcareFacilityData>(true);
 

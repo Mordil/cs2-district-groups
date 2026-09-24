@@ -174,6 +174,15 @@ const kCardStats: CardStat[][] = [
     kEducationCard,
     kEducationCard,
     kEducationCard,
+    [
+        load({
+            icon: gameIconSrc("PostService"),
+            unit: Unit.Integer,
+            demand: (group) => group.mailGeneration,
+            supply: places,
+            label: <GameText label={VanillaLocale.storedMail} />,
+        }),
+    ],
 ]
 
 // What a group of this type reads out on its card beyond its district and building counts.

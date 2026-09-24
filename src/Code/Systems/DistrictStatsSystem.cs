@@ -47,6 +47,8 @@ namespace DistrictGroups
         private EntityQuery m_GarbageProducerQuery;
         // Holds the balances a building's garbage accumulation is weighed with.
         private EntityQuery m_GarbageParameterQuery;
+        // Mail-producing buildings, keyed to a district via CurrentDistrict.
+        private EntityQuery m_MailProducerQuery;
         // Holds the wealth thresholds the average household wealth is bucketed against.
         private EntityQuery m_CitizenHappinessParameterQuery;
         // Holds the crime accumulation ceiling a district's average crime is read as a share of.
@@ -90,6 +92,7 @@ namespace DistrictGroups
         private BufferLookup<DistrictGroupMember> m_GroupMembers;
 
         private ComponentLookup<Game.Buildings.CrimeProducer> m_CrimeProducers;
+        private ComponentLookup<Game.Buildings.MailProducer> m_MailProducers;
 
         /*
             All the items needed to recreate the fire hazard algorithm since it's not fully exposed by the game.
@@ -135,6 +138,7 @@ namespace DistrictGroups
         private NativeList<float> m_GarbageResults;
         private NativeList<ScopedBuilding> m_CrimeProducerBuildings;
         private NativeList<ScopedBuilding> m_FlammableBuildings;
+        private NativeList<ScopedBuilding> m_MailProducerBuildings;
         // Every hospital in the city, unnarrowed: a patient is credited to their own home district, which is not
         // necessarily the one the hospital sits in.
         private NativeList<Entity> m_Hospitals;
@@ -142,6 +146,7 @@ namespace DistrictGroups
         private NativeList<SumAndCount> m_CrimeTotals;
         private NativeList<SumAndCount> m_FireRiskTotals;
         private NativeList<int> m_PatientTotals;
+        private NativeList<int> m_MailTotals;
 
         private JobHandle m_SweepHandle;
         private bool m_SweepInFlight;
@@ -242,6 +247,11 @@ namespace DistrictGroups
                 ComponentType.Exclude<Game.Tools.Temp>(),
                 ComponentType.Exclude<Game.Common.Deleted>());
             m_GarbageParameterQuery = GetEntityQuery(ComponentType.ReadOnly<GarbageParameterData>());
+            m_MailProducerQuery = GetEntityQuery(
+                ComponentType.ReadOnly<Game.Buildings.MailProducer>(),
+                ComponentType.ReadOnly<CurrentDistrict>(),
+                ComponentType.Exclude<Game.Tools.Temp>(),
+                ComponentType.Exclude<Game.Common.Deleted>());
             m_CitizenHappinessParameterQuery = GetEntityQuery(ComponentType.ReadOnly<CitizenHappinessParameterData>());
             m_PoliceConfigurationQuery = GetEntityQuery(ComponentType.ReadOnly<PoliceConfigurationData>());
             m_HealthcareParameterQuery = GetEntityQuery(ComponentType.ReadOnly<HealthcareParameterData>());
@@ -271,6 +281,7 @@ namespace DistrictGroups
             m_GroupMembers = GetBufferLookup<DistrictGroupMember>(true);
 
             m_CrimeProducers = GetComponentLookup<Game.Buildings.CrimeProducer>(true);
+            m_MailProducers = GetComponentLookup<Game.Buildings.MailProducer>(true);
 
             m_Buildings = GetComponentLookup<Building>(true);
             m_BuildingPrefabs = GetComponentLookup<PrefabRef>(true);
@@ -300,10 +311,12 @@ namespace DistrictGroups
             m_GarbageResults = new NativeList<float>(Allocator.Persistent);
             m_CrimeProducerBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_FlammableBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
+            m_MailProducerBuildings = new NativeList<ScopedBuilding>(Allocator.Persistent);
             m_Hospitals = new NativeList<Entity>(Allocator.Persistent);
             m_CrimeTotals = new NativeList<SumAndCount>(Allocator.Persistent);
             m_FireRiskTotals = new NativeList<SumAndCount>(Allocator.Persistent);
             m_PatientTotals = new NativeList<int>(Allocator.Persistent);
+            m_MailTotals = new NativeList<int>(Allocator.Persistent);
         }
 
         protected override void OnDestroy()
@@ -319,10 +332,12 @@ namespace DistrictGroups
             m_GarbageResults.Dispose();
             m_CrimeProducerBuildings.Dispose();
             m_FlammableBuildings.Dispose();
+            m_MailProducerBuildings.Dispose();
             m_Hospitals.Dispose();
             m_CrimeTotals.Dispose();
             m_FireRiskTotals.Dispose();
             m_PatientTotals.Dispose();
+            m_MailTotals.Dispose();
             base.OnDestroy();
         }
 
@@ -470,6 +485,7 @@ namespace DistrictGroups
             CollectResidentHomes();
             CollectScoped(m_CrimeProducerQuery, m_CrimeProducerBuildings);
             CollectScoped(m_FlammableBuildingQuery, m_FlammableBuildings);
+            CollectScoped(m_MailProducerQuery, m_MailProducerBuildings);
             CollectHospitals();
 
             GarbageContext garbage = GetGarbageContext();
@@ -499,6 +515,8 @@ namespace DistrictGroups
             NativeArray<SumAndCount> fireRiskTotals = m_FireRiskTotals.AsArray();
             NativeArray<Entity> hospitals = m_Hospitals.AsArray();
             NativeArray<int> patientTotals = m_PatientTotals.AsArray();
+            NativeArray<ScopedBuilding> mailProducers = m_MailProducerBuildings.AsArray();
+            NativeArray<int> mailTotals = m_MailTotals.AsArray();
 
             // Every sweep only reads the world and writes into an output of its own, so they all run alongside each other.
             JobHandle crime = new SweepCrimeJob
@@ -506,6 +524,12 @@ namespace DistrictGroups
                 m_Buildings = crimeProducers,
                 m_CrimeProducers = m_CrimeProducers,
                 m_Totals = crimeTotals,
+            }.Schedule(Dependency);
+            JobHandle mail = new SweepMailJob
+            {
+                m_Buildings = mailProducers,
+                m_MailProducers = m_MailProducers,
+                m_Totals = mailTotals,
             }.Schedule(Dependency);
             JobHandle fireRisk = new SweepFireHazardJob
             {
@@ -583,13 +607,14 @@ namespace DistrictGroups
                 m_CrimeTotals = crimeTotals,
                 m_FireRiskTotals = fireRiskTotals,
                 m_PatientTotals = patientTotals,
+                m_MailTotals = mailTotals,
                 m_ResidentHomes = residentHomes,
                 m_ResidentResults = residentResults,
                 m_GarbageProducers = garbageProducers,
                 m_GarbageResults = garbageResults,
                 m_Totals = totals,
             }.Schedule(JobHandle.CombineDependencies(
-                JobHandle.CombineDependencies(crime, fireRisk),
+                JobHandle.CombineDependencies(crime, mail, fireRisk),
                 JobHandle.CombineDependencies(patients, residents, garbageRates)));
 
             Dependency = m_SweepHandle;
@@ -609,6 +634,7 @@ namespace DistrictGroups
             ClearPerDistrict(m_CrimeTotals);
             ClearPerDistrict(m_FireRiskTotals);
             ClearPerDistrict(m_PatientTotals);
+            ClearPerDistrict(m_MailTotals);
         }
 
         // Gives one per-district output an empty entry for every district in scope.
@@ -711,7 +737,8 @@ namespace DistrictGroups
                 $"crime_producer_count:{total.m_CrimeProducerCount} crime_sum:{total.m_CrimeSum:F1} " +
                 $"fire_risk_building_count:{total.m_FireRiskBuildingCount} fire_risk_sum:{total.m_FireRiskSum:F1} " +
                 $"settled_resident_count:{total.m_SettledResidentCount} health_sum:{total.m_HealthSum} " +
-                $"active_patient_count:{total.m_ActivePatientCount} deathcare_ready:{m_SweepDeathcareReady} " +
+                $"active_patient_count:{total.m_ActivePatientCount} mail_generation_sum:{total.m_MailGenerationSum} " +
+                $"deathcare_ready:{m_SweepDeathcareReady} " +
                 $"education_ready:{m_SweepEducationReady} city_modifiers:{m_SweepHasCityModifiers} " +
                 $"eligible_elementary:{total.m_EligibleSums.x:F1} eligible_high_school:{total.m_EligibleSums.y:F1} " +
                 $"eligible_college:{total.m_EligibleSums.z:F1} eligible_university:{total.m_EligibleSums.w:F1} " +
@@ -820,6 +847,7 @@ namespace DistrictGroups
             m_BuildingDistricts.Update(this);
 
             m_CrimeProducers.Update(this);
+            m_MailProducers.Update(this);
 
             m_Buildings.Update(this);
             m_BuildingPrefabs.Update(this);
@@ -894,6 +922,28 @@ namespace DistrictGroups
                     totals.m_Sum += producer.m_Crime;
                     totals.m_Count++;
                     m_Totals[scoped.m_Slot] = totals;
+                }
+            }
+        }
+
+        // Every mail-producing building's backlog, credited to its own district - mail still waiting to be sent or
+        // received is exactly what competes for the group's post facilities' storage.
+        private struct SweepMailJob : IJob
+        {
+            [ReadOnly] public NativeArray<ScopedBuilding> m_Buildings;
+            [ReadOnly] public ComponentLookup<Game.Buildings.MailProducer> m_MailProducers;
+            public NativeArray<int> m_Totals;
+
+            public void Execute()
+            {
+                foreach (ScopedBuilding scoped in m_Buildings)
+                {
+                    if (!m_MailProducers.TryGetComponent(scoped.m_Building, out Game.Buildings.MailProducer producer))
+                    {
+                        continue;
+                    }
+
+                    m_Totals[scoped.m_Slot] += producer.m_SendingMail + producer.receivingMail;
                 }
             }
         }
@@ -1067,6 +1117,7 @@ namespace DistrictGroups
             [ReadOnly] public NativeArray<SumAndCount> m_CrimeTotals;
             [ReadOnly] public NativeArray<SumAndCount> m_FireRiskTotals;
             [ReadOnly] public NativeArray<int> m_PatientTotals;
+            [ReadOnly] public NativeArray<int> m_MailTotals;
             [ReadOnly] public NativeArray<ScopedBuilding> m_ResidentHomes;
             [ReadOnly] public NativeArray<DistrictStats> m_ResidentResults;
             [ReadOnly] public NativeArray<ScopedBuilding> m_GarbageProducers;
@@ -1084,6 +1135,7 @@ namespace DistrictGroups
                     totals.m_FireRiskSum = m_FireRiskTotals[slot].m_Sum;
                     totals.m_FireRiskBuildingCount = m_FireRiskTotals[slot].m_Count;
                     totals.m_ActivePatientCount = m_PatientTotals[slot];
+                    totals.m_MailGenerationSum = m_MailTotals[slot];
                     m_Totals[slot] = totals;
                 }
 

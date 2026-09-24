@@ -173,6 +173,9 @@ namespace DistrictGroups
         // Garbage-producing buildings the rate was drawn from, which tells a district that generates nothing apart
         // from a sweep that saw nothing.
         public int m_GarbageProducerCount;
+        // Summed MailProducer backlog, sending plus receiving, across the district's mail-producing buildings - the mail
+        // waiting on the group's post facilities' storage.
+        public int m_MailGenerationSum;
 
         // Folds another district's totals into these.
         public void Add(DistrictStats other)
@@ -196,6 +199,7 @@ namespace DistrictGroups
             m_DeathRateResidentCount += other.m_DeathRateResidentCount;
             m_GarbageAccumulationSum += other.m_GarbageAccumulationSum;
             m_GarbageProducerCount += other.m_GarbageProducerCount;
+            m_MailGenerationSum += other.m_MailGenerationSum;
         }
 
         // The m_EligibleSums/m_EnrolledCounts lane a school level is counted in, or false for a level outside the city's

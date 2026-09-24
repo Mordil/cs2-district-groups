@@ -23,6 +23,7 @@ const kPlaces: (Places | null)[] = [
     kStudents,
     kStudents,
     kStudents,
+    { label: VanillaLocale.mail, unit: Unit.Integer },
 ]
 
 // What a building of this service type calls its own places, or null for a type with none to name.

@@ -383,6 +383,21 @@ namespace DistrictGroups
 
                     return;
 
+                case GroupServiceType.Post:
+                    if (TryGetData(facility, ref m_PostFacilities, out PostFacilityData post))
+                    {
+                        // Stored mail sits in the building's own Resources buffer as three sub-types - unsorted, sorted
+                        // for local delivery, and sorted for outgoing transport - which together are how full it is.
+                        occupants = m_BuildingResources.TryGetBuffer(facility.m_Building, out DynamicBuffer<Resources> mail)
+                            ? EconomyUtils.GetResources(Resource.UnsortedMail, mail)
+                                + EconomyUtils.GetResources(Resource.LocalMail, mail)
+                                + EconomyUtils.GetResources(Resource.OutgoingMail, mail)
+                            : 0;
+                        capacity = post.m_MailCapacity;
+                    }
+
+                    return;
+
                 case GroupServiceType.Deathcare:
                     if (TryGetData(facility, ref m_DeathcareFacilities, out DeathcareFacilityData deathcare))
                     {
@@ -499,6 +514,7 @@ namespace DistrictGroups
             m_Prisons.Update(this);
             m_EmergencyShelters.Update(this);
             m_Hospitals.Update(this);
+            m_PostFacilities.Update(this);
             m_GarbageFacilities.Update(this);
             m_DeathcareFacilities.Update(this);
             m_SubAreas.Update(this);
@@ -545,6 +561,8 @@ namespace DistrictGroups
             writer.Write(reader.Health(stats));
             writer.PropertyName("activePatients");
             writer.Write(stats.m_ActivePatientCount);
+            writer.PropertyName("mailGeneration");
+            writer.Write(stats.m_MailGenerationSum);
             writer.PropertyName("deathsPerDay");
             writer.Write(reader.DeathsPerDay(stats));
             writer.PropertyName("garbageGeneration");
