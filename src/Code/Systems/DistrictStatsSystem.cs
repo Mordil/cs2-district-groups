@@ -33,8 +33,8 @@ namespace DistrictGroups
         // How many rejections vanilla lets a citizen collect before it stops offering them higher education.
         private const int kMaxFailedEducationAttempts = 3;
 
-        // Residential buildings, keyed to a district via CurrentDistrict.
-        private EntityQuery m_ResidentialBuildingQuery;
+        // Every building somebody lives in, rented or sheltered, keyed to a district via CurrentDistrict.
+        private EntityQuery m_ResidentHomeQuery;
         // Crime-producing buildings, keyed to a district via CurrentDistrict.
         private EntityQuery m_CrimeProducerQuery;
         // Flammable buildings, keyed to a district via CurrentDistrict; excludes fire stations and buildings already
@@ -212,13 +212,32 @@ namespace DistrictGroups
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
             Mod.log.Info($"Resolved death rate curve selector; found:{m_UseNewDeathRateField != null}");
 
-            m_ResidentialBuildingQuery = GetEntityQuery(
-                ComponentType.ReadOnly<Building>(),
-                ComponentType.ReadOnly<CurrentDistrict>(),
-                ComponentType.ReadOnly<Renter>(),
-                ComponentType.ReadOnly<ResidentialProperty>(),
-                ComponentType.Exclude<Game.Tools.Temp>(),
-                ComponentType.Exclude<Game.Common.Deleted>());
+            /*
+                A household the city has no home for keeps living somewhere: vanilla shelters it in a park or lets it squat
+                an abandoned building, recorded as that building's renter exactly as a paying household is. So all three
+                property kinds are what "lives in this district" means, the same line BuildingUtils.IsHomelessShelterBuilding
+                draws. A household is in one building's renter buffer and no more, so nobody is counted twice.
+            */
+            m_ResidentHomeQuery = GetEntityQuery(new EntityQueryDesc
+            {
+                All = new[]
+                {
+                    ComponentType.ReadOnly<Building>(),
+                    ComponentType.ReadOnly<CurrentDistrict>(),
+                    ComponentType.ReadOnly<Renter>(),
+                },
+                Any = new[]
+                {
+                    ComponentType.ReadOnly<ResidentialProperty>(),
+                    ComponentType.ReadOnly<Game.Buildings.Park>(),
+                    ComponentType.ReadOnly<Game.Buildings.Abandoned>(),
+                },
+                None = new[]
+                {
+                    ComponentType.ReadOnly<Game.Tools.Temp>(),
+                    ComponentType.ReadOnly<Game.Common.Deleted>(),
+                },
+            });
             m_CrimeProducerQuery = GetEntityQuery(
                 ComponentType.ReadOnly<Game.Buildings.CrimeProducer>(),
                 ComponentType.ReadOnly<CurrentDistrict>(),
@@ -667,7 +686,7 @@ namespace DistrictGroups
 
         private void CollectResidentHomes()
         {
-            m_ResidentHomeCount = CollectScoped(m_ResidentialBuildingQuery, m_ResidentHomes);
+            m_ResidentHomeCount = CollectScoped(m_ResidentHomeQuery, m_ResidentHomes);
             m_ResidentResults.Clear();
             m_ResidentResults.Resize(m_ResidentHomes.Length, NativeArrayOptions.UninitializedMemory);
         }
@@ -1267,7 +1286,7 @@ namespace DistrictGroups
                 m_Results[index] = stats;
             }
 
-            // Adds one residential building's renter households to the totals.
+            // Adds one home's renter households to the totals, whether they rent it or only shelter there.
             private void AccumulateBuilding(
                 Entity building,
                 bool hasCityModifiers,

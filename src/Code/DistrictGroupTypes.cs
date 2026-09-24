@@ -125,7 +125,7 @@ namespace DistrictGroups
     // so adding two districts together yields the population-weighted average and not the average of averages.
     public struct DistrictStats
     {
-        // Everyone living in the district's residential buildings.
+        // Everyone living in the district, whether their household rents the place or only shelters there.
         public int m_Population;
         // Summed Citizen.Happiness, divided by m_LivingResidentCount for the average.
         public int m_HappinessSum;
