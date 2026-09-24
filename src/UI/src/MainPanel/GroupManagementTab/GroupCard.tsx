@@ -1,7 +1,7 @@
 import { CSSProperties, MouseEvent, useContext, useState } from "react"
 
 import { trigger } from "cs2/api"
-import { LocalizedString } from "cs2/l10n"
+import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
@@ -9,6 +9,7 @@ import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
 import { MetadataItem } from "../../components/MetadataItem"
 import { SelectDistrictsButton } from "../../components/SelectDistrictsButton"
 import { VC, VF, VT } from "../../components/vanilla"
+import { cardStats } from "../../groupStats/cards"
 import { colorToCss, markdownRenderer } from "../../shared"
 import { deleteGroup, removeMember, toggleDistrictSelection } from "../../triggers"
 import { Group } from "../../types"
@@ -38,6 +39,7 @@ interface GroupCardProps {
     onViewDetails: () => void
 }
 
+// One group's row in the manager, reading out whatever its own service type has to say about it.
 export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCardProps) => {
     const t = useTranslation()
     const [expanded, setExpanded] = useState(false)
@@ -143,19 +145,22 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                         <div className={css.metadataItems}>
                             <MetadataItem
                                 icon={gameIconSrc("LotTool")}
-                                value={group.members.length}
+                                value={<LocalizedNumber value={group.members.length} unit={Unit.Integer} />}
                                 tooltip={t("metadataDistrictsTooltip")}
                             />
                             <MetadataItem
                                 icon={modIconSrc("building")}
-                                value={group.buildings.length}
+                                value={<LocalizedNumber value={group.buildings.length} unit={Unit.Integer} />}
                                 tooltip={t("metadataBuildingsTooltip")}
                             />
-                            <MetadataItem
-                                icon={gameIconSrc("Population")}
-                                value={group.population}
-                                tooltip={t("metadataPopulationTooltip")}
-                            />
+                            {cardStats(group.type).map((stat, index) => (
+                                <MetadataItem
+                                    key={index}
+                                    icon={stat.icon}
+                                    value={stat.render(group)}
+                                    tooltip={stat.tooltip(group)}
+                                />
+                            ))}
                         </div>
 
                         <Tooltip tooltip={deleteGroupTooltip}>
