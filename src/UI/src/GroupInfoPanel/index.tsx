@@ -105,7 +105,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         that's actively managing a building's operating districts is not, so let's get the user to double confirm.
     */
     const handleDeleteGroup = () => {
-        logger.info(`Delete group clicked; entity:${entityKey(group.entity)}`)
+        logger.debug(`Delete group clicked; entity:${entityKey(group.entity)}`)
         if (group.buildings.length === 0) {
             deleteGroup(group.entity)
             return
@@ -122,12 +122,12 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                 confirm={t("deleteGroupConfirm")}
                 cancel={t("deleteGroupCancel")}
                 onConfirm={() => {
-                    logger.info(`Delete group confirmed; entity:${entityKey(group.entity)}`)
+                    logger.debug(`Delete group confirmed; entity:${entityKey(group.entity)}`)
                     deleteGroup(group.entity)
                     dialogStack.closeAll()
                 }}
                 onCancel={() => {
-                    logger.info(`Delete group dialog dismissed; entity:${entityKey(group.entity)}`)
+                    logger.debug(`Delete group dialog dismissed; entity:${entityKey(group.entity)}`)
                     dialogStack.closeAll()
                 }}
             />
@@ -137,12 +137,12 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
     // display overlay and buildings together, since it's filtered to the group being inspected
     // we restore the original state when the panel dismisses
     useEffect(() => {
-        logger.info(`Forcing group overlay and service buildings on for the group info panel; prev_overlay:${restoreShowOverlay.current} prev_buildings:${restoreShowServiceBuildings.current}`)
+        logger.debug(`Forcing group overlay and service buildings on for the group info panel; prev_overlay:${restoreShowOverlay.current} prev_buildings:${restoreShowServiceBuildings.current}`)
         setShowOverlay(true)
         setShowServiceBuildings(true)
 
         return () => {
-            logger.info(`Restoring display toggles after leaving the group info panel; overlay:${restoreShowOverlay.current} buildings:${restoreShowServiceBuildings.current}`)
+            logger.debug(`Restoring display toggles after leaving the group info panel; overlay:${restoreShowOverlay.current} buildings:${restoreShowServiceBuildings.current}`)
             setShowOverlay(restoreShowOverlay.current)
             setShowServiceBuildings(restoreShowServiceBuildings.current)
         }
@@ -150,11 +150,11 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
 
     // notify when we present or dismiss a single group
     useEffect(() => {
-        logger.info(`Focusing overlay on group; entity:${entityKey(group.entity)}`)
+        logger.debug(`Focusing overlay on group; entity:${entityKey(group.entity)}`)
         setFocusedGroup(group.entity)
 
         return () => {
-            logger.info(`Clearing overlay group focus; entity:${entityKey(group.entity)}`)
+            logger.debug(`Clearing overlay group focus; entity:${entityKey(group.entity)}`)
             clearFocusedGroup()
         }
     }, [group.entity])
@@ -175,19 +175,19 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
         if (trimmed.length === 0) {
             setNameDraft(group.name)
         } else if (trimmed !== group.name) {
-            logger.info(`Group renamed; entity:${entityKey(group.entity)} name:${trimmed}`)
+            logger.debug(`Group renamed; entity:${entityKey(group.entity)} name:${trimmed}`)
             renameGroup(group.entity, trimmed)
         }
     }
 
     const onTabSelect = (tab: GroupInfoTab) => {
-        logger.info(`Group info tab changed; tab:${GroupInfoTab[tab]}`)
+        logger.debug(`Group info tab changed; tab:${GroupInfoTab[tab]}`)
         lastGroupInfoTab = tab
         setActiveTab(tab)
     }
 
     const onShowOverlayAndBuildingsChange = (checked: boolean) => {
-        logger.info(`Show overlay and buildings toggled; show:${checked}`)
+        logger.debug(`Show overlay and buildings toggled; show:${checked}`)
         setShowOverlay(checked)
         setShowServiceBuildings(checked)
     }
@@ -206,7 +206,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
 
     const handleClose = () => {
         if (selectingDistricts) {
-            logger.info(`Closing group info panel with active district selection, toggling off; entity:${entityKey(group.entity)}`)
+            logger.debug(`Closing group info panel with active district selection, toggling off; entity:${entityKey(group.entity)}`)
             toggleDistrictSelection(group.entity)
         }
         onClose()
@@ -224,7 +224,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                                     return
                                 }
 
-                                logger.info(`Group color changed; entity:${entityKey(group.entity)}`)
+                                logger.debug(`Group color changed; entity:${entityKey(group.entity)}`)
                                 setGroupColor(group.entity, color)
                             }}
                             tooltip={t("groupColorTooltip")}
@@ -268,7 +268,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                                     return
                                 }
 
-                                logger.info(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
+                                logger.debug(`Group type changed; entity:${entityKey(group.entity)} type:${newType}`)
                                 setGroupType(group.entity, newType)
                             }}
                             labels={typeLabels}
@@ -281,7 +281,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             selected={selectingDistricts}
                             className={css.selectDistrictButton}
                             onSelect={() => {
-                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                                logger.debug(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                                 toggleDistrictSelection(group.entity)
                             }}
                         />

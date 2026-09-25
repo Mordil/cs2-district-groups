@@ -31,7 +31,7 @@ namespace DistrictGroups
                 // Picking a tool again dismisses our panel
                 if (m_ToolSystem.activeTool != null && m_ToolSystem.activeTool != m_DefaultToolSystem)
                 {
-                    Mod.log.Info($"Cancelling active tool for panel open; tool:{m_ToolSystem.activeTool.toolID}");
+                    Mod.log.Debug($"Cancelling active tool for panel open; tool:{m_ToolSystem.activeTool.toolID}");
                     m_ToolSystem.activeTool = m_DefaultToolSystem;
                 }
 

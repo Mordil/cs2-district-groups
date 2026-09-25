@@ -19,7 +19,7 @@ namespace DistrictGroups
             {
                 m_DesaturationActive = true;
                 m_DesaturationVolume.gameObject.SetActive(true);
-                Mod.log.Info("Group overlay desaturation toggled; active:True");
+                Mod.log.Debug("Group overlay desaturation toggled; active:True");
             }
         }
 
@@ -30,7 +30,7 @@ namespace DistrictGroups
             {
                 m_DesaturationVolume.gameObject.SetActive(false);
             }
-            Mod.log.Info("Group overlay desaturation toggled; active:False");
+            Mod.log.Debug("Group overlay desaturation toggled; active:False");
         }
 
         private void EnsureDesaturationVolume()
@@ -40,7 +40,8 @@ namespace DistrictGroups
                 return;
             }
 
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             m_DesaturationVolume = VolumeHelper.CreateVolume("DistrictGroupsDesaturationVolume", VolumeHelper.kOverrideVolumePriority);
             m_DesaturationVolume.isGlobal = true;
@@ -48,26 +49,26 @@ namespace DistrictGroups
             m_ColorAdjustments.active = true;
             m_AppliedDesaturationPercent = int.MinValue; // fresh component, force the first write
 
-            stopwatch.Stop();
-            Mod.log.Debug($"Group overlay desaturation volume created; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
+            if (debugLogging)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Group overlay desaturation volume created; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
+            }
         }
 
         private void DestroyDesaturationVolume()
         {
-            if (m_DesaturationVolume != null)
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
+
+            VolumeHelper.DestroyVolume(m_DesaturationVolume);
+            m_DesaturationVolume = null;
+            m_ColorAdjustments = null;
+
+            if (debugLogging)
             {
-                System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-                VolumeHelper.DestroyVolume(m_DesaturationVolume);
-                m_DesaturationVolume = null;
-                m_ColorAdjustments = null;
-
                 stopwatch.Stop();
                 Mod.log.Debug($"Group overlay desaturation volume destroyed; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
-            }
-            else
-            {
-                Mod.log.Warn($"{nameof(DestroyDesaturationVolume)} was called, but the volume does not exist.");
             }
         }
     }

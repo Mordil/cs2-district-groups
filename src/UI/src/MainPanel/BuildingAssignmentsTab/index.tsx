@@ -119,22 +119,22 @@ export const BuildingAssignmentsTab = ({ className }: BuildingAssignmentsTabProp
     const groups = useValue(groups$)
 
     const onSelect = (building: ServiceBuilding, group: Entity) => {
-        logger.info(`Assign group clicked; building:${entityKey(building.entity)} group:${entityKey(group)}`)
+        logger.debug(`Assign group clicked; building:${entityKey(building.entity)} group:${entityKey(group)}`)
         assignBuildingGroup(building.entity, group)
     }
 
     const onUnassign = (building: ServiceBuilding) => {
-        logger.info(`Unassign group clicked; building:${entityKey(building.entity)}`)
+        logger.debug(`Unassign group clicked; building:${entityKey(building.entity)}`)
         unassignBuildingGroup(building.entity)
     }
 
     const onViewDetails = (building: ServiceBuilding) => {
-        logger.info(`View details clicked; building:${entityKey(building.entity)}`)
+        logger.debug(`View details clicked; building:${entityKey(building.entity)}`)
         trigger("selectedInfo", "selectEntity", building.entity)
     }
 
     const onFocusBuilding = (building: ServiceBuilding) => {
-        logger.info(`Focus building clicked; building:${entityKey(building.entity)}`)
+        logger.debug(`Focus building clicked; building:${entityKey(building.entity)}`)
         camera.focusEntity(building.entity)
     }
 

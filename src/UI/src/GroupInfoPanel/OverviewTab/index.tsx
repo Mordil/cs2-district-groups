@@ -21,7 +21,7 @@ export const OverviewTab = ({ group, className }: OverviewTabProps) => {
     }
 
     const onRemoveMember = (member: DistrictMember) => {
-        logger.info(
+        logger.debug(
             `Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`
         )
         removeMember(group.entity, member.entity)

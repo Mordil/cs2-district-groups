@@ -322,7 +322,10 @@ namespace DistrictGroups
             m_BorderPositions.Dispose();
             m_ToolSystem.EventToolChanged = (System.Action<ToolBaseSystem>)System.Delegate.Remove(
                 m_ToolSystem.EventToolChanged, (System.Action<ToolBaseSystem>)OnActiveToolChanged);
-            DestroyDesaturationVolume();
+            if (m_DesaturationVolume != null)
+            {
+                DestroyDesaturationVolume();
+            }
             DestroyFillRoot();
             DestroyLabelRoot();
             DestroyOverlayCompositePass();
@@ -352,7 +355,7 @@ namespace DistrictGroups
             {
                 m_Visible = false;
                 ApplyAreasVisibility();
-                Mod.log.Info("Forcing group overlay closed on load");
+                Mod.log.Debug("Forcing group overlay closed on load");
             }
             if (m_DesaturationActive)
             {
@@ -385,7 +388,7 @@ namespace DistrictGroups
         protected override void OnUpdate()
         {
             // we don't want to flood the logs with rendering breadcrumbs, so we sample instead
-            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            bool debugLogging = Mod.log.isDebugEnabled;
             bool shouldSample = debugLogging &&
                 UnityEngine.Time.realtimeSinceStartup - m_LastSampleTime >= kSampleIntervalSeconds;
             if (shouldSample)
@@ -458,7 +461,7 @@ namespace DistrictGroups
             bool wasActive = IsOverlayActive;
             m_Visible = visible;
             OnOverlayActiveChanged(wasActive);
-            Mod.log.Info($"Group overlay toggled; visible:{m_Visible}");
+            Mod.log.Debug($"Group overlay toggled; visible:{m_Visible}");
             ApplyAreasVisibility();
         }
 
@@ -472,7 +475,7 @@ namespace DistrictGroups
             bool wasActive = IsOverlayActive;
             m_ShowOverlay = show;
             OnOverlayActiveChanged(wasActive);
-            Mod.log.Info($"Show group overlay toggled; show:{m_ShowOverlay}");
+            Mod.log.Debug($"Show group overlay toggled; show:{m_ShowOverlay}");
         }
 
         private void OnOverlayActiveChanged(bool wasActive)
@@ -495,7 +498,7 @@ namespace DistrictGroups
                 return;
             }
             m_AreasVisible = visible;
-            Mod.log.Info($"District areas checkbox toggled; visible:{m_AreasVisible}");
+            Mod.log.Debug($"District areas checkbox toggled; visible:{m_AreasVisible}");
             ApplyAreasVisibility();
         }
 
@@ -510,11 +513,11 @@ namespace DistrictGroups
         {
             if (m_TypeFilter == type)
             {
-                Mod.log.Info($"Not changing overlay filter, same type; type:{type}");
+                Mod.log.Debug($"Not changing overlay filter, same type; type:{type}");
                 return;
             }
 
-            Mod.log.Info($"Setting overlay filter; type:{type}");
+            Mod.log.Debug($"Setting overlay filter; type:{type}");
             m_TypeFilter = type;
 
             // signal that the color cache and fill mesh both need to be rebuilt
@@ -530,7 +533,7 @@ namespace DistrictGroups
                 return;
             }
 
-            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            bool debugLogging = Mod.log.isDebugEnabled;
             System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             // A border draw scheduled on an earlier frame reads m_BorderPositions, and the rebuild below overwrites it.
@@ -742,7 +745,7 @@ namespace DistrictGroups
             bool isAreaToolActive = tool == m_AreaToolSystem;
             if (m_WasAreaToolActive && !isAreaToolActive)
             {
-                Mod.log.Info("Area tool closed, forcing fill and label rebuild");
+                Mod.log.Debug("Area tool closed, forcing fill and label rebuild");
                 m_DirtyFlags |= OverlayDirtyFlags.FillGeometry | OverlayDirtyFlags.Labels;
             }
             m_WasAreaToolActive = isAreaToolActive;

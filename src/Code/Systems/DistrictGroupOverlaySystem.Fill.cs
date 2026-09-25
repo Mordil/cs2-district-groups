@@ -43,7 +43,7 @@ namespace DistrictGroups
             {
                 m_FillActive = true;
                 m_FillRoot.SetActive(true);
-                Mod.log.Info("Group overlay fill toggled; active:True");
+                Mod.log.Debug("Group overlay fill toggled; active:True");
             }
 
             if (shouldSample)
@@ -78,7 +78,7 @@ namespace DistrictGroups
             {
                 m_FillRoot.SetActive(false);
             }
-            Mod.log.Info("Group overlay fill toggled; active:False");
+            Mod.log.Debug("Group overlay fill toggled; active:False");
         }
 
         private void EnsureFillRoot()
@@ -99,7 +99,7 @@ namespace DistrictGroups
             ApplyFillTransparency(useTransparency);
             m_FillBuiltTransparent = useTransparency;
 
-            Mod.log.Info($"Group overlay, fill material ready; shader:{shader?.name ?? "<null>"} transparent:{useTransparency}");
+            Mod.log.Debug($"Group overlay, fill material ready; shader:{shader?.name ?? "<null>"} transparent:{useTransparency}");
         }
 
         private void ApplyFillTransparency(bool transparent)
@@ -140,7 +140,7 @@ namespace DistrictGroups
         // Keyed incremental diff of m_FillEntries against the snapshot
         private void RebuildFillObjects(int saturationSetting)
         {
-            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            bool debugLogging = Mod.log.isDebugEnabled;
             System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
@@ -246,7 +246,7 @@ namespace DistrictGroups
         // Updates the colors applied to fill textures
         private void RecolorFillObjects(int saturationSetting)
         {
-            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            bool debugLogging = Mod.log.isDebugEnabled;
             System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             float actualSaturationPercent = MapFillSaturationPercent(saturationSetting);
@@ -326,7 +326,10 @@ namespace DistrictGroups
             List<int> fallbackTriangles = null;
             if (triangleIndices.Length == 0)
             {
-                Mod.log.Debug($"Group overlay, no vanilla triangulation, using ear-clip fallback; district:{district} node_count:{vertices.Length}");
+                if (Mod.log.isDebugEnabled)
+                {
+                    Mod.log.Debug($"Group overlay, no vanilla triangulation, using ear-clip fallback; district:{district} node_count:{vertices.Length}");
+                }
 
                 fallbackTriangles = Triangulate(vertices);
                 if (fallbackTriangles.Count == 0)

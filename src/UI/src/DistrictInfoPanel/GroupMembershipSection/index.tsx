@@ -30,7 +30,7 @@ const Section = (props: any) => {
     const sortedGroups = [...groups].sort((a, b) => a.name.localeCompare(b.name))
 
     const onInspect = (group: MemberGroup) => {
-        logger.info(`Inspect group clicked; entity:${entityKey(group.entity)}`)
+        logger.debug(`Inspect group clicked; entity:${entityKey(group.entity)}`)
         requestGroupInspection(group.entity)
     }
 

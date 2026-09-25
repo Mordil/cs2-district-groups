@@ -21,7 +21,7 @@ export const BuildingsTab = ({ group, className }: BuildingsTabProps) => {
     }
 
     const onRemoveBuilding = (building: AssignedBuilding) => {
-        logger.info(
+        logger.debug(
             `Remove building clicked; entity:${entityKey(group.entity)} building:${entityKey(building.entity)}`
         )
         unassignBuildingGroup(building.entity)

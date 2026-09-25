@@ -14,7 +14,7 @@ const kVanillaDistrictsSectionKey = "Game.UI.InGame.DistrictsSection"
 const createDistrictsSectionOverride = (VanillaDistrictsSection: any) => (props: VanillaDistrictsSectionProps) => {
     const isGrouped = useValue(selectedBuildingHasGroupAssignment$)
 
-    logger.debug(`DistrictsSection override rendered; isGrouped:${isGrouped}`)
+    logger.debug(() => `DistrictsSection override rendered; isGrouped:${isGrouped}`)
 
     if (isGrouped) {
         return <ReadOnlyDistrictsSection {...props} />
@@ -26,7 +26,7 @@ const createDistrictsSectionOverride = (VanillaDistrictsSection: any) => (props:
 // DistrictGroupSectionComponent's mutate-and-return-componentList contract.
 export const wrapVanillaDistrictsSection = (componentList: any): any => {
     const VanillaDistrictsSection = componentList?.[kVanillaDistrictsSectionKey]
-    logger.debug(`Wrapping vanilla DistrictsSection entry; found:${VanillaDistrictsSection != null}`)
+    logger.debug(() => `Wrapping vanilla DistrictsSection entry; found:${VanillaDistrictsSection != null}`)
     if (VanillaDistrictsSection) {
         componentList[kVanillaDistrictsSectionKey] = createDistrictsSectionOverride(VanillaDistrictsSection)
     }

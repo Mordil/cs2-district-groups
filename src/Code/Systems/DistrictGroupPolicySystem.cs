@@ -174,7 +174,7 @@ namespace DistrictGroups
                 m_PoliciesUISystem.SetPolicy(member.m_District, policy, active, state.m_Value);
             }
 
-            Mod.log.Info($"Group policy toggled; group:{group} policy:{policy} active:{active} districts:{members.Length}");
+            Mod.log.Debug($"Group policy toggled; group:{group} policy:{policy} active:{active} districts:{members.Length}");
         }
 
         // Gives the policy one shared value across every district of the group already carrying it.
@@ -200,7 +200,7 @@ namespace DistrictGroups
                 applied++;
             }
 
-            Mod.log.Info($"Group policy value set; group:{group} policy:{policy} value:{value} districts:{applied}");
+            Mod.log.Debug($"Group policy value set; group:{group} policy:{policy} value:{value} districts:{applied}");
         }
 
         // Switches the policy on or off for one district, leaving the value it carries alone.
@@ -208,14 +208,14 @@ namespace DistrictGroups
         {
             DistrictPolicyState state = GetDistrictState(district, policy, GetDefaultValue(policy));
             m_PoliciesUISystem.SetPolicy(district, policy, active, state.m_Value);
-            Mod.log.Info($"District policy toggled; district:{district} policy:{policy} active:{active}");
+            Mod.log.Debug($"District policy toggled; district:{district} policy:{policy} active:{active}");
         }
 
         // Gives one district's copy of the policy a new value.
         public void SetDistrictPolicyValue(Entity district, Entity policy, float value)
         {
             m_PoliciesUISystem.SetPolicy(district, policy, active: true, value);
-            Mod.log.Info($"District policy value set; district:{district} policy:{policy} value:{value}");
+            Mod.log.Debug($"District policy value set; district:{district} policy:{policy} value:{value}");
         }
 
         private void RebuildPolicies()
@@ -233,7 +233,7 @@ namespace DistrictGroups
             }
 
             m_Policies.Sort();
-            Mod.log.Info($"Rebuilt district policy list; listed:{m_Policies.Count} found:{policies.Length}");
+            Mod.log.Debug($"Rebuilt district policy list; listed:{m_Policies.Count} found:{policies.Length}");
         }
 
         private bool TryDescribePolicy(Entity policy, out DistrictPolicy described)

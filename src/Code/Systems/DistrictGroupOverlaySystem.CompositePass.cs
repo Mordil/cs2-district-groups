@@ -38,7 +38,7 @@ namespace DistrictGroups
 
             RefreshOverlayCompositePassPriority();
 
-            Mod.log.Info($"Group overlay composite pass ready; label_layer:{kOverlayLabelLayer} " +
+            Mod.log.Debug($"Group overlay composite pass ready; label_layer:{kOverlayLabelLayer} " +
                 $"label_layer_name:{LayerMask.LayerToName(kOverlayLabelLayer)} priority:{m_OverlayPassVolume.priority}");
         }
 
@@ -61,7 +61,7 @@ namespace DistrictGroups
                     continue;
                 }
                 lowestOtherPriority = Mathf.Min(lowestOtherPriority, volume.priority);
-                Mod.log.Info($"Found existing after-post-process custom pass volume; name:{volume.gameObject.name} " +
+                Mod.log.Debug($"Found existing after-post-process custom pass volume; name:{volume.gameObject.name} " +
                     $"priority:{volume.priority} global:{volume.isGlobal} pass_count:{volume.customPasses.Count}");
             }
             m_OverlayPassVolume.priority = Mathf.Min(lowestOtherPriority, -100f) - 10f;

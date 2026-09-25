@@ -210,7 +210,10 @@ namespace DistrictGroups
             m_UseNewDeathRateField = typeof(DeathCheckSystem).GetField(
                 "m_UseNewCurve",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-            Mod.log.Info($"Resolved death rate curve selector; found:{m_UseNewDeathRateField != null}");
+            if (m_UseNewDeathRateField == null)
+            {
+                Mod.log.Warn("Could not resolve the death rate curve selector, assuming the new curve;");
+            }
 
             /*
                 A household the city has no home for keeps living somewhere: vanilla shelters it in a park or lets it squat
@@ -638,7 +641,7 @@ namespace DistrictGroups
 
             Dependency = m_SweepHandle;
             m_SweepInFlight = true;
-            m_SweepScheduleMs = m_SweepClock.Elapsed.TotalMilliseconds;
+            m_SweepScheduleMs = Mod.log.isDebugEnabled ? m_SweepClock.Elapsed.TotalMilliseconds : 0.0;
         }
 
         // Points the slot map at the districts just collected, and clears the totals they land in.
@@ -718,12 +721,13 @@ namespace DistrictGroups
         // Hands the finished per-district totals to the readers.
         private void PublishSweep()
         {
-            double scheduledMs = m_SweepClock.Elapsed.TotalMilliseconds;
+            bool debugLogging = Mod.log.isDebugEnabled;
+            double scheduledMs = debugLogging ? m_SweepClock.Elapsed.TotalMilliseconds : 0.0;
 
-            bool finishedUnwatched = m_SweepHandle.IsCompleted;
+            bool finishedUnwatched = debugLogging && m_SweepHandle.IsCompleted;
             m_SweepHandle.Complete();
             m_SweepInFlight = false;
-            double blockMs = m_SweepClock.Elapsed.TotalMilliseconds - scheduledMs;
+            double blockMs = debugLogging ? m_SweepClock.Elapsed.TotalMilliseconds - scheduledMs : 0.0;
 
             m_PublishedStats.Clear();
             for (int slot = 0; slot < m_ScopeDistricts.Length; slot++)
@@ -732,9 +736,7 @@ namespace DistrictGroups
             }
             StatsVersion++;
 
-            // The dump below interpolates every total into one string, and that happens whether or not anything is listening,
-            // so it is worth asking first.
-            if (!Mod.log.isDebugEnabled)
+            if (!debugLogging)
             {
                 return;
             }

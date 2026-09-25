@@ -45,3 +45,6 @@ export const selectedBuildingHasGroupAssignment$ = bindValue<boolean>(
 
 // True only in a Debug build of the C# side
 export const isDebugBuild$ = bindValue<boolean>(mod.id, "isDebugBuild", false)
+
+// Whether the C# log is accepting Debug-level entries, so the UI can drop its own before sending them
+export const debugLogging$ = bindValue<boolean>(mod.id, "debugLogging", false)

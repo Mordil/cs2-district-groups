@@ -161,14 +161,14 @@ namespace DistrictGroups
         {
             set
             {
-                Mod.log.Info("FileBug Settings button clicked");
+                Mod.log.Debug("FileBug Settings button clicked");
 
                 TryDumpDebugData();
 
                 try
                 {
                     Application.OpenURL(kIssueUrl);
-                    Mod.log.Info("Issue tracker opened successfully");
+                    Mod.log.Debug("Issue tracker opened successfully");
                 }
                 catch (Exception e)
                 {

@@ -64,7 +64,8 @@ namespace DistrictGroups
 
         protected override void OnUpdate()
         {
-            long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            long startTimestamp = debugLogging ? System.Diagnostics.Stopwatch.GetTimestamp() : 0L;
             try
             {
                 base.OnUpdate();
@@ -93,17 +94,22 @@ namespace DistrictGroups
             {
                 // Diagnostic only: flags a slow frame so we can tell whether a UI stall is inside
                 // our own code (an EntityManager call forced to wait on an in-flight job) or elsewhere.
-                double elapsedMs = ElapsedMilliseconds(startTimestamp);
-                if (elapsedMs > 5.0)
+                // This runs every frame the info panel is up, so the clock is only read when it can be reported.
+                if (debugLogging)
                 {
-                    Mod.log.Debug($"DistrictGroupSection.OnUpdate slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
+                    double elapsedMs = ElapsedMilliseconds(startTimestamp);
+                    if (elapsedMs > 5.0)
+                    {
+                        Mod.log.Debug($"DistrictGroupSection.OnUpdate slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
+                    }
                 }
             }
         }
 
         public override void OnWriteProperties(IJsonWriter writer)
         {
-            long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            long startTimestamp = debugLogging ? System.Diagnostics.Stopwatch.GetTimestamp() : 0L;
             writer.PropertyName("buildingType");
             writer.Write((int)m_BuildingType);
             writer.PropertyName("hasAssignment");
@@ -145,10 +151,13 @@ namespace DistrictGroups
             }
             writer.ArrayEnd();
 
-            double elapsedMs = ElapsedMilliseconds(startTimestamp);
-            if (elapsedMs > 5.0)
+            if (debugLogging)
             {
-                Mod.log.Debug($"DistrictGroupSection.OnWriteProperties slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
+                double elapsedMs = ElapsedMilliseconds(startTimestamp);
+                if (elapsedMs > 5.0)
+                {
+                    Mod.log.Debug($"DistrictGroupSection.OnWriteProperties slow; duration_ms:{elapsedMs:F3} building:{selectedEntity}");
+                }
             }
         }
 

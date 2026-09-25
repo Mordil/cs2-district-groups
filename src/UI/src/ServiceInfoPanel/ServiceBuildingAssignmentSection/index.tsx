@@ -32,12 +32,12 @@ const Section = (props: any) => {
 
     // Both triggers act on whatever building the info panel has selected, so the section never has to name it
     const onSelect = (group: Entity) => {
-        logger.info(`Assign group clicked; group:${entityKey(group)}`)
+        logger.debug(`Assign group clicked; group:${entityKey(group)}`)
         assignGroup(group)
     }
 
     const onUnassign = () => {
-        logger.info("Unassign group clicked;")
+        logger.debug("Unassign group clicked;")
         unassignGroup()
     }
 

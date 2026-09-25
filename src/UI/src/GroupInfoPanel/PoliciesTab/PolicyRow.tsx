@@ -75,12 +75,12 @@ export const PolicyRow = ({ group, policy, expanded, onToggleExpanded }: PolicyR
         to add up to, never something a click can ask for, so a click means "make them all agree".
     */
     const onToggle = () => {
-        logger.info(`Group policy toggled; group:${entityKey(group.entity)} policy:${policy.id} active:${!allActive}`)
+        logger.debug(`Group policy toggled; group:${entityKey(group.entity)} policy:${policy.id} active:${!allActive}`)
         setGroupPolicyActive(group.entity, policy.entity, !allActive)
     }
 
     const onValue = (value: number) => {
-        logger.info(`Group policy value changed; group:${entityKey(group.entity)} policy:${policy.id} value:${value}`)
+        logger.debug(`Group policy value changed; group:${entityKey(group.entity)} policy:${policy.id} value:${value}`)
         setGroupPolicyValue(group.entity, policy.entity, value)
     }
 

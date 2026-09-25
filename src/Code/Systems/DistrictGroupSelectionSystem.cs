@@ -53,7 +53,7 @@ namespace DistrictGroups
             // the system doesn't get refreshed in between save-game loads, so we need to make sure we're in a clean state
             if (m_SelectingGroup != Entity.Null)
             {
-                Mod.log.Info($"Clearing in-progress district selection on load; group:{m_SelectingGroup}");
+                Mod.log.Debug($"Clearing in-progress district selection on load; group:{m_SelectingGroup}");
                 m_SelectingGroup = Entity.Null;
             }
             DestroyScratchEntity();
@@ -74,26 +74,26 @@ namespace DistrictGroups
         {
             if (m_SelectingGroup == group)
             {
-                Mod.log.Info($"Stopping district selection; group:{group}");
+                Mod.log.Debug($"Stopping district selection; group:{group}");
                 StopSelection(group);
-                Mod.log.Info($"Finished stopping district selection; group:{group}");
+                Mod.log.Debug($"Finished stopping district selection; group:{group}");
                 return;
             }
 
             if (m_SelectingGroup != Entity.Null)
             {
-                Mod.log.Info($"Toggling off other group's district selection; group:{m_SelectingGroup}");
+                Mod.log.Debug($"Toggling off other group's district selection; group:{m_SelectingGroup}");
                 StopSelection(m_SelectingGroup);
             }
 
-            Mod.log.Info($"Starting district selection; group:{group}");
+            Mod.log.Debug($"Starting district selection; group:{group}");
             m_SelectingGroup = group;
             CreateScratchEntity();
             SeedScratchFromGroup(group);
             m_SelectionToolSystem.selectionOwner = m_ScratchEntity;
             m_SelectionToolSystem.selectionType = SelectionType.ServiceDistrict;
             m_ToolSystem.activeTool = m_SelectionToolSystem;
-            Mod.log.Info($"Finished starting district selection; group:{group}");
+            Mod.log.Debug($"Finished starting district selection; group:{group}");
         }
 
         // Keeps the in-progress selection tool in sync when a member is removed through a path
@@ -105,7 +105,7 @@ namespace DistrictGroups
                 return;
             }
 
-            Mod.log.Info($"Refreshing in-progress selection tool state after external member removal; group:{group}");
+            Mod.log.Debug($"Refreshing in-progress selection tool state after external member removal; group:{group}");
             SeedScratchFromGroup(group);
             m_SelectionToolSystem.requestSelectionUpdate = true;
         }
@@ -145,9 +145,9 @@ namespace DistrictGroups
 
             if (!EntityManager.Exists(m_SelectingGroup))
             {
-                Mod.log.Info($"Selected group no longer exists, stopping district selection; group:{m_SelectingGroup}");
+                Mod.log.Debug($"Selected group no longer exists, stopping district selection; group:{m_SelectingGroup}");
                 StopSelection(m_SelectingGroup);
-                Mod.log.Info("Finished stopping district selection after group deletion;");
+                Mod.log.Debug("Finished stopping district selection after group deletion;");
                 return;
             }
 
@@ -191,9 +191,9 @@ namespace DistrictGroups
             SyncScratchIntoGroup(group);
             if (EntityManager.Exists(group))
             {
-                Mod.log.Info($"Expanding district selection changes to assigned buildings; group:{group}");
+                Mod.log.Debug($"Expanding district selection changes to assigned buildings; group:{group}");
                 m_GroupSystem.ReexpandGroup(group);
-                Mod.log.Info($"Finished expanding district selection changes; group:{group}");
+                Mod.log.Debug($"Finished expanding district selection changes; group:{group}");
             }
         }
     }

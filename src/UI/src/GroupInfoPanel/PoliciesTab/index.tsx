@@ -26,7 +26,7 @@ export const PoliciesTab = ({ group, policies, className }: PoliciesTabProps) =>
 
     const onToggleExpanded = (policy: GroupPolicy) => {
         const isExpanded = expanded.includes(policy.id)
-        logger.info(`Policy row expansion toggled; policy:${policy.id} expanded:${!isExpanded}`)
+        logger.debug(`Policy row expansion toggled; policy:${policy.id} expanded:${!isExpanded}`)
         setExpanded(
             isExpanded ? expanded.filter((id) => id !== policy.id) : [...expanded, policy.id]
         )

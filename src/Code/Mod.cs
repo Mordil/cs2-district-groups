@@ -39,7 +39,7 @@ namespace DistrictGroups
 
             if (GameManager.instance.modManager.TryGetExecutableAsset(this, out var asset))
             {
-                log.Info($"Resolved mod asset; path:{asset.path}");
+                log.Debug($"Resolved mod asset; path:{asset.path}");
                 RegisterIconHost(asset.path);
             }
             else
@@ -92,12 +92,21 @@ namespace DistrictGroups
 
             string iconDir = modDir + "/Icons/";
             UIManager.defaultUISystem.AddHostLocation(kIconHost, iconDir, shouldWatch: true, priority: 0);
-            log.Info($"Registered icon host; host:{kIconHost} path:{iconDir} exists:{Directory.Exists(iconDir)}");
+
+            bool iconsExist = Directory.Exists(iconDir);
+            if (iconsExist)
+            {
+                log.Debug($"Registered icon host; host:{kIconHost} path:{iconDir}");
+            }
+            else
+            {
+                log.Warn($"Registered icon host, but its folder is missing, so custom icons will not load; host:{kIconHost} path:{iconDir}");
+            }
         }
 
         public void OnDispose()
         {
-            log.Info($"{nameof(OnDispose)};");
+            log.Debug($"{nameof(OnDispose)};");
 
             UIManager.defaultUISystem?.RemoveHostLocation(kIconHost);
 

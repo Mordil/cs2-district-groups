@@ -16,12 +16,12 @@ interface DistrictPolicyRowProps {
 // One member district's own setting for a policy, listed when its policy row is expanded.
 export const DistrictPolicyRow = ({ policy, district }: DistrictPolicyRowProps) => {
     const onToggle = (active: boolean) => {
-        logger.info(`District policy toggled; district:${entityKey(district.entity)} policy:${policy.id} active:${active}`)
+        logger.debug(`District policy toggled; district:${entityKey(district.entity)} policy:${policy.id} active:${active}`)
         setDistrictPolicyActive(district.entity, policy.entity, active)
     }
 
     const onValue = (value: number) => {
-        logger.info(`District policy value changed; district:${entityKey(district.entity)} policy:${policy.id} value:${value}`)
+        logger.debug(`District policy value changed; district:${entityKey(district.entity)} policy:${policy.id} value:${value}`)
         setDistrictPolicyValue(district.entity, policy.entity, value)
     }
 

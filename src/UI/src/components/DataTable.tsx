@@ -90,7 +90,7 @@ export const DataTable = <T,>({
 
     const sortBy = (column: DataColumn<T>) => {
         const nextAscending = column.id === sortColumn ? !ascending : !column.descendingFirst
-        logger.info(`Table column sorted; table:${id} column:${column.id} ascending:${nextAscending}`)
+        logger.debug(`Table column sorted; table:${id} column:${column.id} ascending:${nextAscending}`)
         lastSort[id] = { column: column.id, ascending: nextAscending }
         setSortColumn(column.id)
         setAscending(nextAscending)
@@ -203,7 +203,7 @@ const RowActions = ({ entity, table, onRemove, removeTooltip }: RowActionsProps)
                 theme={VT.actionButton}
                 src={gameIconSrc("MapMarker")}
                 onSelect={() => {
-                    logger.info(`Table row focused; table:${table} entity:${entityKey(entity)}`)
+                    logger.debug(`Table row focused; table:${table} entity:${entityKey(entity)}`)
                     camera.focusEntity(entity)
                 }}
                 onMouseDown={stopMouseDown}

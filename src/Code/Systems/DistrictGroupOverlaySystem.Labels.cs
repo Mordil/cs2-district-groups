@@ -50,7 +50,7 @@ namespace DistrictGroups
                     RefreshOverlayCompositePassPriority();
                 }
 
-                Mod.log.Info("Group overlay labels toggled; active:True");
+                Mod.log.Debug("Group overlay labels toggled; active:True");
             }
 
             DrawGroupLabels(shouldSample);
@@ -70,7 +70,7 @@ namespace DistrictGroups
                 m_LabelRoot.SetActive(false);
             }
 
-            Mod.log.Info("Group overlay labels toggled; active:False");
+            Mod.log.Debug("Group overlay labels toggled; active:False");
         }
 
         private void EnsureLabelRoot()
@@ -122,7 +122,7 @@ namespace DistrictGroups
             if (!m_LoggedLabelFontDiagnostics)
             {
                 m_LoggedLabelFontDiagnostics = true;
-                Mod.log.Info($"Group overlay label font resolved; font_name:{m_LabelBaker.font?.name ?? "<null>"} " +
+                Mod.log.Debug($"Group overlay label font resolved; font_name:{m_LabelBaker.font?.name ?? "<null>"} " +
                     $"glyph_count:{m_LabelBaker.font?.characterTable?.Count ?? 0} " +
                     $"fallback_count:{m_LabelBaker.font?.fallbackFontAssetTable?.Count ?? 0} " +
                     $"material_shader:{m_LabelBaker.font?.material?.shader?.name ?? "<null>"}");
@@ -175,7 +175,7 @@ namespace DistrictGroups
             m_LabelMaterial.renderQueue = scratchMaterial.renderQueue;
             Object.Destroy(scratchMaterial);
 
-            Mod.log.Info($"Group overlay, label material ready; shader:{m_LabelMaterial.shader?.name ?? "<null>"}");
+            Mod.log.Debug($"Group overlay, label material ready; shader:{m_LabelMaterial.shader?.name ?? "<null>"}");
         }
 
         // Front-loads the label subsystem's one-time costs
@@ -183,7 +183,8 @@ namespace DistrictGroups
         // Does NOT pre-bake the label entries themselves, as that requires district Geometry
         private void PrewarmLabelAssets()
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             EnsureLabelRoot();
 
@@ -205,14 +206,17 @@ namespace DistrictGroups
                 }
             }
 
-            stopwatch.Stop();
-            Mod.log.Info($"Prewarmed group label assets; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F1} name_count:{nameCount}");
+            if (debugLogging)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Prewarmed group label assets; duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F1} name_count:{nameCount}");
+            }
         }
 
         // Rebuilds one label entry per snapshot group
         private void RebuildLabelEntries()
         {
-            bool debugLogging = Mod.Settings?.EnableDebugLogging ?? false;
+            bool debugLogging = Mod.log.isDebugEnabled;
             System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             m_LabelSeenGroupsScratch.Clear();

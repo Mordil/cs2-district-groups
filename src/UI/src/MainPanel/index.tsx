@@ -81,7 +81,7 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
         if (entityEquals(selectingGroup, { index: 0, version: 0 })) {
             return
         }
-        logger.info("Navigating away with active district selection, toggling off;")
+        logger.debug("Navigating away with active district selection, toggling off;")
         toggleDistrictSelection(selectingGroup)
     }
 
@@ -90,7 +90,7 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
             return
         }
 
-        logger.info(`Filter changed; type:${type}`)
+        logger.debug(`Filter changed; type:${type}`)
         lastFilterType = type
         setFilterType(type)
         setOverlayFilter(type)
@@ -98,7 +98,7 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
     }
 
     const onTabSelect = (tab: PanelTab) => {
-        logger.info(`Panel tab changed; tab:${PanelTab[tab]}`)
+        logger.debug(`Panel tab changed; tab:${PanelTab[tab]}`)
         lastPanelTab = tab
         setActiveTab(tab)
 
@@ -112,7 +112,7 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
         if (!forcedShowServiceBuildings.current) {
             return
         }
-        logger.info("Restoring service buildings off after leaving the assignments tab;")
+        logger.debug("Restoring service buildings off after leaving the assignments tab;")
         forcedShowServiceBuildings.current = false
         setShowServiceBuildings(false)
     }
@@ -126,7 +126,7 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
         setHideAssigned(false)
 
         if (!showServiceBuildings) {
-            logger.info("Forcing service buildings on for the assignments tab;")
+            logger.debug("Forcing service buildings on for the assignments tab;")
             forcedShowServiceBuildings.current = true
             setShowServiceBuildings(true)
         }
@@ -147,27 +147,27 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
     )
 
     const onCreateGroup = () => {
-        logger.info("New group clicked;")
+        logger.debug("New group clicked;")
         createGroupTrigger()
     }
 
     const onHideAssignedChange = (checked: boolean) => {
-        logger.info(`Hide assigned buildings toggled; hide:${checked}`)
+        logger.debug(`Hide assigned buildings toggled; hide:${checked}`)
         setHideAssigned(checked)
     }
 
     const onAreasVisibleChange = (checked: boolean) => {
-        logger.info(`Areas visible toggled; visible:${checked}`)
+        logger.debug(`Areas visible toggled; visible:${checked}`)
         setAreasVisible(checked)
     }
 
     const onShowOverlayChange = (checked: boolean) => {
-        logger.info(`Show group overlay toggled; show:${checked}`)
+        logger.debug(`Show group overlay toggled; show:${checked}`)
         setShowOverlay(checked)
     }
 
     const onShowServiceBuildingsChange = (checked: boolean) => {
-        logger.info(`Show service buildings toggled; show:${checked}`)
+        logger.debug(`Show service buildings toggled; show:${checked}`)
         // The player's own choice outlives the assignments tab's override.
         forcedShowServiceBuildings.current = false
         setShowServiceBuildings(checked)

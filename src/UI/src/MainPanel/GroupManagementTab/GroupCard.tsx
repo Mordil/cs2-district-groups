@@ -66,7 +66,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
     // Deleting an unassigned group is pretty easy to recover from; deleting one
     // that's actively managing a building's operating districts is not, so let's get the user to double confirm
     const handleDeleteGroup = () => {
-        logger.info(`Delete group clicked; entity:${entityKey(group.entity)}`)
+        logger.debug(`Delete group clicked; entity:${entityKey(group.entity)}`)
         if (group.buildings.length === 0) {
             deleteGroup(group.entity)
             return
@@ -83,12 +83,12 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                 confirm={t("deleteGroupConfirm")}
                 cancel={t("deleteGroupCancel")}
                 onConfirm={() => {
-                    logger.info(`Delete group confirmed; entity:${entityKey(group.entity)}`)
+                    logger.debug(`Delete group confirmed; entity:${entityKey(group.entity)}`)
                     deleteGroup(group.entity)
                     dialogStack.closeAll()
                 }}
                 onCancel={() => {
-                    logger.info(`Delete group dialog dismissed; entity:${entityKey(group.entity)}`)
+                    logger.debug(`Delete group dialog dismissed; entity:${entityKey(group.entity)}`)
                     dialogStack.closeAll()
                 }}
             />
@@ -104,7 +104,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
         const next = !expanded
 
         if (!next && selectingDistricts) {
-            logger.info(`Collapsing group card with active district selection, toggling off; entity:${entityKey(group.entity)}`)
+            logger.debug(`Collapsing group card with active district selection, toggling off; entity:${entityKey(group.entity)}`)
             toggleDistrictSelection(group.entity)
         }
         setExpanded(next)
@@ -132,7 +132,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                         <div className={css.viewDetailsLink}>
                             <VC.InfoLink
                                 onSelect={() => {
-                                    logger.info(`View group details clicked; entity:${entityKey(group.entity)}`)
+                                    logger.debug(`View group details clicked; entity:${entityKey(group.entity)}`)
                                     onViewDetails()
                                 }}
                             >
@@ -193,7 +193,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                                     <div className={css.viewDetailsLink}>
                                         <VC.InfoLink
                                             onSelect={() => {
-                                                logger.info(`View district details clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                                logger.debug(`View district details clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
                                                 trigger("selectedInfo", "selectEntity", member.entity)
                                             }}
                                         >
@@ -213,7 +213,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                                                 className={`${VT.districtsSection.deleteButton} ${css.memberDeleteButton}`}
                                                 style={removeButtonStyle}
                                                 onSelect={() => {
-                                                    logger.info(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
+                                                    logger.debug(`Remove member clicked; entity:${entityKey(group.entity)} member:${entityKey(member.entity)}`)
                                                     removeMember(group.entity, member.entity)
                                                 }}
                                                 onMouseDown={stopMouseDown}
@@ -228,7 +228,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                             selected={selectingDistricts}
                             className={css.selectDistrictButton}
                             onSelect={() => {
-                                logger.info(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
+                                logger.debug(`Toggle district selection clicked; entity:${entityKey(group.entity)}`)
                                 toggleDistrictSelection(group.entity)
                             }}
                         />

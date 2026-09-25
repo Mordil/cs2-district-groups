@@ -127,7 +127,7 @@ namespace DistrictGroups
                 {
                     data.m_Color = kPalette[m_NextColorIndex++ % kPalette.Length];
                     EntityManager.SetComponentData(group, data);
-                    Mod.log.Info($"Assigned color to legacy group; group:{GetGroupName(group)}");
+                    Mod.log.Debug($"Assigned color to legacy group; group:{GetGroupName(group)}");
                 }
             }
 
@@ -194,14 +194,13 @@ namespace DistrictGroups
 
         public Entity CreateGroup(string name, GroupServiceType type)
         {
-            Mod.log.Info($"Creating new group; type:{type}");
             Entity group = EntityManager.CreateEntity();
             Color color = kPalette[m_NextColorIndex++ % kPalette.Length];
             EntityManager.AddComponentData(group, new DistrictGroupData { m_Name = name, m_Type = type, m_Color = color });
             EntityManager.AddBuffer<DistrictGroupMember>(group);
             Version++;
             GroupCompositionVersion++;
-            Mod.log.Info($"Finished creating new group; type:{type}");
+            Mod.log.Debug($"Created new group; group:{group} type:{type}");
             return group;
         }
 
@@ -217,12 +216,12 @@ namespace DistrictGroups
             }
 
             m_FocusedGroup = focused;
-            Mod.log.Info($"Focused group changed; group:{m_FocusedGroup}");
+            Mod.log.Debug($"Focused group changed; group:{m_FocusedGroup}");
         }
 
         public void DeleteGroup(Entity group)
         {
-            Mod.log.Info($"Deleting group; group:{group}");
+            Mod.log.Debug($"Deleting group; group:{group}");
 
             // Nothing may go on pointing at a group that is about to stop existing.
             if (m_FocusedGroup == group)
@@ -238,28 +237,26 @@ namespace DistrictGroups
             EntityManager.DestroyEntity(group);
             Version++;
             GroupCompositionVersion++;
-            Mod.log.Info($"Finished deleting group; group:{group}");
+            Mod.log.Debug($"Finished deleting group; group:{group}");
         }
 
         public void RenameGroup(Entity group, string name)
         {
-            Mod.log.Info($"Renaming group; group:{group} name:{name}");
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Name = name;
             EntityManager.SetComponentData(group, data);
             Version++;
-            Mod.log.Info($"Finished renaming group; group:{group} name:{name}");
+            Mod.log.Debug($"Renamed group; group:{group} name:{name}");
         }
 
         public void SetGroupType(Entity group, GroupServiceType type)
         {
-            Mod.log.Info($"Setting group type; group:{group} type:{type}");
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Type = type;
             EntityManager.SetComponentData(group, data);
             Version++;
             GroupCompositionVersion++;
-            Mod.log.Info($"Finished setting group type; group:{group} type:{type}");
+            Mod.log.Debug($"Set group type; group:{group} type:{type}");
         }
 
         // Notifies the system that the composition has changed from external systems.
@@ -271,24 +268,23 @@ namespace DistrictGroups
 
         public void SetGroupColor(Entity group, Color color)
         {
-            Mod.log.Info($"Setting group color; group:{group}");
             DistrictGroupData data = EntityManager.GetComponentData<DistrictGroupData>(group);
             data.m_Color = color;
             EntityManager.SetComponentData(group, data);
             Version++;
             GroupCompositionVersion++;
-            Mod.log.Info($"Finished setting group color; group:{group}");
+            Mod.log.Debug($"Set group color; group:{group}");
         }
 
         public bool AddMember(Entity group, Entity district)
         {
-            Mod.log.Info($"Adding district to group; district:{district} group:{group}");
+            Mod.log.Debug($"Adding district to group; district:{district} group:{group}");
             DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group);
             foreach (DistrictGroupMember member in members)
             {
                 if (member.m_District == district)
                 {
-                    Mod.log.Info($"District already in group, skipping; district:{district} group:{group}");
+                    Mod.log.Debug($"District already in group, skipping; district:{district} group:{group}");
                     return false;
                 }
             }
@@ -296,13 +292,13 @@ namespace DistrictGroups
             ReexpandGroup(group);
             Version++;
             GroupCompositionVersion++;
-            Mod.log.Info($"Finished adding district to group; district:{district} group:{group}");
+            Mod.log.Debug($"Finished adding district to group; district:{district} group:{group}");
             return true;
         }
 
         public bool RemoveMember(Entity group, Entity district)
         {
-            Mod.log.Info($"Removing district from group; district:{district} group:{group}");
+            Mod.log.Debug($"Removing district from group; district:{district} group:{group}");
             DynamicBuffer<DistrictGroupMember> members = EntityManager.GetBuffer<DistrictGroupMember>(group);
             for (int i = 0; i < members.Length; i++)
             {
@@ -312,11 +308,11 @@ namespace DistrictGroups
                     ReexpandGroup(group);
                     Version++;
                     GroupCompositionVersion++;
-                    Mod.log.Info($"Finished removing district from group; district:{district} group:{group}");
+                    Mod.log.Debug($"Finished removing district from group; district:{district} group:{group}");
                     return true;
                 }
             }
-            Mod.log.Info($"District not found in group, skipping; district:{district} group:{group}");
+            Mod.log.Debug($"District not found in group, skipping; district:{district} group:{group}");
             return false;
         }
 
@@ -331,14 +327,14 @@ namespace DistrictGroups
             }
             Version++;
             GroupCompositionVersion++;
-            Mod.log.Info($"Set group members from selection; group:{group} count:{members.Length}");
+            Mod.log.Debug($"Set group members from selection; group:{group} count:{members.Length}");
         }
 
         // while assigned, the group owns the building's entire ServiceDistrict buffer content.
         public bool AssignBuilding(Entity building, Entity group)
         {
-            Mod.log.Info($"Assigning group to building; group:{group} building:{building}");
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
             if (!EntityManager.HasBuffer<ServiceDistrict>(building))
             {
                 Mod.log.Error($"Cannot assign group, building has no ServiceDistrict buffer; building:{building}");
@@ -353,49 +349,64 @@ namespace DistrictGroups
             {
                 EntityManager.AddComponentData(building, new DistrictGroupAssignment(group));
             }
-            double assignmentMs = stopwatch.Elapsed.TotalMilliseconds;
+            double assignmentMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds : 0.0;
             ExpandToBuilding(building, group);
             Version++;
-            double totalMs = stopwatch.Elapsed.TotalMilliseconds;
-            Mod.log.Debug($"Finished assigning group to building; group:{group} building:{building} " +
-                $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3} expand_ms:{totalMs - assignmentMs:F3}");
+
+            if (debugLogging)
+            {
+                double totalMs = stopwatch.Elapsed.TotalMilliseconds;
+                Mod.log.Debug($"Assigned group to building; group:{group} building:{building} " +
+                    $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3} expand_ms:{totalMs - assignmentMs:F3}");
+            }
+
             return true;
         }
 
         public bool UnassignBuilding(Entity building)
         {
-            Mod.log.Info($"Unassigning building; building:{building}");
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
             if (!EntityManager.HasComponent<DistrictGroupAssignment>(building)
                 || EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group == Entity.Null)
             {
-                Mod.log.Info($"Building has no group assignment, skipping; building:{building}");
+                Mod.log.Debug($"Building has no group assignment, skipping; building:{building}");
                 return false;
             }
             // m_Group is the source of truth for "assigned" (robust even if the enabled bit doesn't
             // round-trip through save/load); disabling too is what keeps this off the query fast path.
             EntityManager.SetComponentData(building, new DistrictGroupAssignment(Entity.Null));
             EntityManager.SetComponentEnabled<DistrictGroupAssignment>(building, false);
-            double assignmentMs = stopwatch.Elapsed.TotalMilliseconds;
+            double assignmentMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds : 0.0;
             Version++;
-            double totalMs = stopwatch.Elapsed.TotalMilliseconds;
-            Mod.log.Debug($"Finished unassigning building; building:{building} " +
-                $"duration_ms:{totalMs:F3} assignment_ms:{assignmentMs:F3}");
+
+            if (debugLogging)
+            {
+                Mod.log.Debug($"Unassigned building; building:{building} " +
+                    $"duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} assignment_ms:{assignmentMs:F3}");
+            }
+
             return true;
         }
 
         public void ReexpandGroup(Entity group)
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
+
             using NativeArray<Entity> buildings = GetAssignedBuildings(group, Allocator.Temp);
-            double lookupMs = stopwatch.Elapsed.TotalMilliseconds;
+            double lookupMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds : 0.0;
             using NativeArray<Entity> validDistricts = GetValidMemberDistricts(group, Allocator.Temp);
             foreach (Entity building in buildings)
             {
                 ExpandToBuilding(building, validDistricts);
             }
-            Mod.log.Debug($"Reexpanded group; group:{GetGroupName(group)} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
-                $"lookup_ms:{lookupMs:F3} building_count:{buildings.Length} district_count:{validDistricts.Length}");
+
+            if (debugLogging)
+            {
+                Mod.log.Debug($"Reexpanded group; group:{GetGroupName(group)} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3} " +
+                    $"lookup_ms:{lookupMs:F3} building_count:{buildings.Length} district_count:{validDistricts.Length}");
+            }
         }
 
         private void ExpandToBuilding(Entity building, Entity group)

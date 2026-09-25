@@ -160,7 +160,7 @@ namespace DistrictGroups
                 return;
             }
             m_ShowServiceBuildings = show;
-            Mod.log.Info($"Show service buildings toggled; show:{m_ShowServiceBuildings}");
+            Mod.log.Debug($"Show service buildings toggled; show:{m_ShowServiceBuildings}");
         }
 
         // The assignments tab's own "Hide assigned buildings" checkbox.
@@ -171,7 +171,7 @@ namespace DistrictGroups
                 return;
             }
             m_HideAssignedBuildings = hide;
-            Mod.log.Info($"Hide assigned buildings toggled; hide:{m_HideAssignedBuildings}");
+            Mod.log.Debug($"Hide assigned buildings toggled; hide:{m_HideAssignedBuildings}");
         }
 
         // Wipes every marker this system has ever added to the world.
@@ -217,11 +217,12 @@ namespace DistrictGroups
         // Never marks anything while `isActive` is false
         private void RebuildMarkers(GroupServiceType type, Entity focusedGroup, bool isActive)
         {
-            System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            bool debugLogging = Mod.log.isDebugEnabled;
+            System.Diagnostics.Stopwatch stopwatch = debugLogging ? System.Diagnostics.Stopwatch.StartNew() : null;
 
             bool hasFocusedGroup = focusedGroup != Entity.Null;
             using NativeArray<Entity> targets = GetMarkerTargets(type, focusedGroup, isActive, Allocator.Temp);
-            double queryMs = stopwatch.Elapsed.TotalMilliseconds;
+            double queryMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds : 0.0;
 
             m_TargetBuffer.Clear();
             foreach (Entity building in targets)
@@ -251,11 +252,11 @@ namespace DistrictGroups
                 m_PendingDestroyBuffer.Add(m_Markers[building]);
                 m_Markers.Remove(building);
             }
-            double diffMs = stopwatch.Elapsed.TotalMilliseconds - queryMs;
+            double diffMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds - queryMs : 0.0;
 
             DestroyMarkers(m_PendingDestroyBuffer);
             int removed = m_StaleBuffer.Count;
-            double destroyMs = stopwatch.Elapsed.TotalMilliseconds - queryMs - diffMs;
+            double destroyMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds - queryMs - diffMs : 0.0;
 
             /*
                 A focused group holds whatever buildings the player assigned to it, and those need not
@@ -285,7 +286,7 @@ namespace DistrictGroups
             }
 
             int added = 0;
-            double beforeCreate = stopwatch.Elapsed.TotalMilliseconds;
+            double beforeCreate = debugLogging ? stopwatch.Elapsed.TotalMilliseconds : 0.0;
             foreach (KeyValuePair<GroupServiceType, List<Entity>> pending in m_PendingCreateBuckets)
             {
                 if (pending.Value.Count == 0)
@@ -300,18 +301,21 @@ namespace DistrictGroups
                 CreateMarkers(pending.Value, iconPrefabEntity);
                 added += pending.Value.Count;
             }
-            double createMs = stopwatch.Elapsed.TotalMilliseconds - beforeCreate;
+            double createMs = debugLogging ? stopwatch.Elapsed.TotalMilliseconds - beforeCreate : 0.0;
 
             m_MarkedType = type;
             m_MarkedGroup = focusedGroup;
             m_MarkedSetVersion = GetMarkerSetVersion(focusedGroup);
             m_MarkedWhileActive = isActive;
 
-            stopwatch.Stop();
-            Mod.log.Info($"Service building markers rebuilt; type:{type} focused_group:{focusedGroup} " +
-                $"hide_assigned:{m_HideAssignedBuildings} added_count:{added} removed_count:{removed} " +
-                $"total_count:{m_Markers.Count} query_ms:{queryMs:F3} diff_ms:{diffMs:F3} destroy_ms:{destroyMs:F3} " +
-                $"create_ms:{createMs:F3} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
+            if (debugLogging)
+            {
+                stopwatch.Stop();
+                Mod.log.Debug($"Service building markers rebuilt; type:{type} focused_group:{focusedGroup} " +
+                    $"hide_assigned:{m_HideAssignedBuildings} added_count:{added} removed_count:{removed} " +
+                    $"total_count:{m_Markers.Count} query_ms:{queryMs:F3} diff_ms:{diffMs:F3} destroy_ms:{destroyMs:F3} " +
+                    $"create_ms:{createMs:F3} duration_ms:{stopwatch.Elapsed.TotalMilliseconds:F3}");
+            }
         }
 
         // Identifies the set the markers are placed on, changing whenever that set could have.

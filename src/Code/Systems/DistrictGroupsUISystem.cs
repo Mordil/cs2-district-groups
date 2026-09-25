@@ -276,6 +276,10 @@ namespace DistrictGroups
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "isDebugBuild",
                 () => IsDebugBuild));
 
+            // Lets the UI drop its own Debug lines before paying to send them over
+            AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "debugLogging",
+                () => Mod.log.isDebugEnabled));
+
             AddUpdateBinding(new GetterValueBinding<bool>(kBindingGroup, "selectedBuildingHasGroupAssignment",
                 () => EntityManager.Exists(m_SelectedInfoUISystem.selectedEntity)
                     && m_GroupSystem.IsBuildingAssigned(m_SelectedInfoUISystem.selectedEntity)));

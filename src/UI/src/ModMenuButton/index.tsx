@@ -102,7 +102,7 @@ export const GroupManager = () => {
     const [inspectRequest, setInspectRequest] = useState<Entity | null>(null)
 
     const openPanel = () => {
-        logger.info("Panel opened;")
+        logger.debug("Panel opened;")
 
         // An explicit open supersedes any pending area-tool restore, and the setOverlay
         // below cancels the area tool anyway - which would otherwise trip that restore.
@@ -117,13 +117,13 @@ export const GroupManager = () => {
     }
 
     const closePanel = () => {
-        logger.info("Panel closed;")
+        logger.debug("Panel closed;")
         setOpen(false)
         setOverlay(false)
 
         // we don't want to leave the player in a weird tool state after dismissing our UI
         if (!entityEquals(selectingGroup, { index: 0, version: 0 })) {
-            logger.info("Dismissing UI with active district selection, toggling off;")
+            logger.debug("Dismissing UI with active district selection, toggling off;")
             toggleDistrictSelection(selectingGroup)
         }
     }
@@ -131,7 +131,7 @@ export const GroupManager = () => {
     const togglePanel = () => (open ? closePanel() : openPanel())
 
     useGroupInspectionRequests((group) => {
-        logger.info(`Group inspection requested from the info panel; entity:${entityKey(group)}`)
+        logger.debug(`Group inspection requested from the info panel; entity:${entityKey(group)}`)
         setInspectRequest(group)
         if (!open) {
             openPanel()
