@@ -1,9 +1,23 @@
-.buildingTypeNameCell {
+.buildingNameCell {
+    color: var(--textColor);
     display: flex;
-    align-items: center;
 }
 
 .buildingTypeIcon {
     --size: 24rem;
     margin-right: 4rem;
+}
+
+.buildingName {
+    font-size: var(--fontSizeM);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.assetName {
+    font-size: var(--fontSizeS);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

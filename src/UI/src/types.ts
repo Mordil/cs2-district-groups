@@ -52,6 +52,10 @@ export interface AssignedBuilding {
     capacity: number
     // What the building works through in a day, with installed upgrades folded in; kNoValue for a type with no throughput
     processingCapacity: number
+    // Locale id for the asset's display name (e.g. "Assets.NAME[PoliceStation01]"),
+    // with the raw prefab name as the fallback when nothing resolves it.
+    assetNameId: string
+    assetName: string
 }
 
 // A service building of the currently filtered type, with the assignment state its row needs

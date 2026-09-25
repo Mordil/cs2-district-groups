@@ -1,4 +1,4 @@
-import { Unit } from "cs2/l10n"
+import { LocalizedString, Unit } from "cs2/l10n"
 import { Icon, Tooltip } from "cs2/ui"
 
 import { DataColumn } from "../components/DataTable"
@@ -195,18 +195,30 @@ const buildingColumn = (groupType: number): DataColumn<AssignedBuilding> => ({
     label: <GameText label={VanillaLocale.buildingsColumn} />,
     layout: "name",
     compare: (a, b) => a.name.localeCompare(b.name),
-    render: (building) =>
-        groupType === kGenericType ? (
-            <div className={css.buildingTypeNameCell}>
-                <Icon
-                    src={kTypeIcons[building.type]}
-                    className={css.buildingTypeIcon} />
+    render: (building) => {
+        const hasAssetName = building.assetNameId || building.assetName
+        return (
+            <div className={css.buildingNameCell}>
+                {groupType === kGenericType && (
+                    <Icon
+                        src={kTypeIcons[building.type]}
+                        className={css.buildingTypeIcon} />
+                )}
+                
+                <div className={css.buildingNameTypeContainer}>
+                    <div className={css.buildingName}>
+                        {building.name}
+                    </div>
 
-                {building.name}
+                    {hasAssetName && (
+                        <div className={css.assetName}>
+                            <LocalizedString id={building.assetNameId} fallback={building.assetName} />
+                        </div>
+                    )}
+                </div>
             </div>
-        ) : (
-            building.name
-        ),
+        )
+    },
 })
 
 // How full each building's own places are, under the game's own name for that type's capacity.

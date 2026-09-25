@@ -299,6 +299,7 @@ namespace DistrictGroups
             writer.Write(capacity);
             writer.PropertyName("processingCapacity");
             writer.Write(GetProcessingCapacity(facility));
+            WriteAssetName(writer, building);
             writer.TypeEnd();
         }
 
