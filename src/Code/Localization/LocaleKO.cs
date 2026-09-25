@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "모든 그룹에서 정책 설정" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "모든 지구 그룹이 지구 정책을 설정할 수 있도록 허용합니다." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "모든 설정 초기화" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "설정 초기화" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "모든 모드 설정을 기본값으로 되돌립니다." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "모든 모드 설정이 기본값으로 되돌아갑니다.\r\n계속하시겠습니까?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "다른 모든 유형은 일치하는 서비스 건물에만 사용할 수 있습니다." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\"이(가) {COUNT}개의 서비스 건물에 할당되어 있습니다.\n할당된 서비스 건물은 다시 도시 전역을 대상으로 서비스를 제공합니다." },
                 { LocalizationKey.DeleteGroupDialogTitle, "지구 그룹을 삭제하시겠습니까?" },
-                { LocalizationKey.DeleteGroupConfirm, "그룹 삭제" },
-                { LocalizationKey.DeleteGroupCancel, "그룹 유지" },
                 { LocalizationKey.RemoveMemberTooltip, "그룹에서 이 지구을 제거합니다." },
                 { LocalizationKey.RemoveBuildingTooltip, "그룹에서 이 건물을 제거합니다." },
                 { LocalizationKey.SelectDistrictsButton, "지구 선택" },
                 { LocalizationKey.GroupColorTooltip, "그룹 색상" },
-                { LocalizationKey.NameInputTooltip, "선택하여 이름을 편집할 수 있습니다." },
                 { LocalizationKey.OverviewTabLabel, "개요" },
-                { LocalizationKey.BuildingsTabLabel, "건물" },
-                { LocalizationKey.PoliciesTabLabel, "정책" },
                 { LocalizationKey.EligibleColumnLabel, "적합" },
                 { LocalizationKey.NoDistrictsInGroup, "이 그룹에는 지구가 없습니다.\n지구 선택 버튼으로 지구를 추가하세요." },
                 { LocalizationKey.NoBuildingsInGroup, "이 그룹에는 아직 배정된 건물이 없습니다." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "이 그룹의 모든 지구 {COUNT}곳에 정책을 적용합니다." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "이 그룹의 모든 지구 {COUNT}곳에서 정책을 해제합니다." },
                 { LocalizationKey.MixedPolicyValueTooltip, "이 그룹의 지구마다 설정된 값이 다릅니다." },
-                { LocalizationKey.MetadataDistrictsTooltip, "지구" },
                 { LocalizationKey.MetadataBuildingsTooltip, "배정된 건물" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "오버레이 및 건물 표시" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "할당을 해제하면 **운영 지구**을 수동으로 관리합니다." },
                 { LocalizationKey.SectionTooltipLine4, "참고: 할당을 변경한 후 정보 패널이 화면에 반영되기까지 몇 초 정도 걸릴 수 있습니다." },
                 { LocalizationKey.SectionLabel, "지구 그룹" },
-                { LocalizationKey.OperatingDistrictsLabel, "운영 지구" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "이 건물은 현재 지구 그룹에 할당되어 있습니다." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "**지구** 할당은 **할당된 지구 그룹**이 관리합니다." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "**지구 그룹**에 **지구**가 없으면 이 건물은 **운영 범위** 내 모든 곳에 서비스를 제공합니다." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "이 그룹들 중 어느 하나에 할당된 서비스 건물은 이 지구에 서비스를 제공합니다." },
 
                 { LocalizationKey.TypeGeneric, "시민" },
-                { LocalizationKey.TypePolice, "경찰" },
-                { LocalizationKey.TypeHealthcare, "의료" },
-                { LocalizationKey.TypeDeathcare, "장례" },
-                { LocalizationKey.TypeGarbage, "쓰레기" },
-                { LocalizationKey.TypeEducationElementary, "초등학교" },
-                { LocalizationKey.TypeEducationHighSchool, "고등학교" },
-                { LocalizationKey.TypeEducationCollege, "전문 대학" },
-                { LocalizationKey.TypeEducationUniversity, "대학교" },
-                { LocalizationKey.TypePost, "우편" },
             };
         }
 

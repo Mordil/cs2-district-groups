@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Impostare politiche da tutti i gruppi" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Consente a tutti i gruppi di quartieri di impostare politiche di quartiere." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Ripristina tutte le impostazioni" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Ripristina impostazioni" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Ripristina tutte le impostazioni della mod ai valori predefiniti." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Tutte le impostazioni della mod torneranno ai valori predefiniti.\r\nVuoi procedere?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "Tutti gli altri tipi sono disponibili solo per gli edifici di servizio corrispondenti." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\" è assegnato a {COUNT} edificio/i di servizio.\nGli edifici di servizio assegnati torneranno a servire l'intera città." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Eliminare il Gruppo di Quartieri?" },
-                { LocalizationKey.DeleteGroupConfirm, "Elimina gruppo" },
-                { LocalizationKey.DeleteGroupCancel, "Mantieni gruppo" },
                 { LocalizationKey.RemoveMemberTooltip, "Rimuovi il quartiere dal gruppo." },
                 { LocalizationKey.RemoveBuildingTooltip, "Rimuovi l'edificio dal gruppo." },
                 { LocalizationKey.SelectDistrictsButton, "Seleziona Quartieri" },
                 { LocalizationKey.GroupColorTooltip, "Colore del Gruppo" },
-                { LocalizationKey.NameInputTooltip, "Seleziona per modificare il nome." },
                 { LocalizationKey.OverviewTabLabel, "Panoramica" },
-                { LocalizationKey.BuildingsTabLabel, "Edifici" },
-                { LocalizationKey.PoliciesTabLabel, "Politiche" },
                 { LocalizationKey.EligibleColumnLabel, "Idonei" },
                 { LocalizationKey.NoDistrictsInGroup, "Non ci sono quartieri in questo gruppo.\nAggiungi quartieri con il pulsante SELEZIONA QUARTIERI." },
                 { LocalizationKey.NoBuildingsInGroup, "Questo gruppo non ha ancora edifici assegnati." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Applica la politica a tutti i {COUNT} quartieri di questo gruppo." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Rimuove la politica da tutti i {COUNT} quartieri di questo gruppo." },
                 { LocalizationKey.MixedPolicyValueTooltip, "I quartieri di questo gruppo hanno valori diversi." },
-                { LocalizationKey.MetadataDistrictsTooltip, "Quartieri" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Edifici assegnati" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Mostra sovrimpressione ed edifici" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "Quando non assegnato, i **quartieri operativi** vengono gestiti manualmente." },
                 { LocalizationKey.SectionTooltipLine4, "NOTA: il pannello informativo potrebbe richiedere alcuni secondi per aggiornarsi visivamente dopo la modifica dell'assegnazione." },
                 { LocalizationKey.SectionLabel, "GRUPPO DI QUARTIERI" },
-                { LocalizationKey.OperatingDistrictsLabel, "Quartieri operativi" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Questo edificio è attualmente assegnato a un gruppo di quartieri." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "Le assegnazioni di **quartiere** sono gestite dal **gruppo di quartieri assegnato**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Se il **gruppo di quartieri** non contiene alcun **quartiere**, questo edificio fornirà i suoi servizi ovunque all'interno del suo **raggio operativo**." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "Gli edifici di servizio assegnati a uno qualsiasi di questi gruppi serviranno questo quartiere." },
 
                 { LocalizationKey.TypeGeneric, "Civico" },
-                { LocalizationKey.TypePolice, "Polizia" },
-                { LocalizationKey.TypeHealthcare, "Assistenza sanitaria" },
-                { LocalizationKey.TypeDeathcare, "Pompe funebri" },
-                { LocalizationKey.TypeGarbage, "Gestione dei rifiuti" },
-                { LocalizationKey.TypeEducationElementary, "Scuola elementare" },
-                { LocalizationKey.TypeEducationHighSchool, "Scuola media e superiore" },
-                { LocalizationKey.TypeEducationCollege, "College" },
-                { LocalizationKey.TypeEducationUniversity, "Università" },
-                { LocalizationKey.TypePost, "Posta" },
             };
         }
 

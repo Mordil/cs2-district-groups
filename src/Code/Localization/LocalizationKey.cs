@@ -33,23 +33,17 @@
         public const string TypePickerTooltipLine3 = "DistrictGroups.UI[TypePickerTooltipLine3]";
         public const string DeleteGroupConfirmMessage = "DistrictGroups.UI[DeleteGroupConfirmMessage]";
         public const string DeleteGroupDialogTitle = "DistrictGroups.UI[DeleteGroupDialogTitle]";
-        public const string DeleteGroupConfirm = "DistrictGroups.UI[DeleteGroupConfirm]";
-        public const string DeleteGroupCancel = "DistrictGroups.UI[DeleteGroupCancel]";
         public const string RemoveMemberTooltip = "DistrictGroups.UI[RemoveMemberTooltip]";
         public const string RemoveBuildingTooltip = "DistrictGroups.UI[RemoveBuildingTooltip]";
         public const string SelectDistrictsButton = "DistrictGroups.UI[SelectDistrictsButton]";
         public const string GroupColorTooltip = "DistrictGroups.UI[GroupColorTooltip]";
-        public const string NameInputTooltip = "DistrictGroups.UI[NameInputTooltip]";
         public const string OverviewTabLabel = "DistrictGroups.UI[OverviewTabLabel]";
-        public const string BuildingsTabLabel = "DistrictGroups.UI[BuildingsTabLabel]";
-        public const string PoliciesTabLabel = "DistrictGroups.UI[PoliciesTabLabel]";
         public const string EligibleColumnLabel = "DistrictGroups.UI[EligibleColumnLabel]";
         public const string NoDistrictsInGroup = "DistrictGroups.UI[NoDistrictsInGroup]";
         public const string NoBuildingsInGroup = "DistrictGroups.UI[NoBuildingsInGroup]";
         public const string ApplyPolicyToGroupTooltip = "DistrictGroups.UI[ApplyPolicyToGroupTooltip]";
         public const string ClearPolicyFromGroupTooltip = "DistrictGroups.UI[ClearPolicyFromGroupTooltip]";
         public const string MixedPolicyValueTooltip = "DistrictGroups.UI[MixedPolicyValueTooltip]";
-        public const string MetadataDistrictsTooltip = "DistrictGroups.UI[MetadataDistrictsTooltip]";
         public const string MetadataBuildingsTooltip = "DistrictGroups.UI[MetadataBuildingsTooltip]";
         public const string ShowOverlayAndBuildingsLabel = "DistrictGroups.UI[ShowOverlayAndBuildingsLabel]";
 
@@ -61,7 +55,6 @@
         public const string SectionTooltipLine3 = "DistrictGroups.UI[SectionTooltipLine3]";
         public const string SectionTooltipLine4 = "DistrictGroups.UI[SectionTooltipLine4]";
         public const string SectionLabel = "DistrictGroups.UI[SectionLabel]";
-        public const string OperatingDistrictsLabel = "DistrictGroups.UI[OperatingDistrictsLabel]";
         public const string ReadOnlySectionTooltipLine1 = "DistrictGroups.UI[ReadOnlySectionTooltipLine1]";
         public const string ReadOnlySectionTooltipLine2 = "DistrictGroups.UI[ReadOnlySectionTooltipLine2]";
         public const string ReadOnlySectionTooltipLine3 = "DistrictGroups.UI[ReadOnlySectionTooltipLine3]";
@@ -79,14 +72,5 @@
         public const string MembershipSectionTooltipLine2 = "DistrictGroups.UI[MembershipSectionTooltipLine2]";
 
         public const string TypeGeneric = "DistrictGroups.UI[TypeGeneric]";
-        public const string TypePolice = "DistrictGroups.UI[TypePolice]";
-        public const string TypeHealthcare = "DistrictGroups.UI[TypeHealthcare]";
-        public const string TypeDeathcare = "DistrictGroups.UI[TypeDeathcare]";
-        public const string TypeGarbage = "DistrictGroups.UI[TypeGarbage]";
-        public const string TypeEducationElementary = "DistrictGroups.UI[TypeEducationElementary]";
-        public const string TypeEducationHighSchool = "DistrictGroups.UI[TypeEducationHighSchool]";
-        public const string TypeEducationCollege = "DistrictGroups.UI[TypeEducationCollege]";
-        public const string TypeEducationUniversity = "DistrictGroups.UI[TypeEducationUniversity]";
-        public const string TypePost = "DistrictGroups.UI[TypePost]";
     }
 }

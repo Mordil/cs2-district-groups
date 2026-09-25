@@ -2,6 +2,7 @@ import { LocalizedString, Unit } from "cs2/l10n"
 import { Icon, Tooltip } from "cs2/ui"
 
 import { DataColumn } from "../components/DataTable"
+import { GameText } from "../components/GameText"
 import { Occupancy, PlacesTooltip, hasCapacity, occupancyShare } from "../components/OccupancyStats"
 import { StatValue, ThresholdValue } from "../components/StatValue"
 import { kGenericType, kNoValue, kTypeIcons } from "../constants"
@@ -9,7 +10,7 @@ import { AssignedBuilding, DistrictMember } from "../types"
 import { VanillaLabel, VanillaLocale, happinessThreshold, wealthThreshold } from "../utils/locale"
 
 import css from "./columns.module.scss"
-import { GameText, ModText } from "./labels"
+import { ModText } from "./labels"
 import { placesOf } from "./places"
 
 // Ranks rows by one of their figures.
@@ -17,7 +18,7 @@ const byStat = <T,>(of: (row: T) => number) => (a: T, b: T) => of(a) - of(b)
 
 const districtColumn: DataColumn<DistrictMember> = {
     id: "district",
-    label: <GameText label={VanillaLocale.districtsColumn} />,
+    label: <GameText label={VanillaLocale.districts} />,
     layout: "name",
     compare: (a, b) => a.name.localeCompare(b.name),
     render: (member) => member.name,
@@ -192,7 +193,7 @@ const CapacityCell = ({ building }: { building: AssignedBuilding }) => {
 // group's buildings all share its own type already shown by the group's own icon.
 const buildingColumn = (groupType: number): DataColumn<AssignedBuilding> => ({
     id: "building",
-    label: <GameText label={VanillaLocale.buildingsColumn} />,
+    label: <GameText label={VanillaLocale.buildings} />,
     layout: "name",
     compare: (a, b) => a.name.localeCompare(b.name),
     render: (building) => {

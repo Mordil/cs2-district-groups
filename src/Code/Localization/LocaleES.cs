@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Establecer políticas desde todos los grupos" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Permite que todos los grupos de distrito establezcan políticas de distrito." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Restablecer todos los ajustes" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Reestablecer ajustes" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Restablece todos los ajustes del mod a sus valores predeterminados." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Todos los ajustes del mod volverán a sus valores predeterminados.\r\n¿Deseas continuar?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "El resto de tipos solo están disponibles para los edificios de servicio correspondientes." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "«{NAME}» está asignado a {COUNT} edificio(s) de servicio.\nLos edificios de servicio asignados volverán a dar servicio a toda la ciudad." },
                 { LocalizationKey.DeleteGroupDialogTitle, "¿Eliminar grupo de distritos?" },
-                { LocalizationKey.DeleteGroupConfirm, "Eliminar grupo" },
-                { LocalizationKey.DeleteGroupCancel, "Conservar grupo" },
                 { LocalizationKey.RemoveMemberTooltip, "Elimina el distrito del grupo." },
                 { LocalizationKey.RemoveBuildingTooltip, "Elimina el edificio del grupo." },
                 { LocalizationKey.SelectDistrictsButton, "Seleccionar distritos" },
                 { LocalizationKey.GroupColorTooltip, "Color del grupo" },
-                { LocalizationKey.NameInputTooltip, "Elige esto para editar el nombre." },
                 { LocalizationKey.OverviewTabLabel, "Resumen" },
-                { LocalizationKey.BuildingsTabLabel, "Edificios" },
-                { LocalizationKey.PoliciesTabLabel, "Políticas" },
                 { LocalizationKey.EligibleColumnLabel, "Disponibles" },
                 { LocalizationKey.NoDistrictsInGroup, "No hay distritos en este grupo.\nAñade distritos con el botón SELECCIONAR DISTRITOS." },
                 { LocalizationKey.NoBuildingsInGroup, "Este grupo aún no tiene edificios asignados." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Aplica la política a los {COUNT} distritos de este grupo." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Retira la política de los {COUNT} distritos de este grupo." },
                 { LocalizationKey.MixedPolicyValueTooltip, "Los distritos de este grupo tienen valores diferentes." },
-                { LocalizationKey.MetadataDistrictsTooltip, "Distritos" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Edificios asignados" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Mostrar superposición y edificios" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "Cuando no hay ninguno asignado, los **distritos operativos** se gestionan manualmente." },
                 { LocalizationKey.SectionTooltipLine4, "NOTA: El panel de información puede tardar unos segundos en actualizarse visualmente tras cambiar la asignación." },
                 { LocalizationKey.SectionLabel, "GRUPO DE DISTRITOS" },
-                { LocalizationKey.OperatingDistrictsLabel, "Distritos operativos" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Este edificio está actualmente asignado a un grupo de distritos." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "Las asignaciones de **distrito de la ciudad** las gestiona el **grupo de distritos asignado**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Si el **grupo de distritos** no tiene ningún **distrito de la ciudad**, este edificio prestará sus servicios en todas partes dentro de su **radio operativo**." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "Los edificios de servicio asignados a cualquiera de estos grupos prestarán servicio a este distrito." },
 
                 { LocalizationKey.TypeGeneric, "Cívico" },
-                { LocalizationKey.TypePolice, "Policía" },
-                { LocalizationKey.TypeHealthcare, "Sanidad" },
-                { LocalizationKey.TypeDeathcare, "Funeraria" },
-                { LocalizationKey.TypeGarbage, "Residuos" },
-                { LocalizationKey.TypeEducationElementary, "Escuela primaria" },
-                { LocalizationKey.TypeEducationHighSchool, "Escuela secundaria" },
-                { LocalizationKey.TypeEducationCollege, "Escuela superior" },
-                { LocalizationKey.TypeEducationUniversity, "Universidad" },
-                { LocalizationKey.TypePost, "Correo" },
             };
         }
 

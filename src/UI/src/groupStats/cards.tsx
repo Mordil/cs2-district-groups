@@ -2,6 +2,7 @@ import { ReactNode } from "react"
 
 import { Unit } from "cs2/l10n"
 
+import { GameText } from "../components/GameText"
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../components/icons"
 import {
     Load,
@@ -14,8 +15,6 @@ import { StatValue, ThresholdValue } from "../components/StatValue"
 import { kGenericType } from "../constants"
 import { AssignedBuilding, Group } from "../types"
 import { VanillaLocale, wealthThreshold } from "../utils/locale"
-
-import { GameText } from "./labels"
 
 // What a group's own assigned buildings add up to, which its type's demand figures are weighed against.
 export interface GroupCapacity {

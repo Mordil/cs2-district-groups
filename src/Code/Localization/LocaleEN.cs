@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Set policies from all groups" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Allow all district groups to set district policies." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Reset all settings" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Reset settings" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Resets all mod settings back to their default values." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "All mod settings will revert to their default values.\r\nDo you want to proceed?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "All other types are only available to matching service buildings." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\" is assigned to {COUNT} service building(s).\nAssigned service building(s) will serve the whole city again." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Delete District Group?" },
-                { LocalizationKey.DeleteGroupConfirm, "Delete group" },
-                { LocalizationKey.DeleteGroupCancel, "Keep group" },
                 { LocalizationKey.RemoveMemberTooltip, "Remove the district from the group." },
                 { LocalizationKey.RemoveBuildingTooltip, "Remove the building from the group." },
                 { LocalizationKey.SelectDistrictsButton, "Select Districts" },
                 { LocalizationKey.GroupColorTooltip, "Group Color" },
-                { LocalizationKey.NameInputTooltip, "Select to edit the name." },
                 { LocalizationKey.OverviewTabLabel, "Overview" },
-                { LocalizationKey.BuildingsTabLabel, "Buildings" },
-                { LocalizationKey.PoliciesTabLabel, "Policies" },
                 { LocalizationKey.EligibleColumnLabel, "Eligible" },
                 { LocalizationKey.NoDistrictsInGroup, "There are no districts in this group.\nAdd districts with the SELECT DISTRICTS button." },
                 { LocalizationKey.NoBuildingsInGroup, "This group has no assigned buildings yet." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Applies the policy to all {COUNT} districts in this group." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Removes the policy from all {COUNT} districts in this group." },
                 { LocalizationKey.MixedPolicyValueTooltip, "Districts in this group are set to different values." },
-                { LocalizationKey.MetadataDistrictsTooltip, "Districts" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Assigned buildings" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Show overlay and buildings" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "When unassigned, **operating districts** are controlled manually." },
                 { LocalizationKey.SectionTooltipLine4, "NOTE: The Info Panel can take a few seconds to visually update after changing the assignment." },
                 { LocalizationKey.SectionLabel, "DISTRICT GROUP" },
-                { LocalizationKey.OperatingDistrictsLabel, "Operating Districts" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "This building is currently assigned to a district group." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "**City district** assignments are controlled by the **assigned district group**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "If the **district group** does not have **city districts**, this building will provide services everywhere within their **operational radius**." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "Service buildings assigned to any of these groups will provide service to this district." },
 
                 { LocalizationKey.TypeGeneric, "Civic" },
-                { LocalizationKey.TypePolice, "Police" },
-                { LocalizationKey.TypeHealthcare, "Healthcare" },
-                { LocalizationKey.TypeDeathcare, "Deathcare" },
-                { LocalizationKey.TypeGarbage, "Garbage" },
-                { LocalizationKey.TypeEducationElementary, "Elementary School" },
-                { LocalizationKey.TypeEducationHighSchool, "High School" },
-                { LocalizationKey.TypeEducationCollege, "College" },
-                { LocalizationKey.TypeEducationUniversity, "University" },
-                { LocalizationKey.TypePost, "Post" },
             };
         }
 

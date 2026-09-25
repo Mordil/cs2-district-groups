@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Bestimmungen aus allen Gruppen festlegen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Erlaubt allen Bezirksgruppen, Bezirksbestimmungen festzulegen." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Alle Einstellungen zurücksetzen" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Einstellungen zurücksetzen" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Setzt alle Mod-Einstellungen auf ihre Standardwerte zurück." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Alle Mod-Einstellungen werden auf ihre Standardwerte zurückgesetzt.\r\nMöchtest du fortfahren?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "Alle anderen Typen stehen nur passenden Dienstleistungsgebäuden zur Verfügung." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "\"{NAME}\" ist {COUNT} Dienstleistungsgebäude(n) zugewiesen.\nZugewiesene Dienstleistungsgebäude werden wieder die gesamte Stadt versorgen." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Bezirksgruppe löschen?" },
-                { LocalizationKey.DeleteGroupConfirm, "Gruppe löschen" },
-                { LocalizationKey.DeleteGroupCancel, "Gruppe behalten" },
                 { LocalizationKey.RemoveMemberTooltip, "Entfernt den Bezirk aus der Gruppe." },
                 { LocalizationKey.RemoveBuildingTooltip, "Entfernt das Gebäude aus der Gruppe." },
                 { LocalizationKey.SelectDistrictsButton, "Bezirke auswählen" },
                 { LocalizationKey.GroupColorTooltip, "Gruppenfarbe" },
-                { LocalizationKey.NameInputTooltip, "Auswählen, um den Namen bearbeiten zu können." },
                 { LocalizationKey.OverviewTabLabel, "Übersicht" },
-                { LocalizationKey.BuildingsTabLabel, "Gebäude" },
-                { LocalizationKey.PoliciesTabLabel, "Bestimmungen" },
                 { LocalizationKey.EligibleColumnLabel, "Zugangsberechtigt" },
                 { LocalizationKey.NoDistrictsInGroup, "In dieser Gruppe gibt es keine Bezirke.\nFüge Bezirke mit der Schaltfläche BEZIRKE AUSWÄHLEN hinzu." },
                 { LocalizationKey.NoBuildingsInGroup, "Diese Gruppe hat noch keine zugewiesenen Gebäude." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Wendet die Bestimmung auf alle {COUNT} Bezirke dieser Gruppe an." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Hebt die Bestimmung in allen {COUNT} Bezirken dieser Gruppe auf." },
                 { LocalizationKey.MixedPolicyValueTooltip, "Die Bezirke dieser Gruppe haben unterschiedliche Werte." },
-                { LocalizationKey.MetadataDistrictsTooltip, "Bezirke" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Zugewiesene Gebäude" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Overlay und Gebäude anzeigen" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "Ohne Zuweisung werden die **versorgten Bezirke** manuell verwaltet." },
                 { LocalizationKey.SectionTooltipLine4, "HINWEIS: Es kann einige Sekunden dauern, bis sich die Anzeige des Infopanels nach einer Änderung der Zuweisung aktualisiert." },
                 { LocalizationKey.SectionLabel, "BEZIRKSGRUPPE" },
-                { LocalizationKey.OperatingDistrictsLabel, "Versorgte Bezirke" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Dieses Gebäude ist derzeit einer Bezirksgruppe zugewiesen." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "**Stadtbezirk**-Zuweisungen werden von der **zugewiesenen Bezirksgruppe** verwaltet." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Wenn die **Bezirksgruppe** keinen **Stadtbezirk** enthält, bietet dieses Gebäude seine Dienstleistung überall innerhalb seines **Einsatzgebiets** an." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "Dienstleistungsgebäude, die einer dieser Gruppen zugewiesen sind, versorgen diesen Bezirk." },
 
                 { LocalizationKey.TypeGeneric, "Bürger" },
-                { LocalizationKey.TypePolice, "Polizei" },
-                { LocalizationKey.TypeHealthcare, "Gesundheitsfürsorge" },
-                { LocalizationKey.TypeDeathcare, "Bestattung" },
-                { LocalizationKey.TypeGarbage, "Müllverwaltung" },
-                { LocalizationKey.TypeEducationElementary, "Grundschule" },
-                { LocalizationKey.TypeEducationHighSchool, "Sekundarschule" },
-                { LocalizationKey.TypeEducationCollege, "College" },
-                { LocalizationKey.TypeEducationUniversity, "Universität" },
-                { LocalizationKey.TypePost, "Post" },
             };
         }
 

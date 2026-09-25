@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "从所有组设置政策" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "允许所有市辖区组设置市辖区政策。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重置所有设置" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重置设置" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "将所有模组设置恢复为默认值。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "所有模组设置都将恢复为默认值。\r\n是否继续？" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "其他所有类型仅适用于匹配的服务建筑。" },
                 { LocalizationKey.DeleteGroupConfirmMessage, "“{NAME}”已分配给 {COUNT} 个服务建筑。\n已分配的服务建筑将再次为全市提供服务。" },
                 { LocalizationKey.DeleteGroupDialogTitle, "删除市辖区组？" },
-                { LocalizationKey.DeleteGroupConfirm, "删除市辖区组" },
-                { LocalizationKey.DeleteGroupCancel, "保留市辖区组" },
                 { LocalizationKey.RemoveMemberTooltip, "将该市辖区从市辖区组中移除。" },
                 { LocalizationKey.RemoveBuildingTooltip, "将该建筑从市辖区组中移除。" },
                 { LocalizationKey.SelectDistrictsButton, "选择市辖区" },
                 { LocalizationKey.GroupColorTooltip, "市辖区组颜色" },
-                { LocalizationKey.NameInputTooltip, "选择以修改名称。" },
                 { LocalizationKey.OverviewTabLabel, "概览" },
-                { LocalizationKey.BuildingsTabLabel, "建筑" },
-                { LocalizationKey.PoliciesTabLabel, "政策" },
                 { LocalizationKey.EligibleColumnLabel, "合格者" },
                 { LocalizationKey.NoDistrictsInGroup, "此市辖区组中没有市辖区。\n点击「选择市辖区」按钮添加市辖区。" },
                 { LocalizationKey.NoBuildingsInGroup, "此市辖区组尚无已分配建筑。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "将该政策应用到此市辖区组的全部 {COUNT} 个市辖区。" },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "从此市辖区组的全部 {COUNT} 个市辖区撤销该政策。" },
                 { LocalizationKey.MixedPolicyValueTooltip, "此市辖区组中各市辖区的数值不同。" },
-                { LocalizationKey.MetadataDistrictsTooltip, "市辖区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已分配建筑" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "显示覆盖图和建筑" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "未分配时，**工作区**需手动管理。" },
                 { LocalizationKey.SectionTooltipLine4, "注意：更改分配后，信息面板可能需要几秒钟才能完成视觉更新。" },
                 { LocalizationKey.SectionLabel, "市辖区组" },
-                { LocalizationKey.OperatingDistrictsLabel, "工作区" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "此建筑目前已分配给一个市辖区组。" },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "**市辖区**的分配将由**已分配的市辖区组**管理。" },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "如果**市辖区组**没有任何**市辖区**，此建筑将在其**运作范围**内的任何地方提供服务。" },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "分配给其中任意一个市辖区组的服务建筑都将为此市辖区提供服务。" },
 
                 { LocalizationKey.TypeGeneric, "市民" },
-                { LocalizationKey.TypePolice, "警察" },
-                { LocalizationKey.TypeHealthcare, "医疗卫生" },
-                { LocalizationKey.TypeDeathcare, "殡葬" },
-                { LocalizationKey.TypeGarbage, "垃圾" },
-                { LocalizationKey.TypeEducationElementary, "小学" },
-                { LocalizationKey.TypeEducationHighSchool, "中学" },
-                { LocalizationKey.TypeEducationCollege, "学院制大学" },
-                { LocalizationKey.TypeEducationUniversity, "综合性大学" },
-                { LocalizationKey.TypePost, "邮政" },
             };
         }
 

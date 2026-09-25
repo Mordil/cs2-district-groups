@@ -8,6 +8,7 @@ import { entityEquals, entityKey } from "cs2/utils"
 import { allowPoliciesForAllGroupTypes$, groupPolicies$, selectingGroup$, showOverlay$, showServiceBuildings$ } from "../bindings"
 import { Checkbox } from "../components/Checkbox"
 import { ColorPicker } from "../components/ColorPicker"
+import { GameText } from "../components/GameText"
 import { GroupTypeSelector } from "../components/GroupTypeSelector"
 import { glyphIconSrc } from "../components/icons"
 import { SelectDistrictsButton } from "../components/SelectDistrictsButton"
@@ -26,7 +27,7 @@ import {
     toggleDistrictSelection,
 } from "../triggers"
 import { Group } from "../types"
-import { useTranslation } from "../utils/locale"
+import { VanillaLocale, useTranslation } from "../utils/locale"
 import { logger } from "../utils/log"
 import { TransitionPhase } from "../utils/useEnterExitPhase"
 
@@ -119,8 +120,8 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                 title={t("deleteGroupDialogTitle")}
                 message={deleteGroupMessage}
                 multiline={true}
-                confirm={t("deleteGroupConfirm")}
-                cancel={t("deleteGroupCancel")}
+                confirm={<GameText label={VanillaLocale.deleteAction} />}
+                cancel={<GameText label={VanillaLocale.cancelAction} />}
                 onConfirm={() => {
                     logger.debug(`Delete group confirmed; entity:${entityKey(group.entity)}`)
                     deleteGroup(group.entity)
@@ -231,7 +232,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             className={css.colorSwatch}
                         />
 
-                        <Tooltip tooltip={t("nameInputTooltip")}>
+                        <Tooltip tooltip={<GameText label={VanillaLocale.editNameTooltip} />}>
                             <input
                                 className={css.title}
                                 value={nameDraft}
@@ -303,7 +304,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                             className={css.tab}
                             onSelect={onTabSelect}
                         >
-                            {t("buildingsTabLabel")}
+                            <GameText label={VanillaLocale.buildings} />
                         </VC.Tab>
 
                         {hasPolicies && (
@@ -313,7 +314,7 @@ export const GroupInfoPanel = ({ group, onClose, phase }: GroupInfoPanelProps) =
                                 className={css.tab}
                                 onSelect={onTabSelect}
                             >
-                                {t("policiesTabLabel")}
+                                <GameText label={VanillaLocale.policiesTab} />
                             </VC.Tab>
                         )}
                     </VC.TabBar>

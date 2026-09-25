@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Установка постановлений из всех групп" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Позволяет всем группам районов устанавливать районные постановления." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Сбросить все настройки" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Сбросить настройки" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Сбрасывает все настройки мода к значениям по умолчанию." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Все настройки мода будут возвращены к значениям по умолчанию.\r\nВы хотите продолжить?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "Все остальные типы доступны только для соответствующих зданий служб." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "«{NAME}» назначена {COUNT} зданиям служб.\nНазначенные здания служб будут снова обслуживать весь город." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Удалить группу районов?" },
-                { LocalizationKey.DeleteGroupConfirm, "Удалить группу" },
-                { LocalizationKey.DeleteGroupCancel, "Оставить группу" },
                 { LocalizationKey.RemoveMemberTooltip, "Удалить район из группы." },
                 { LocalizationKey.RemoveBuildingTooltip, "Удалить здание из группы." },
                 { LocalizationKey.SelectDistrictsButton, "Выбрать районы" },
                 { LocalizationKey.GroupColorTooltip, "Цвет группы" },
-                { LocalizationKey.NameInputTooltip, "Выберите, чтобы изменить название." },
                 { LocalizationKey.OverviewTabLabel, "Обзор" },
-                { LocalizationKey.BuildingsTabLabel, "Здания" },
-                { LocalizationKey.PoliciesTabLabel, "Постановления" },
                 { LocalizationKey.EligibleColumnLabel, "Соответствуют требованиям" },
                 { LocalizationKey.NoDistrictsInGroup, "В этой группе нет районов.\nДобавьте районы с помощью кнопки ВЫБРАТЬ РАЙОНЫ." },
                 { LocalizationKey.NoBuildingsInGroup, "В этой группе пока нет назначенных зданий." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Применяет постановление ко всем районам этой группы ({COUNT})." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Отменяет постановление во всех районах этой группы ({COUNT})." },
                 { LocalizationKey.MixedPolicyValueTooltip, "В районах этой группы заданы разные значения." },
-                { LocalizationKey.MetadataDistrictsTooltip, "Районы" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Назначенные здания" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Показать слой и здания" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "Без назначенной группы **районы обслуживания** управляются вручную." },
                 { LocalizationKey.SectionTooltipLine4, "ПРИМЕЧАНИЕ: панели информации может потребоваться несколько секунд, чтобы визуально обновиться после изменения назначения." },
                 { LocalizationKey.SectionLabel, "ГРУППА РАЙОНОВ" },
-                { LocalizationKey.OperatingDistrictsLabel, "Районы обслуживания" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Это здание сейчас назначено группе районов." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "Назначением **района города** управляет **назначенная группа районов**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Если **группа районов** не содержит ни одного **района города**, это здание будет предоставлять свои услуги везде в пределах своего **радиуса действия**." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "Здания служб, назначенные любой из этих групп, будут обслуживать этот район." },
 
                 { LocalizationKey.TypeGeneric, "Гражданский" },
-                { LocalizationKey.TypePolice, "Полиция" },
-                { LocalizationKey.TypeHealthcare, "Здравоохранение" },
-                { LocalizationKey.TypeDeathcare, "Ритуальные услуги" },
-                { LocalizationKey.TypeGarbage, "Отходы" },
-                { LocalizationKey.TypeEducationElementary, "Начальная школа" },
-                { LocalizationKey.TypeEducationHighSchool, "Средняя школа" },
-                { LocalizationKey.TypeEducationCollege, "Колледж" },
-                { LocalizationKey.TypeEducationUniversity, "Университет" },
-                { LocalizationKey.TypePost, "Почта" },
             };
         }
 

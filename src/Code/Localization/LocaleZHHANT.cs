@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "從所有群組設定政策" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "允許所有行政區群組設定行政區政策。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重設所有設定" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "重置設定" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "將所有模組設定重設為預設值。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "所有模組設定將還原為預設值。\r\n是否要繼續？" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "其他所有類型僅適用於對應的服務建築。" },
                 { LocalizationKey.DeleteGroupConfirmMessage, "「{NAME}」已指派給 {COUNT} 個服務建築。\n已指派的服務建築將重新服務整座城市。" },
                 { LocalizationKey.DeleteGroupDialogTitle, "刪除行政區群組？" },
-                { LocalizationKey.DeleteGroupConfirm, "刪除群組" },
-                { LocalizationKey.DeleteGroupCancel, "保留群組" },
                 { LocalizationKey.RemoveMemberTooltip, "將該行政區從群組中移除。" },
                 { LocalizationKey.RemoveBuildingTooltip, "將該建築從群組中移除。" },
                 { LocalizationKey.SelectDistrictsButton, "選擇行政區" },
                 { LocalizationKey.GroupColorTooltip, "群組顏色" },
-                { LocalizationKey.NameInputTooltip, "選取以修改名稱。" },
                 { LocalizationKey.OverviewTabLabel, "總覽" },
-                { LocalizationKey.BuildingsTabLabel, "建築" },
-                { LocalizationKey.PoliciesTabLabel, "政策" },
                 { LocalizationKey.EligibleColumnLabel, "符合資格" },
                 { LocalizationKey.NoDistrictsInGroup, "此群組中沒有行政區。\n請使用「選擇行政區」按鈕新增行政區。" },
                 { LocalizationKey.NoBuildingsInGroup, "此群組尚無已指派建築。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "將該政策套用至此群組的全部 {COUNT} 個行政區。" },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "自此群組的全部 {COUNT} 個行政區撤銷該政策。" },
                 { LocalizationKey.MixedPolicyValueTooltip, "此群組中各行政區的數值不同。" },
-                { LocalizationKey.MetadataDistrictsTooltip, "行政區" },
                 { LocalizationKey.MetadataBuildingsTooltip, "已指派建築" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "顯示覆蓋圖和建築" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "取消指派後，**行政區**將改為手動管理。" },
                 { LocalizationKey.SectionTooltipLine4, "注意：變更指派後，資訊面板可能需要幾秒鐘才會更新顯示。" },
                 { LocalizationKey.SectionLabel, "行政區群組" },
-                { LocalizationKey.OperatingDistrictsLabel, "操作區" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "此建築目前已指派給一個行政區群組。" },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "**城市行政區**的指派將由**已指派的行政區群組**管理。" },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "如果**行政區群組**沒有任何**城市行政區**，此建築將在其**運作範圍**內的任何地方提供服務。" },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "指派給其中任一行政區群組的服務建築都會為此行政區提供服務。" },
 
                 { LocalizationKey.TypeGeneric, "市民" },
-                { LocalizationKey.TypePolice, "警察" },
-                { LocalizationKey.TypeHealthcare, "醫療衛生" },
-                { LocalizationKey.TypeDeathcare, "殯葬服務" },
-                { LocalizationKey.TypeGarbage, "垃圾" },
-                { LocalizationKey.TypeEducationElementary, "小學" },
-                { LocalizationKey.TypeEducationHighSchool, "中學" },
-                { LocalizationKey.TypeEducationCollege, "大專" },
-                { LocalizationKey.TypeEducationUniversity, "大學" },
-                { LocalizationKey.TypePost, "郵政" },
             };
         }
 

@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "すべてのグループから条例を設定" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "すべての特区グループが条例を設定できるようにします。" },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "すべての設定をリセット" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "設定をリセット" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "すべてのMOD設定を初期値に戻します。" },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "すべてのMOD設定が初期値に戻ります。\r\n続行しますか?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "他のタイプは、対応するサービス施設にのみ割り当てることができます。" },
                 { LocalizationKey.DeleteGroupConfirmMessage, "「{NAME}」は{COUNT}件のサービス施設に割り当てられています。\n割り当てられたサービス施設は、再び都市全体にサービスを提供するようになります。" },
                 { LocalizationKey.DeleteGroupDialogTitle, "特区グループを削除しますか?" },
-                { LocalizationKey.DeleteGroupConfirm, "グループを削除" },
-                { LocalizationKey.DeleteGroupCancel, "グループを残す" },
                 { LocalizationKey.RemoveMemberTooltip, "この特区をグループから削除します。" },
                 { LocalizationKey.RemoveBuildingTooltip, "この建物をグループから削除します。" },
                 { LocalizationKey.SelectDistrictsButton, "特区を選択" },
                 { LocalizationKey.GroupColorTooltip, "グループの色" },
-                { LocalizationKey.NameInputTooltip, "選択して名前を編集します。" },
                 { LocalizationKey.OverviewTabLabel, "概要" },
-                { LocalizationKey.BuildingsTabLabel, "建物" },
-                { LocalizationKey.PoliciesTabLabel, "条例" },
                 { LocalizationKey.EligibleColumnLabel, "対象人数" },
                 { LocalizationKey.NoDistrictsInGroup, "このグループには特区がありません。\n「特区を選択」ボタンで特区を追加してください。" },
                 { LocalizationKey.NoBuildingsInGroup, "このグループにはまだ割り当てられた建物がありません。" },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "このグループの{COUNT}件すべての特区に条例を適用します。" },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "このグループの{COUNT}件すべての特区から条例を解除します。" },
                 { LocalizationKey.MixedPolicyValueTooltip, "このグループの特区には異なる値が設定されています。" },
-                { LocalizationKey.MetadataDistrictsTooltip, "特区" },
                 { LocalizationKey.MetadataBuildingsTooltip, "割り当てられた建物" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "オーバーレイと施設を表示" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "割り当てを解除すると、**稼働特区**は手動で管理されます。" },
                 { LocalizationKey.SectionTooltipLine4, "注記: 割り当てを変更した後、インフォパネルの表示が更新されるまで数秒かかる場合があります。" },
                 { LocalizationKey.SectionLabel, "特区グループ" },
-                { LocalizationKey.OperatingDistrictsLabel, "稼働特区" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "この建物は現在、特区グループに割り当てられています。" },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "**都市の特区**の割り当ては、**割り当てられた特区グループ**によって管理されます。" },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "**特区グループ**に**都市の特区**が含まれていない場合、この建物は**運用範囲内**のどこにでもサービスを提供します。" },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "これらのグループのいずれかに割り当てられたサービス施設は、この特区にサービスを提供します。" },
 
                 { LocalizationKey.TypeGeneric, "市民" },
-                { LocalizationKey.TypePolice, "警察" },
-                { LocalizationKey.TypeHealthcare, "医療" },
-                { LocalizationKey.TypeDeathcare, "葬儀" },
-                { LocalizationKey.TypeGarbage, "ゴミ" },
-                { LocalizationKey.TypeEducationElementary, "小学校" },
-                { LocalizationKey.TypeEducationHighSchool, "高校" },
-                { LocalizationKey.TypeEducationCollege, "単科大学" },
-                { LocalizationKey.TypeEducationUniversity, "総合大学" },
-                { LocalizationKey.TypePost, "郵便" },
             };
         }
 

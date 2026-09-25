@@ -3,6 +3,7 @@ import { LocalizedEntityName, LocalizedString, Name } from "cs2/l10n"
 import { FormattedParagraphs } from "cs2/ui"
 import { Entity } from "cs2/utils"
 
+import { GameText } from "../../components/GameText"
 import { VC } from "../../components/vanilla"
 import { markdownRenderer } from "../../shared"
 import { VanillaLocale, useTranslation } from "../../utils/locale"
@@ -35,7 +36,11 @@ export const ReadOnlyDistrictsSection = (props: VanillaDistrictsSectionProps) =>
 
     return (
         <VC.InfoSection disableFocus={true} tooltip={readOnlyTooltip}>
-            <VC.InfoRow uppercase={true} disableFocus={true} left={t("operatingDistrictsLabel")} />
+            <VC.InfoRow
+                uppercase={true}
+                disableFocus={true}
+                left={<GameText label={VanillaLocale.operatingDistricts} />}
+            />
             {props.districts.map((district) => (
                 <VC.InfoRow
                     key={district.entity.index}

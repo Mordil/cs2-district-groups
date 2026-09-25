@@ -115,6 +115,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **CHANGED**
 
+- Replaced several translations with the game's to keep parity in terminology and meaning
 - Reduced how frequent the mod was writing to disk with log messages when debug logging is disabled
 - Admin and Welfare buildings that can be assigned to districts should now be listed on the Service Buildings tab of the Main Panel
 - Buildings now display their asset name in the Buildings tab of the Group Info panel

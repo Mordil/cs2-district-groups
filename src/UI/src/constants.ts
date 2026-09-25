@@ -1,5 +1,5 @@
 import { gameIconSrc, modIconSrc } from "./components/icons"
-import { VanillaLocale, useTranslation, useVanillaLabel } from "./utils/locale"
+import { VanillaLocale, useTranslation, useVanillaLabels } from "./utils/locale"
 
 export const kAssetPath = 'coui://districtgroups/'
 
@@ -54,20 +54,23 @@ export const kTypeIcons: string[] = [
 // must match the C# enum.
 export const useTypeLabels = (): string[] => {
     const t = useTranslation()
-    // Reuses the game's own Info View option label rather than a mod-owned translation, so this entry
-    // stays in whatever wording the player's language already knows and never drifts from it.
-    const fireAndRescue = useVanillaLabel(VanillaLocale.fireAndRescueType)
-    return [
-        t("typeGeneric"),
-        t("typePolice"),
-        fireAndRescue,
-        t("typeHealthcare"),
-        t("typeDeathcare"),
-        t("typeGarbage"),
-        t("typeEducationElementary"),
-        t("typeEducationHighSchool"),
-        t("typeEducationCollege"),
-        t("typeEducationUniversity"),
-        t("typePost"),
-    ]
+    /*
+        Every entry but Civic reuses the game's own name for that service, so each one stays in
+        whatever wording the player's language already knows and never drifts from it. Civic is the
+        mod's own concept and has no game equivalent to borrow.
+    */
+    const serviceTypes = useVanillaLabels([
+        VanillaLocale.policeType,
+        VanillaLocale.fireAndRescueType,
+        VanillaLocale.healthcareType,
+        VanillaLocale.deathcareType,
+        VanillaLocale.garbageType,
+        VanillaLocale.elementarySchoolType,
+        VanillaLocale.highSchoolType,
+        VanillaLocale.collegeType,
+        VanillaLocale.universityType,
+        VanillaLocale.postType,
+    ])
+
+    return [t("typeGeneric"), ...serviceTypes]
 }

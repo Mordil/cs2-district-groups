@@ -61,7 +61,7 @@ namespace DistrictGroups
                 { m_Setting.GetOptionLabelLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Ustawianie uchwał z wszystkich grup" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.AllowPoliciesForAllGroupTypes)), "Zezwala wszystkim grupom dzielnic na ustawianie uchwał dzielnic." },
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Zresetuj wszystkie ustawienia" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetSettings)), "Zresetuj ustawienia" },
                 { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetSettings)), "Przywraca wszystkie ustawienia moda do wartości domyślnych." },
                 { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ResetSettings)), "Wszystkie ustawienia moda zostaną przywrócone do wartości domyślnych.\r\nCzy chcesz kontynuować?" },
 
@@ -101,23 +101,17 @@ namespace DistrictGroups
                 { LocalizationKey.TypePickerTooltipLine3, "Wszystkie inne typy są dostępne tylko dla odpowiadających im budynków usługowych." },
                 { LocalizationKey.DeleteGroupConfirmMessage, "„{NAME}” jest przypisana do {COUNT} budynków usługowych.\nPrzypisane budynki usługowe zaczną ponownie obsługiwać całe miasto." },
                 { LocalizationKey.DeleteGroupDialogTitle, "Usunąć grupę dzielnic?" },
-                { LocalizationKey.DeleteGroupConfirm, "Usuń grupę" },
-                { LocalizationKey.DeleteGroupCancel, "Zachowaj grupę" },
                 { LocalizationKey.RemoveMemberTooltip, "Usuwa dzielnicę z grupy." },
                 { LocalizationKey.RemoveBuildingTooltip, "Usuwa budynek z grupy." },
                 { LocalizationKey.SelectDistrictsButton, "Wybierz dzielnice" },
                 { LocalizationKey.GroupColorTooltip, "Kolor grupy" },
-                { LocalizationKey.NameInputTooltip, "Wybierz, aby edytować nazwę." },
                 { LocalizationKey.OverviewTabLabel, "Przegląd" },
-                { LocalizationKey.BuildingsTabLabel, "Budynki" },
-                { LocalizationKey.PoliciesTabLabel, "Uchwały" },
                 { LocalizationKey.EligibleColumnLabel, "Spełniający warunki" },
                 { LocalizationKey.NoDistrictsInGroup, "W tej grupie nie ma dzielnic.\nDodaj dzielnice za pomocą przycisku WYBIERZ DZIELNICE." },
                 { LocalizationKey.NoBuildingsInGroup, "Ta grupa nie ma jeszcze przypisanych budynków." },
                 { LocalizationKey.ApplyPolicyToGroupTooltip, "Stosuje uchwałę we wszystkich {COUNT} dzielnicach tej grupy." },
                 { LocalizationKey.ClearPolicyFromGroupTooltip, "Uchyla uchwałę we wszystkich {COUNT} dzielnicach tej grupy." },
                 { LocalizationKey.MixedPolicyValueTooltip, "Dzielnice w tej grupie mają różne wartości." },
-                { LocalizationKey.MetadataDistrictsTooltip, "Dzielnice" },
                 { LocalizationKey.MetadataBuildingsTooltip, "Przypisane budynki" },
                 { LocalizationKey.ShowOverlayAndBuildingsLabel, "Pokaż nakładkę i budynki" },
 
@@ -129,7 +123,6 @@ namespace DistrictGroups
                 { LocalizationKey.SectionTooltipLine3, "Bez przypisania **obsługiwane dzielnice** są zarządzane ręcznie." },
                 { LocalizationKey.SectionTooltipLine4, "UWAGA: Panel informacyjny może potrzebować kilku sekund, aby zaktualizować widok po zmianie przypisania." },
                 { LocalizationKey.SectionLabel, "GRUPA DZIELNIC" },
-                { LocalizationKey.OperatingDistrictsLabel, "Obsługiwane dzielnice" },
                 { LocalizationKey.ReadOnlySectionTooltipLine1, "Ten budynek jest obecnie przypisany do grupy dzielnic." },
                 { LocalizationKey.ReadOnlySectionTooltipLine2, "Przypisania **dzielnicy** są zarządzane przez **przypisaną grupę dzielnic**." },
                 { LocalizationKey.ReadOnlySectionTooltipLine3, "Jeśli **grupa dzielnic** nie zawiera żadnej **dzielnicy**, budynek będzie świadczyć usługi wszędzie w swoim **zasięgu operacyjnym**." },
@@ -147,15 +140,6 @@ namespace DistrictGroups
                 { LocalizationKey.MembershipSectionTooltipLine2, "Budynki usługowe przypisane do którejkolwiek z tych grup będą obsługiwać tę dzielnicę." },
 
                 { LocalizationKey.TypeGeneric, "Obywatelski" },
-                { LocalizationKey.TypePolice, "Policja" },
-                { LocalizationKey.TypeHealthcare, "Służba zdrowia" },
-                { LocalizationKey.TypeDeathcare, "Służby pogrzebowe" },
-                { LocalizationKey.TypeGarbage, "Gospodarka odpadami" },
-                { LocalizationKey.TypeEducationElementary, "Szkoła podstawowa" },
-                { LocalizationKey.TypeEducationHighSchool, "Liceum" },
-                { LocalizationKey.TypeEducationCollege, "Szkoła pomaturalna" },
-                { LocalizationKey.TypeEducationUniversity, "Uniwersytet" },
-                { LocalizationKey.TypePost, "Poczta" },
             };
         }
 

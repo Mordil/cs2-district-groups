@@ -31,23 +31,17 @@ export const kLocale = {
     typePickerTooltipLine3: id("TypePickerTooltipLine3"),
     deleteGroupConfirmMessage: id("DeleteGroupConfirmMessage"),
     deleteGroupDialogTitle: id("DeleteGroupDialogTitle"),
-    deleteGroupConfirm: id("DeleteGroupConfirm"),
-    deleteGroupCancel: id("DeleteGroupCancel"),
     removeMemberTooltip: id("RemoveMemberTooltip"),
     removeBuildingTooltip: id("RemoveBuildingTooltip"),
     selectDistrictsButton: id("SelectDistrictsButton"),
     groupColorTooltip: id("GroupColorTooltip"),
-    nameInputTooltip: id("NameInputTooltip"),
     overviewTabLabel: id("OverviewTabLabel"),
-    buildingsTabLabel: id("BuildingsTabLabel"),
-    policiesTabLabel: id("PoliciesTabLabel"),
     eligibleColumnLabel: id("EligibleColumnLabel"),
     noDistrictsInGroup: id("NoDistrictsInGroup"),
     noBuildingsInGroup: id("NoBuildingsInGroup"),
     applyPolicyToGroupTooltip: id("ApplyPolicyToGroupTooltip"),
     clearPolicyFromGroupTooltip: id("ClearPolicyFromGroupTooltip"),
     mixedPolicyValueTooltip: id("MixedPolicyValueTooltip"),
-    metadataDistrictsTooltip: id("MetadataDistrictsTooltip"),
     metadataBuildingsTooltip: id("MetadataBuildingsTooltip"),
     showOverlayAndBuildingsLabel: id("ShowOverlayAndBuildingsLabel"),
 
@@ -59,7 +53,6 @@ export const kLocale = {
     sectionTooltipLine3: id("SectionTooltipLine3"),
     sectionTooltipLine4: id("SectionTooltipLine4"),
     sectionLabel: id("SectionLabel"),
-    operatingDistrictsLabel: id("OperatingDistrictsLabel"),
     readOnlySectionTooltipLine1: id("ReadOnlySectionTooltipLine1"),
     readOnlySectionTooltipLine2: id("ReadOnlySectionTooltipLine2"),
     readOnlySectionTooltipLine3: id("ReadOnlySectionTooltipLine3"),
@@ -77,15 +70,6 @@ export const kLocale = {
     membershipSectionTooltipLine2: id("MembershipSectionTooltipLine2"),
 
     typeGeneric: id("TypeGeneric"),
-    typePolice: id("TypePolice"),
-    typeHealthcare: id("TypeHealthcare"),
-    typeDeathcare: id("TypeDeathcare"),
-    typeGarbage: id("TypeGarbage"),
-    typeEducationElementary: id("TypeEducationElementary"),
-    typeEducationHighSchool: id("TypeEducationHighSchool"),
-    typeEducationCollege: id("TypeEducationCollege"),
-    typeEducationUniversity: id("TypeEducationUniversity"),
-    typePost: id("TypePost"),
 } as const
 
 // English fallbacks - shown as-is until a locale source (en-US at minimum,
@@ -118,23 +102,17 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     deleteGroupConfirmMessage:
         '"{NAME}" is assigned to {COUNT} service building(s).\nAssigned service building(s) will serve the whole city again.',
     deleteGroupDialogTitle: "Delete District Group?",
-    deleteGroupConfirm: "Delete group",
-    deleteGroupCancel: "Keep group",
     removeMemberTooltip: "Remove the district from the group.",
     removeBuildingTooltip: "Remove the building from the group.",
     selectDistrictsButton: "Select Districts",
     groupColorTooltip: "Group Color",
-    nameInputTooltip: "Select to edit the name.",
     overviewTabLabel: "Overview",
-    buildingsTabLabel: "Buildings",
-    policiesTabLabel: "Policies",
     eligibleColumnLabel: "Eligible",
     noDistrictsInGroup: "There are no districts in this group.\nAdd districts with the SELECT DISTRICTS button.",
     noBuildingsInGroup: "This group has no assigned buildings yet.",
     applyPolicyToGroupTooltip: "Applies the policy to all {COUNT} districts in this group.",
     clearPolicyFromGroupTooltip: "Removes the policy from all {COUNT} districts in this group.",
     mixedPolicyValueTooltip: "Districts in this group are set to different values.",
-    metadataDistrictsTooltip: "Districts",
     metadataBuildingsTooltip: "Assigned buildings",
     showOverlayAndBuildingsLabel: "Show overlay and buildings",
 
@@ -147,7 +125,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     sectionTooltipLine3: "When unassigned, **operating districts** are controlled manually.",
     sectionTooltipLine4: "NOTE: The Info Panel can take a few seconds to visually update after changing the assignment.",
     sectionLabel: "DISTRICT GROUP",
-    operatingDistrictsLabel: "Operating Districts",
     readOnlySectionTooltipLine1: "This building is currently assigned to a district group.",
     readOnlySectionTooltipLine2:
         "**City district** assignments are controlled by the **assigned district group**.",
@@ -167,15 +144,6 @@ const kFallback: Record<keyof typeof kLocale, string> = {
     membershipSectionTooltipLine2: "Service buildings assigned to any of these groups will provide service to this district.",
 
     typeGeneric: "Civic",
-    typePolice: "Police",
-    typeHealthcare: "Healthcare",
-    typeDeathcare: "Deathcare",
-    typeGarbage: "Garbage",
-    typeEducationElementary: "Elementary School",
-    typeEducationHighSchool: "High School",
-    typeEducationCollege: "College",
-    typeEducationUniversity: "University",
-    typePost: "Post",
 }
 
 // A display string the game itself ships, with the English text to fall back on.
@@ -188,7 +156,18 @@ export interface VanillaLabel {
 export const VanillaLocale = {
     details: { id: "SelectedInfoPanel.DETAILS", fallback: "View Details" },
     total: { id: "TransportInfoPanel.TOTAL", fallback: "Total" },
-    districtsColumn: { id: "Glossary.SECTION_TITLE[Districts]", fallback: "Districts" },
+    deleteAction: { id: "SelectedInfoPanel.DELETE", fallback: "Delete" },
+    cancelAction: { id: "Common.CANCEL", fallback: "Cancel" },
+    editNameTooltip: {
+        id: "SelectedInfoPanel.TOOLTIP[TitleSection]",
+        fallback: "Select to edit the name.",
+    },
+    policiesTab: { id: "SelectedInfoPanel.POLICIES", fallback: "Policies" },
+    operatingDistricts: {
+        id: "SelectedInfoPanel.OPERATING_DISTRICTS",
+        fallback: "Operating Districts",
+    },
+    districts: { id: "Glossary.SECTION_TITLE[Districts]", fallback: "Districts" },
     populationColumn: { id: "Glossary.SECTION_TITLE[Population]", fallback: "Population" },
     happinessColumn: { id: "Glossary.SECTION_TITLE[Happiness]", fallback: "Happiness" },
     wealthColumn: { id: "StatisticsPanel.STAT_TITLE[Wealth]", fallback: "Wealth" },
@@ -197,9 +176,30 @@ export const VanillaLocale = {
         fallback: "Average wealth",
     },
     incomeColumn: { id: "StatisticsPanel.STAT_TITLE[Income]", fallback: "Income" },
-    buildingsColumn: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
+    buildings: { id: "EconomyPanel.SERVICES_TITLE_BUILDINGS", fallback: "Buildings" },
     efficiencyColumn: { id: "SelectedInfoPanel.EFFICIENCY", fallback: "Efficiency" },
+    policeType: { id: "SubServices.NAME[Police]", fallback: "Police" },
     fireAndRescueType: { id: "Infoviews.INFOVIEW[FireRescue]", fallback: "Fire & Rescue" },
+    healthcareType: { id: "SubServices.NAME[Healthcare]", fallback: "Healthcare" },
+    deathcareType: { id: "SubServices.NAME[Deathcare]", fallback: "Deathcare" },
+    garbageType: {
+        id: "SubServices.NAME[GarbageManagement]",
+        fallback: "Garbage Management",
+    },
+    elementarySchoolType: {
+        id: "EducationInfoPanel.EDUCATION_LEVEL[Elementary]",
+        fallback: "Elementary School",
+    },
+    highSchoolType: {
+        id: "EducationInfoPanel.EDUCATION_LEVEL[High School]",
+        fallback: "High School",
+    },
+    collegeType: { id: "EducationInfoPanel.EDUCATION_LEVEL[College]", fallback: "College" },
+    universityType: {
+        id: "EducationInfoPanel.EDUCATION_LEVEL[University]",
+        fallback: "University",
+    },
+    postType: { id: "SubServices.NAME[CommunicationsPost]", fallback: "Post" },
     fireHazard: { id: "Infoviews.INFOMODE[FireHazard]", fallback: "Fire Hazard" },
     averageFireHazard: {
         id: "FireAndRescueInfoPanel.AVERAGE_FIRE_HAZARD",
@@ -297,8 +297,9 @@ export const useTranslation = () => {
     }
 }
 
-// A vanilla label as a plain string, for contexts (sorting, comparison) that can't render JSX.
-export const useVanillaLabel = (label: VanillaLabel): string => {
+// Vanilla labels as plain strings, for contexts (sorting, comparison) that can't render JSX;
+// anywhere a ReactNode will do, GameText is the better fit.
+export const useVanillaLabels = (labels: VanillaLabel[]): string[] => {
     const { translate } = useLocalization()
-    return translate(label.id, label.fallback) ?? label.fallback
+    return labels.map((label) => translate(label.id, label.fallback) ?? label.fallback)
 }

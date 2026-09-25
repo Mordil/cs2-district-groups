@@ -5,6 +5,7 @@ import { LocalizedNumber, LocalizedString, Unit } from "cs2/l10n"
 import { ConfirmationDialog, DialogStack, FormattedParagraphs, Tooltip } from "cs2/ui"
 import { entityKey } from "cs2/utils"
 
+import { GameText } from "../../components/GameText"
 import { gameIconSrc, glyphIconSrc, modIconSrc } from "../../components/icons"
 import { MetadataItem } from "../../components/MetadataItem"
 import { SelectDistrictsButton } from "../../components/SelectDistrictsButton"
@@ -80,8 +81,8 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                 title={t("deleteGroupDialogTitle")}
                 message={deleteGroupMessage}
                 multiline={true}
-                confirm={t("deleteGroupConfirm")}
-                cancel={t("deleteGroupCancel")}
+                confirm={<GameText label={VanillaLocale.deleteAction} />}
+                cancel={<GameText label={VanillaLocale.cancelAction} />}
                 onConfirm={() => {
                     logger.debug(`Delete group confirmed; entity:${entityKey(group.entity)}`)
                     deleteGroup(group.entity)
@@ -149,7 +150,7 @@ export const GroupCard = ({ group, selectingDistricts, onViewDetails }: GroupCar
                             <MetadataItem
                                 icon={gameIconSrc("LotTool")}
                                 value={<LocalizedNumber value={group.members.length} unit={Unit.Integer} />}
-                                tooltip={t("metadataDistrictsTooltip")}
+                                tooltip={<GameText label={VanillaLocale.districts} />}
                             />
                             <MetadataItem
                                 icon={modIconSrc("building")}
