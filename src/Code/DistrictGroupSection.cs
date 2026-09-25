@@ -104,10 +104,8 @@ namespace DistrictGroups
         public override void OnWriteProperties(IJsonWriter writer)
         {
             long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-            // A restricted building has no group type of its own, so it's reported as Civic (Generic) too.
-            GroupServiceType reportedType = m_RestrictedToGeneric ? GroupServiceType.Generic : m_BuildingType;
             writer.PropertyName("buildingType");
-            writer.Write((int)reportedType);
+            writer.Write((int)m_BuildingType);
             writer.PropertyName("hasAssignment");
             writer.Write(m_AssignedGroup != Entity.Null);
             writer.PropertyName("assignedGroupName");

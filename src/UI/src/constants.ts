@@ -12,7 +12,7 @@ export const kIconStylePaths = [
 // The constant that any UI panels that should be offset from the top of the screen, as REM units.
 export const kUITopOffset = 60;
 
-// GroupServiceType.Generic - the "no type selected" sentinel for the type filter, and the fallback entry of
+// GroupServiceType.Generic (Civic) - the type filter's default selection, and the fallback entry of
 // every per-type table under groupStats.
 export const kGenericType = 0
 

@@ -151,6 +151,7 @@ namespace DistrictGroups
             if (EntityManager.HasComponent<GarbageFacilityData>(prefab)) return GroupServiceType.Garbage;
             if (EntityManager.HasComponent<PostFacilityData>(prefab)) return GroupServiceType.Post;
             if (EntityManager.HasComponent<AdminBuildingData>(prefab)) return GroupServiceType.Administration;
+            if (EntityManager.HasComponent<WelfareOfficeData>(prefab)) return GroupServiceType.Administration;
             if (EntityManager.HasComponent<SchoolData>(prefab))
             {
                 SchoolData school = EntityManager.GetComponentData<SchoolData>(prefab);
@@ -175,7 +176,8 @@ namespace DistrictGroups
             return DetectServiceType(prefab);
         }
 
-        // Welfare offices and administration buildings have no group type of their own, so they may only join Civic (Generic) groups.
+        // Administration is never a pickable group type,
+        // so welfare offices and administration buildings may only join Civic (Generic) groups.
         public bool IsRestrictedToGenericGroup(Entity prefab)
         {
             return EntityManager.Exists(prefab)

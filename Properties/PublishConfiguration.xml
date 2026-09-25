@@ -115,6 +115,7 @@ In Settings, there is a button to safely remove all mod data from your save.
 	<ChangeLog>
 **CHANGED**
 
+- Admin and Welfare buildings that can be assigned to districts should now be listed on the Service Buildings tab of the Main Panel
 - Buildings now display their asset name in the Buildings tab of the Group Info panel
 - Buildings now display their type as an icon in the Buildings tab of the Group Info panel rather than a text column
 - Slightly increased the width of the Group Info panel

@@ -273,7 +273,6 @@ export const MainPanel = ({ onClose, onViewGroupDetails }: MainPanelProps) => {
                                 />
                             ) : (
                                 <BuildingAssignmentsTab
-                                    filterType={filterType}
                                     className={css.list}
                                 />
                             )}

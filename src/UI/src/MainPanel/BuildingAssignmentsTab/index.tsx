@@ -10,7 +10,6 @@ import { groups$, serviceBuildings$ } from "../../bindings"
 import { eligibleGroups, GroupSelector } from "../../components/GroupSelector"
 import { gameIconSrc } from "../../components/icons"
 import { VC, VF, VT } from "../../components/vanilla"
-import { kGenericType } from "../../constants"
 import { markdownRenderer } from "../../shared"
 import { assignBuildingGroup, unassignBuildingGroup } from "../../triggers"
 import { Group, ServiceBuilding } from "../../types"
@@ -27,7 +26,6 @@ const stopMouseDown = (e: MouseEvent) => {
 }
 
 interface BuildingAssignmentsTabProps {
-    filterType: number
     className?: string
 }
 
@@ -115,7 +113,7 @@ const BuildingRow = ({ building, groups, onSelect, onUnassign, onViewDetails, on
     )
 }
 
-export const BuildingAssignmentsTab = ({ filterType, className }: BuildingAssignmentsTabProps) => {
+export const BuildingAssignmentsTab = ({ className }: BuildingAssignmentsTabProps) => {
     const t = useTranslation()
     const buildings = useValue(serviceBuildings$)
     const groups = useValue(groups$)
@@ -148,30 +146,23 @@ export const BuildingAssignmentsTab = ({ filterType, className }: BuildingAssign
             trackVisibility="reserve"
             className={className}
         >
-            {filterType === kGenericType && (
-                <div style={emptyTextStyle}>
-                    {t("selectTypeForAssignments")}
-                </div>
-            )}
-
-            {filterType !== kGenericType && displayedBuildings.length === 0 && (
+            {displayedBuildings.length === 0 && (
                 <div style={emptyTextStyle}>
                     {t("noServiceBuildingsMatchFilter")}
                 </div>
             )}
 
-            {filterType !== kGenericType &&
-                displayedBuildings.map((building) => (
-                    <BuildingRow
-                        key={entityKey(building.entity)}
-                        building={building}
-                        groups={groups}
-                        onSelect={onSelect}
-                        onUnassign={onUnassign}
-                        onViewDetails={onViewDetails}
-                        onFocusBuilding={onFocusBuilding}
-                    />
-                ))}
+            {displayedBuildings.map((building) => (
+                <BuildingRow
+                    key={entityKey(building.entity)}
+                    building={building}
+                    groups={groups}
+                    onSelect={onSelect}
+                    onUnassign={onUnassign}
+                    onViewDetails={onViewDetails}
+                    onFocusBuilding={onFocusBuilding}
+                />
+            ))}
         </Scrollable>
     )
 }

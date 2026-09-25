@@ -49,7 +49,11 @@ export const GroupSearchFlyout = (props: GroupSearchFlyoutProps) => {
     const showPlaceholder = !searchFocused && query.length === 0
 
     const trimmedQuery = query.trim().toLowerCase()
-    const alwaysShownTypes = new Set([props.buildingType, kGenericGroupType])
+    const alwaysShownTypes = new Set(
+        props.buildingType < typeLabels.length // some building types are not actual group types
+            ? [props.buildingType, kGenericGroupType]
+            : [kGenericGroupType]
+    )
     const sections = groupCandidatesByType(props.candidates, props.buildingType)
         .map((section) => ({
             ...section,

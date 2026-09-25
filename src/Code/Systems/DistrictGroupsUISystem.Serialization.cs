@@ -215,15 +215,18 @@ namespace DistrictGroups
             writer.ArrayBegin(buildings.Length);
             foreach (Entity building in buildings)
             {
-                WriteServiceBuilding(writer, type, building);
+                WriteServiceBuilding(writer, building);
             }
             writer.ArrayEnd();
         }
 
-        // Listed buildings all come from the filtered type's own query,
-        // so that type IS every listed building's type
-        private void WriteServiceBuilding(IJsonWriter writer, GroupServiceType type, Entity building)
+        /*
+            The Civic (Generic) filter's query also surfaces buildings restricted to Civic groups that carry their own detected type,
+            so every listed building's type is read off the building itself rather than trusted from the filter it was found under.
+        */
+        private void WriteServiceBuilding(IJsonWriter writer, Entity building)
         {
+            GroupServiceType type = m_GroupSystem.DetectBuildingServiceType(building);
             Entity assignedGroup = EntityManager.HasComponent<DistrictGroupAssignment>(building)
                 ? EntityManager.GetComponentData<DistrictGroupAssignment>(building).m_Group
                 : Entity.Null;

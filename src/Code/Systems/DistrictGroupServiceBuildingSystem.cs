@@ -20,9 +20,10 @@ namespace DistrictGroups
 
         private const int kUnfilteredTargetVersion = -1;
 
-        // Which existing vanilla NotificationIconPrefab category
+        // Maps building and group types to their appropriate marker Prefab name
         private static readonly Dictionary<GroupServiceType, string> kTypeIconPrefabNames = new Dictionary<GroupServiceType, string>
         {
+            { GroupServiceType.Generic, "Admin Building" },
             { GroupServiceType.Police, "Police Station" },
             { GroupServiceType.Fire, "Fire Station" },
             { GroupServiceType.Healthcare, "Hospital" },
@@ -33,6 +34,7 @@ namespace DistrictGroups
             { GroupServiceType.EducationCollege, "School" },
             { GroupServiceType.EducationUniversity, "School" },
             { GroupServiceType.Post, "Post Facility" },
+            { GroupServiceType.Administration, "Admin Building" },
         };
 
         private DistrictGroupSystem m_GroupSystem;
@@ -58,6 +60,9 @@ namespace DistrictGroups
         private GroupServiceType m_MarkedType = GroupServiceType.Generic;
         private Entity m_MarkedGroup = Entity.Null;
         private int m_MarkedSetVersion = kUnfilteredTargetVersion;
+        
+        // Whether those markers were built while the overlay was active.
+        private bool m_MarkedWhileActive = false;
 
         private readonly Dictionary<Entity, Entity> m_Markers = new Dictionary<Entity, Entity>();
 
@@ -88,6 +93,7 @@ namespace DistrictGroups
             EntityQuery schoolQuery = BuildQuery(ComponentType.ReadOnly<Game.Buildings.School>());
             m_TypeQueries = new Dictionary<GroupServiceType, EntityQuery>
             {
+                { GroupServiceType.Generic, BuildQuery(ComponentType.ReadOnly<Game.Buildings.AdminBuilding>(), ComponentType.ReadOnly<Game.Buildings.WelfareOffice>()) },
                 { GroupServiceType.Police, BuildQuery(ComponentType.ReadOnly<Game.Buildings.PoliceStation>(), ComponentType.ReadOnly<Game.Buildings.Prison>()) },
                 { GroupServiceType.Fire, BuildQuery(ComponentType.ReadOnly<Game.Buildings.FireStation>(), ComponentType.ReadOnly<Game.Buildings.EmergencyShelter>()) },
                 { GroupServiceType.Healthcare, BuildQuery(ComponentType.ReadOnly<Game.Buildings.Hospital>()) },
@@ -117,6 +123,7 @@ namespace DistrictGroups
             m_MarkedGroup = Entity.Null;
             m_HideAssignedBuildings = false;
             m_MarkedSetVersion = kUnfilteredTargetVersion;
+            m_MarkedWhileActive = false;
             m_LastSampleTime = float.NegativeInfinity;
         }
 
@@ -131,16 +138,17 @@ namespace DistrictGroups
             bool isActive = IsActive;
             GroupServiceType desiredType = isActive ? (GroupServiceType)m_OverlaySystem.TypeFilter : GroupServiceType.Generic;
             Entity desiredGroup = isActive ? m_GroupSystem.FocusedGroup : Entity.Null;
+            bool activeChanged = isActive != m_MarkedWhileActive;
             bool typeChanged = desiredType != m_MarkedType;
             bool groupChanged = desiredGroup != m_MarkedGroup;
             bool targetsChanged = GetMarkerSetVersion(desiredGroup) != m_MarkedSetVersion;
 
             // Even with nothing else changing, re-sample periodically while anything is showing so
             // newly-constructed or demolished matching buildings get picked up/dropped.
-            bool hasMarkableSet = desiredGroup != Entity.Null || desiredType != GroupServiceType.Generic;
-            if (typeChanged || groupChanged || targetsChanged || (hasMarkableSet && shouldSample))
+            bool hasMarkableSet = isActive;
+            if (activeChanged || typeChanged || groupChanged || targetsChanged || (hasMarkableSet && shouldSample))
             {
-                RebuildMarkers(desiredType, desiredGroup);
+                RebuildMarkers(desiredType, desiredGroup, isActive);
             }
         }
 
@@ -172,7 +180,7 @@ namespace DistrictGroups
             Mod.log.Info("Removing all service-building marker state from the world");
             m_ShowServiceBuildings = false;
             m_HideAssignedBuildings = false;
-            RebuildMarkers(GroupServiceType.Generic, Entity.Null);
+            RebuildMarkers(GroupServiceType.Generic, Entity.Null, isActive: false);
             Mod.log.Info("Finished removing all service-building marker state from the world");
         }
 
@@ -191,16 +199,28 @@ namespace DistrictGroups
             });
         }
 
+        private NativeArray<Entity> GetMarkerTargets(GroupServiceType type, Entity focusedGroup, bool isActive, Allocator allocator)
+        {
+            if (!isActive)
+            {
+                return new NativeArray<Entity>(0, allocator);
+            }
+            if (focusedGroup != Entity.Null)
+            {
+                return m_GroupSystem.GetAssignedBuildings(focusedGroup, allocator);
+            }
+            return GetTargetBuildings(type, allocator);
+        }
+
         // Places markers on every building of `type`, or on just the buildings `focusedGroup` has
         // assigned when the panel is showing that one group.
-        private void RebuildMarkers(GroupServiceType type, Entity focusedGroup)
+        // Never marks anything while `isActive` is false
+        private void RebuildMarkers(GroupServiceType type, Entity focusedGroup, bool isActive)
         {
             System.Diagnostics.Stopwatch stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
             bool hasFocusedGroup = focusedGroup != Entity.Null;
-            using NativeArray<Entity> targets = hasFocusedGroup
-                ? m_GroupSystem.GetAssignedBuildings(focusedGroup, Allocator.Temp)
-                : GetTargetBuildings(type, Allocator.Temp);
+            using NativeArray<Entity> targets = GetMarkerTargets(type, focusedGroup, isActive, Allocator.Temp);
             double queryMs = stopwatch.Elapsed.TotalMilliseconds;
 
             m_TargetBuffer.Clear();
@@ -285,6 +305,7 @@ namespace DistrictGroups
             m_MarkedType = type;
             m_MarkedGroup = focusedGroup;
             m_MarkedSetVersion = GetMarkerSetVersion(focusedGroup);
+            m_MarkedWhileActive = isActive;
 
             stopwatch.Stop();
             Mod.log.Info($"Service building markers rebuilt; type:{type} focused_group:{focusedGroup} " +
